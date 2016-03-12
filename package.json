@@ -39,7 +39,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/OfficeDev/PnP"
+    "url": "git://github.com/OfficeDev/PnP-JS-Core"
   },
   "author": {
     "name": "Microsoft and other contributors"
