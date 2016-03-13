@@ -16,7 +16,7 @@ See the [Quick Start Guide](docs/getting-started.md) for setting up your environ
 
 
 ### Authors ###
-This project's contributors include Microsoft and [other contributors](AUTHORS)
+This project's contributors include Microsoft and [community contributors](AUTHORS). Work is done as open source community project. 
 
 
 ### Disclaimer ###
