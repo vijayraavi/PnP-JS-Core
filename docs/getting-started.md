@@ -7,7 +7,7 @@ Unsure where to begin with working on the project? This guide is designed to get
 
 2. Install [Node JS](https://nodejs.org/en/download/) - this provides two key capabilities; the first is the nodejs server which will act as our development server (think iisexpress), the second is npm a package manager (think nuget).
 
-3. Install [Python](https://www.python.org/downloads/) - this is used by some of the plug-ins and build tools inside Node JS
+3. On Windows: Install [Python v2.7.10](https://www.python.org/downloads/release/python-2710/) - this is used by some of the plug-ins and build tools inside Node JS - (Python v3.x.x is not supported by those modules). If Visual Studio is not installed on the client in addition to this C++ runtime is required. Please see [node-gyp Readme](https://github.com/nodejs/node-gyp/blob/master/README.md)
 
 4. Install a console emulator of your choice, for Windows [Cmder](http://cmder.net/) is popular. If installing Cmder choosing the full option will allow you to use git for windows. Whatever option you choose we will refer in the rest of the guide to "console" as the thing you installed in this step.
 
@@ -22,13 +22,15 @@ Unsure where to begin with working on the project? This guide is designed to get
 
 7. Install typings by typing the following code in your console `npm install -g typings`
 
-8. Now we need to fork and clone the git repository. This can be done using your [console](https://help.github.com/articles/fork-a-repo/) or using your preferred method.
+8. Install the gulp command line globally by typing the following code in your console `npm install -g gulp-cli`
 
-9. Once you have the code locally, navigate to the root of the project in your console. Type the following commands:
+9. Now we need to fork and clone the git repository. This can be done using your [console](https://help.github.com/articles/fork-a-repo/) or using your preferred method.
+
+10. Once you have the code locally, navigate to the root of the project in your console. Type the following commands:
 	1. `npm install` - installs all of the npm package dependencies (may take awhile the first time)
 	2. `typings install` - installs the required typings files as defined in typings.json 
 
-10. Type `gulp serve` and you should see the browser launch and an alert window display a random string of length 5.
+11. Type `gulp serve` and you should see the browser launch and an alert window display a random string of length 5.
 
 Because we are watching the files, any changes will be reflected in the served files after a new build is complete. You can point from a script tag in your SharePoint site to the http://localhost:3000 site to use the files. Any changes you make will be reflected thanks to the watched build.
 
