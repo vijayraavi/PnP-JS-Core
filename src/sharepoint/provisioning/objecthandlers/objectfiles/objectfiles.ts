@@ -2,7 +2,7 @@
 
 /// <reference path="..\schema\ifile.d.ts" />
 // import { Promise } from "es6-promise";
-import { replaceUrlTokens } from "../../../Util";
+import { replaceUrlTokens } from "../../../../utils/util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
 
 export class ObjectFiles extends ObjectHandlerBase {
