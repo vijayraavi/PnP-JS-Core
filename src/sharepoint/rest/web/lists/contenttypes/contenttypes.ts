@@ -9,7 +9,7 @@ export class ContentTypes extends Queryable {
         super(url, "/ContentTypes");
     }
     public getById(id: string) {
-        this._url.push(`(${id})`);
+        this._url.push(`(\"${id}\")`);
         return this;
     }
 }
