@@ -4,6 +4,7 @@
 /// <reference path="..\schema\schema.d.ts" />
 /// <reference path="iwaitmessageoptions.d.ts" />
 /// <reference path="options.d.ts" />
+/// <reference path="../../../utils/util" />
 
 // import { Promise } from "es6-promise";
 import { ProvisioningStep } from "./ProvisioningStep";
@@ -15,7 +16,7 @@ import { ObjectComposedLook } from "../ObjectHandlers/ObjectComposedLook/ObjectC
 import { ObjectCustomActions } from "../ObjectHandlers/ObjectCustomActions/ObjectCustomActions";
 import { ObjectFiles } from "../ObjectHandlers/ObjectFiles/ObjectFiles";
 import { ObjectLists } from "../ObjectHandlers/ObjectLists/ObjectLists";
-import { replaceUrlTokens } from "../../../utils/util";
+import { replaceUrlTokens } from "util";
 import * as Resources from "../Resources/Resources";
 import { Log } from "../Provisioning";
 

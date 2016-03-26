@@ -2,7 +2,8 @@
 // 
 // /// <reference path="..\schema\ipropertybagentry.d.ts" />
 // import { Promise } from "es6-promise";
-import { encodePropertyKey } from "../../../../utils/util";
+/// <reference path="../../../../utils/util" />
+import { encodePropertyKey } from "util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
 
 
