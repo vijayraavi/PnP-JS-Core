@@ -1,9 +1,12 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "module": "umd",
-        "jsx": "react",
+         "module": "umd",
+         "jsx": "react",
         "declaration": true,
         "sourceMap": true
-    }
+    },
+    "files": [
+        "typings/main.d.ts"
+    ]
 }
