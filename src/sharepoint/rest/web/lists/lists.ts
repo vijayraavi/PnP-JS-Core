@@ -1,11 +1,12 @@
-"use strict";
+/// <reference path="..\..\..\..\..\typings\main.d.ts" />
 
-/// <reference path="..\..\..\typings\main.d.ts" />
+"use strict";
 
 import { Queryable } from "../../Queryable";
 import { Items } from "./Items/Items";
 import { Views } from "./Views/Views";
 import { ContentTypes } from "./ContentTypes/ContentTypes";
+import * as jQuery from "jquery";
 
 export class Lists extends Queryable {
     constructor(url: Array<string>) {

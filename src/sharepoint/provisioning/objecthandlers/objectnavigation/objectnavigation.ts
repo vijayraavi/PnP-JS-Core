@@ -3,7 +3,7 @@
 /// <reference path="..\schema\inavigation.d.ts" />
 // import { Promise } from "es6-promise";
 /// <reference path="../../../utils/util" />
-import { getNodeFromCollectionByTitle, replaceUrlTokens } from "util";
+import { getNodeFromCollectionByTitle, replaceUrlTokens } from "../../../util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
 
 

@@ -3,7 +3,7 @@
 // /// <reference path="..\schema\ipropertybagentry.d.ts" />
 // import { Promise } from "es6-promise";
 /// <reference path="../../../../utils/util" />
-import { encodePropertyKey } from "util";
+import { encodePropertyKey } from "../../../../sharepoint/util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
 
 
