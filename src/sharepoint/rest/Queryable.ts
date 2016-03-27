@@ -1,7 +1,4 @@
 "use strict";
-
-/// <reference path="../../typings/main.d.ts" />
-
 import * as ajax from "../../Utils/Ajax";
 
 /**

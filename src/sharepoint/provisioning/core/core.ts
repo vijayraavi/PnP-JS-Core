@@ -1,6 +1,5 @@
 "use strict";
 
-/// <reference path="..\..\..\..\typings\main.d.ts" />
 /// <reference path="..\schema\schema.d.ts" />
 /// <reference path="iwaitmessageoptions.d.ts" />
 /// <reference path="options.d.ts" />

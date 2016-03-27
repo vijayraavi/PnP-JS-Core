@@ -1,7 +1,4 @@
 "use strict";
-
-/// <reference path="..\..\typings\main.d.ts" />
-
 /**
  * Retrieves the list ID of the current page from _spPageContextInfo
  */

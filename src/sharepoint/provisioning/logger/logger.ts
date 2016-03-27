@@ -1,7 +1,4 @@
 "use strict";
-
-/// <reference path="..\..\..\..\typings\main.d.ts" />
-
 export class Logger {
     private isLoggerDefined;
     private spacing;
