@@ -1,7 +1,4 @@
 "use strict";
-
-/// <reference path="..\..\..\..\typings\main.d.ts" />
-
 import { Queryable } from "../../../Queryable";
 
 export class ContentTypes extends Queryable {
@@ -9,7 +6,7 @@ export class ContentTypes extends Queryable {
         super(url, "/ContentTypes");
     }
     public getById(id: string) {
-        this._url.push(`(${id})`);
+        this._url.push(`(\"${id}\")`);
         return this;
     }
 }

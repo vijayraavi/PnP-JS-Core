@@ -118,7 +118,6 @@ gulp.task("build-typings", function () {
 
 gulp.task("build", ["lint", "build-typings", "clean"], function () {
     var src = TSWorkspace.Files;
-    src = src.concat(TSTypings.PnPFiles);
     src.push(TSTypings.Main);
 
     return gulp.src(src)
@@ -189,7 +188,7 @@ gulp.task("istanbul:hook", ["build"], function () {
 
 gulp.task("test", ["build", "istanbul:hook"], function () {
     return gulp.src(TSCompiledOutput.JSTestFiles)
-        .pipe(mocha({ ui: 'bdd' }))
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot' }))
         .pipe(istanbul.writeReports());
 });
 
