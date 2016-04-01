@@ -10,7 +10,7 @@ describe("Configuration", () => {
 
     describe("CachingConfigurationProvider", () => {
         let wrapped: MockConfigurationProvider;
-        let store: storage.IPnPClientStore;
+        let store: storage.PnPClientStore;
         let settings: Configuration.Settings;
 
         beforeEach(() => {

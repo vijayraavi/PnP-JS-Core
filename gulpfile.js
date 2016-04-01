@@ -5,22 +5,21 @@
 //******************************************************************************
 
 var gulp = require("gulp"),
-    print = require('gulp-print'),    
+    print = require('gulp-print'),
     src = require("vinyl-source-stream"),
     buffer = require("vinyl-buffer"),
     srcmaps = require("gulp-sourcemaps"),
     header = require('gulp-header'),
-    clean = require('gulp-clean'),    
+    clean = require('gulp-clean'),
     replace = require('gulp-replace'),
-    
-    runSequence = require("run-sequence"),    
+
+    runSequence = require("run-sequence"),
     mocha = require("gulp-mocha"),
-    istanbul = require("gulp-istanbul"), 
-    
+    istanbul = require("gulp-istanbul"),
+
     tslint = require("gulp-tslint"),
     tsc = require("gulp-typescript"),
-    tsify = require('tsify'),
-    
+
     browserSync = require('browser-sync').create(),
     browserify = require("browserify"),
     uglify = require("gulp-uglify");
@@ -30,65 +29,65 @@ var gulp = require("gulp"),
 //******************************************************************************
 
 var TSTypings = {
-    "RootFolder":'typings',
+    "RootFolder": 'typings',
     "Main": 'typings/main.d.ts',
     "PnPRootFolder": 'typings/pnp',
     "PnPFiles": [
-        'typings/pnp/*.d.ts', 
+        'typings/pnp/*.d.ts',
         'typings/pnp/**/*.d.ts'
-    ]  
+    ]
 };
 
 var TSCompiledOutput = {
-    "RootFolder":'output',
-    "JSCodeFiles" : [  
+    "RootFolder": 'output',
+    "JSCodeFiles": [
         'output/*.js',
         'output/**/*.js',
         '!output/*.test.js',
-        '!output/**/*.test.js', 
+        '!output/**/*.test.js',
     ],
-    "JSTestFiles":  [  
+    "JSTestFiles": [
         'output/*.test.js',
-        'output/**/*.test.js', 
+        'output/**/*.test.js',
     ],
 };
 
 var TSWorkspace = {
-    "RootFolder":'src',
-    "PnPFile":"src/pnp.ts",
-    "Files":  [ 
+    "RootFolder": 'src',
+    "PnPFile": "src/pnp.ts",
+    "Files": [
         'src/*.ts',
-        'src/**/*.ts',   
+        'src/**/*.ts',
     ]
 }
 
 var TSDist = {
-    "RootFolder":'dist',
-    "BundleFileName": "pnp.js",  
+    "RootFolder": 'dist',
+    "BundleFileName": "pnp.js",
     "MinifyFileName": "pnp.min.js"
 }
 
 var PnPLocalServer = {
-    "RootFolder":'server-root',
-    "ScriptsRootFolder":'scripts'    
+    "RootFolder": 'server-root',
+    "ScriptsRootFolder": 'scripts'
 }
-  
+
 var tsProject = tsc.createProject("tsconfig.json");
 var pkg = require("./package.json");
 
 var banner = [
-        "/**",
-        " * <%= pkg.name %> v.<%= pkg.version %> - <%= pkg.description %>",
-        " * Copyright (c) 2016 <%= pkg.author %>",
-        " * <%= pkg.license %>",
-        " */", ""
-    ].join("\n");
-    
+    "/**",
+    " * <%= pkg.name %> v.<%= pkg.version %> - <%= pkg.description %>",
+    " * Copyright (c) 2016 <%= pkg.author %>",
+    " * <%= pkg.license %>",
+    " */", ""
+].join("\n");
+
 //******************************************************************************
 //* LINT
 //******************************************************************************
 
-gulp.task("lint", function () {    
+gulp.task("lint", function() {
     return gulp.src(TSWorkspace.Files)
         .pipe(tslint({}))
         .pipe(tslint.report("verbose"));
@@ -98,25 +97,25 @@ gulp.task("lint", function () {
 //* BUILD, placing files in compiled - used when testing
 //******************************************************************************
 
-gulp.task('clean', function () { 
-  var directories = [];
-  directories.push(TSCompiledOutput.RootFolder);
-  directories.push(PnPLocalServer.RootFolder + "/" + PnPLocalServer.ScriptsRootFolder);
-  
-  return gulp.src(directories, {read: false})
-    .pipe(clean());
+gulp.task('clean', function() {
+    var directories = [];
+    directories.push(TSCompiledOutput.RootFolder);
+    directories.push(PnPLocalServer.RootFolder + "/" + PnPLocalServer.ScriptsRootFolder);
+
+    return gulp.src(directories, { read: false })
+        .pipe(clean());
 });
 
-gulp.task("build-typings", function () {    
+gulp.task("build-typings", function() {
     var src = TSWorkspace.Files;
     src.push(TSTypings.Main);
-    
+
     return gulp.src(src)
         .pipe(tsc(tsProject))
         .dts.pipe(gulp.dest(TSTypings.PnPRootFolder));
 });
 
-gulp.task("build", ["lint", "build-typings", "clean"], function () {
+gulp.task("build", ["lint", "build-typings", "clean"], function() {
     var src = TSWorkspace.Files;
     src.push(TSTypings.Main);
 
@@ -131,62 +130,58 @@ gulp.task("build", ["lint", "build-typings", "clean"], function () {
 //* BUILD DIST FOLDER
 //******************************************************************************
 
-function packageBundle()
-{
-    var bify = browserify({debug: true, standalone: 'PnP'});
-    
-    var stream = bify.add(TSWorkspace.PnPFile)
-                    .plugin(tsify)
-                    .bundle();
-    
+function packageBundle() {
+
     console.log(TSDist.RootFolder + "/" + TSDist.BundleFileName);
-    
-    return stream
-        .pipe(src(TSDist.BundleFileName))        
+
+    return browserify('./output/pnp.js', {
+        debug: false,
+        standalone: '$pnp',
+        external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
+    }).bundle()
+        .pipe(src(TSDist.BundleFileName))
         .pipe(buffer())
-        .pipe(header(banner, { pkg : pkg } ))
-        .pipe(gulp.dest(TSDist.RootFolder));        
+        .pipe(header(banner, { pkg: pkg }))
+        .pipe(gulp.dest(TSDist.RootFolder));
 }
 
-function packageBundleUglify()
-{
-    var bify = browserify({debug: true, standalone: 'PnP'});
-    
-    var stream = bify.add(TSWorkspace.PnPFile)
-                    .plugin(tsify)
-                    .bundle();
-    
+function packageBundleUglify() {
+
     console.log(TSDist.RootFolder + "/" + TSDist.MinifyFileName);
     console.log(TSDist.RootFolder + "/" + TSDist.MinifyFileName + ".map");
-        
-    return stream
+
+    return browserify('./output/pnp.js', {
+        debug: false,
+        standalone: '$pnp',
+        external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
+    }).bundle()
         .pipe(src(TSDist.MinifyFileName))
         .pipe(buffer())
         .pipe(srcmaps.init({ loadMaps: true }))
         .pipe(uglify())
-        .pipe(header(banner, { pkg : pkg } ))
+        .pipe(header(banner, { pkg: pkg }))
         .pipe(srcmaps.write('./'))
         .pipe(gulp.dest(TSDist.RootFolder))
 }
 
-gulp.task("package", ["build"], function () {
-           packageBundle();
-           packageBundleUglify();
+gulp.task("package", ["build"], function() {
+    packageBundle();
+    packageBundleUglify();
 });
 
 //******************************************************************************
 //* TEST
 //******************************************************************************
 
-gulp.task("istanbul:hook", ["build"], function () {
+gulp.task("istanbul:hook", ["build"], function() {
     return gulp.src(TSCompiledOutput.JSCodeFiles)
-    // Covering files
+        // Covering files
         .pipe(istanbul())
-    // Force `require` to return covered files
+        // Force `require` to return covered files
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task("test", ["build", "istanbul:hook"], function () {
+gulp.task("test", ["build", "istanbul:hook"], function() {
     return gulp.src(TSCompiledOutput.JSTestFiles)
         .pipe(mocha({ ui: 'bdd', reporter: 'dot' }))
         .pipe(istanbul.writeReports());
@@ -196,8 +191,7 @@ gulp.task("test", ["build", "istanbul:hook"], function () {
 //* BUILD & COPY THE OUTPUT IN THE "SERVER-ROOT/SCRIPTS" FOLDER 
 //******************************************************************************
 
-function setBrowserSync(buildServeTaskName)
-{
+function setBrowserSync(buildServeTaskName) {
     browserSync.init({
         server: PnPLocalServer.RootFolder
     });
@@ -210,11 +204,11 @@ function setBrowserSync(buildServeTaskName)
 
 // DEV SERVE (DEPRECATED ? ANY NEED TO HAVE ALL FILES IN SERVER-ROOT/SCRIPTS ?)
 
-gulp.task("build-serve", ["lint", "build"], function () {
+gulp.task("build-serve", ["lint", "build"], function() {
     var src = TSWorkspace.Files;
     src = src.concat(TSTypings.PnPFiles);
     src.push(TSTypings.Main);
-        
+
     var tsBundleProject = tsc.createProject("tsconfig-serve.json");
 
     return gulp.src(src)
@@ -222,20 +216,20 @@ gulp.task("build-serve", ["lint", "build"], function () {
         .js.pipe(gulp.dest(PnPLocalServer.RootFolder + "/" + PnPLocalServer.ScriptsRootFolder));
 });
 
-gulp.task("serve", ["lint", "build-serve"], function () {    
+gulp.task("serve", ["lint", "build-serve"], function() {
     setBrowserSync("build-serve");
 });
 
 // DIST SERVE (BUNDLE WITH SOURCE MAP)
 
-gulp.task("build-serve-dist", ["lint", "package"], function () {
-    var distFiles = TSDist.RootFolder +  "/*.{js,map}"
-    
+gulp.task("build-serve-dist", ["lint", "package"], function() {
+    var distFiles = TSDist.RootFolder + "/*.{js,map}"
+
     return gulp.src(distFiles)
         .pipe(gulp.dest(PnPLocalServer.RootFolder + "/" + PnPLocalServer.ScriptsRootFolder));
 });
 
-gulp.task("serve-dist", ["lint", "build-serve-dist"], function () {
+gulp.task("serve-dist", ["lint", "build-serve-dist"], function() {
     setBrowserSync("build-serve-dist");
 });
 
@@ -243,7 +237,7 @@ gulp.task("serve-dist", ["lint", "build-serve-dist"], function () {
 //* DEFAULT
 //******************************************************************************
 
-gulp.task("default", function (cb) {
+gulp.task("default", function(cb) {
     runSequence("lint", "build", "test", cb);
 });
 

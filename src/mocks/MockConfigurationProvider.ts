@@ -2,7 +2,6 @@
 
 import {IConfigurationProvider} from "../configuration/configuration";
 import {ITypedHash} from "../collections/collections";
-import {Promise} from "es6-promise";
 
 export default class MockConfigurationProvider implements IConfigurationProvider {
     public shouldThrow: boolean = false;

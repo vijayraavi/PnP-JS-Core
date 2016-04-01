@@ -115,7 +115,9 @@ export function loadStylesheet(path: string, avoidCache: boolean): void {
 export function combinePaths(...paths: string[]): string {
     let parts = [];
     for (let i = 0; i < paths.length; i++) {
-        parts.push(arguments[i].replace(/^[\\|\/]/, "").replace(/[\\|\/]$/, ""));
+        if (typeof paths[i] !== "undefined" && paths[i] !== null) {
+            parts.push(paths[i].replace(/^[\\|\/]/, "").replace(/[\\|\/]$/, ""));
+        }
     }
     return parts.join("/").replace(/\\/, "/");
 }
@@ -165,4 +167,47 @@ export function isFunction(candidateFunction: any): boolean {
  */
 export function stringIsNullOrEmpty(s: string): boolean {
     return typeof s === "undefined" || s === null || s === "";
+}
+
+/**
+ * Provides functionality to extend the given object by doign a shallow copy
+ * 
+ * @param target The object to which properties will be copied
+ * @param source The source object from which properties will be copied
+ * @param noOverwrite If true existing properties on the target are not overwritten from the source
+ * 
+ */
+/* tslint:disable:forin */
+export function extend<T, S>(target: T, source: S, noOverwrite: Boolean = false): T & S {
+
+    let result = <T & S>{};
+    for (let id in target) {
+        result[id] = target[id];
+    }
+
+    // ensure we don't overwrite things we don't want overwritten
+    let check: (o, i) => Boolean = noOverwrite ? (o, i) => !o.hasOwnProperty(i) : (o, i) => true;
+
+    for (let id in source) {
+        if (check(result, id)) {
+            result[id] = source[id];
+        }
+    }
+
+    return result;
+}
+/* tslint:enable */
+
+/**
+ * Applies one or more mixins to the supplied target
+ * 
+ * @param derivedCtor The classto which we will apply the mixins
+ * @param baseCtors One or more mixin classes to apply
+ */
+export function applyMixins(derivedCtor: any, ...baseCtors: any[]) {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+            derivedCtor.prototype[name] = baseCtor.prototype[name];
+        });
+    });
 }

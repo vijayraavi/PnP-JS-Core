@@ -19,7 +19,7 @@ export enum LogLevel {
  * Interface that defines a log entry
  * 
  */
-export interface ILogEntry {
+export interface LogEntry {
     /**
      * The main message to be logged
      */
@@ -38,13 +38,13 @@ export interface ILogEntry {
  * Interface that defines a log listner
  * 
  */
-export interface ILogListener {
+export interface LogListener {
     /**
      * Any associated data that a given logging listener may choose to log or ignore
      * 
      * @param entry The information to be logged 
      */
-    log(entry: ILogEntry): void;
+    log(entry: LogEntry): void;
 }
 
 /**
@@ -60,13 +60,13 @@ export class Logger {
      * @param activeLogLevel the level used to filter messages (Default: LogLevel.Warning)
      * @param subscribers [Optional] if provided will initialize the array of subscribed listeners
      */
-    constructor(public activeLogLevel: LogLevel = LogLevel.Warning, private subscribers: ILogListener[] = []) { }
+    constructor(public activeLogLevel: LogLevel = LogLevel.Warning, private subscribers: LogListener[] = []) { }
 
     /**
      * Adds an ILogListener instance to the set of subscribed listeners
      * 
      */
-    public subscribe(listener: ILogListener): void {
+    public subscribe(listener: LogListener): void {
 
         Args.objectIsNull(listener, "listener");
 
@@ -95,7 +95,7 @@ export class Logger {
      * 
      * @param entry The message to log
      */
-    public log(entry: ILogEntry) {
+    public log(entry: LogEntry) {
 
         Args.objectIsNull(entry, "entry");
 
@@ -128,14 +128,14 @@ export class Logger {
  * Implementation of ILogListener which logs to the browser console
  * 
  */
-export class ConsoleListener implements ILogListener {
+export class ConsoleListener implements LogListener {
 
     /**
      * Any associated data that a given logging listener may choose to log or ignore
      * 
      * @param entry The information to be logged 
      */
-    public log(entry: ILogEntry): void {
+    public log(entry: LogEntry): void {
 
         let msg = this.format(entry);
 
@@ -158,7 +158,7 @@ export class ConsoleListener implements ILogListener {
      * 
      * @param entry The information to format into a string
      */
-    private format(entry: ILogEntry): string {
+    private format(entry: LogEntry): string {
         return "Message: " + entry.message + ". Data: " + JSON.stringify(entry.data);
     }
 }
@@ -168,7 +168,7 @@ export class ConsoleListener implements ILogListener {
  * Implementation of ILogListener which logs to Azure Insights
  * 
  */
-export class AzureInsightsListener implements ILogListener {
+export class AzureInsightsListener implements LogListener {
 
     /** 
      * Creats a new instance of the AzureInsightsListener class
@@ -206,7 +206,7 @@ export class AzureInsightsListener implements ILogListener {
      * 
      * @param entry The information to be logged 
      */
-    public log(entry: ILogEntry): void {
+    public log(entry: LogEntry): void {
         let ai: any = window["appInsights"];
         let msg = this.format(entry);
         if (entry.level === LogLevel.Error) {
@@ -221,7 +221,7 @@ export class AzureInsightsListener implements ILogListener {
      * 
      * @param entry The information to format into a string
      */
-    private format(entry: ILogEntry): string {
+    private format(entry: LogEntry): string {
         return "Message: " + entry.message + ". Data: " + JSON.stringify(entry.data);
     }
 }
@@ -231,7 +231,7 @@ export class AzureInsightsListener implements ILogListener {
  * Implementation of ILogListener which logs to the supplied function
  * 
  */
-export class FunctionListener implements ILogListener {
+export class FunctionListener implements LogListener {
 
     /** 
      * Creates a new instance of the FunctionListener class
@@ -239,14 +239,14 @@ export class FunctionListener implements ILogListener {
      * @constructor
      * @param  method The method to which any logging data will be passed
      */
-    constructor(private method: (entry: ILogEntry) => void) { }
+    constructor(private method: (entry: LogEntry) => void) { }
 
     /**
      * Any associated data that a given logging listener may choose to log or ignore
      * 
      * @param entry The information to be logged 
      */
-    public log(entry: ILogEntry): void {
+    public log(entry: LogEntry): void {
         this.method(entry);
     }
 }

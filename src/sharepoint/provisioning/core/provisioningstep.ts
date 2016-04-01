@@ -1,5 +1,3 @@
-// import { Promise } from "es6-promise";
-
 export class ProvisioningStep {
     private name: string;
     private index: number;
