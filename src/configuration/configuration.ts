@@ -1,7 +1,6 @@
 "use strict";
 
 import * as Collections from "../collections/collections";
-import { Promise } from "es6-promise";
 import * as providers from "./providers/providers";
 
 /**

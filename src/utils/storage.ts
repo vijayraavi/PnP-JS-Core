@@ -6,7 +6,7 @@ import * as Util from "./Util";
  * A wrapper class to provide a consistent interface to browser based storage
  * 
  */
-export class PnPClientStorageWrapper implements IPnPClientStore {
+export class PnPClientStorageWrapper implements PnPClientStore {
 
     /**
      * True if the wrapped storage is available; otherwise, false
@@ -134,7 +134,7 @@ export class PnPClientStorageWrapper implements IPnPClientStore {
 /**
  * Interface which defines the operations provided by a client storage object
  */
-export interface IPnPClientStore {
+export interface PnPClientStore {
     /**
      * True if the wrapped storage is available; otherwise, false
      */
@@ -191,10 +191,10 @@ export class PnPClientStorage {
     /**
      * Provides access to the local storage of the browser
      */
-    public local: IPnPClientStore;
+    public local: PnPClientStore;
 
     /**
      * Provides access to the session storage of the browser
      */
-    public session: IPnPClientStore;
+    public session: PnPClientStore;
 }

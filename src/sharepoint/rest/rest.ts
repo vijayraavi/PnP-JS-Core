@@ -1,10 +1,10 @@
 "use strict";
 
-import { Web } from "./Web/Web";
+import { Web } from "./web";
 
 /**
  * Root of the SharePoint REST module
  */
 export class Rest {
-    public web = new Web(["/_api"]);
+    public web = new Web("_api");
 }

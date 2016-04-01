@@ -1,7 +1,6 @@
 import {IConfigurationProvider} from "../configuration";
 import {ITypedHash} from "../../collections/collections";
 import * as storage from "../../utils/storage";
-import {Promise} from "es6-promise";
 
 /** 
  * A caching provider which can wrap other non-caching providers
@@ -9,7 +8,7 @@ import {Promise} from "es6-promise";
  */
 export default class CachingConfigurationProvider implements IConfigurationProvider {
     private wrappedProvider: IConfigurationProvider;
-    private store: storage.IPnPClientStore;
+    private store: storage.PnPClientStore;
     private cacheKey: string;
 
     /**
@@ -19,7 +18,7 @@ export default class CachingConfigurationProvider implements IConfigurationProvi
      * @param {string} cacheKey Key that will be used to store cached items to the cache
      * @param {IPnPClientStore} cacheStore OPTIONAL storage, which will be used to store cached settings.
      */
-    constructor(wrappedProvider: IConfigurationProvider, cacheKey: string, cacheStore?: storage.IPnPClientStore) {
+    constructor(wrappedProvider: IConfigurationProvider, cacheKey: string, cacheStore?: storage.PnPClientStore) {
         this.wrappedProvider = wrappedProvider;
         this.store = (cacheStore) ? cacheStore : this.selectPnPCache();
         this.cacheKey = `_configcache_${ cacheKey }`;
@@ -61,7 +60,7 @@ export default class CachingConfigurationProvider implements IConfigurationProvi
         return providerPromise;
     }
 
-    private selectPnPCache(): storage.IPnPClientStore {
+    private selectPnPCache(): storage.PnPClientStore {
         let pnpCache = new storage.PnPClientStorage();
         if ((pnpCache.local) && (pnpCache.local.enabled)) {
             return pnpCache.local;

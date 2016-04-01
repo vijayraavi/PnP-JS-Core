@@ -2,7 +2,7 @@
 
 /// <reference path="..\schema\schema.d.ts" />
 /// <reference path="iwaitmessageoptions.d.ts" />
-/// <reference path="options.d.ts" />
+/// <reference path="ioptions.d.ts" />
 /// <reference path="../../../utils/util" />
 
 // import { Promise } from "es6-promise";
