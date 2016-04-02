@@ -27,7 +27,7 @@ enabled | Is storage available?
 
 Name | Description
 ---- | -----------
-put | Usage: ```pnp.storage.local.put("Hello", "Hi", new Date())``` - Stores ```Hello : "{"expiration":"2016-04-02T08:36:28.000Z","value":"Hi"}"``` in localStorage. Date param is optional.
-get | Usage: ```pnp.storage.local.get("Hello")```
-delete |  Usage: ```pnp.storage.local.delete("Hello")```
-getOrPut | Usage: ```pnp.storage.local.getOrPut("HelloDoesNotExistWhenGetOrPutWasCalled", function() { console.log("I was found"); })``` - Will always call the passed in function
+put | Usage: ```.storage.local.put("Hello", "Hi", new Date())``` - Stores ```Hello : "{"expiration":"2016-04-02T08:36:28.000Z","value":"Hi"}"``` in localStorage. Date param is optional.
+get | Usage: ```.storage.local.get("Hello")```
+delete |  Usage: ```.storage.local.delete("Hello")```
+getOrPut | Usage: ```.storage.local.getOrPut("HelloDoesNotExistWhenGetOrPutWasCalled", function() { console.log("I was found"); })``` - Will always call the passed in function
