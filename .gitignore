@@ -34,3 +34,6 @@ server-root/scripts
 
 # Optional REPL history
 .node_repl_history
+
+# spsave settings
+settings.js
