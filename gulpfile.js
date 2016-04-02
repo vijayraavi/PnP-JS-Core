@@ -22,7 +22,9 @@ var gulp = require("gulp"),
 
     browserSync = require('browser-sync').create(),
     browserify = require("browserify"),
-    uglify = require("gulp-uglify");
+    uglify = require("gulp-uglify"),
+    settings = require("./settings.js"),
+    spsave = require("gulp-spsave");
 
 //******************************************************************************
 //* GLOBAL VARIABLES
@@ -188,7 +190,7 @@ gulp.task("test", ["build", "istanbul:hook"], function() {
 });
 
 //******************************************************************************
-//* BUILD & COPY THE OUTPUT IN THE "SERVER-ROOT/SCRIPTS" FOLDER 
+//* BUILD & COPY THE OUTPUT IN THE "SERVER-ROOT/SCRIPTS" FOLDER
 //******************************************************************************
 
 function setBrowserSync(buildServeTaskName) {
@@ -241,17 +243,43 @@ gulp.task("default", function(cb) {
     runSequence("lint", "build", "test", cb);
 });
 
+//******************************************************************************
+//* DEPLOY TO O365
+//* Requires settings.js - see settings.example.js
+//******************************************************************************
+
+// use gulp-merge ?
+gulp.task("copyRequireJsToSharePoint", function() {
+    return gulp.src("./bower_components/requirejs/require.js")
+        .pipe(spsave({
+            username: settings.username,
+            password: settings.password,
+            siteUrl: settings.siteUrl,
+            folder: "Style%20Library/pnp"
+        }));
+});
+
+gulp.task("copyJsToSharePoint", ["lint", "build", "copyRequireJsToSharePoint"], function(){
+    return gulp.src("./dist/*.js")
+        .pipe(spsave({
+            username: settings.username,
+            password: settings.password,
+            siteUrl: settings.siteUrl,
+            folder: "Style%20Library/pnp"
+        }));
+});
+
 
 //******************************************************************************
 //* NOT USED
 //******************************************************************************
 
 // gulp.task("package", function () {
-// 
+//
 //     var outputFolder = "dist";
-// 
+//
 //     var tsBundleProject = tsc.createProject("tsconfig-package.json");
-// 
+//
 //     return gulp.src([
 //         "src/**/**.ts",
 //         "typings/main.d.ts/",
@@ -263,9 +291,9 @@ gulp.task("default", function(cb) {
 // });
 
 // gulp.task("build-test", function () {
-// 
+//
 //     var tsTestProject = tsc.createProject("tsconfig.json");
-// 
+//
 //     return gulp.src([
 //         "src/tests/**/*.ts",
 //         "typings/main.d.ts/"

@@ -37,3 +37,5 @@ server-root/scripts
 
 # spsave settings
 settings.js
+
+bower_components/
