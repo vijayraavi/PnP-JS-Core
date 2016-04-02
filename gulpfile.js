@@ -259,7 +259,7 @@ gulp.task("copyRequireJsToSharePoint", function() {
         }));
 });
 
-gulp.task("copyJsToSharePoint", ["lint", "build", "copyRequireJsToSharePoint"], function(){
+gulp.task("copyJsToSharePoint", ["lint", "package", "copyRequireJsToSharePoint"], function(){
     return gulp.src("./dist/*.js")
         .pipe(spsave({
             username: settings.username,
