@@ -26,4 +26,4 @@ getRandomString  | Gets a random string of the specified length
 getGUID  | Gets a random GUID
 isFunction  | Determines if the supplied argument is a function
 stringIsNullOrEmpty  | Determines if the supplied argument is null or empty
-extent | shallow copy properties from one object to the other. Usage: ```var x = { originalProp: 1 }; var y = pnp.util.extend(x, { number: 1, func: function() { console.log("I'm added!"); } });```. x is unchanged and y is a new object with the props a, number and func
+extend | shallow copy properties from one object to the other. Usage: ```var x = { originalProp: 1 }; var y = pnp.util.extend(x, { number: 1, func: function() { console.log("I'm added!"); } });```. x is unchanged and y is a new object with the props a, number and func
