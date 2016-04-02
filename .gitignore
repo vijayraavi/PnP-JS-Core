@@ -39,3 +39,5 @@ server-root/scripts
 settings.js
 
 bower_components/
+
+dist/
