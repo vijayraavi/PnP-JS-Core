@@ -1,0 +1,6 @@
+coverage/
+.vscode/
+server-root/
+typings/
+output/
+bower.json
