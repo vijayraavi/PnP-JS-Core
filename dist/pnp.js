@@ -1,5 +1,5 @@
 /**
- * office365devpnp-core-javascript v.1.0.0 - A reusable library
+ * ms-o365devpnp v.0.0.1 - A reusable library
  * Copyright (c) 2016 [object Object]
  * MIT
  */
@@ -90,7 +90,7 @@
     exports.Core = Core;
 });
 
-},{"../../../sharepoint/util":42,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
+},{"../../../sharepoint/util":43,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -212,7 +212,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectComposedLook = ObjectComposedLook;
 });
 
-},{"../../../util":31,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
+},{"../../../util":32,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -609,7 +609,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     ;
 });
 
-},{"../../../../sharepoint/util":42,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
+},{"../../../../sharepoint/util":43,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -1260,7 +1260,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectNavigation = ObjectNavigation;
 });
 
-},{"../../../util":31,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
+},{"../../../util":32,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1338,7 +1338,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectPropertyBagEntries = ObjectPropertyBagEntries;
 });
 
-},{"../../../../sharepoint/util":42,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
+},{"../../../../sharepoint/util":43,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1589,7 +1589,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Queryable = Queryable;
 });
 
-},{"../../collections/collections":33,"../../utils/util":48}],17:[function(require,module,exports){
+},{"../../collections/collections":34,"../../utils/util":49}],17:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -1612,7 +1612,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Rest = Rest;
 });
 
-},{"./web":29}],18:[function(require,module,exports){
+},{"./web":30}],18:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1676,7 +1676,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(ContentType, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./mixins":21}],19:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],19:[function(require,module,exports){
+arguments[4][18][0].apply(exports,arguments)
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22,"dup":18}],20:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1740,7 +1742,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Item, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./mixins":21}],20:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],21:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1814,7 +1816,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(List, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":48,"./contenttypes":18,"./items":19,"./mixins":21,"./queryable":23,"./views":28}],21:[function(require,module,exports){
+},{"../../utils/util":49,"./contenttypes":19,"./items":20,"./mixins":22,"./queryable":24,"./views":29}],22:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1825,12 +1827,12 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./queryable", "../../net/HttpClient"], factory);
+        define(["require", "exports", "./queryable", "../../net/httpClient"], factory);
     }
 })(function (require, exports) {
     "use strict";
     var queryable_1 = require("./queryable");
-    var HttpClient_1 = require("../../net/HttpClient");
+    var httpClient_1 = require("../../net/httpClient");
     var Selectable = (function (_super) {
         __extends(Selectable, _super);
         function Selectable() {
@@ -1865,7 +1867,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             _super.apply(this, arguments);
         }
         Gettable.prototype.get = function () {
-            var client = new HttpClient_1.HttpClient();
+            var client = new httpClient_1.HttpClient();
             return client.get(this.toUrlAndQuery()).then(function (response) {
                 if (response.status !== 200) {
                     throw "Error making GET request: " + response.statusText;
@@ -1880,7 +1882,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Gettable = Gettable;
 });
 
-},{"../../net/HttpClient":40,"./queryable":23}],22:[function(require,module,exports){
+},{"../../net/httpClient":41,"./queryable":24}],23:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1910,9 +1912,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Navigation = Navigation;
 });
 
-},{"./queryable":23,"./quickLaunch":24,"./topNavigationBar":27}],23:[function(require,module,exports){
+},{"./queryable":24,"./quickLaunch":25,"./topNavigationBar":28}],24:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"../../collections/collections":33,"../../utils/util":48,"dup":16}],24:[function(require,module,exports){
+},{"../../collections/collections":34,"../../utils/util":49,"dup":16}],25:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1943,7 +1945,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(QuickLaunch, Mixins.Gettable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./mixins":21}],25:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],26:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1984,7 +1986,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(RoleAssignments, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./mixins":21}],26:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],27:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2025,7 +2027,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(SiteUsers, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./mixins":21}],27:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],28:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2056,7 +2058,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(TopNavigationBar, Mixins.Gettable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./mixins":21}],28:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],29:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2120,7 +2122,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(View, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./mixins":21}],29:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],30:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2131,7 +2133,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./lists", "./roleAssignments", "./navigation", "./siteUsers"], factory);
+        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./lists", "./roleAssignments", "./navigation", "./siteUsers", "./contentTypes"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -2142,6 +2144,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var roleAssignments_1 = require("./roleAssignments");
     var navigation_1 = require("./navigation");
     var siteUsers_1 = require("./siteUsers");
+    var contentTypes_1 = require("./contentTypes");
     var Web = (function (_super) {
         __extends(Web, _super);
         function Web(url) {
@@ -2150,6 +2153,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.roleAssignments = new roleAssignments_1.RoleAssignments(this);
             this.navigation = new navigation_1.Navigation(this);
             this.siteUsers = new siteUsers_1.SiteUsers(this);
+            this.contentTypes = new contentTypes_1.ContentTypes(this);
         }
         // gettable stub for mixin
         Web.prototype.get = function () { return; };
@@ -2167,7 +2171,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Web, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":48,"./Queryable":16,"./lists":20,"./mixins":21,"./navigation":22,"./roleAssignments":25,"./siteUsers":26}],30:[function(require,module,exports){
+},{"../../utils/util":49,"./Queryable":16,"./contentTypes":18,"./lists":21,"./mixins":22,"./navigation":23,"./roleAssignments":26,"./siteUsers":27}],31:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2195,7 +2199,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.SharePoint = SharePoint;
 });
 
-},{"./Provisioning/Provisioning":13,"./Rest/Rest":17}],31:[function(require,module,exports){
+},{"./Provisioning/Provisioning":13,"./Rest/Rest":17}],32:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2253,7 +2257,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.encodePropertyKey = encodePropertyKey;
 });
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2278,7 +2282,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.get = get;
 });
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2385,7 +2389,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Dictionary = Dictionary;
 });
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2483,7 +2487,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Settings = Settings;
 });
 
-},{"../collections/collections":33,"./providers/providers":36}],35:[function(require,module,exports){
+},{"../collections/collections":34,"./providers/providers":37}],36:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2560,7 +2564,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.default = CachingConfigurationProvider;
 });
 
-},{"../../utils/storage":47}],36:[function(require,module,exports){
+},{"../../utils/storage":48}],37:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2576,7 +2580,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.SPListConfigurationProvider = spListConfigurationProvider_1.default;
 });
 
-},{"./cachingConfigurationProvider":35,"./spListConfigurationProvider":37}],37:[function(require,module,exports){
+},{"./cachingConfigurationProvider":36,"./spListConfigurationProvider":38}],38:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2654,7 +2658,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.default = SPListConfigurationProvider;
 });
 
-},{"../../Utils/Ajax":32,"./cachingConfigurationProvider":35}],38:[function(require,module,exports){
+},{"../../Utils/Ajax":33,"./cachingConfigurationProvider":36}],39:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2717,7 +2721,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.DigestCache = DigestCache;
 });
 
-},{"../collections/collections":33,"../utils/util":48}],39:[function(require,module,exports){
+},{"../collections/collections":34,"../utils/util":49}],40:[function(require,module,exports){
+(function (global){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2731,31 +2736,32 @@ var __extends = (this && this.__extends) || function (d, b) {
         function FetchClient() {
         }
         FetchClient.prototype.fetch = function (url, options) {
-            return window.fetch(url, options);
+            return global.fetch(url, options);
         };
         return FetchClient;
     }());
     exports.FetchClient = FetchClient;
 });
 
-},{}],40:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],41:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./FetchClient", "./DigestCache", "../utils/util"], factory);
+        define(["require", "exports", "./fetchClient", "./digestCache", "../utils/util"], factory);
     }
 })(function (require, exports) {
     "use strict";
-    var FetchClient_1 = require("./FetchClient");
-    var DigestCache_1 = require("./DigestCache");
+    var fetchClient_1 = require("./fetchClient");
+    var digestCache_1 = require("./digestCache");
     var Util = require("../utils/util");
     var HttpClient = (function () {
         function HttpClient(_impl) {
-            if (_impl === void 0) { _impl = new FetchClient_1.FetchClient(); }
+            if (_impl === void 0) { _impl = new fetchClient_1.FetchClient(); }
             this._impl = _impl;
-            this._digestCache = new DigestCache_1.DigestCache(this);
+            this._digestCache = new digestCache_1.DigestCache(this);
         }
         HttpClient.prototype.fetch = function (url, options) {
             if (options === void 0) { options = {}; }
@@ -2810,7 +2816,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.HttpClient = HttpClient;
 });
 
-},{"../utils/util":48,"./DigestCache":38,"./FetchClient":39}],41:[function(require,module,exports){
+},{"../utils/util":49,"./digestCache":39,"./fetchClient":40}],42:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2856,9 +2862,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     return PnP;
 });
 
-},{"./SharePoint/SharePoint":30,"./configuration/configuration":34,"./utils/Storage":43,"./utils/Util":44,"./utils/logging":46}],42:[function(require,module,exports){
-arguments[4][31][0].apply(exports,arguments)
-},{"dup":31}],43:[function(require,module,exports){
+},{"./SharePoint/SharePoint":31,"./configuration/configuration":35,"./utils/Storage":44,"./utils/Util":45,"./utils/logging":47}],43:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"dup":32}],44:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2995,7 +3001,7 @@ arguments[4][31][0].apply(exports,arguments)
     exports.PnPClientStorage = PnPClientStorage;
 });
 
-},{"./Util":44}],44:[function(require,module,exports){
+},{"./Util":45}],45:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3246,7 +3252,7 @@ arguments[4][31][0].apply(exports,arguments)
     exports.applyMixins = applyMixins;
 });
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3283,7 +3289,7 @@ arguments[4][31][0].apply(exports,arguments)
     exports.objectIsNull = objectIsNull;
 });
 
-},{"./util":48}],46:[function(require,module,exports){
+},{"./util":49}],47:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3507,9 +3513,9 @@ arguments[4][31][0].apply(exports,arguments)
     exports.FunctionListener = FunctionListener;
 });
 
-},{"./args":45}],47:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments)
-},{"./Util":44,"dup":43}],48:[function(require,module,exports){
+},{"./args":46}],48:[function(require,module,exports){
 arguments[4][44][0].apply(exports,arguments)
-},{"dup":44}]},{},[41])(41)
+},{"./Util":45,"dup":44}],49:[function(require,module,exports){
+arguments[4][45][0].apply(exports,arguments)
+},{"dup":45}]},{},[42])(42)
 });
