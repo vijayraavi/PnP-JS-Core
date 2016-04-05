@@ -2,7 +2,8 @@
 
 /// <reference path="..\schema\ifile.d.ts" />
 // import { Promise } from "es6-promise";
-import { replaceUrlTokens } from "../../../Util";
+/// <reference path="../../../utils/util" />
+import { replaceUrlTokens } from "../../../../sharepoint/util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
 
 export class ObjectFiles extends ObjectHandlerBase {

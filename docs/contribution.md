@@ -12,4 +12,4 @@ This is a work in progress and very much dependent on community input. To have y
 
 ### Looking for Issues? ###
 
-Please check the [issues list](https://github.com/OfficeDev/PnP/issues) and look for the label "JS-SIG" which will be used in conjunction with the standard labels.
+Please check the [issues list](https://github.com/OfficeDev/PnP-JS-Core/issues) and look for the label "JS-SIG" which will be used in conjunction with the standard labels.

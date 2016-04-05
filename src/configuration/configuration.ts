@@ -1,7 +1,6 @@
 "use strict";
 
 import * as Collections from "../collections/collections";
-import { Promise } from "es6-promise";
 import * as providers from "./providers/providers";
 
 /**
@@ -44,8 +43,8 @@ export class Settings {
     /**
      * Adds a new single setting, or overwrites a previous setting with the same key
      * 
-     * @param key The key used to store this setting
-     * @param value The setting value to store
+     * @param {string} key The key used to store this setting
+     * @param {string} value The setting value to store
      */
     public add(key: string, value: string) {
         this._settings.add(key, value);
@@ -54,8 +53,8 @@ export class Settings {
     /**
      * Adds a JSON value to the collection as a string, you must use getJSON to rehydrate the object when read
      * 
-     * @param key The key used to store this setting
-     * @param value The setting value to store
+     * @param {string} key The key used to store this setting
+     * @param {any} value The setting value to store
      */
     public addJSON(key: string, value: any) {
         this._settings.add(key, JSON.stringify(value));
@@ -64,7 +63,7 @@ export class Settings {
     /**
      * Applies the supplied hash to the setting collection overwriting any existing value, or created new values
      * 
-     * @param hash The set of value to apply
+     * @param {Collections.ITypedHash<any>} hash The set of values to add
      */
     public apply(hash: Collections.ITypedHash<any>): void {
         this._settings.merge(hash);
@@ -73,7 +72,7 @@ export class Settings {
     /**
      * Loads configuration settings into the collection from the supplied provider and returns a Promise
      * 
-     * @param provider The provider from which we will load the settings
+     * @param {IConfigurationProvider} provider The provider from which we will load the settings
      */
     public load(provider: IConfigurationProvider): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -89,7 +88,8 @@ export class Settings {
     /** 
      * Gets a value from the configuration
      * 
-     * @param key The key whose value we want to return. Returns null if the key does not exist
+     * @param {string} key The key whose value we want to return. Returns null if the key does not exist
+     * @return {string} string value from the configuration
      */
     public get(key: string): string {
         return this._settings.get(key);
@@ -98,7 +98,8 @@ export class Settings {
     /**
      * Gets a JSON value, rehydrating the stored string to the original object
      * 
-     * @param key The key whose value we want to return. Returns null if the key does not exist
+     * @param {string} key The key whose value we want to return. Returns null if the key does not exist
+     * @return {any} object from the configuration
      */
     public getJSON(key: string): any {
         let o = this.get(key);
