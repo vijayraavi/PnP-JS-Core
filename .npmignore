@@ -4,3 +4,4 @@ server-root/
 typings/
 output/
 bower.json
+settings.js
