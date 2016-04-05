@@ -374,7 +374,7 @@ declare module "sharepoint/rest/queryable" {
         toUrlAndQuery(): string;
     }
 }
-declare module "net/fetchClient" {
+declare module "net/FetchClient" {
     import { HttpClientImpl } from "net/httpClient";
     export class FetchClient implements HttpClientImpl {
         fetch(url: string, options: any): Promise<Response>;
@@ -396,7 +396,7 @@ declare module "net/digestCache" {
     }
 }
 declare module "net/httpClient" {
-    import { FetchClient } from "net/fetchClient";
+    import { FetchClient } from "net/FetchClient";
     export class HttpClient {
         private _impl;
         constructor(_impl?: FetchClient);
