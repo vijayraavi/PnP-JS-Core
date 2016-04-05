@@ -12,7 +12,7 @@ Name | Description
 ---- | -----------
 [util](utils/util.md) | Object, contains utility methods
 [sharepoint](sharepoint/sharepoint.md)  | Object, contains methods for working with sharepoint
-storage  | Object, contains methods for working with browser storage
+[storage](utils/storage.md) | Object, contains methods for working with browser storage
 [configuration](configuration/configuration.md)  | Object, contains methods for accessing configuration data
 logging  | Object, contains methods for global application logging
 
