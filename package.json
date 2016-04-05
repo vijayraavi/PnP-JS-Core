@@ -9,7 +9,6 @@
     "whatwg-fetch": "^0.11.0"
   },
   "devDependencies": {
-    "node-fetch": "^1.4.1",
     "browser-sync": "^2.11.1",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
@@ -22,10 +21,12 @@
     "gulp-print": "^2.0.1",
     "gulp-replace": "~0.5.4",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-spsave": "^1.0.6",
     "gulp-tslint": "^4.3.2",
     "gulp-typescript": "^2.11.0",
     "gulp-uglify": "^1.5.3",
     "mocha": "*",
+    "node-fetch": "^1.4.1",
     "run-sequence": "^1.1.5",
     "tslint": "^3.4.0",
     "typescript": "^1.7.5",
