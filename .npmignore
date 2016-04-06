@@ -2,6 +2,8 @@ coverage/
 .vscode/
 server-root/
 typings/
-output/
+src/
 bower.json
 settings.js
+*.json
+*.js
