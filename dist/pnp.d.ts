@@ -374,7 +374,7 @@ declare module "sharepoint/rest/queryable" {
         toUrlAndQuery(): string;
     }
 }
-declare module "net/fetchClient" {
+declare module "net/FetchClient" {
     import { HttpClientImpl } from "net/httpClient";
     export class FetchClient implements HttpClientImpl {
         fetch(url: string, options: any): Promise<Response>;
@@ -396,7 +396,7 @@ declare module "net/digestCache" {
     }
 }
 declare module "net/httpClient" {
-    import { FetchClient } from "net/fetchClient";
+    import { FetchClient } from "net/FetchClient";
     export class HttpClient {
         private _impl;
         constructor(_impl?: FetchClient);
@@ -570,6 +570,7 @@ declare module "sharepoint/rest/rest" {
 declare module "sharepoint/sharepoint" {
     import { Provisioning } from "sharepoint/provisioning/provisioning";
     import { Rest } from "sharepoint/rest/rest";
+    import * as Util from "sharepoint/util";
     export class SharePoint {
         /**
          * The REST base class for SharePoint
@@ -579,6 +580,7 @@ declare module "sharepoint/sharepoint" {
         * The Provisioning base class for SharePoint
         */
         provisioning: Provisioning;
+        util: typeof Util;
     }
 }
 declare module "utils/storage" {
@@ -1062,10 +1064,6 @@ declare module "pnp" {
     }
     export = PnP;
 }
-declare module "pnp.test" {
-}
-declare module "collections/collections.test" {
-}
 declare module "mocks/MockConfigurationProvider" {
     import { IConfigurationProvider } from "configuration/configuration";
     import { ITypedHash } from "collections/collections";
@@ -1076,8 +1074,6 @@ declare module "mocks/MockConfigurationProvider" {
         constructor(mockValues?: ITypedHash<string>);
         getConfiguration(): Promise<ITypedHash<string>>;
     }
-}
-declare module "configuration/configuration.test" {
 }
 declare module "mocks/MockLocation" {
     class MockLocation implements Location {
@@ -1111,36 +1107,4 @@ declare module "mocks/MockStorage" {
         [index: number]: string;
     }
     export = MockStorage;
-}
-declare module "utils/args.test" {
-}
-declare module "utils/logging.test" {
-}
-declare module "utils/storage.test" {
-}
-declare module "utils/util.test" {
-}
-declare module "configuration/providers/cachingConfigurationProvider.test" {
-}
-declare module "configuration/providers/spListConfigurationProvider.test" {
-}
-declare module "sharepoint/rest/tests/contenttypes.test" {
-}
-declare module "sharepoint/rest/tests/items.test" {
-}
-declare module "sharepoint/rest/tests/lists.test" {
-}
-declare module "sharepoint/rest/tests/navigation.test" {
-}
-declare module "sharepoint/rest/tests/quicklaunch.test" {
-}
-declare module "sharepoint/rest/tests/roleassignments.test" {
-}
-declare module "sharepoint/rest/tests/siteusers.test" {
-}
-declare module "sharepoint/rest/tests/topnavigationbar.test" {
-}
-declare module "sharepoint/rest/tests/views.test" {
-}
-declare module "sharepoint/rest/tests/web.test" {
 }

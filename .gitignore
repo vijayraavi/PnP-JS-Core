@@ -26,7 +26,7 @@ build/Release
 # Dependency directory
 node_modules
 typings
-output
+lib
 server-root/scripts
 
 # Optional npm cache directory
@@ -34,3 +34,10 @@ server-root/scripts
 
 # Optional REPL history
 .node_repl_history
+
+# spsave settings
+settings.js
+
+bower_components/
+
+dist/

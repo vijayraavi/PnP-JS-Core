@@ -22,7 +22,9 @@ var gulp = require("gulp"),
 
     browserSync = require('browser-sync').create(),
     browserify = require("browserify"),
-    uglify = require("gulp-uglify");
+    uglify = require("gulp-uglify"),
+    settings = require("./settings.js"),
+    spsave = require("gulp-spsave");
 
 //******************************************************************************
 //* GLOBAL VARIABLES
@@ -39,16 +41,16 @@ var TSTypings = {
 };
 
 var TSCompiledOutput = {
-    "RootFolder": 'output',
+    "RootFolder": 'lib',
     "JSCodeFiles": [
-        'output/*.js',
-        'output/**/*.js',
-        '!output/*.test.js',
-        '!output/**/*.test.js',
+        'lib/*.js',
+        'lib/**/*.js',
+        '!lib/*.test.js',
+        '!lib/**/*.test.js',
     ],
     "JSTestFiles": [
-        'output/*.test.js',
-        'output/**/*.test.js',
+        'lib/*.test.js',
+        'lib/**/*.test.js',
     ],
 };
 
@@ -110,14 +112,16 @@ gulp.task('clean', function() {
 gulp.task("build-typings", function() {
     var src = TSWorkspace.Files;
     src.push(TSTypings.Main);
+    src.push("!src/*.test.ts");
+    src.push("!src/**/*.test.ts");
     
     // create a project specific to our typings build and specify the outFile. This will result
     // in a single pnp.d.ts file being creating and piped to the typings folder
-    var typingsProject = tsc.createProject('tsconfig.json', { outFile: "pnp.js" });
+    var typingsProject = tsc.createProject('tsconfig.json', { declaration: true });
 
     return gulp.src(src)
         .pipe(tsc(typingsProject))
-        .dts.pipe(gulp.dest(TSTypings.PnPRootFolder));
+        .dts.pipe(gulp.dest(TSCompiledOutput.RootFolder));
 });
 
 gulp.task("build", ["lint", "build-typings", "clean"], function() {
@@ -139,19 +143,28 @@ function packageDefinitions() {
 
     console.log(TSDist.RootFolder + "/" + TSDist.DefinitionFileName);
 
-    return gulp.src(TSTypings.PnPRootFolder + "/**/*.d.ts")
-        .pipe(gulp.dest(TSDist.RootFolder));
+    var src = TSWorkspace.Files;
+    src.push(TSTypings.Main);
+    src.push("!src/*.test.ts");
+    
+    // create a project specific to our typings build and specify the outFile. This will result
+    // in a single pnp.d.ts file being creating and piped to the typings folder
+    var typingsProject = tsc.createProject('tsconfig.json', { declaration: true, outFile: "pnp.js" });
+
+    return gulp.src(src)
+        .pipe(tsc(typingsProject))
+        .dts.pipe(gulp.dest(TSDist.RootFolder));
 }
 
 function packageBundle() {
 
     console.log(TSDist.RootFolder + "/" + TSDist.BundleFileName);
 
-    return browserify('./output/pnp.js', {
+    return browserify('./lib/pnp.js', {
         debug: false,
         standalone: '$pnp',
         external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
-    }).bundle()
+    }).ignore('*.d.ts').bundle()
         .pipe(src(TSDist.BundleFileName))
         .pipe(buffer())
         .pipe(header(banner, { pkg: pkg }))
@@ -163,11 +176,11 @@ function packageBundleUglify() {
     console.log(TSDist.RootFolder + "/" + TSDist.MinifyFileName);
     console.log(TSDist.RootFolder + "/" + TSDist.MinifyFileName + ".map");
 
-    return browserify('./output/pnp.js', {
+    return browserify('./lib/pnp.js', {
         debug: false,
         standalone: '$pnp',
         external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
-    }).bundle()
+    }).ignore('*.d.ts').bundle()
         .pipe(src(TSDist.MinifyFileName))
         .pipe(buffer())
         .pipe(srcmaps.init({ loadMaps: true }))
@@ -202,7 +215,7 @@ gulp.task("test", ["build", "istanbul:hook"], function() {
 });
 
 //******************************************************************************
-//* BUILD & COPY THE OUTPUT IN THE "SERVER-ROOT/SCRIPTS" FOLDER 
+//* BUILD & COPY THE OUTPUT IN THE "SERVER-ROOT/SCRIPTS" FOLDER
 //******************************************************************************
 
 function setBrowserSync(buildServeTaskName) {
@@ -235,4 +248,30 @@ gulp.task("serve", ["build-serve-dist"], function() {
 
 gulp.task("default", function(cb) {
     runSequence("lint", "build", "test", cb);
+});
+
+//******************************************************************************
+//* DEPLOY TO O365
+//* Requires settings.js - see settings.example.js
+//******************************************************************************
+
+// use gulp-merge ?
+gulp.task("copyRequireJsToSharePoint", function() {
+    return gulp.src("./bower_components/requirejs/require.js")
+        .pipe(spsave({
+            username: settings.username,
+            password: settings.password,
+            siteUrl: settings.siteUrl,
+            folder: "Style%20Library/pnp"
+        }));
+});
+
+gulp.task("copyJsToSharePoint", ["lint", "package", "copyRequireJsToSharePoint"], function(){
+    return gulp.src("./dist/*.js")
+        .pipe(spsave({
+            username: settings.username,
+            password: settings.password,
+            siteUrl: settings.siteUrl,
+            folder: "Style%20Library/pnp"
+        }));
 });

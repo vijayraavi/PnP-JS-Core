@@ -1,6 +1,6 @@
 /**
- * ms-o365devpnp v.0.0.1 - A reusable library
- * Copyright (c) 2016 [object Object]
+ * ms-o365devpnp v0.0.2 - A reusable JavaScript library targeting SharePoint client-side development.
+ * Copyright (c) 2016 Microsoft and other contributors
  * MIT
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.$pnp = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -90,7 +90,7 @@
     exports.Core = Core;
 });
 
-},{"../../../sharepoint/util":43,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
+},{"../../../sharepoint/util":44,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -212,7 +212,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectComposedLook = ObjectComposedLook;
 });
 
-},{"../../../util":32,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
+},{"../../../util":33,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -609,7 +609,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     ;
 });
 
-},{"../../../../sharepoint/util":43,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
+},{"../../../../sharepoint/util":44,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -1260,7 +1260,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectNavigation = ObjectNavigation;
 });
 
-},{"../../../util":32,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
+},{"../../../util":33,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1338,7 +1338,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectPropertyBagEntries = ObjectPropertyBagEntries;
 });
 
-},{"../../../../sharepoint/util":43,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
+},{"../../../../sharepoint/util":44,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1589,7 +1589,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Queryable = Queryable;
 });
 
-},{"../../collections/collections":34,"../../utils/util":49}],17:[function(require,module,exports){
+},{"../../collections/collections":35,"../../utils/util":50}],17:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -1676,9 +1676,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(ContentType, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],19:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],19:[function(require,module,exports){
 arguments[4][18][0].apply(exports,arguments)
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22,"dup":18}],20:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22,"dup":18}],20:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1742,7 +1742,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Item, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],21:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],21:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1816,7 +1816,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(List, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":49,"./contenttypes":19,"./items":20,"./mixins":22,"./queryable":24,"./views":29}],22:[function(require,module,exports){
+},{"../../utils/util":50,"./contenttypes":19,"./items":20,"./mixins":22,"./queryable":24,"./views":29}],22:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1882,7 +1882,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Gettable = Gettable;
 });
 
-},{"../../net/httpClient":41,"./queryable":24}],23:[function(require,module,exports){
+},{"../../net/httpClient":42,"./queryable":24}],23:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1914,7 +1914,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 
 },{"./queryable":24,"./quickLaunch":25,"./topNavigationBar":28}],24:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"../../collections/collections":34,"../../utils/util":49,"dup":16}],25:[function(require,module,exports){
+},{"../../collections/collections":35,"../../utils/util":50,"dup":16}],25:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1945,7 +1945,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(QuickLaunch, Mixins.Gettable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],26:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],26:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1986,7 +1986,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(RoleAssignments, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],27:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],27:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2027,7 +2027,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(SiteUsers, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],28:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],28:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2058,7 +2058,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(TopNavigationBar, Mixins.Gettable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],29:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],29:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2122,7 +2122,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(View, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./mixins":22}],30:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],30:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2171,18 +2171,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Web, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":49,"./Queryable":16,"./contentTypes":18,"./lists":21,"./mixins":22,"./navigation":23,"./roleAssignments":26,"./siteUsers":27}],31:[function(require,module,exports){
+},{"../../utils/util":50,"./Queryable":16,"./contentTypes":18,"./lists":21,"./mixins":22,"./navigation":23,"./roleAssignments":26,"./siteUsers":27}],31:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./Provisioning/Provisioning", "./Rest/Rest"], factory);
+        define(["require", "exports", "./Provisioning/Provisioning", "./Rest/Rest", "./Util"], factory);
     }
 })(function (require, exports) {
     "use strict";
     var Provisioning_1 = require("./Provisioning/Provisioning");
     var Rest_1 = require("./Rest/Rest");
+    var Util = require("./Util");
     var SharePoint = (function () {
         function SharePoint() {
             /**
@@ -2193,13 +2194,14 @@ var __extends = (this && this.__extends) || function (d, b) {
             * The Provisioning base class for SharePoint
             */
             this.provisioning = new Provisioning_1.Provisioning();
+            this.util = Util;
         }
         return SharePoint;
     }());
     exports.SharePoint = SharePoint;
 });
 
-},{"./Provisioning/Provisioning":13,"./Rest/Rest":17}],32:[function(require,module,exports){
+},{"./Provisioning/Provisioning":13,"./Rest/Rest":17,"./Util":32}],32:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2258,6 +2260,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 });
 
 },{}],33:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"dup":32}],34:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2282,7 +2286,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.get = get;
 });
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2389,7 +2393,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Dictionary = Dictionary;
 });
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2487,7 +2491,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Settings = Settings;
 });
 
-},{"../collections/collections":34,"./providers/providers":37}],36:[function(require,module,exports){
+},{"../collections/collections":35,"./providers/providers":38}],37:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2564,7 +2568,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.default = CachingConfigurationProvider;
 });
 
-},{"../../utils/storage":48}],37:[function(require,module,exports){
+},{"../../utils/storage":49}],38:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2580,7 +2584,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.SPListConfigurationProvider = spListConfigurationProvider_1.default;
 });
 
-},{"./cachingConfigurationProvider":36,"./spListConfigurationProvider":38}],38:[function(require,module,exports){
+},{"./cachingConfigurationProvider":37,"./spListConfigurationProvider":39}],39:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2658,7 +2662,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.default = SPListConfigurationProvider;
 });
 
-},{"../../Utils/Ajax":33,"./cachingConfigurationProvider":36}],39:[function(require,module,exports){
+},{"../../Utils/Ajax":34,"./cachingConfigurationProvider":37}],40:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2721,7 +2725,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.DigestCache = DigestCache;
 });
 
-},{"../collections/collections":34,"../utils/util":49}],40:[function(require,module,exports){
+},{"../collections/collections":35,"../utils/util":50}],41:[function(require,module,exports){
 (function (global){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -2744,7 +2748,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2816,7 +2820,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.HttpClient = HttpClient;
 });
 
-},{"../utils/util":49,"./digestCache":39,"./fetchClient":40}],42:[function(require,module,exports){
+},{"../utils/util":50,"./digestCache":40,"./fetchClient":41}],43:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2862,9 +2866,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     return PnP;
 });
 
-},{"./SharePoint/SharePoint":31,"./configuration/configuration":35,"./utils/Storage":44,"./utils/Util":45,"./utils/logging":47}],43:[function(require,module,exports){
+},{"./SharePoint/SharePoint":31,"./configuration/configuration":36,"./utils/Storage":45,"./utils/Util":46,"./utils/logging":48}],44:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"dup":32}],44:[function(require,module,exports){
+},{"dup":32}],45:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3001,7 +3005,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.PnPClientStorage = PnPClientStorage;
 });
 
-},{"./Util":45}],45:[function(require,module,exports){
+},{"./Util":46}],46:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3252,7 +3256,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.applyMixins = applyMixins;
 });
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3289,7 +3293,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.objectIsNull = objectIsNull;
 });
 
-},{"./util":49}],47:[function(require,module,exports){
+},{"./util":50}],48:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3513,9 +3517,9 @@ arguments[4][32][0].apply(exports,arguments)
     exports.FunctionListener = FunctionListener;
 });
 
-},{"./args":46}],48:[function(require,module,exports){
-arguments[4][44][0].apply(exports,arguments)
-},{"./Util":45,"dup":44}],49:[function(require,module,exports){
+},{"./args":47}],49:[function(require,module,exports){
 arguments[4][45][0].apply(exports,arguments)
-},{"dup":45}]},{},[42])(42)
+},{"./Util":46,"dup":45}],50:[function(require,module,exports){
+arguments[4][46][0].apply(exports,arguments)
+},{"dup":46}]},{},[43])(43)
 });
