@@ -1,6 +1,6 @@
 {
   "name": "ms-o365devpnp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A reusable JavaScript library targeting SharePoint client-side development.",
   "main": "./lib/pnp.js",
   "typings": "./lib/pnp",
