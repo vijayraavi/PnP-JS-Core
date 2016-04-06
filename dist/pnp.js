@@ -1,5 +1,5 @@
 /**
- * ms-o365devpnp v0.0.1 - A reusable JavaScript library targeting SharePoint client-side development.
+ * ms-o365devpnp v0.0.2 - A reusable JavaScript library targeting SharePoint client-side development.
  * Copyright (c) 2016 Microsoft and other contributors
  * MIT
  */
