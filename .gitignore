@@ -26,7 +26,7 @@ build/Release
 # Dependency directory
 node_modules
 typings
-output
+lib
 server-root/scripts
 
 # Optional npm cache directory

@@ -1,8 +1,9 @@
 {
   "name": "ms-o365devpnp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A reusable JavaScript library targeting SharePoint client-side development.",
-  "main": "./dist/pnp.js",
+  "main": "./lib/pnp.js",
+  "typings": "./lib/pnp",
   "dependencies": {
     "es6-promise": "~3.1.2",
     "jquery": "*",
@@ -34,7 +35,8 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "postinstall": "typings install"
   },
   "repository": {
     "type": "git",
