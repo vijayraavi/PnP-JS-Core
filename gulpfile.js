@@ -31,26 +31,17 @@ var gulp = require("gulp"),
 //******************************************************************************
 
 var TSTypings = {
-    "RootFolder": 'typings',
-    "Main": 'typings/main.d.ts',
-    "PnPRootFolder": 'typings/pnp',
-    "PnPFiles": [
-        'typings/pnp/*.d.ts',
-        'typings/pnp/**/*.d.ts'
-    ]
+    "Main": 'typings/main.d.ts'
 };
 
 var TSCompiledOutput = {
     "RootFolder": 'lib',
     "JSCodeFiles": [
-        'lib/*.js',
         'lib/**/*.js',
-        '!lib/*.test.js',
-        '!lib/**/*.test.js',
+        '!lib/**/*.test.js'
     ],
     "JSTestFiles": [
-        'lib/*.test.js',
-        'lib/**/*.test.js',
+        'lib/**/*.test.js'
     ],
 };
 
@@ -58,7 +49,6 @@ var TSWorkspace = {
     "RootFolder": 'src',
     "PnPFile": "src/pnp.ts",
     "Files": [
-        'src/*.ts',
         'src/**/*.ts',
     ]
 }
@@ -110,11 +100,11 @@ gulp.task('clean', function() {
 });
 
 gulp.task("build-typings", function() {
-    var src = TSWorkspace.Files;
+    var src = TSWorkspace.Files.slice(0);
     src.push(TSTypings.Main);
     src.push("!src/*.test.ts");
     src.push("!src/**/*.test.ts");
-    
+
     // create a project specific to our typings build and specify the outFile. This will result
     // in a single pnp.d.ts file being creating and piped to the typings folder
     var typingsProject = tsc.createProject('tsconfig.json', { declaration: true });
@@ -125,7 +115,7 @@ gulp.task("build-typings", function() {
 });
 
 gulp.task("build", ["lint", "build-typings", "clean"], function() {
-    var src = TSWorkspace.Files;
+    var src = TSWorkspace.Files.slice(0);
     src.push(TSTypings.Main);
 
     return gulp.src(src)
@@ -143,10 +133,10 @@ function packageDefinitions() {
 
     console.log(TSDist.RootFolder + "/" + TSDist.DefinitionFileName);
 
-    var src = TSWorkspace.Files;
+    var src = TSWorkspace.Files.slice(0);
     src.push(TSTypings.Main);
     src.push("!src/*.test.ts");
-    
+
     // create a project specific to our typings build and specify the outFile. This will result
     // in a single pnp.d.ts file being creating and piped to the typings folder
     var typingsProject = tsc.createProject('tsconfig.json', { declaration: true, outFile: "pnp.js" });
@@ -225,8 +215,7 @@ function setBrowserSync(buildServeTaskName) {
 
     gulp.watch(TSWorkspace.Files, ["lint", buildServeTaskName]);
     gulp.watch(PnPLocalServer.RootFolder).on('change', browserSync.reload);
-    gulp.watch(PnPLocalServer.RootFolder + "/" + PnPLocalServer.ScriptsRootFolder + "/**.js").on('change', browserSync.reload);
-    gulp.watch(PnPLocalServer.RootFolder + "/" + PnPLocalServer.ScriptsRootFolder + "/**/**.js").on('change', browserSync.reload);
+    gulp.watch(PnPLocalServer.RootFolder + "/" + PnPLocalServer.ScriptsRootFolder + "/**/*.js").on('change', browserSync.reload);
 }
 
 // DIST SERVE (BUNDLE WITH SOURCE MAP)
@@ -266,7 +255,7 @@ gulp.task("copyRequireJsToSharePoint", function() {
         }));
 });
 
-gulp.task("copyJsToSharePoint", ["lint", "package", "copyRequireJsToSharePoint"], function(){
+gulp.task("copyJsToSharePoint", ["lint", "package", "copyRequireJsToSharePoint"], function() {
     return gulp.src("./dist/*.js")
         .pipe(spsave({
             username: settings.username,

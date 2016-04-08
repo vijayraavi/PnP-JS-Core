@@ -470,10 +470,26 @@ declare module "sharepoint/rest/contenttypes" {
         select(...selects: string[]): ContentType;
     }
 }
+declare module "sharepoint/rest/fields" {
+    import { Queryable } from "sharepoint/rest/queryable";
+    import * as Mixins from "sharepoint/rest/mixins";
+    export class Fields extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        constructor(baseUrl: string | Queryable);
+        get(): Promise<any>;
+        select(...selects: string[]): Fields;
+        filter(filter: string): Fields;
+    }
+    export class Field extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        constructor(baseUrl: string | Queryable);
+        get(): Promise<any>;
+        select(...selects: string[]): Field;
+    }
+}
 declare module "sharepoint/rest/lists" {
     import { Items } from "sharepoint/rest/items";
     import { Views } from "sharepoint/rest/views";
     import { ContentTypes } from "sharepoint/rest/contenttypes";
+    import { Fields } from "sharepoint/rest/fields";
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
     export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
@@ -489,6 +505,7 @@ declare module "sharepoint/rest/lists" {
         contentTypes: ContentTypes;
         items: Items;
         views: Views;
+        fields: Fields;
         get(): Promise<any>;
         select(...selects: string[]): List;
     }
@@ -1064,6 +1081,8 @@ declare module "pnp" {
     }
     export = PnP;
 }
+declare module "collections/collections.test" {
+}
 declare module "mocks/MockConfigurationProvider" {
     import { IConfigurationProvider } from "configuration/configuration";
     import { ITypedHash } from "collections/collections";
@@ -1074,6 +1093,8 @@ declare module "mocks/MockConfigurationProvider" {
         constructor(mockValues?: ITypedHash<string>);
         getConfiguration(): Promise<ITypedHash<string>>;
     }
+}
+declare module "configuration/configuration.test" {
 }
 declare module "mocks/MockLocation" {
     class MockLocation implements Location {
@@ -1107,4 +1128,38 @@ declare module "mocks/MockStorage" {
         [index: number]: string;
     }
     export = MockStorage;
+}
+declare module "utils/args.test" {
+}
+declare module "utils/logging.test" {
+}
+declare module "utils/storage.test" {
+}
+declare module "utils/util.test" {
+}
+declare module "configuration/providers/cachingConfigurationProvider.test" {
+}
+declare module "configuration/providers/spListConfigurationProvider.test" {
+}
+declare module "sharepoint/rest/tests/contenttypes.test" {
+}
+declare module "sharepoint/rest/tests/fields.test" {
+}
+declare module "sharepoint/rest/tests/items.test" {
+}
+declare module "sharepoint/rest/tests/lists.test" {
+}
+declare module "sharepoint/rest/tests/navigation.test" {
+}
+declare module "sharepoint/rest/tests/quicklaunch.test" {
+}
+declare module "sharepoint/rest/tests/roleassignments.test" {
+}
+declare module "sharepoint/rest/tests/siteusers.test" {
+}
+declare module "sharepoint/rest/tests/topnavigationbar.test" {
+}
+declare module "sharepoint/rest/tests/views.test" {
+}
+declare module "sharepoint/rest/tests/web.test" {
 }

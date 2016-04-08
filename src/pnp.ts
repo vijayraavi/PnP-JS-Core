@@ -6,8 +6,6 @@ import { PnPClientStorage } from "./utils/Storage";
 import * as Configuration from "./configuration/configuration";
 import { Logger } from "./utils/logging";
 
-
-
 /**
  * Root class of the Patterns and Practices namespace, provides an entry point to the library
  */

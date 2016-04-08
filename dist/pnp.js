@@ -1,5 +1,5 @@
 /**
- * ms-o365devpnp v0.0.2 - A reusable JavaScript library targeting SharePoint client-side development.
+ * sp-pnp-js v0.0.1 - A reusable JavaScript library targeting SharePoint client-side development.
  * Copyright (c) 2016 Microsoft and other contributors
  * MIT
  */
@@ -90,7 +90,7 @@
     exports.Core = Core;
 });
 
-},{"../../../sharepoint/util":44,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
+},{"../../../sharepoint/util":45,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -212,7 +212,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectComposedLook = ObjectComposedLook;
 });
 
-},{"../../../util":33,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
+},{"../../../util":34,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -609,7 +609,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     ;
 });
 
-},{"../../../../sharepoint/util":44,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
+},{"../../../../sharepoint/util":45,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -1260,7 +1260,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectNavigation = ObjectNavigation;
 });
 
-},{"../../../util":33,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
+},{"../../../util":34,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1338,7 +1338,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectPropertyBagEntries = ObjectPropertyBagEntries;
 });
 
-},{"../../../../sharepoint/util":44,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
+},{"../../../../sharepoint/util":45,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1589,7 +1589,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Queryable = Queryable;
 });
 
-},{"../../collections/collections":35,"../../utils/util":50}],17:[function(require,module,exports){
+},{"../../collections/collections":36,"../../utils/util":51}],17:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -1612,7 +1612,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Rest = Rest;
 });
 
-},{"./web":30}],18:[function(require,module,exports){
+},{"./web":31}],18:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1676,9 +1676,69 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(ContentType, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],19:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],19:[function(require,module,exports){
 arguments[4][18][0].apply(exports,arguments)
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22,"dup":18}],20:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23,"dup":18}],20:[function(require,module,exports){
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (factory) {/* istanbul ignore next */
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(["require", "exports", "./queryable", "../../utils/util", "./mixins"], factory);
+    }
+})(function (require, exports) {
+    "use strict";
+    var queryable_1 = require("./queryable");
+    var Util = require("../../utils/util");
+    var Mixins = require("./mixins");
+    var Fields = (function (_super) {
+        __extends(Fields, _super);
+        function Fields(baseUrl) {
+            _super.call(this, baseUrl, "fields");
+        }
+        // gettable stub for mixin
+        Fields.prototype.get = function () { return; };
+        // selectable stub for mixin
+        Fields.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        // filterable stub for mixin
+        Fields.prototype.filter = function (filter) { return; };
+        return Fields;
+    }(queryable_1.Queryable));
+    exports.Fields = Fields;
+    Util.applyMixins(Fields, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    var Field = (function (_super) {
+        __extends(Field, _super);
+        function Field(baseUrl) {
+            _super.call(this, baseUrl);
+        }
+        // gettable stub for mixin
+        Field.prototype.get = function () { return; };
+        // selectable stub for mixin
+        Field.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        return Field;
+    }(queryable_1.Queryable));
+    exports.Field = Field;
+    Util.applyMixins(Field, Mixins.Gettable, Mixins.Selectable);
+});
+
+},{"../../utils/util":51,"./mixins":23,"./queryable":25}],21:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1742,7 +1802,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Item, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],21:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],22:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1753,13 +1813,14 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./items", "./views", "./contenttypes", "./queryable", "../../utils/util", "./mixins"], factory);
+        define(["require", "exports", "./items", "./views", "./contenttypes", "./fields", "./queryable", "../../utils/util", "./mixins"], factory);
     }
 })(function (require, exports) {
     "use strict";
     var items_1 = require("./items");
     var views_1 = require("./views");
     var contenttypes_1 = require("./contenttypes");
+    var fields_1 = require("./fields");
     var queryable_1 = require("./queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
@@ -1799,6 +1860,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.contentTypes = new contenttypes_1.ContentTypes(this);
             this.items = new items_1.Items(this);
             this.views = new views_1.Views(this);
+            this.fields = new fields_1.Fields(this);
         }
         // gettable stub for mixin
         List.prototype.get = function () { return; };
@@ -1816,7 +1878,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(List, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":50,"./contenttypes":19,"./items":20,"./mixins":22,"./queryable":24,"./views":29}],22:[function(require,module,exports){
+},{"../../utils/util":51,"./contenttypes":19,"./fields":20,"./items":21,"./mixins":23,"./queryable":25,"./views":30}],23:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1882,7 +1944,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Gettable = Gettable;
 });
 
-},{"../../net/httpClient":42,"./queryable":24}],23:[function(require,module,exports){
+},{"../../net/httpClient":43,"./queryable":25}],24:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1912,9 +1974,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Navigation = Navigation;
 });
 
-},{"./queryable":24,"./quickLaunch":25,"./topNavigationBar":28}],24:[function(require,module,exports){
+},{"./queryable":25,"./quickLaunch":26,"./topNavigationBar":29}],25:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"../../collections/collections":35,"../../utils/util":50,"dup":16}],25:[function(require,module,exports){
+},{"../../collections/collections":36,"../../utils/util":51,"dup":16}],26:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1945,7 +2007,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(QuickLaunch, Mixins.Gettable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],26:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],27:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1986,7 +2048,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(RoleAssignments, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],27:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],28:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2027,7 +2089,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(SiteUsers, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],28:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],29:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2058,7 +2120,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(TopNavigationBar, Mixins.Gettable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],29:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],30:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2122,7 +2184,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(View, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./mixins":22}],30:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],31:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2171,7 +2233,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Web, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":50,"./Queryable":16,"./contentTypes":18,"./lists":21,"./mixins":22,"./navigation":23,"./roleAssignments":26,"./siteUsers":27}],31:[function(require,module,exports){
+},{"../../utils/util":51,"./Queryable":16,"./contentTypes":18,"./lists":22,"./mixins":23,"./navigation":24,"./roleAssignments":27,"./siteUsers":28}],32:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2201,7 +2263,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.SharePoint = SharePoint;
 });
 
-},{"./Provisioning/Provisioning":13,"./Rest/Rest":17,"./Util":32}],32:[function(require,module,exports){
+},{"./Provisioning/Provisioning":13,"./Rest/Rest":17,"./Util":33}],33:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2259,9 +2321,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.encodePropertyKey = encodePropertyKey;
 });
 
-},{}],33:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"dup":32}],34:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"dup":33}],35:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2286,7 +2348,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.get = get;
 });
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2393,7 +2455,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.Dictionary = Dictionary;
 });
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2491,7 +2553,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.Settings = Settings;
 });
 
-},{"../collections/collections":35,"./providers/providers":38}],37:[function(require,module,exports){
+},{"../collections/collections":36,"./providers/providers":39}],38:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2568,7 +2630,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.default = CachingConfigurationProvider;
 });
 
-},{"../../utils/storage":49}],38:[function(require,module,exports){
+},{"../../utils/storage":50}],39:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2584,7 +2646,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.SPListConfigurationProvider = spListConfigurationProvider_1.default;
 });
 
-},{"./cachingConfigurationProvider":37,"./spListConfigurationProvider":39}],39:[function(require,module,exports){
+},{"./cachingConfigurationProvider":38,"./spListConfigurationProvider":40}],40:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2662,7 +2724,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.default = SPListConfigurationProvider;
 });
 
-},{"../../Utils/Ajax":34,"./cachingConfigurationProvider":37}],40:[function(require,module,exports){
+},{"../../Utils/Ajax":35,"./cachingConfigurationProvider":38}],41:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2725,7 +2787,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.DigestCache = DigestCache;
 });
 
-},{"../collections/collections":35,"../utils/util":50}],41:[function(require,module,exports){
+},{"../collections/collections":36,"../utils/util":51}],42:[function(require,module,exports){
 (function (global){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -2748,7 +2810,7 @@ arguments[4][32][0].apply(exports,arguments)
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2820,7 +2882,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.HttpClient = HttpClient;
 });
 
-},{"../utils/util":50,"./digestCache":40,"./fetchClient":41}],43:[function(require,module,exports){
+},{"../utils/util":51,"./digestCache":41,"./fetchClient":42}],44:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2866,9 +2928,9 @@ arguments[4][32][0].apply(exports,arguments)
     return PnP;
 });
 
-},{"./SharePoint/SharePoint":31,"./configuration/configuration":36,"./utils/Storage":45,"./utils/Util":46,"./utils/logging":48}],44:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"dup":32}],45:[function(require,module,exports){
+},{"./SharePoint/SharePoint":32,"./configuration/configuration":37,"./utils/Storage":46,"./utils/Util":47,"./utils/logging":49}],45:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"dup":33}],46:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3005,7 +3067,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.PnPClientStorage = PnPClientStorage;
 });
 
-},{"./Util":46}],46:[function(require,module,exports){
+},{"./Util":47}],47:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3256,7 +3318,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.applyMixins = applyMixins;
 });
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3293,7 +3355,7 @@ arguments[4][32][0].apply(exports,arguments)
     exports.objectIsNull = objectIsNull;
 });
 
-},{"./util":50}],48:[function(require,module,exports){
+},{"./util":51}],49:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3517,9 +3579,9 @@ arguments[4][32][0].apply(exports,arguments)
     exports.FunctionListener = FunctionListener;
 });
 
-},{"./args":47}],49:[function(require,module,exports){
-arguments[4][45][0].apply(exports,arguments)
-},{"./Util":46,"dup":45}],50:[function(require,module,exports){
+},{"./args":48}],50:[function(require,module,exports){
 arguments[4][46][0].apply(exports,arguments)
-},{"dup":46}]},{},[43])(43)
+},{"./Util":47,"dup":46}],51:[function(require,module,exports){
+arguments[4][47][0].apply(exports,arguments)
+},{"dup":47}]},{},[44])(44)
 });
