@@ -1094,8 +1094,6 @@ declare module "mocks/MockConfigurationProvider" {
         getConfiguration(): Promise<ITypedHash<string>>;
     }
 }
-declare module "configuration/configuration.test" {
-}
 declare module "mocks/MockLocation" {
     class MockLocation implements Location {
         hash: string;
@@ -1128,6 +1126,8 @@ declare module "mocks/MockStorage" {
         [index: number]: string;
     }
     export = MockStorage;
+}
+declare module "configuration/configuration.test" {
 }
 declare module "utils/args.test" {
 }
