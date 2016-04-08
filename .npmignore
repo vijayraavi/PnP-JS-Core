@@ -11,3 +11,4 @@ coverage/
 server-root/
 src/
 typings/
+lib/**/*.test.js

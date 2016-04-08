@@ -3,6 +3,7 @@
 import { Items } from "./items";
 import { Views } from "./views";
 import { ContentTypes } from "./contenttypes";
+import { Fields } from "./fields";
 import { Queryable } from "./queryable";
 import * as Util from "../../utils/util";
 import * as Mixins from "./mixins";
@@ -43,11 +44,13 @@ export class List extends Queryable implements Mixins.Gettable, Mixins.Selectabl
         this.contentTypes = new ContentTypes(this);
         this.items = new Items(this);
         this.views = new Views(this);
+        this.fields = new Fields(this);
     }
 
     public contentTypes: ContentTypes;
     public items: Items;
     public views: Views;
+    public fields: Fields;
 
     // gettable stub for mixin
     public get(): Promise<any> { return; }
