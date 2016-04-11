@@ -1,42 +1,80 @@
 "use strict";
+
 import { Queryable } from "./Queryable";
 import * as Util from "../../utils/util";
 import * as Mixins from "./mixins";
 
+/**
+ * Describes a collection of content types
+ * 
+ */
 export class ContentTypes extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
 
-    constructor(url: string | Queryable) {
-        super(url, "contentTypes");
+    /**
+     * Creates a new instance of the ContentTypes class
+     * 
+     * @param baseUrl The url or Queryable which forms the parent of this content types collection
+     */
+    constructor(baseUrl: string | Queryable) {
+        super(baseUrl, "contentTypes");
     }
 
-    public getById(id: string) {
+    /**
+     * Gets a ContentType by content type id
+     */
+    public getById(id: string): ContentType {
         this.concat(`(\"${id}\")`);
-        return this;
+        return new ContentType(this);
     }
 
-    // gettable stub for mixin
+    /**
+     * Execute the get request
+     * 
+     */
     public get(): Promise<any> { return; }
 
-    // selectable stub for mixin
+    /**
+     * Select the fields to return
+     * 
+     * @param selects One or more fields to return
+     */
     public select(...selects: string[]): ContentTypes { return; }
 
-    // filterable stub for mixin
+    /**
+     * Applies a filter to the request
+     * 
+     * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+     */
     public filter(filter: string): ContentTypes { return; }
 }
-
 Util.applyMixins(ContentTypes, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
 
+/**
+ * Describes a single ContentType instance
+ * 
+ */
 export class ContentType extends Queryable implements Mixins.Gettable, Mixins.Selectable {
 
+    /**
+     * Creates a new instance of the ContentType class
+     * 
+     * @param baseUrl The url or Queryable which forms the parent of this content type instance
+     */
     constructor(baseUrl: string | Queryable) {
         super(baseUrl);
     }
 
-    // gettable stub for mixin
+    /**
+     * Execute the get request
+     * 
+     */
     public get(): Promise<any> { return; }
 
-    // selectable stub for mixin
+    /**
+     * Select the fields to return
+     * 
+     * @param selects One or more fields to return
+     */
     public select(...selects: string[]): ContentType { return; }
 }
-
 Util.applyMixins(ContentType, Mixins.Gettable, Mixins.Selectable);

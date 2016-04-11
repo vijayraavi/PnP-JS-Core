@@ -97,6 +97,12 @@ declare module "utils/util" {
      * @param baseCtors One or more mixin classes to apply
      */
     export function applyMixins(derivedCtor: any, ...baseCtors: any[]): void;
+    /**
+     * Determines if a given url is absolute
+     *
+     * @param url The url to check to see if it is absolute
+     */
+    export function isUrlAbsolute(url: string): boolean;
 }
 declare module "sharepoint/provisioning/core/provisioningstep" {
     export class ProvisioningStep {
@@ -302,7 +308,7 @@ declare module "collections/collections" {
         /**
          * Merges the supplied typed hash into this dictionary instance. Existing values are updated and new ones are created as appropriate.
          */
-        merge(source: ITypedHash<T>): void;
+        merge(source: ITypedHash<T> | Dictionary<T>): void;
         /**
          * Removes a value from the dictionary
          *
@@ -363,6 +369,11 @@ declare module "sharepoint/rest/queryable" {
          */
         protected append(pathPart: string): void;
         /**
+         * Provides access to the query builder for this url
+         *
+         */
+        query: Dictionary<string>;
+        /**
          * Gets the currentl url, made server relative or absolute based on the availability of the _spPageContextInfo object
          *
          */
@@ -412,127 +423,881 @@ declare module "net/httpClient" {
 }
 declare module "sharepoint/rest/mixins" {
     import { Queryable } from "sharepoint/rest/queryable";
+    /**
+     * Implements the $select functionality on classes to which it is applied
+     *
+     */
     export class Selectable extends Queryable {
         select(...selects: string[]): any;
     }
+    /**
+     * Implements the $filter functionality on classes to which it is applied
+     *
+     */
     export class Filterable extends Queryable {
         filter(filter: string): any;
     }
+    /**
+     * Implements the get http request on classes to which it is applied
+     *
+     */
     export class Gettable extends Queryable {
+        get(parser?: (r: Response) => Promise<any>): Promise<any>;
+    }
+    /**
+     * Implements the $top and $skip functionality on classes to which it is applied
+     *
+     */
+    export class Pageable extends Queryable {
+        top(pageSize: number): any;
+        skip(pageStart: number): any;
+    }
+}
+declare module "sharepoint/rest/actionables" {
+    import { Queryable } from "sharepoint/rest/queryable";
+    import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * A Queryable which only exposes the get method
+     *
+     */
+    export class Gettable<T> extends Queryable implements Mixins.Gettable {
+        /**
+         * Creates a new instance of the Gettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<T>;
+    }
+    /**
+     * A Queryable which only exposes the get and select methods
+     *
+     */
+    export class SelectableGettable<T> extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the SelectableGettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): Gettable<T>;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<T>;
+    }
+    /**
+     * A Queryable which only exposes the get and filter methods
+     *
+     */
+    export class FilterableGettable<T> extends Queryable implements Mixins.Gettable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the FilterableGettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        filter(filter: string): Gettable<T>;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<T>;
+    }
+    /**
+     * A Queryable which only exposes the get, select and filter methods
+     *
+     */
+    export class FilterableSelectableGettable<T> extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the FilterableSelectableGettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): FilterableGettable<T>;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<T>;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        filter(filter: string): SelectableGettable<T>;
+    }
+}
+declare module "sharepoint/rest/files" {
+    import { Queryable } from "sharepoint/rest/queryable";
+    import * as Mixins from "sharepoint/rest/mixins";
+    import { Gettable } from "sharepoint/rest/actionables";
+    /**
+     * Describes a collection of File objects
+     *
+     */
+    export class Files extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the Files class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Gets a File by filename
+         *
+         * @param name The name of the file, including extension
+         */
+        getByName(name: string): File;
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): Files;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        filter(filter: string): Files;
+    }
+    /**
+     * Describes a single File instance
+     *
+     */
+    export class File extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the File class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        constructor(baseUrl: string | Queryable, path?: string);
+        /**
+         * Gets the contents of the file - If the file is not JSON a custom parser function should be used with the get call
+         *
+         */
+        value: Gettable<any>;
+        /**
+         * Gets a result indicating the current user who has a file checked out
+         *
+         */
+        checkedOutByUser: Gettable<any>;
+        /**
+         * Gets the current eTag of a file
+         *
+         */
+        eTag: Gettable<any>;
+        /**
+         * Gets the server relative url of a file
+         *
+         */
+        serverRelativeUrl: Gettable<any>;
+        /**
+         * Gets a collection of versions
+         *
+         */
+        versions: Versions;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): File;
+    }
+    /**
+     * Describes a collection of Version objects
+     *
+     */
+    export class Versions extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the File class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Gets a version by id
+         *
+         * @param versionId The id of the version to retrieve
+         */
+        getById(versionId: number): Version;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): Versions;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        filter(filter: string): Versions;
+    }
+    /**
+     * Describes a single Version instance
+     *
+     */
+    export class Version extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the Version class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        constructor(baseUrl: string | Queryable, path?: string);
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): Version;
+    }
+}
+declare module "sharepoint/rest/folders" {
+    import { Queryable } from "sharepoint/rest/queryable";
+    import * as Mixins from "sharepoint/rest/mixins";
+    import { Files } from "sharepoint/rest/files";
+    import { Gettable, SelectableGettable } from "sharepoint/rest/actionables";
+    /**
+     * Describes a collection of Folder objects
+     *
+     */
+    export class Folders extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the Folders class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Gets a folder by folder name
+         *
+         */
+        getByName(name: string): Folder;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): Folders;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        filter(filter: string): Folders;
+    }
+    /**
+     * Describes a single Folder instance
+     *
+     */
+    export class Folder extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the Folder class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        constructor(baseUrl: string | Queryable, path?: string);
+        /**
+         * Gets the parent folder, if available
+         *
+         */
+        parentFolder: Folder;
+        /**
+         * Gets this folder's sub folders
+         *
+         */
+        folders: Folders;
+        /**
+         * Gets the folders name
+         *
+         */
+        name: Gettable<any>;
+        /**
+         * Gets this folder's properties
+         *
+         */
+        properties: SelectableGettable<any>;
+        /**
+         * Gets this folder's server relative url
+         *
+         */
+        serverRelativeUrl: Gettable<any>;
+        /**
+         * Gets this folder's files
+         *
+         */
+        files: Files;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): Folder;
+    }
+}
+declare module "sharepoint/rest/contenttypes" {
+    import { Queryable } from "sharepoint/rest/queryable";
+    import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * Describes a collection of content types
+     *
+     */
+    export class ContentTypes extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the ContentTypes class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this content types collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Gets a ContentType by content type id
+         */
+        getById(id: string): ContentType;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): ContentTypes;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        filter(filter: string): ContentTypes;
+    }
+    /**
+     * Describes a single ContentType instance
+     *
+     */
+    export class ContentType extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the ContentType class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this content type instance
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): ContentType;
+    }
+}
+declare module "sharepoint/rest/roleassignments" {
+    import { Queryable } from "sharepoint/rest/queryable";
+    import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * Describes a set of role assignments for the current scope
+     *
+     */
+    export class RoleAssignments extends Queryable implements Mixins.Gettable, Mixins.Filterable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the RoleAssignments class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        filter(filter: string): RoleAssignments;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): RoleAssignments;
     }
 }
 declare module "sharepoint/rest/items" {
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
+    import { Gettable, SelectableGettable, FilterableSelectableGettable } from "sharepoint/rest/actionables";
+    import { Folder } from "sharepoint/rest/folders";
+    import { ContentType } from "sharepoint/rest/contenttypes";
+    import { RoleAssignments } from "sharepoint/rest/roleassignments";
+    /**
+     * Describes a collection of Item objects
+     *
+     */
     export class Items extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
-        constructor(url: string | Queryable);
+        /**
+         * Creates a new instance of the Items class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Gets an Item by id
+         *
+         * @param id The integer id of the item to retrieve
+         */
         getById(id: number): Item;
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): Items;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         filter(filter: string): Items;
     }
+    /**
+     * Descrines a single Item instance
+     *
+     */
     export class Item extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the Items class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         constructor(baseUrl: string | Queryable);
+        /**
+         * Gets the set of attachments for this item
+         *
+         */
+        attachmentFiles: FilterableSelectableGettable<any>;
+        /**
+         * Gets the content type for this item
+         *
+         */
+        contentType: ContentType;
+        /**
+         * Gets the effective base permissions for the item
+         *
+         */
+        effectiveBasePermissions: Gettable<any>;
+        /**
+         * Gets the effective base permissions for the item in a UI context
+         *
+         */
+        effectiveBasePermissionsForUI: Gettable<any>;
+        /**
+         * Gets the field values for this list item in their HTML representation
+         *
+         */
+        fieldValuesAsHTML: SelectableGettable<any>;
+        /**
+         * Gets the field values for this list item in their text representation
+         *
+         */
+        fieldValuesAsText: SelectableGettable<any>;
+        /**
+         * Gets the field values for this list item for use in editing controls
+         *
+         */
+        fieldValuesForEdit: SelectableGettable<any>;
+        /**
+         * Gets the closest securable up the security hierarchy whose permissions are applied to this list item
+         *
+         */
+        firstUniqueAncestorSecurableObject: SelectableGettable<any>;
+        /**
+         * Gets the folder associated with this list item (if this item represents a folder)
+         *
+         */
+        folder: Folder;
+        /**
+         * Gets the effective permissions for the user supplied
+         *
+         * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
+         */
+        getUserEffectivePermissions(loginName: string): Gettable<any>;
+        /**
+         * Gets the set of role assignments for this item
+         *
+         */
+        roleAssignments: RoleAssignments;
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): Item;
     }
 }
 declare module "sharepoint/rest/views" {
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * Describes the views available in the current context
+     *
+     */
     export class Views extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
-        constructor(url: string | Queryable);
+        /**
+         * Creates a new instance of the Views class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Gets a view by guid id
+         *
+         * @param id The GUID id of the view
+         */
         getById(id: string): View;
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): Views;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         filter(filter: string): Views;
     }
+    /**
+     * Describes a single View instance
+     *
+     */
     export class View extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the View class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): View;
-    }
-}
-declare module "sharepoint/rest/contenttypes" {
-    import { Queryable } from "sharepoint/rest/queryable";
-    import * as Mixins from "sharepoint/rest/mixins";
-    export class ContentTypes extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
-        constructor(url: string | Queryable);
-        getById(id: string): this;
-        get(): Promise<any>;
-        select(...selects: string[]): ContentTypes;
-        filter(filter: string): ContentTypes;
-    }
-    export class ContentType extends Queryable implements Mixins.Gettable, Mixins.Selectable {
-        constructor(baseUrl: string | Queryable);
-        get(): Promise<any>;
-        select(...selects: string[]): ContentType;
     }
 }
 declare module "sharepoint/rest/fields" {
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * Describes a collection of Field objects
+     *
+     */
     export class Fields extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the Fields class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): Fields;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         filter(filter: string): Fields;
     }
+    /**
+     * Describes a single of Field instance
+     *
+     */
     export class Field extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the Field class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this field instance
+         */
         constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): Field;
     }
 }
 declare module "sharepoint/rest/lists" {
     import { Items } from "sharepoint/rest/items";
-    import { Views } from "sharepoint/rest/views";
+    import { Views, View } from "sharepoint/rest/views";
     import { ContentTypes } from "sharepoint/rest/contenttypes";
     import { Fields } from "sharepoint/rest/fields";
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
+    import { Gettable, FilterableSelectableGettable } from "sharepoint/rest/actionables";
+    /**
+     * Describes a collection of List objects
+     *
+     */
     export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         constructor(baseUrl: string | Queryable);
+        /**
+         * Gets a list from the collection by title
+         *
+         * @param title The title of the list
+         */
         getByTitle(title: string): List;
+        /**
+         * Gets a list from the collection by guid id
+         *
+         * @param title The Id of the list
+         */
         getById(id: string): List;
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): Lists;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         filter(filter: string): Lists;
     }
+    /**
+     * Describes a single List instance
+     *
+     */
     export class List extends Queryable implements Mixins.Gettable, Mixins.Selectable {
-        constructor(baseUrl: string | Queryable);
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        constructor(baseUrl: string | Queryable, path?: string);
+        /**
+         * Gets the content types in this list
+         *
+         */
         contentTypes: ContentTypes;
+        /**
+         * Gets the items in this list
+         *
+         */
         items: Items;
+        /**
+         * Gets the views in this list
+         *
+         */
         views: Views;
+        /**
+         * Gets the fields in this list
+         *
+         */
         fields: Fields;
+        /**
+         * Gets the default view of this list
+         *
+         */
+        defaultView: Gettable<any>;
+        /**
+         * Gets the effective base permissions of this list
+         *
+         */
+        effectiveBasePermissions: Gettable<any>;
+        /**
+         * Gets the event receivers attached to this list
+         *
+         */
+        eventReceivers: FilterableSelectableGettable<any>;
+        /**
+         * Gets the related fields of this list
+         *
+         */
+        getRelatedFields: Gettable<any>;
+        /**
+         * Gets the effective permissions for the user supplied
+         *
+         * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
+         */
+        getUserEffectivePermissions(loginName: string): Gettable<any>;
+        /**
+         * Gets the IRM settings for this list
+         *
+         */
+        informationRightsManagementSettings: Gettable<any>;
+        /**
+         * Gets the user custom actions attached to this list
+         *
+         */
+        userCustomActions: Gettable<any>;
+        /**
+         * Gets a view by view guid id
+         *
+         */
+        getView(viewId: string): View;
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): List;
-    }
-}
-declare module "sharepoint/rest/roleassignments" {
-    import { Queryable } from "sharepoint/rest/queryable";
-    import * as Mixins from "sharepoint/rest/mixins";
-    export class RoleAssignments extends Queryable implements Mixins.Gettable, Mixins.Filterable, Mixins.Selectable {
-        constructor(url: string | Queryable);
-        get(): Promise<any>;
-        filter(filter: string): RoleAssignments;
-        select(...selects: string[]): RoleAssignments;
     }
 }
 declare module "sharepoint/rest/quicklaunch" {
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * Describes the quick launch navigation
+     *
+     */
     export class QuickLaunch extends Queryable implements Mixins.Gettable {
-        constructor(url: string | Queryable);
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
     }
 }
 declare module "sharepoint/rest/topnavigationbar" {
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * Describes the top navigation on the site
+     *
+     */
     export class TopNavigationBar extends Queryable implements Mixins.Gettable {
-        constructor(url: string | Queryable);
+        /**
+         * Creates a new instance of the SiteUsers class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
     }
 }
@@ -540,23 +1305,63 @@ declare module "sharepoint/rest/navigation" {
     import { Queryable } from "sharepoint/rest/queryable";
     import { QuickLaunch } from "sharepoint/rest/quicklaunch";
     import { TopNavigationBar } from "sharepoint/rest/topnavigationbar";
+    /**
+     * Exposes the navigation components
+     *
+     */
     export class Navigation extends Queryable {
-        constructor(url: string | Queryable);
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Gets the quicklaunch navigation for the current context
+         *
+         */
         quicklaunch: QuickLaunch;
+        /**
+         * Gets the top bar navigation navigation for the current context
+         *
+         */
         topNavigationBar: TopNavigationBar;
     }
 }
 declare module "sharepoint/rest/siteusers" {
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
+    /**
+     * Describes a collection of site users
+     *
+     */
     export class SiteUsers extends Queryable implements Mixins.Gettable, Mixins.Filterable, Mixins.Selectable {
-        constructor(url: string | Queryable);
+        /**
+         * Creates a new instance of the SiteUsers class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string | Queryable);
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         filter(filter: string): SiteUsers;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): SiteUsers;
     }
 }
-declare module "sharepoint/rest/web" {
+declare module "sharepoint/rest/webs" {
     import { Queryable } from "sharepoint/rest/queryable";
     import * as Mixins from "sharepoint/rest/mixins";
     import { Lists } from "sharepoint/rest/lists";
@@ -564,24 +1369,150 @@ declare module "sharepoint/rest/web" {
     import { Navigation } from "sharepoint/rest/navigation";
     import { SiteUsers } from "sharepoint/rest/siteusers";
     import { ContentTypes } from "sharepoint/rest/contenttypes";
+    import { Folders, Folder } from "sharepoint/rest/folders";
+    import { File } from "sharepoint/rest/files";
+    /**
+     * Describes a web
+     *
+     */
     export class Web extends Queryable implements Mixins.Gettable, Mixins.Selectable {
-        constructor(url: string);
+        /**
+         * Creates a new instance of the View class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param webPath Optional, specifies the path used to query for the given web, meant for internal use
+         */
+        constructor(baseUrl: string | Queryable, webPath?: string);
+        /**
+         * Get the content types available in this web
+         *
+         */
         contentTypes: ContentTypes;
+        /**
+         * Get the role assignments applied to this web
+         *
+         */
         roleAssignments: RoleAssignments;
+        /**
+         * Get the lists in this web
+         *
+         */
         lists: Lists;
+        /**
+         * Get the navigation options in this web
+         *
+         */
         navigation: Navigation;
+        /**
+         * Gets the site users
+         *
+         */
         siteUsers: SiteUsers;
+        /**
+         * Get the folders in this web
+         *
+         */
+        folders: Folders;
+        /**
+         * Get a folder by server relative url
+         *
+         * @param folderRelativeUrl the server relative path to the folder (including /sites/ if applicable)
+         */
+        getFolderByServerRelativeUrl(folderRelativeUrl: string): Folder;
+        /**
+         * Get a file by server relative url
+         *
+         * @param fileRelativeUrl the server relative path to the file (including /sites/ if applicable)
+         */
+        getFileByServerRelativeUrl(fileRelativeUrl: string): File;
+        /**
+         * Execute the get request
+         *
+         */
         get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         select(...selects: string[]): Web;
     }
 }
+declare module "sharepoint/rest/site" {
+    import { Queryable } from "sharepoint/rest/queryable";
+    import * as Mixins from "sharepoint/rest/mixins";
+    import { Web } from "sharepoint/rest/webs";
+    /**
+     * Describes a site collection
+     *
+     */
+    export class Site extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+        /**
+         * Creates a new instance of the RoleAssignments class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        constructor(baseUrl: string);
+        /**
+         * Gets the root web of the site collection
+         *
+         */
+        rootWeb: Web;
+        /**
+         * Execute the get request
+         *
+         */
+        get(): Promise<any>;
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        select(...selects: string[]): Site;
+    }
+}
 declare module "sharepoint/rest/rest" {
-    import { Web } from "sharepoint/rest/web";
+    import { Site } from "sharepoint/rest/site";
+    import { Web } from "sharepoint/rest/webs";
     /**
      * Root of the SharePoint REST module
      */
     export class Rest {
+        /**
+         * Begins a site collection scoped REST request
+         *
+         * @param url The base url for the request, optional if running in the context of a page
+         */
+        site: Site;
+        /**
+         * Begins a web scoped REST request
+         *
+         * @param url The base url for the request, optional if running in the context of a page
+         */
         web: Web;
+        /**
+         * Begins a cross-domain, host site scoped REST request, for use in add-in webs
+         *
+         * @param addInWebUrl The absolute url of the add-in web
+         * @param hostWebUrl The absolute url of the host web
+         */
+        crossDomainSite(addInWebUrl: string, hostWebUrl: string): Site;
+        /**
+         * Begins a cross-domain, host web scoped REST request, for use in add-in webs
+         *
+         * @param addInWebUrl The absolute url of the add-in web
+         * @param hostWebUrl The absolute url of the host web
+         */
+        crossDomainWeb(addInWebUrl: string, hostWebUrl: string): Web;
+        /**
+         * Implements the creation of cross domain REST urls
+         *
+         * @param factory The constructor of the object to create Site | Web
+         * @param addInWebUrl The absolute url of the add-in web
+         * @param hostWebUrl The absolute url of the host web
+         * @param urlPart String part to append to the url "site" | "web"
+         */
+        private _cdImpl<T>(factory, addInWebUrl, hostWebUrl, urlPart);
     }
 }
 declare module "sharepoint/sharepoint" {
@@ -1094,6 +2025,8 @@ declare module "mocks/MockConfigurationProvider" {
         getConfiguration(): Promise<ITypedHash<string>>;
     }
 }
+declare module "configuration/configuration.test" {
+}
 declare module "mocks/MockLocation" {
     class MockLocation implements Location {
         hash: string;
@@ -1126,8 +2059,6 @@ declare module "mocks/MockStorage" {
         [index: number]: string;
     }
     export = MockStorage;
-}
-declare module "configuration/configuration.test" {
 }
 declare module "utils/args.test" {
 }
