@@ -1,7 +1,7 @@
 "use strict";
 
 import { expect } from "chai";
-import { Web } from "../web";
+import { Web } from "../webs";
 
 describe("Web", () => {
     it("Should be an object", () => {

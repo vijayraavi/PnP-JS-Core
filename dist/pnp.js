@@ -90,7 +90,7 @@
     exports.Core = Core;
 });
 
-},{"../../../sharepoint/util":45,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
+},{"../../../sharepoint/util":50,"../ObjectHandlers/ObjectComposedLook/ObjectComposedLook":4,"../ObjectHandlers/ObjectCustomActions/ObjectCustomActions":5,"../ObjectHandlers/ObjectFeatures/ObjectFeatures":6,"../ObjectHandlers/ObjectFiles/ObjectFiles":7,"../ObjectHandlers/ObjectLists/ObjectLists":9,"../ObjectHandlers/ObjectNavigation/ObjectNavigation":10,"../ObjectHandlers/ObjectPropertyBagEntries/ObjectPropertyBagEntries":11,"../ObjectHandlers/ObjectWebSettings/ObjectWebSettings":12,"../Provisioning":13,"../Resources/Resources":14,"./ProvisioningStep":2}],2:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -212,7 +212,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectComposedLook = ObjectComposedLook;
 });
 
-},{"../../../util":34,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
+},{"../../../util":39,"../ObjectHandlerBase/ObjectHandlerBase":8}],5:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -609,7 +609,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     ;
 });
 
-},{"../../../../sharepoint/util":45,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
+},{"../../../../sharepoint/util":50,"../ObjectHandlerBase/ObjectHandlerBase":8}],8:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -1260,7 +1260,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectNavigation = ObjectNavigation;
 });
 
-},{"../../../util":34,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
+},{"../../../util":39,"../ObjectHandlerBase/ObjectHandlerBase":8}],11:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1338,7 +1338,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.ObjectPropertyBagEntries = ObjectPropertyBagEntries;
 });
 
-},{"../../../../sharepoint/util":45,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
+},{"../../../../sharepoint/util":50,"../ObjectHandlerBase/ObjectHandlerBase":8}],12:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1528,6 +1528,7 @@ var __extends = (this && this.__extends) || function (d, b) {
          *
          */
         function Queryable(baseUrl, path) {
+            this._query = new collections_1.Dictionary();
             if (typeof baseUrl === "string") {
                 var s = baseUrl;
                 this._url = Util.combinePaths(s, path);
@@ -1535,8 +1536,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             else {
                 var q = baseUrl;
                 this._url = Util.combinePaths(q._url, path);
+                this._query.merge(q._query);
             }
-            this._query = new collections_1.Dictionary();
         }
         /**
          * Directly concatonates the supplied string to the current url, not normalizing "/" chars
@@ -1554,17 +1555,30 @@ var __extends = (this && this.__extends) || function (d, b) {
         Queryable.prototype.append = function (pathPart) {
             this._url = Util.combinePaths(this._url, pathPart);
         };
+        Object.defineProperty(Queryable.prototype, "query", {
+            /**
+             * Provides access to the query builder for this url
+             *
+             */
+            get: function () {
+                return this._query;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * Gets the currentl url, made server relative or absolute based on the availability of the _spPageContextInfo object
          *
          */
         Queryable.prototype.toUrl = function () {
-            if (typeof _spPageContextInfo !== "undefined") {
-                if (_spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
-                    return Util.combinePaths(_spPageContextInfo.webAbsoluteUrl, this._url);
-                }
-                else if (_spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
-                    return Util.combinePaths(_spPageContextInfo.webServerRelativeUrl, this._url);
+            if (!Util.isUrlAbsolute(this._url)) {
+                if (typeof _spPageContextInfo !== "undefined") {
+                    if (_spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
+                        return Util.combinePaths(_spPageContextInfo.webAbsoluteUrl, this._url);
+                    }
+                    else if (_spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
+                        return Util.combinePaths(_spPageContextInfo.webServerRelativeUrl, this._url);
+                    }
                 }
             }
             return this._url;
@@ -1579,8 +1593,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (this._query.count() > 0) {
                 url += "?";
                 var keys = this._query.getKeys();
-                var query = keys.map(function (key, ix, arr) { return (key + "=" + _this._query.get(key)); });
-                url += query.join("&");
+                url += keys.map(function (key, ix, arr) { return (key + "=" + _this._query.get(key)); }).join("&");
             }
             return url;
         };
@@ -1589,30 +1602,241 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Queryable = Queryable;
 });
 
-},{"../../collections/collections":36,"../../utils/util":51}],17:[function(require,module,exports){
+},{"../../collections/collections":41,"../../utils/util":56}],17:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./web"], factory);
+        define(["require", "exports", "./site", "./webs", "../../utils/util"], factory);
     }
 })(function (require, exports) {
     "use strict";
-    var web_1 = require("./web");
+    var site_1 = require("./site");
+    var webs_1 = require("./webs");
+    var Util = require("../../utils/util");
     /**
      * Root of the SharePoint REST module
      */
     var Rest = (function () {
         function Rest() {
-            this.web = new web_1.Web("_api");
         }
+        Object.defineProperty(Rest.prototype, "site", {
+            /**
+             * Begins a site collection scoped REST request
+             *
+             * @param url The base url for the request, optional if running in the context of a page
+             */
+            get: function () {
+                return new site_1.Site("_api");
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Rest.prototype, "web", {
+            /**
+             * Begins a web scoped REST request
+             *
+             * @param url The base url for the request, optional if running in the context of a page
+             */
+            get: function () {
+                return new webs_1.Web("_api");
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Begins a cross-domain, host site scoped REST request, for use in add-in webs
+         *
+         * @param addInWebUrl The absolute url of the add-in web
+         * @param hostWebUrl The absolute url of the host web
+         */
+        Rest.prototype.crossDomainSite = function (addInWebUrl, hostWebUrl) {
+            return this._cdImpl(site_1.Site, addInWebUrl, hostWebUrl, "site");
+        };
+        /**
+         * Begins a cross-domain, host web scoped REST request, for use in add-in webs
+         *
+         * @param addInWebUrl The absolute url of the add-in web
+         * @param hostWebUrl The absolute url of the host web
+         */
+        Rest.prototype.crossDomainWeb = function (addInWebUrl, hostWebUrl) {
+            return this._cdImpl(webs_1.Web, addInWebUrl, hostWebUrl, "web");
+        };
+        /**
+         * Implements the creation of cross domain REST urls
+         *
+         * @param factory The constructor of the object to create Site | Web
+         * @param addInWebUrl The absolute url of the add-in web
+         * @param hostWebUrl The absolute url of the host web
+         * @param urlPart String part to append to the url "site" | "web"
+         */
+        Rest.prototype._cdImpl = function (factory, addInWebUrl, hostWebUrl, urlPart) {
+            if (!Util.isUrlAbsolute(addInWebUrl)) {
+                throw "The addInWebUrl parameter must be an absolute url.";
+            }
+            if (!Util.isUrlAbsolute(hostWebUrl)) {
+                throw "The hostWebUrl parameter must be an absolute url.";
+            }
+            var url = Util.combinePaths(addInWebUrl, "_api/SP.AppContextSite(@target)", urlPart);
+            var instance = new factory(url);
+            instance.query.add("@target", encodeURIComponent(hostWebUrl));
+            return instance;
+        };
         return Rest;
     }());
     exports.Rest = Rest;
 });
 
-},{"./web":31}],18:[function(require,module,exports){
+},{"../../utils/util":56,"./site":32,"./webs":36}],18:[function(require,module,exports){
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (factory) {/* istanbul ignore next */
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(["require", "exports", "./queryable", "./mixins", "../../utils/util"], factory);
+    }
+})(function (require, exports) {
+    "use strict";
+    var queryable_1 = require("./queryable");
+    var Mixins = require("./mixins");
+    var Util = require("../../utils/util");
+    /**
+     * A Queryable which only exposes the get method
+     *
+     */
+    var Gettable = (function (_super) {
+        __extends(Gettable, _super);
+        /**
+         * Creates a new instance of the Gettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        function Gettable(baseUrl) {
+            _super.call(this, baseUrl);
+        }
+        /**
+         * Execute the get request
+         *
+         */
+        Gettable.prototype.get = function () { return; };
+        return Gettable;
+    }(queryable_1.Queryable));
+    exports.Gettable = Gettable;
+    Util.applyMixins(Gettable, Mixins.Gettable);
+    /**
+     * A Queryable which only exposes the get and select methods
+     *
+     */
+    var SelectableGettable = (function (_super) {
+        __extends(SelectableGettable, _super);
+        /**
+         * Creates a new instance of the SelectableGettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        function SelectableGettable(baseUrl) {
+            _super.call(this, baseUrl);
+        }
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        SelectableGettable.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        /**
+         * Execute the get request
+         *
+         */
+        SelectableGettable.prototype.get = function () { return; };
+        return SelectableGettable;
+    }(queryable_1.Queryable));
+    exports.SelectableGettable = SelectableGettable;
+    Util.applyMixins(SelectableGettable, Mixins.Gettable, Mixins.Selectable);
+    /**
+     * A Queryable which only exposes the get and filter methods
+     *
+     */
+    var FilterableGettable = (function (_super) {
+        __extends(FilterableGettable, _super);
+        /**
+         * Creates a new instance of the FilterableGettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        function FilterableGettable(baseUrl) {
+            _super.call(this, baseUrl);
+        }
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        FilterableGettable.prototype.filter = function (filter) { return; };
+        /**
+         * Execute the get request
+         *
+         */
+        FilterableGettable.prototype.get = function () { return; };
+        return FilterableGettable;
+    }(queryable_1.Queryable));
+    exports.FilterableGettable = FilterableGettable;
+    Util.applyMixins(FilterableGettable, Mixins.Gettable, Mixins.Filterable);
+    /**
+     * A Queryable which only exposes the get, select and filter methods
+     *
+     */
+    var FilterableSelectableGettable = (function (_super) {
+        __extends(FilterableSelectableGettable, _super);
+        /**
+         * Creates a new instance of the FilterableSelectableGettable class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this actionable
+         */
+        function FilterableSelectableGettable(baseUrl) {
+            _super.call(this, baseUrl);
+        }
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        FilterableSelectableGettable.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        /**
+         * Execute the get request
+         *
+         */
+        FilterableSelectableGettable.prototype.get = function () { return; };
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        FilterableSelectableGettable.prototype.filter = function (filter) { return; };
+        return FilterableSelectableGettable;
+    }(queryable_1.Queryable));
+    exports.FilterableSelectableGettable = FilterableSelectableGettable;
+    Util.applyMixins(FilterableSelectableGettable, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+});
+
+},{"../../utils/util":56,"./mixins":26,"./queryable":28}],19:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1630,18 +1854,37 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Queryable_1 = require("./Queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    /**
+     * Describes a collection of content types
+     *
+     */
     var ContentTypes = (function (_super) {
         __extends(ContentTypes, _super);
-        function ContentTypes(url) {
-            _super.call(this, url, "contentTypes");
+        /**
+         * Creates a new instance of the ContentTypes class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this content types collection
+         */
+        function ContentTypes(baseUrl) {
+            _super.call(this, baseUrl, "contentTypes");
         }
+        /**
+         * Gets a ContentType by content type id
+         */
         ContentTypes.prototype.getById = function (id) {
             this.concat("(\"" + id + "\")");
-            return this;
+            return new ContentType(this);
         };
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         ContentTypes.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         ContentTypes.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1649,20 +1892,40 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return;
         };
-        // filterable stub for mixin
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         ContentTypes.prototype.filter = function (filter) { return; };
         return ContentTypes;
     }(Queryable_1.Queryable));
     exports.ContentTypes = ContentTypes;
     Util.applyMixins(ContentTypes, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Describes a single ContentType instance
+     *
+     */
     var ContentType = (function (_super) {
         __extends(ContentType, _super);
+        /**
+         * Creates a new instance of the ContentType class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this content type instance
+         */
         function ContentType(baseUrl) {
             _super.call(this, baseUrl);
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         ContentType.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         ContentType.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1676,9 +1939,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(ContentType, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],19:[function(require,module,exports){
-arguments[4][18][0].apply(exports,arguments)
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23,"dup":18}],20:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26}],20:[function(require,module,exports){
+arguments[4][19][0].apply(exports,arguments)
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26,"dup":19}],21:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1696,14 +1959,30 @@ var __extends = (this && this.__extends) || function (d, b) {
     var queryable_1 = require("./queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    /**
+     * Describes a collection of Field objects
+     *
+     */
     var Fields = (function (_super) {
         __extends(Fields, _super);
+        /**
+         * Creates a new instance of the Fields class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         function Fields(baseUrl) {
             _super.call(this, baseUrl, "fields");
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         Fields.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         Fields.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1711,20 +1990,40 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return;
         };
-        // filterable stub for mixin
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         Fields.prototype.filter = function (filter) { return; };
         return Fields;
     }(queryable_1.Queryable));
     exports.Fields = Fields;
     Util.applyMixins(Fields, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Describes a single of Field instance
+     *
+     */
     var Field = (function (_super) {
         __extends(Field, _super);
+        /**
+         * Creates a new instance of the Field class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this field instance
+         */
         function Field(baseUrl) {
             _super.call(this, baseUrl);
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         Field.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         Field.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1738,7 +2037,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Field, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./mixins":23,"./queryable":25}],21:[function(require,module,exports){
+},{"../../utils/util":56,"./mixins":26,"./queryable":28}],22:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1749,25 +2048,478 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins"], factory);
+        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./actionables"], factory);
     }
 })(function (require, exports) {
     "use strict";
     var Queryable_1 = require("./Queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    var actionables_1 = require("./actionables");
+    /**
+     * Describes a collection of File objects
+     *
+     */
+    var Files = (function (_super) {
+        __extends(Files, _super);
+        /**
+         * Creates a new instance of the Files class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function Files(baseUrl) {
+            _super.call(this, baseUrl, "files");
+        }
+        /**
+         * Gets a File by filename
+         *
+         * @param name The name of the file, including extension
+         */
+        Files.prototype.getByName = function (name) {
+            this.concat("('" + name + "')");
+            return new File(this);
+        };
+        /**
+         * Execute the get request
+         *
+         */
+        Files.prototype.get = function () { return; };
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        Files.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        Files.prototype.filter = function (filter) { return; };
+        return Files;
+    }(Queryable_1.Queryable));
+    exports.Files = Files;
+    Util.applyMixins(Files, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Describes a single File instance
+     *
+     */
+    var File = (function (_super) {
+        __extends(File, _super);
+        /**
+         * Creates a new instance of the File class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        function File(baseUrl, path) {
+            _super.call(this, baseUrl, path);
+        }
+        Object.defineProperty(File.prototype, "value", {
+            /**
+             * Gets the contents of the file - If the file is not JSON a custom parser function should be used with the get call
+             *
+             */
+            get: function () {
+                this.append("$value");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(File.prototype, "checkedOutByUser", {
+            /**
+             * Gets a result indicating the current user who has a file checked out
+             *
+             */
+            get: function () {
+                this.append("CheckedOutByUser");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(File.prototype, "eTag", {
+            /**
+             * Gets the current eTag of a file
+             *
+             */
+            get: function () {
+                this.append("ETag");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(File.prototype, "serverRelativeUrl", {
+            /**
+             * Gets the server relative url of a file
+             *
+             */
+            get: function () {
+                this.append("ServerRelativeUrl");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(File.prototype, "versions", {
+            /**
+             * Gets a collection of versions
+             *
+             */
+            get: function () {
+                return new Versions(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Execute the get request
+         *
+         */
+        File.prototype.get = function () { return; };
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        File.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        return File;
+    }(Queryable_1.Queryable));
+    exports.File = File;
+    Util.applyMixins(File, Mixins.Gettable, Mixins.Selectable);
+    /**
+     * Describes a collection of Version objects
+     *
+     */
+    var Versions = (function (_super) {
+        __extends(Versions, _super);
+        /**
+         * Creates a new instance of the File class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function Versions(baseUrl) {
+            _super.call(this, baseUrl, "versions");
+        }
+        /**
+         * Gets a version by id
+         *
+         * @param versionId The id of the version to retrieve
+         */
+        Versions.prototype.getById = function (versionId) {
+            this.concat("(" + versionId + ")");
+            return new Version(this);
+        };
+        /**
+         * Execute the get request
+         *
+         */
+        Versions.prototype.get = function () { return; };
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        Versions.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        Versions.prototype.filter = function (filter) { return; };
+        return Versions;
+    }(Queryable_1.Queryable));
+    exports.Versions = Versions;
+    Util.applyMixins(Versions, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Describes a single Version instance
+     *
+     */
+    var Version = (function (_super) {
+        __extends(Version, _super);
+        /**
+         * Creates a new instance of the Version class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        function Version(baseUrl, path) {
+            _super.call(this, baseUrl, path);
+        }
+        /**
+         * Execute the get request
+         *
+         */
+        Version.prototype.get = function () { return; };
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        Version.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        return Version;
+    }(Queryable_1.Queryable));
+    exports.Version = Version;
+    Util.applyMixins(Version, Mixins.Gettable, Mixins.Selectable);
+});
+
+},{"../../utils/util":56,"./Queryable":16,"./actionables":18,"./mixins":26}],23:[function(require,module,exports){
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (factory) {/* istanbul ignore next */
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./files", "./actionables"], factory);
+    }
+})(function (require, exports) {
+    "use strict";
+    var Queryable_1 = require("./Queryable");
+    var Util = require("../../utils/util");
+    var Mixins = require("./mixins");
+    var files_1 = require("./files");
+    var actionables_1 = require("./actionables");
+    /**
+     * Describes a collection of Folder objects
+     *
+     */
+    var Folders = (function (_super) {
+        __extends(Folders, _super);
+        /**
+         * Creates a new instance of the Folders class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function Folders(baseUrl) {
+            _super.call(this, baseUrl, "folders");
+        }
+        /**
+         * Gets a folder by folder name
+         *
+         */
+        Folders.prototype.getByName = function (name) {
+            this.concat("('" + name + "')");
+            return new Folder(this);
+        };
+        /**
+         * Execute the get request
+         *
+         */
+        Folders.prototype.get = function () { return; };
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        Folders.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
+        Folders.prototype.filter = function (filter) { return; };
+        return Folders;
+    }(Queryable_1.Queryable));
+    exports.Folders = Folders;
+    Util.applyMixins(Folders, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Describes a single Folder instance
+     *
+     */
+    var Folder = (function (_super) {
+        __extends(Folder, _super);
+        /**
+         * Creates a new instance of the Folder class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        function Folder(baseUrl, path) {
+            _super.call(this, baseUrl, path);
+        }
+        Object.defineProperty(Folder.prototype, "parentFolder", {
+            /**
+             * Gets the parent folder, if available
+             *
+             */
+            get: function () {
+                return new Folder(this, "ParentFolder");
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Folder.prototype, "folders", {
+            /**
+             * Gets this folder's sub folders
+             *
+             */
+            get: function () {
+                return new Folders(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Folder.prototype, "name", {
+            /**
+             * Gets the folders name
+             *
+             */
+            get: function () {
+                this.append("Name");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Folder.prototype, "properties", {
+            /**
+             * Gets this folder's properties
+             *
+             */
+            get: function () {
+                this.append("Properties");
+                return new actionables_1.SelectableGettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Folder.prototype, "serverRelativeUrl", {
+            /**
+             * Gets this folder's server relative url
+             *
+             */
+            get: function () {
+                this.append("ServerRelativeUrl");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Folder.prototype, "files", {
+            /**
+             * Gets this folder's files
+             *
+             */
+            get: function () {
+                return new files_1.Files(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Execute the get request
+         *
+         */
+        Folder.prototype.get = function () { return; };
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        Folder.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        return Folder;
+    }(Queryable_1.Queryable));
+    exports.Folder = Folder;
+    Util.applyMixins(Folder, Mixins.Gettable, Mixins.Selectable);
+});
+
+},{"../../utils/util":56,"./Queryable":16,"./actionables":18,"./files":22,"./mixins":26}],24:[function(require,module,exports){
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (factory) {/* istanbul ignore next */
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./actionables", "./folders", "./contenttypes", "./roleassignments"], factory);
+    }
+})(function (require, exports) {
+    "use strict";
+    var Queryable_1 = require("./Queryable");
+    var Util = require("../../utils/util");
+    var Mixins = require("./mixins");
+    var actionables_1 = require("./actionables");
+    var folders_1 = require("./folders");
+    var contenttypes_1 = require("./contenttypes");
+    var roleassignments_1 = require("./roleassignments");
+    /**
+     * Describes a collection of Item objects
+     *
+     */
     var Items = (function (_super) {
         __extends(Items, _super);
-        function Items(url) {
-            _super.call(this, url, "items");
+        /**
+         * Creates a new instance of the Items class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function Items(baseUrl) {
+            _super.call(this, baseUrl, "items");
         }
+        /**
+         * Gets an Item by id
+         *
+         * @param id The integer id of the item to retrieve
+         */
         Items.prototype.getById = function (id) {
             this.concat("(" + id + ")");
-            return this;
+            return new Item(this);
         };
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         Items.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         Items.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1775,20 +2527,168 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return;
         };
-        // filterable stub for mixin
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         Items.prototype.filter = function (filter) { return; };
         return Items;
     }(Queryable_1.Queryable));
     exports.Items = Items;
     Util.applyMixins(Items, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Descrines a single Item instance
+     *
+     */
     var Item = (function (_super) {
         __extends(Item, _super);
+        /**
+         * Creates a new instance of the Items class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         function Item(baseUrl) {
             _super.call(this, baseUrl);
         }
-        // gettable stub for mixin
+        Object.defineProperty(Item.prototype, "attachmentFiles", {
+            /**
+             * Gets the set of attachments for this item
+             *
+             */
+            get: function () {
+                this.append("AttachmentFiles");
+                return new actionables_1.FilterableSelectableGettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "contentType", {
+            /**
+             * Gets the content type for this item
+             *
+             */
+            get: function () {
+                this.append("ContentType");
+                return new contenttypes_1.ContentType(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "effectiveBasePermissions", {
+            /**
+             * Gets the effective base permissions for the item
+             *
+             */
+            get: function () {
+                this.append("EffectiveBasePermissions");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "effectiveBasePermissionsForUI", {
+            /**
+             * Gets the effective base permissions for the item in a UI context
+             *
+             */
+            get: function () {
+                this.append("EffectiveBasePermissionsForUI");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "fieldValuesAsHTML", {
+            /**
+             * Gets the field values for this list item in their HTML representation
+             *
+             */
+            get: function () {
+                this.append("FieldValuesAsHTML");
+                return new actionables_1.SelectableGettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "fieldValuesAsText", {
+            /**
+             * Gets the field values for this list item in their text representation
+             *
+             */
+            get: function () {
+                this.append("FieldValuesAsText");
+                return new actionables_1.SelectableGettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "fieldValuesForEdit", {
+            /**
+             * Gets the field values for this list item for use in editing controls
+             *
+             */
+            get: function () {
+                this.append("FieldValuesForEdit");
+                return new actionables_1.SelectableGettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "firstUniqueAncestorSecurableObject", {
+            /**
+             * Gets the closest securable up the security hierarchy whose permissions are applied to this list item
+             *
+             */
+            get: function () {
+                this.append("FirstUniqueAncestorSecurableObject");
+                return new actionables_1.SelectableGettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Item.prototype, "folder", {
+            /**
+             * Gets the folder associated with this list item (if this item represents a folder)
+             *
+             */
+            get: function () {
+                return new folders_1.Folder(this, "Folder");
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Gets the effective permissions for the user supplied
+         *
+         * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
+         */
+        Item.prototype.getUserEffectivePermissions = function (loginName) {
+            this.append("getUserEffectivePermissions(@user)");
+            this._query.add("@user", "'" + encodeURIComponent(loginName) + "'");
+            return new actionables_1.Gettable(this);
+        };
+        Object.defineProperty(Item.prototype, "roleAssignments", {
+            /**
+             * Gets the set of role assignments for this item
+             *
+             */
+            get: function () {
+                return new roleassignments_1.RoleAssignments(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Execute the get request
+         *
+         */
         Item.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         Item.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1802,7 +2702,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Item, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],22:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./actionables":18,"./contenttypes":20,"./folders":23,"./mixins":26,"./roleassignments":31}],25:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1813,7 +2713,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./items", "./views", "./contenttypes", "./fields", "./queryable", "../../utils/util", "./mixins"], factory);
+        define(["require", "exports", "./items", "./views", "./contenttypes", "./fields", "./queryable", "../../utils/util", "./mixins", "./actionables"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -1824,22 +2724,48 @@ var __extends = (this && this.__extends) || function (d, b) {
     var queryable_1 = require("./queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    var actionables_1 = require("./actionables");
+    /**
+     * Describes a collection of List objects
+     *
+     */
     var Lists = (function (_super) {
         __extends(Lists, _super);
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         function Lists(baseUrl) {
             _super.call(this, baseUrl, "lists");
         }
+        /**
+         * Gets a list from the collection by title
+         *
+         * @param title The title of the list
+         */
         Lists.prototype.getByTitle = function (title) {
-            this.append("getByTitle('" + title + "')");
-            return new List(this);
+            return new List(this, "getByTitle('" + title + "')");
         };
+        /**
+         * Gets a list from the collection by guid id
+         *
+         * @param title The Id of the list
+         */
         Lists.prototype.getById = function (id) {
-            this.concat("('" + id + "')");
+            this.concat("(guid'" + id + "')");
             return new List(this);
         };
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         Lists.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         Lists.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1847,24 +2773,175 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return;
         };
-        // filterable stub for mixin
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         Lists.prototype.filter = function (filter) { return; };
         return Lists;
     }(queryable_1.Queryable));
     exports.Lists = Lists;
     Util.applyMixins(Lists, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Describes a single List instance
+     *
+     */
     var List = (function (_super) {
         __extends(List, _super);
-        function List(baseUrl) {
-            _super.call(this, baseUrl);
-            this.contentTypes = new contenttypes_1.ContentTypes(this);
-            this.items = new items_1.Items(this);
-            this.views = new views_1.Views(this);
-            this.fields = new fields_1.Fields(this);
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param path Optional, if supplied will be appended to the supplied baseUrl
+         */
+        function List(baseUrl, path) {
+            _super.call(this, baseUrl, path);
         }
-        // gettable stub for mixin
+        Object.defineProperty(List.prototype, "contentTypes", {
+            /**
+             * Gets the content types in this list
+             *
+             */
+            get: function () {
+                return new contenttypes_1.ContentTypes(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "items", {
+            /**
+             * Gets the items in this list
+             *
+             */
+            get: function () {
+                return new items_1.Items(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "views", {
+            /**
+             * Gets the views in this list
+             *
+             */
+            get: function () {
+                return new views_1.Views(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "fields", {
+            /**
+             * Gets the fields in this list
+             *
+             */
+            get: function () {
+                return new fields_1.Fields(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "defaultView", {
+            /**
+             * Gets the default view of this list
+             *
+             */
+            get: function () {
+                this.append("DefaultView");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "effectiveBasePermissions", {
+            /**
+             * Gets the effective base permissions of this list
+             *
+             */
+            get: function () {
+                this.append("EffectiveBasePermissions");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "eventReceivers", {
+            /**
+             * Gets the event receivers attached to this list
+             *
+             */
+            get: function () {
+                this.append("EventReceivers");
+                return new actionables_1.FilterableSelectableGettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "getRelatedFields", {
+            /**
+             * Gets the related fields of this list
+             *
+             */
+            get: function () {
+                this.append("getRelatedFields");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Gets the effective permissions for the user supplied
+         *
+         * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
+         */
+        List.prototype.getUserEffectivePermissions = function (loginName) {
+            this.append("getUserEffectivePermissions(@user)");
+            this._query.add("@user", "'" + encodeURIComponent(loginName) + "'");
+            return new actionables_1.Gettable(this);
+        };
+        Object.defineProperty(List.prototype, "informationRightsManagementSettings", {
+            /**
+             * Gets the IRM settings for this list
+             *
+             */
+            get: function () {
+                this.append("InformationRightsManagementSettings");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(List.prototype, "userCustomActions", {
+            /**
+             * Gets the user custom actions attached to this list
+             *
+             */
+            get: function () {
+                this.append("UserCustomActions");
+                return new actionables_1.Gettable(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Gets a view by view guid id
+         *
+         */
+        List.prototype.getView = function (viewId) {
+            this.append("getView('" + viewId + "')");
+            return new views_1.View(this);
+        };
+        /**
+         * Execute the get request
+         *
+         */
         List.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         List.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -1878,7 +2955,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(List, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./contenttypes":19,"./fields":20,"./items":21,"./mixins":23,"./queryable":25,"./views":30}],23:[function(require,module,exports){
+},{"../../utils/util":56,"./actionables":18,"./contenttypes":20,"./fields":21,"./items":24,"./mixins":26,"./queryable":28,"./views":35}],26:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1895,6 +2972,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     "use strict";
     var queryable_1 = require("./queryable");
     var httpClient_1 = require("../../net/httpClient");
+    /**
+     * Implements the $select functionality on classes to which it is applied
+     *
+     */
     var Selectable = (function (_super) {
         __extends(Selectable, _super);
         function Selectable() {
@@ -1911,6 +2992,10 @@ var __extends = (this && this.__extends) || function (d, b) {
         return Selectable;
     }(queryable_1.Queryable));
     exports.Selectable = Selectable;
+    /**
+     * Implements the $filter functionality on classes to which it is applied
+     *
+     */
     var Filterable = (function (_super) {
         __extends(Filterable, _super);
         function Filterable() {
@@ -1923,28 +3008,53 @@ var __extends = (this && this.__extends) || function (d, b) {
         return Filterable;
     }(queryable_1.Queryable));
     exports.Filterable = Filterable;
+    /**
+     * Implements the get http request on classes to which it is applied
+     *
+     */
     var Gettable = (function (_super) {
         __extends(Gettable, _super);
         function Gettable() {
             _super.apply(this, arguments);
         }
-        Gettable.prototype.get = function () {
+        Gettable.prototype.get = function (parser) {
+            if (parser === void 0) { parser = function (r) { return r.json(); }; }
             var client = new httpClient_1.HttpClient();
             return client.get(this.toUrlAndQuery()).then(function (response) {
                 if (response.status !== 200) {
                     throw "Error making GET request: " + response.statusText;
                 }
-                return response.json();
-            }).then(function (json) {
-                return json.hasOwnProperty("d") ? json.d.hasOwnProperty("results") ? json.d.results : json.d : json;
+                return parser(response);
+            }).then(function (parsed) {
+                return parsed.hasOwnProperty("d") ? parsed.d.hasOwnProperty("results") ? parsed.d.results : parsed.d : parsed;
             });
         };
         return Gettable;
     }(queryable_1.Queryable));
     exports.Gettable = Gettable;
+    /**
+     * Implements the $top and $skip functionality on classes to which it is applied
+     *
+     */
+    var Pageable = (function (_super) {
+        __extends(Pageable, _super);
+        function Pageable() {
+            _super.apply(this, arguments);
+        }
+        Pageable.prototype.top = function (pageSize) {
+            this._query.add("$top", pageSize.toString());
+            return this;
+        };
+        Pageable.prototype.skip = function (pageStart) {
+            this._query.add("$skip", pageStart.toString());
+            return this;
+        };
+        return Pageable;
+    }(queryable_1.Queryable));
+    exports.Pageable = Pageable;
 });
 
-},{"../../net/httpClient":43,"./queryable":25}],24:[function(require,module,exports){
+},{"../../net/httpClient":48,"./queryable":28}],27:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1962,21 +3072,50 @@ var __extends = (this && this.__extends) || function (d, b) {
     var queryable_1 = require("./queryable");
     var quickLaunch_1 = require("./quickLaunch");
     var topNavigationBar_1 = require("./topNavigationBar");
+    /**
+     * Exposes the navigation components
+     *
+     */
     var Navigation = (function (_super) {
         __extends(Navigation, _super);
-        function Navigation(url) {
-            _super.call(this, url, "Navigation");
-            this.quicklaunch = new quickLaunch_1.QuickLaunch(this);
-            this.topNavigationBar = new topNavigationBar_1.TopNavigationBar(this);
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function Navigation(baseUrl) {
+            _super.call(this, baseUrl, "Navigation");
         }
+        Object.defineProperty(Navigation.prototype, "quicklaunch", {
+            /**
+             * Gets the quicklaunch navigation for the current context
+             *
+             */
+            get: function () {
+                return new quickLaunch_1.QuickLaunch(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Navigation.prototype, "topNavigationBar", {
+            /**
+             * Gets the top bar navigation navigation for the current context
+             *
+             */
+            get: function () {
+                return new topNavigationBar_1.TopNavigationBar(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
         return Navigation;
     }(queryable_1.Queryable));
     exports.Navigation = Navigation;
 });
 
-},{"./queryable":25,"./quickLaunch":26,"./topNavigationBar":29}],25:[function(require,module,exports){
+},{"./queryable":28,"./quickLaunch":29,"./topNavigationBar":34}],28:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"../../collections/collections":36,"../../utils/util":51,"dup":16}],26:[function(require,module,exports){
+},{"../../collections/collections":41,"../../utils/util":56,"dup":16}],29:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1994,12 +3133,24 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Queryable_1 = require("./Queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    /**
+     * Describes the quick launch navigation
+     *
+     */
     var QuickLaunch = (function (_super) {
         __extends(QuickLaunch, _super);
-        function QuickLaunch(url) {
-            _super.call(this, url, "QuickLaunch");
+        /**
+         * Creates a new instance of the Lists class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function QuickLaunch(baseUrl) {
+            _super.call(this, baseUrl, "QuickLaunch");
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         QuickLaunch.prototype.get = function () { return; };
         return QuickLaunch;
     }(Queryable_1.Queryable));
@@ -2007,7 +3158,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(QuickLaunch, Mixins.Gettable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],27:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26}],30:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2025,16 +3176,36 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Queryable_1 = require("./Queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    /**
+     * Describes a set of role assignments for the current scope
+     *
+     */
     var RoleAssignments = (function (_super) {
         __extends(RoleAssignments, _super);
-        function RoleAssignments(url) {
-            _super.call(this, url, "RoleAssignments");
+        /**
+         * Creates a new instance of the RoleAssignments class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function RoleAssignments(baseUrl) {
+            _super.call(this, baseUrl, "RoleAssignments");
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         RoleAssignments.prototype.get = function () { return; };
-        // filterable stub for mixin
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         RoleAssignments.prototype.filter = function (filter) { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         RoleAssignments.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -2048,7 +3219,76 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(RoleAssignments, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],28:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26}],31:[function(require,module,exports){
+arguments[4][30][0].apply(exports,arguments)
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26,"dup":30}],32:[function(require,module,exports){
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (factory) {/* istanbul ignore next */
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./webs"], factory);
+    }
+})(function (require, exports) {
+    "use strict";
+    var Queryable_1 = require("./Queryable");
+    var Util = require("../../utils/util");
+    var Mixins = require("./mixins");
+    var webs_1 = require("./webs");
+    /**
+     * Describes a site collection
+     *
+     */
+    var Site = (function (_super) {
+        __extends(Site, _super);
+        /**
+         * Creates a new instance of the RoleAssignments class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function Site(baseUrl) {
+            _super.call(this, baseUrl, "site");
+        }
+        Object.defineProperty(Site.prototype, "rootWeb", {
+            /**
+             * Gets the root web of the site collection
+             *
+             */
+            get: function () {
+                return new webs_1.Web(this, "rootweb");
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Execute the get request
+         *
+         */
+        Site.prototype.get = function () { return; };
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
+        Site.prototype.select = function () {
+            var selects = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                selects[_i - 0] = arguments[_i];
+            }
+            return;
+        };
+        return Site;
+    }(Queryable_1.Queryable));
+    exports.Site = Site;
+    Util.applyMixins(Site, Mixins.Gettable, Mixins.Selectable);
+});
+
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26,"./webs":36}],33:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2066,16 +3306,36 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Queryable_1 = require("./Queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    /**
+     * Describes a collection of site users
+     *
+     */
     var SiteUsers = (function (_super) {
         __extends(SiteUsers, _super);
-        function SiteUsers(url) {
-            _super.call(this, url, "SiteUsers");
+        /**
+         * Creates a new instance of the SiteUsers class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function SiteUsers(baseUrl) {
+            _super.call(this, baseUrl, "SiteUsers");
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         SiteUsers.prototype.get = function () { return; };
-        // filterable stub for mixin
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         SiteUsers.prototype.filter = function (filter) { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         SiteUsers.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -2089,7 +3349,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(SiteUsers, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],29:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26}],34:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2107,12 +3367,24 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Queryable_1 = require("./Queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    /**
+     * Describes the top navigation on the site
+     *
+     */
     var TopNavigationBar = (function (_super) {
         __extends(TopNavigationBar, _super);
-        function TopNavigationBar(url) {
-            _super.call(this, url, "TopNavigationBar");
+        /**
+         * Creates a new instance of the SiteUsers class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function TopNavigationBar(baseUrl) {
+            _super.call(this, baseUrl, "TopNavigationBar");
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         TopNavigationBar.prototype.get = function () { return; };
         return TopNavigationBar;
     }(Queryable_1.Queryable));
@@ -2120,7 +3392,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(TopNavigationBar, Mixins.Gettable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],30:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26}],35:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2138,18 +3410,39 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Queryable_1 = require("./Queryable");
     var Util = require("../../utils/util");
     var Mixins = require("./mixins");
+    /**
+     * Describes the views available in the current context
+     *
+     */
     var Views = (function (_super) {
         __extends(Views, _super);
-        function Views(url) {
-            _super.call(this, url, "views");
+        /**
+         * Creates a new instance of the Views class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
+        function Views(baseUrl) {
+            _super.call(this, baseUrl, "views");
         }
+        /**
+         * Gets a view by guid id
+         *
+         * @param id The GUID id of the view
+         */
         Views.prototype.getById = function (id) {
             this.concat("(guid'" + id + "')");
-            return this;
+            return new View(this);
         };
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         Views.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         Views.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -2157,20 +3450,40 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return;
         };
-        // filterable stub for mixin
+        /**
+         * Applies a filter to the request
+         *
+         * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
+         */
         Views.prototype.filter = function (filter) { return; };
         return Views;
     }(Queryable_1.Queryable));
     exports.Views = Views;
     Util.applyMixins(Views, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+    /**
+     * Describes a single View instance
+     *
+     */
     var View = (function (_super) {
         __extends(View, _super);
+        /**
+         * Creates a new instance of the View class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         */
         function View(baseUrl) {
             _super.call(this, baseUrl);
         }
-        // gettable stub for mixin
+        /**
+         * Execute the get request
+         *
+         */
         View.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         View.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -2184,7 +3497,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(View, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./mixins":23}],31:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./mixins":26}],36:[function(require,module,exports){
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -2195,7 +3508,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./lists", "./roleAssignments", "./navigation", "./siteUsers", "./contentTypes"], factory);
+        define(["require", "exports", "./Queryable", "../../utils/util", "./mixins", "./lists", "./roleAssignments", "./navigation", "./siteUsers", "./contentTypes", "./folders", "./files"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -2207,19 +3520,116 @@ var __extends = (this && this.__extends) || function (d, b) {
     var navigation_1 = require("./navigation");
     var siteUsers_1 = require("./siteUsers");
     var contentTypes_1 = require("./contentTypes");
+    var folders_1 = require("./folders");
+    var files_1 = require("./files");
+    /**
+     * Describes a web
+     *
+     */
     var Web = (function (_super) {
         __extends(Web, _super);
-        function Web(url) {
-            _super.call(this, url, "web");
-            this.lists = new lists_1.Lists(this);
-            this.roleAssignments = new roleAssignments_1.RoleAssignments(this);
-            this.navigation = new navigation_1.Navigation(this);
-            this.siteUsers = new siteUsers_1.SiteUsers(this);
-            this.contentTypes = new contentTypes_1.ContentTypes(this);
+        /**
+         * Creates a new instance of the View class
+         *
+         * @param baseUrl The url or Queryable which forms the parent of this fields collection
+         * @param webPath Optional, specifies the path used to query for the given web, meant for internal use
+         */
+        function Web(baseUrl, webPath) {
+            if (webPath === void 0) { webPath = "web"; }
+            _super.call(this, baseUrl, webPath);
         }
-        // gettable stub for mixin
+        Object.defineProperty(Web.prototype, "contentTypes", {
+            /**
+             * Get the content types available in this web
+             *
+             */
+            get: function () {
+                return new contentTypes_1.ContentTypes(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Web.prototype, "roleAssignments", {
+            /**
+             * Get the role assignments applied to this web
+             *
+             */
+            get: function () {
+                return new roleAssignments_1.RoleAssignments(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Web.prototype, "lists", {
+            /**
+             * Get the lists in this web
+             *
+             */
+            get: function () {
+                return new lists_1.Lists(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Web.prototype, "navigation", {
+            /**
+             * Get the navigation options in this web
+             *
+             */
+            get: function () {
+                return new navigation_1.Navigation(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Web.prototype, "siteUsers", {
+            /**
+             * Gets the site users
+             *
+             */
+            get: function () {
+                return new siteUsers_1.SiteUsers(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Web.prototype, "folders", {
+            /**
+             * Get the folders in this web
+             *
+             */
+            get: function () {
+                return new folders_1.Folders(this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Get a folder by server relative url
+         *
+         * @param folderRelativeUrl the server relative path to the folder (including /sites/ if applicable)
+         */
+        Web.prototype.getFolderByServerRelativeUrl = function (folderRelativeUrl) {
+            return new folders_1.Folder(this, "getFolderByServerRelativeUrl('" + folderRelativeUrl + "')");
+        };
+        /**
+         * Get a file by server relative url
+         *
+         * @param fileRelativeUrl the server relative path to the file (including /sites/ if applicable)
+         */
+        Web.prototype.getFileByServerRelativeUrl = function (fileRelativeUrl) {
+            return new files_1.File(this, "getFileByServerRelativeUrl('" + fileRelativeUrl + "')");
+        };
+        /**
+         * Execute the get request
+         *
+         */
         Web.prototype.get = function () { return; };
-        // selectable stub for mixin
+        /**
+         * Select the fields to return
+         *
+         * @param selects One or more fields to return
+         */
         Web.prototype.select = function () {
             var selects = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -2233,7 +3643,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     Util.applyMixins(Web, Mixins.Gettable, Mixins.Selectable);
 });
 
-},{"../../utils/util":51,"./Queryable":16,"./contentTypes":18,"./lists":22,"./mixins":23,"./navigation":24,"./roleAssignments":27,"./siteUsers":28}],32:[function(require,module,exports){
+},{"../../utils/util":56,"./Queryable":16,"./contentTypes":19,"./files":22,"./folders":23,"./lists":25,"./mixins":26,"./navigation":27,"./roleAssignments":30,"./siteUsers":33}],37:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2263,7 +3673,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.SharePoint = SharePoint;
 });
 
-},{"./Provisioning/Provisioning":13,"./Rest/Rest":17,"./Util":33}],33:[function(require,module,exports){
+},{"./Provisioning/Provisioning":13,"./Rest/Rest":17,"./Util":38}],38:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2321,9 +3731,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.encodePropertyKey = encodePropertyKey;
 });
 
-},{}],34:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"dup":33}],35:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
+arguments[4][38][0].apply(exports,arguments)
+},{"dup":38}],40:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2348,7 +3758,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.get = get;
 });
 
-},{}],36:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2403,9 +3813,21 @@ arguments[4][33][0].apply(exports,arguments)
          * Merges the supplied typed hash into this dictionary instance. Existing values are updated and new ones are created as appropriate.
          */
         Dictionary.prototype.merge = function (source) {
-            for (var key in source) {
-                if (typeof key === "string") {
-                    this.add(key, source[key]);
+            console.log("Type of source: " + typeof source);
+            if (typeof source === "ITypedHash<T>") {
+                var sourceAsHash = source;
+                for (var key in sourceAsHash) {
+                    if (sourceAsHash.hasOwnProperty(key)) {
+                        this.add(key, source[key]);
+                    }
+                }
+            }
+            else {
+                var sourceAsDictionary = source;
+                var keys = sourceAsDictionary.getKeys();
+                var l = keys.length;
+                for (var i = 0; i < l; i++) {
+                    this.add(keys[i], sourceAsDictionary.get(keys[i]));
                 }
             }
         };
@@ -2455,7 +3877,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.Dictionary = Dictionary;
 });
 
-},{}],37:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2553,7 +3975,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.Settings = Settings;
 });
 
-},{"../collections/collections":36,"./providers/providers":39}],38:[function(require,module,exports){
+},{"../collections/collections":41,"./providers/providers":44}],43:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2630,7 +4052,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.default = CachingConfigurationProvider;
 });
 
-},{"../../utils/storage":50}],39:[function(require,module,exports){
+},{"../../utils/storage":55}],44:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2646,7 +4068,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.SPListConfigurationProvider = spListConfigurationProvider_1.default;
 });
 
-},{"./cachingConfigurationProvider":38,"./spListConfigurationProvider":40}],40:[function(require,module,exports){
+},{"./cachingConfigurationProvider":43,"./spListConfigurationProvider":45}],45:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2724,7 +4146,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.default = SPListConfigurationProvider;
 });
 
-},{"../../Utils/Ajax":35,"./cachingConfigurationProvider":38}],41:[function(require,module,exports){
+},{"../../Utils/Ajax":40,"./cachingConfigurationProvider":43}],46:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2787,7 +4209,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.DigestCache = DigestCache;
 });
 
-},{"../collections/collections":36,"../utils/util":51}],42:[function(require,module,exports){
+},{"../collections/collections":41,"../utils/util":56}],47:[function(require,module,exports){
 (function (global){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -2810,7 +4232,7 @@ arguments[4][33][0].apply(exports,arguments)
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],43:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2882,7 +4304,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.HttpClient = HttpClient;
 });
 
-},{"../utils/util":51,"./digestCache":41,"./fetchClient":42}],44:[function(require,module,exports){
+},{"../utils/util":56,"./digestCache":46,"./fetchClient":47}],49:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -2928,9 +4350,9 @@ arguments[4][33][0].apply(exports,arguments)
     return PnP;
 });
 
-},{"./SharePoint/SharePoint":32,"./configuration/configuration":37,"./utils/Storage":46,"./utils/Util":47,"./utils/logging":49}],45:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"dup":33}],46:[function(require,module,exports){
+},{"./SharePoint/SharePoint":37,"./configuration/configuration":42,"./utils/Storage":51,"./utils/Util":52,"./utils/logging":54}],50:[function(require,module,exports){
+arguments[4][38][0].apply(exports,arguments)
+},{"dup":38}],51:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3067,7 +4489,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.PnPClientStorage = PnPClientStorage;
 });
 
-},{"./Util":47}],47:[function(require,module,exports){
+},{"./Util":52}],52:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3316,9 +4738,18 @@ arguments[4][33][0].apply(exports,arguments)
         });
     }
     exports.applyMixins = applyMixins;
+    /**
+     * Determines if a given url is absolute
+     *
+     * @param url The url to check to see if it is absolute
+     */
+    function isUrlAbsolute(url) {
+        return /^https?:\/\/|^\/\//i.test(url);
+    }
+    exports.isUrlAbsolute = isUrlAbsolute;
 });
 
-},{}],48:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3355,7 +4786,7 @@ arguments[4][33][0].apply(exports,arguments)
     exports.objectIsNull = objectIsNull;
 });
 
-},{"./util":51}],49:[function(require,module,exports){
+},{"./util":56}],54:[function(require,module,exports){
 (function (factory) {/* istanbul ignore next */
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -3579,9 +5010,9 @@ arguments[4][33][0].apply(exports,arguments)
     exports.FunctionListener = FunctionListener;
 });
 
-},{"./args":48}],50:[function(require,module,exports){
-arguments[4][46][0].apply(exports,arguments)
-},{"./Util":47,"dup":46}],51:[function(require,module,exports){
-arguments[4][47][0].apply(exports,arguments)
-},{"dup":47}]},{},[44])(44)
+},{"./args":53}],55:[function(require,module,exports){
+arguments[4][51][0].apply(exports,arguments)
+},{"./Util":52,"dup":51}],56:[function(require,module,exports){
+arguments[4][52][0].apply(exports,arguments)
+},{"dup":52}]},{},[49])(49)
 });

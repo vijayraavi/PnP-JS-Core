@@ -18,15 +18,16 @@ export class Queryable {
      */
     constructor(baseUrl: string | Queryable, path?: string) {
 
+        this._query = new Dictionary<string>();
+
         if (typeof baseUrl === "string") {
             let s = baseUrl as string;
             this._url = Util.combinePaths(s, path);
         } else {
             let q = baseUrl as Queryable;
             this._url = Util.combinePaths(q._url, path);
+            this._query.merge(q._query);
         }
-
-        this._query = new Dictionary<string>();
     }
 
     /**
@@ -58,16 +59,25 @@ export class Queryable {
     }
 
     /**
+     * Provides access to the query builder for this url
+     * 
+     */
+    public get query(): Dictionary<string> {
+        return this._query;
+    }
+
+    /**
      * Gets the currentl url, made server relative or absolute based on the availability of the _spPageContextInfo object
      * 
      */
     public toUrl(): string {
-
-        if (typeof _spPageContextInfo !== "undefined") {
-            if (_spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
-                return Util.combinePaths(_spPageContextInfo.webAbsoluteUrl, this._url);
-            } else if (_spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
-                return Util.combinePaths(_spPageContextInfo.webServerRelativeUrl, this._url);
+        if (!Util.isUrlAbsolute(this._url)) {
+            if (typeof _spPageContextInfo !== "undefined") {
+                if (_spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
+                    return Util.combinePaths(_spPageContextInfo.webAbsoluteUrl, this._url);
+                } else if (_spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
+                    return Util.combinePaths(_spPageContextInfo.webServerRelativeUrl, this._url);
+                }
             }
         }
 
@@ -83,8 +93,7 @@ export class Queryable {
         if (this._query.count() > 0) {
             url += "?";
             let keys = this._query.getKeys();
-            let query = keys.map((key, ix, arr) => `${key}=${this._query.get(key)}`);
-            url += query.join("&");
+            url += keys.map((key, ix, arr) => `${key}=${this._query.get(key)}`).join("&");
         }
         return url;
     }

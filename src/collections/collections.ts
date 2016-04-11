@@ -1,5 +1,7 @@
 "use strict";
 
+import * as Util from "../utils/util";
+
 /**
  * Interface defining an object with a known property type
  */
@@ -64,13 +66,25 @@ export class Dictionary<T> {
     /**
      * Merges the supplied typed hash into this dictionary instance. Existing values are updated and new ones are created as appropriate.
      */
-    public merge(source: ITypedHash<T>): void {
-        for (let key in source) {
-            if (typeof key === "string") {
-                this.add(key, source[key]);
+    /* tslint:disable member-access */
+    public merge(source: ITypedHash<T> | Dictionary<T>): void {
+        if (Util.isFunction(source["getKeys"])) {
+            let sourceAsDictionary = source as Dictionary<T>;
+            let keys = sourceAsDictionary.getKeys();
+            let l = keys.length;
+            for (let i = 0; i < l; i++) {
+                this.add(keys[i], sourceAsDictionary.get(keys[i]));
+            }
+        } else {
+            let sourceAsHash = source as ITypedHash<T>;
+            for (let key in sourceAsHash) {
+                if (sourceAsHash.hasOwnProperty(key)) {
+                    this.add(key, source[key]);
+                }
             }
         }
     }
+    /* tslint:enable */
 
     /**
      * Removes a value from the dictionary
