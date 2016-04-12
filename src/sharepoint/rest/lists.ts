@@ -8,12 +8,13 @@ import { Queryable } from "./queryable";
 import * as Util from "../../utils/util";
 import * as Mixins from "./mixins";
 import { Gettable, FilterableSelectableGettable } from "./actionables";
+import { ITypedHash } from "../../collections/collections";
 
 /**
  * Describes a collection of List objects
  * 
  */
-export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable {
+export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable, Mixins.Postable {
 
     /**
      * Creates a new instance of the Lists class
@@ -44,10 +45,46 @@ export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectab
     }
 
     /**
+     * Adds a new list to the collection
+     * 
+     * @param title The new list's title
+     * @param description The new list's description
+     * @param template The list template value
+     * @param enableContentTypes If true content types will be allowed and enabled, otherwise they will be disallowed and not enabled
+     * @param additionalSettings Will be passed as part of the list creation body
+     */
+    /*tslint:disable max-line-length */
+    public add(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: ITypedHash<string> = {}): Promise<ListAddResult> {
+
+        let postBody = JSON.stringify(Util.extend({
+            "__metadata": { "type": "SP.List" },
+            "AllowContentTypes": true,
+            "BaseTemplate": template,
+            "ContentTypesEnabled": enableContentTypes,
+            "Description": description,
+            "Title": title,
+        }, additionalSettings));
+
+        return this.post({ body: postBody }).then((data) => {
+            return {
+                list: this.getByTitle(title),
+                data: data
+            };
+        });
+    }
+    /*tslint:enable */
+
+    /**
      * Execute the get request
      * 
      */
     public get(): Promise<any> { return; }
+
+    /**
+     * Execute the post request
+     * 
+     */
+    public post(postOptions: any = {}, parser: (r: Response) => Promise<any> = (r) => r.json()): Promise<any> { return; }
 
     /**
      * Select the fields to return
@@ -63,14 +100,14 @@ export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectab
      */
     public filter(filter: string): Lists { return; }
 }
-Util.applyMixins(Lists, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable);
+Util.applyMixins(Lists, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable, Mixins.Postable);
 
 
 /**
  * Describes a single List instance
  * 
  */
-export class List extends Queryable implements Mixins.Gettable, Mixins.Selectable {
+export class List extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Postable {
 
     /**
      * Creates a new instance of the Lists class
@@ -189,10 +226,41 @@ export class List extends Queryable implements Mixins.Gettable, Mixins.Selectabl
     }
 
     /**
+     * Updates this list intance with the supplied properties 
+     * 
+     * 
+     */
+    public update(properties: ITypedHash<string>): Promise<ListUpdateResult> {
+
+        let postBody = JSON.stringify(Util.extend({
+            "__metadata": { "type": "SP.List" },
+        }, properties));
+
+        return this.post({
+            body: postBody,
+            headers: {
+                "IF-Match": "*",
+                "X-HTTP-Method": "MERGE",
+            },
+        }).then((data) => {
+            return {
+                data: data,
+                list: this,
+            };
+        });
+    }
+
+    /**
      * Execute the get request
      * 
      */
     public get(): Promise<any> { return; }
+
+    /**
+     * Execute the post request
+     * 
+     */
+    public post(postOptions: any = {}, parser: (r: Response) => Promise<any> = (r) => r.json()): Promise<any> { return; }
 
     /**
      * Select the fields to return
@@ -202,3 +270,13 @@ export class List extends Queryable implements Mixins.Gettable, Mixins.Selectabl
     public select(...selects: string[]): List { return; }
 }
 Util.applyMixins(List, Mixins.Gettable, Mixins.Selectable);
+
+export interface ListAddResult {
+    list: List;
+    data: any;
+}
+
+export interface ListUpdateResult {
+    list: List;
+    data: any;
+}
