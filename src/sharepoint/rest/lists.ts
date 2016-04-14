@@ -4,17 +4,15 @@ import { Items } from "./items";
 import { Views, View } from "./views";
 import { ContentTypes } from "./contenttypes";
 import { Fields } from "./fields";
-import { Queryable } from "./queryable";
+import { Queryable, QueryableCollection, QueryableSecurable } from "./queryable";
 import * as Util from "../../utils/util";
-import * as Mixins from "./mixins";
-import { Gettable, FilterableSelectableGettable } from "./actionables";
 import { ITypedHash } from "../../collections/collections";
 
 /**
  * Describes a collection of List objects
  * 
  */
-export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Filterable, Mixins.Postable {
+export class Lists extends QueryableCollection {
 
     /**
      * Creates a new instance of the Lists class
@@ -73,41 +71,14 @@ export class Lists extends Queryable implements Mixins.Gettable, Mixins.Selectab
         });
     }
     /*tslint:enable */
-
-    /**
-     * Execute the get request
-     * 
-     */
-    public get(): Promise<any> { return; }
-
-    /**
-     * Execute the post request
-     * 
-     */
-    public post(postOptions: any = {}, parser: (r: Response) => Promise<any> = (r) => r.json()): Promise<any> { return; }
-
-    /**
-     * Select the fields to return
-     * 
-     * @param selects One or more fields to return
-     */
-    public select(...selects: string[]): Lists { return; }
-
-    /**
-     * Applies a filter to the request
-     * 
-     * @param filter The filter string (docs: https://msdn.microsoft.com/en-us/library/office/fp142385.aspx)
-     */
-    public filter(filter: string): Lists { return; }
 }
-Util.applyMixins(Lists, Mixins.Gettable, Mixins.Selectable, Mixins.Filterable, Mixins.Postable);
 
 
 /**
  * Describes a single List instance
  * 
  */
-export class List extends Queryable implements Mixins.Gettable, Mixins.Selectable, Mixins.Postable {
+export class List extends QueryableSecurable {
 
     /**
      * Creates a new instance of the Lists class
@@ -155,65 +126,54 @@ export class List extends Queryable implements Mixins.Gettable, Mixins.Selectabl
      * Gets the default view of this list
      * 
      */
-    public get defaultView(): Gettable<any> {
-        this.append("DefaultView");
-        return new Gettable<any>(this);
+    public get defaultView(): Queryable {
+        this.append("DefaultViewQueryable");
+        return new Queryable(this);
     }
 
     /**
      * Gets the effective base permissions of this list
      * 
      */
-    public get effectiveBasePermissions(): Gettable<any> {
+    public get effectiveBasePermissions(): Queryable {
         this.append("EffectiveBasePermissions");
-        return new Gettable<any>(this);
+        return new Queryable(this);
     }
 
     /**
      * Gets the event receivers attached to this list
      * 
      */
-    public get eventReceivers(): FilterableSelectableGettable<any> {
+    public get eventReceivers(): QueryableCollection {
         this.append("EventReceivers");
-        return new FilterableSelectableGettable<any>(this);
+        return new QueryableCollection(this);
     }
 
     /**
      * Gets the related fields of this list
      * 
      */
-    public get getRelatedFields(): Gettable<any> {
+    public get getRelatedFields(): Queryable {
         this.append("getRelatedFields");
-        return new Gettable<any>(this);
-    }
-
-    /**
-     * Gets the effective permissions for the user supplied
-     * 
-     * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
-     */
-    public getUserEffectivePermissions(loginName: string): Gettable<any> {
-        this.append("getUserEffectivePermissions(@user)");
-        this._query.add("@user", "'" + encodeURIComponent(loginName) + "'");
-        return new Gettable<any>(this);
+        return new Queryable(this);
     }
 
     /**
      * Gets the IRM settings for this list
      * 
      */
-    public get informationRightsManagementSettings(): Gettable<any> {
+    public get informationRightsManagementSettings(): Queryable {
         this.append("InformationRightsManagementSettings");
-        return new Gettable<any>(this);
+        return new Queryable(this);
     }
 
     /**
      * Gets the user custom actions attached to this list
      * 
      */
-    public get userCustomActions(): Gettable<any> {
+    public get userCustomActions(): Queryable {
         this.append("UserCustomActions");
-        return new Gettable<any>(this);
+        return new Queryable(this);
     }
 
     /**
@@ -236,6 +196,8 @@ export class List extends Queryable implements Mixins.Gettable, Mixins.Selectabl
             "__metadata": { "type": "SP.List" },
         }, properties));
 
+        // TODO:: if we update the title, we need to send back a new list based on the new title.
+
         return this.post({
             body: postBody,
             headers: {
@@ -251,25 +213,19 @@ export class List extends Queryable implements Mixins.Gettable, Mixins.Selectabl
     }
 
     /**
-     * Execute the get request
+     * Delete this list
      * 
      */
-    public get(): Promise<any> { return; }
+    public delete(): Promise<void> {
 
-    /**
-     * Execute the post request
-     * 
-     */
-    public post(postOptions: any = {}, parser: (r: Response) => Promise<any> = (r) => r.json()): Promise<any> { return; }
-
-    /**
-     * Select the fields to return
-     * 
-     * @param selects One or more fields to return
-     */
-    public select(...selects: string[]): List { return; }
+        return this.post({
+            headers: {
+                "IF-Match": "*",
+                "X-HTTP-Method": "DELETE",
+            },
+        });
+    }
 }
-Util.applyMixins(List, Mixins.Gettable, Mixins.Selectable);
 
 export interface ListAddResult {
     list: List;
