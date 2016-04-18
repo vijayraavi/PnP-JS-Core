@@ -1,23 +1,19 @@
 "use strict";
 
-import { Queryable } from "./Queryable";
-import * as Util from "../../utils/util";
-import * as Mixins from "./mixins";
+import { Queryable, QueryableCollection } from "./Queryable";
 
-export class SiteUsers extends Queryable implements Mixins.Gettable, Mixins.Filterable, Mixins.Selectable {
+/**
+ * Describes a collection of site users
+ * 
+ */
+export class SiteUsers extends QueryableCollection {
 
-    constructor(url: string | Queryable) {
-        super(url, "SiteUsers");
+    /**
+     * Creates a new instance of the SiteUsers class
+     * 
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     */
+    constructor(baseUrl: string | Queryable) {
+        super(baseUrl, "SiteUsers");
     }
-
-    // gettable stub for mixin
-    public get(): Promise<any> { return; }
-
-    // filterable stub for mixin
-    public filter(filter: string): SiteUsers { return; }
-
-    // selectable stub for mixin
-    public select(...selects: string[]): SiteUsers { return; }
 }
-
-Util.applyMixins(SiteUsers, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);

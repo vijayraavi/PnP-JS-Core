@@ -141,6 +141,7 @@ export function getRandomString(chars: number): string {
  * 
  * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
  */
+/* tslint:disable no-bitwise */
 export function getGUID(): string {
     let d = new Date().getTime();
     let guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
@@ -150,6 +151,7 @@ export function getGUID(): string {
     });
     return guid;
 }
+/* tslint:enable */
 
 /**
  * Determines if a given value is a function
@@ -210,4 +212,13 @@ export function applyMixins(derivedCtor: any, ...baseCtors: any[]) {
             derivedCtor.prototype[name] = baseCtor.prototype[name];
         });
     });
+}
+
+/**
+ * Determines if a given url is absolute
+ *
+ * @param url The url to check to see if it is absolute 
+ */
+export function isUrlAbsolute(url: string): boolean {
+    return /^https?:\/\/|^\/\//i.test(url);
 }

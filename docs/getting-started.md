@@ -1,3 +1,5 @@
+*IMPORTANT NOTE! this library is not  production yet.  The APIs are subject to change radically between now and v1.0.0 as well as how to use it, deploy it, etc.*
+
 #PnP JavaScript Core#
 ##Quick Start Guide##
 
@@ -34,5 +36,5 @@ Unsure where to begin with working on the project? This guide is designed to get
 
 Because we are watching the files, any changes will be reflected in the served files after a new build is complete. You can point from a script tag in your SharePoint site to the http://localhost:3000 site to use the files. Any changes you make will be reflected thanks to the watched build.
 
-Please also review the [API Reference](/api) for details on using the various classes. As always if you see a problem with the documentation please open an issue or even better submit a pull request with an update! Thanks and enjoy the library! 
+Please also review the [API Reference](api/readme.md) for details on using the various classes. As always if you see a problem with the documentation please open an issue or even better submit a pull request with an update! Thanks and enjoy the library! 
 

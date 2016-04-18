@@ -9,7 +9,7 @@ describe("Configuration", () => {
 
     describe("SPListConfigurationProvider", () => {
         let webUrl: string;
-        let mockData: Collections.ITypedHash<string>;
+        let mockData: Collections.TypedHash<string>;
         let calledUrl: string;
 
         beforeEach(() => {

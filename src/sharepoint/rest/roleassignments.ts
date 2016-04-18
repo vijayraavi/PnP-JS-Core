@@ -1,23 +1,19 @@
 "use strict";
 
-import { Queryable } from "./Queryable";
-import * as Util from "../../utils/util";
-import * as Mixins from "./mixins";
+import { Queryable, QueryableCollection } from "./Queryable";
 
-export class RoleAssignments extends Queryable implements Mixins.Gettable, Mixins.Filterable, Mixins.Selectable {
+/**
+ * Describes a set of role assignments for the current scope
+ * 
+ */
+export class RoleAssignments extends QueryableCollection {
 
-    constructor(url: string | Queryable) {
-        super(url, "RoleAssignments");
+    /**
+     * Creates a new instance of the RoleAssignments class
+     * 
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     */
+    constructor(baseUrl: string | Queryable) {
+        super(baseUrl, "RoleAssignments");
     }
-
-    // gettable stub for mixin
-    public get(): Promise<any> { return; }
-
-    // filterable stub for mixin
-    public filter(filter: string): RoleAssignments { return; }
-
-    // selectable stub for mixin
-    public select(...selects: string[]): RoleAssignments { return; }
 }
-
-Util.applyMixins(RoleAssignments, Mixins.Gettable, Mixins.Filterable, Mixins.Selectable);

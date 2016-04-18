@@ -1,17 +1,19 @@
 "use strict";
 
 import { Queryable } from "./Queryable";
-import * as Util from "../../utils/util";
-import * as Mixins from "./mixins";
 
-export class QuickLaunch extends Queryable implements Mixins.Gettable {
+/**
+ * Describes the quick launch navigation
+ * 
+ */
+export class QuickLaunch extends Queryable {
 
-    constructor(url: string | Queryable) {
-        super(url, "QuickLaunch");
+    /**
+     * Creates a new instance of the Lists class
+     * 
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     */
+    constructor(baseUrl: string | Queryable) {
+        super(baseUrl, "QuickLaunch");
     }
-
-    // gettable stub for mixin
-    public get(): Promise<any> { return; }
 }
-
-Util.applyMixins(QuickLaunch, Mixins.Gettable);

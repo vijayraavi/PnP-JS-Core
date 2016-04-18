@@ -1,5 +1,5 @@
 import {IConfigurationProvider} from "../configuration";
-import {ITypedHash} from "../../collections/collections";
+import {TypedHash} from "../../collections/collections";
 import { default as CachingConfigurationProvider } from "./cachingConfigurationProvider";
 import * as ajax from "../../Utils/Ajax";
 
@@ -38,14 +38,14 @@ export default class SPListConfigurationProvider implements IConfigurationProvid
     /**
      * Loads the configuration values from the SharePoint list
      * 
-     * @return {Promise<ITypedHash<string>>} Promise of loaded configuration values
+     * @return {Promise<TypedHash<string>>} Promise of loaded configuration values
      */
-    public getConfiguration(): Promise<ITypedHash<string>> {
+    public getConfiguration(): Promise<TypedHash<string>> {
         return new Promise((resolve, reject) => {
             let url = `${ this.webUrl }/_api/web/lists/getByTitle('${ this.listTitle }')/items?$select=Title,Value`;
             ajax.get(url).success(data => {
                 let results: any = (data.d.hasOwnProperty("results")) ? data.d.results : data.d;
-                let configuration: ITypedHash<string> = {};
+                let configuration: TypedHash<string> = {};
                 results.forEach(i => {
                     configuration[i.Title] = i.Value;
                 });

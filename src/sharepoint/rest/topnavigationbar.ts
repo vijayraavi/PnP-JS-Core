@@ -1,17 +1,19 @@
 "use strict";
 
-import { Queryable } from "./Queryable";
-import * as Util from "../../utils/util";
-import * as Mixins from "./mixins";
+import { Queryable, QueryableInstance } from "./Queryable";
 
-export class TopNavigationBar extends Queryable implements Mixins.Gettable {
+/**
+ * Describes the top navigation on the site
+ * 
+ */
+export class TopNavigationBar extends QueryableInstance {
 
-    constructor(url: string | Queryable) {
-        super(url, "TopNavigationBar");
+    /**
+     * Creates a new instance of the SiteUsers class
+     * 
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     */
+    constructor(baseUrl: string | Queryable) {
+        super(baseUrl, "TopNavigationBar");
     }
-
-    // gettable stub for mixin
-    public get(): Promise<any> { return; }
 }
-
-Util.applyMixins(TopNavigationBar, Mixins.Gettable);

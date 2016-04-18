@@ -25,7 +25,7 @@ describe("Lists", () => {
         it("Should return _api/web/lists('4FC65058-FDDE-4FAD-AB21-2E881E1CF527')", () => {
             let lists = new Lists("_api/web");
             let list = lists.getById("4FC65058-FDDE-4FAD-AB21-2E881E1CF527");
-            expect(list.toUrl()).to.equal("_api/web/lists('4FC65058-FDDE-4FAD-AB21-2E881E1CF527')");
+            expect(list.toUrl()).to.equal("_api/web/lists(guid'4FC65058-FDDE-4FAD-AB21-2E881E1CF527')");
         });
     });
 });

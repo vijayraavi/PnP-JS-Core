@@ -14,7 +14,7 @@ describe("Configuration", () => {
         let settings: Configuration.Settings;
 
         beforeEach(() => {
-            let mockValues: Collections.ITypedHash<string> = {
+            let mockValues: Collections.TypedHash<string> = {
                 "key1": "value1",
                 "key2": "value2",
             };
@@ -35,7 +35,7 @@ describe("Configuration", () => {
         it("Returns cached values", () => {
             let provider = new CachingConfigurationProvider(wrapped, "cacheKey", store);
             return settings.load(provider).then(() => {
-                let updatedValues: Collections.ITypedHash<string> = {
+                let updatedValues: Collections.TypedHash<string> = {
                     "key1": "update1",
                     "key2": "update2",
                 };
@@ -51,7 +51,7 @@ describe("Configuration", () => {
             store.enabled = false;
             let provider = new CachingConfigurationProvider(wrapped, "cacheKey", store);
             return settings.load(provider).then(() => {
-                let updatedValues: Collections.ITypedHash<string> = {
+                let updatedValues: Collections.TypedHash<string> = {
                     "key1": "update1",
                     "key2": "update2",
                 };

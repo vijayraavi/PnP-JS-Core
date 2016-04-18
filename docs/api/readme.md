@@ -1,3 +1,5 @@
+*IMPORTANT NOTE! this library is not  production yet.  The APIs are subject to change radically between now and v1.0.0 as well as how to use it, deploy it, etc.*
+
 #PnP JavaScript Core#
 ##API Reference##
 
@@ -6,10 +8,8 @@ This guide describes the public API surface of the Patterns and Practices core J
 ##Loading the Library##
 
 ###NPM###
-Coming Soon!
 
-###Bower###
-Coming Soon!
+`npm install sp-pnp-js`
 
 ##Importing the code for use:##
 
