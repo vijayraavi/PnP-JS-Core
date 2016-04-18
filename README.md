@@ -1,3 +1,5 @@
+*IMPORTANT NOTE! this library is not  production yet.  The APIs are subject to change radically between now and v1.0.0 as well as how to use it, deploy it, etc.*
+
 # PnP Core Component (JavaScript) #
 This is the Community Source Code location for JavaScript Core component. This is a "sub" repository for the PnP repository at [https://github.com/OfficeDev/PnP](https://github.com/OfficeDev/PnP) which will contain PnP JavaScript Core Component and related resources. This work is coordinated by the PnP Special Interest Group (SIG) for SharePoint Client Side (JS) development and main discussion and communications happen at specific [Yammer group at Office 365 Technical Network](http://aka.ms/officedevpnpsigjavascriptyammer).
 
