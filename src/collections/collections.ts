@@ -5,7 +5,7 @@ import * as Util from "../utils/util";
 /**
  * Interface defining an object with a known property type
  */
-export interface ITypedHash<T> {
+export interface TypedHash<T> {
     [key: string]: T;
 }
 
@@ -67,7 +67,7 @@ export class Dictionary<T> {
      * Merges the supplied typed hash into this dictionary instance. Existing values are updated and new ones are created as appropriate.
      */
     /* tslint:disable member-access */
-    public merge(source: ITypedHash<T> | Dictionary<T>): void {
+    public merge(source: TypedHash<T> | Dictionary<T>): void {
         if (Util.isFunction(source["getKeys"])) {
             let sourceAsDictionary = source as Dictionary<T>;
             let keys = sourceAsDictionary.getKeys();
@@ -76,7 +76,7 @@ export class Dictionary<T> {
                 this.add(keys[i], sourceAsDictionary.get(keys[i]));
             }
         } else {
-            let sourceAsHash = source as ITypedHash<T>;
+            let sourceAsHash = source as TypedHash<T>;
             for (let key in sourceAsHash) {
                 if (sourceAsHash.hasOwnProperty(key)) {
                     this.add(key, source[key]);

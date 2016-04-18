@@ -1,5 +1,5 @@
 import {IConfigurationProvider} from "../configuration";
-import {ITypedHash} from "../../collections/collections";
+import {TypedHash} from "../../collections/collections";
 import * as storage from "../../utils/storage";
 
 /** 
@@ -36,9 +36,9 @@ export default class CachingConfigurationProvider implements IConfigurationProvi
     /**
      * Loads the configuration values either from the cache or from the wrapped provider
      * 
-     * @return {Promise<ITypedHash<string>>} Promise of loaded configuration values
+     * @return {Promise<TypedHash<string>>} Promise of loaded configuration values
      */
-    public getConfiguration(): Promise<ITypedHash<string>> {
+    public getConfiguration(): Promise<TypedHash<string>> {
         // Cache not available, pass control to  the wrapped provider
         if ((! this.store) || (!this.store.enabled)) {
             return this.wrappedProvider.getConfiguration();
@@ -47,7 +47,7 @@ export default class CachingConfigurationProvider implements IConfigurationProvi
         // Value is found in cache, return it directly
         let cachedConfig = this.store.get(this.cacheKey);
         if (cachedConfig) {
-            return new Promise<ITypedHash<string>>((resolve, reject) => {
+            return new Promise<TypedHash<string>>((resolve, reject) => {
                 resolve(cachedConfig);
             });
         }

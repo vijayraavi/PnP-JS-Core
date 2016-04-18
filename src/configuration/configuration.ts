@@ -17,7 +17,7 @@ export interface IConfigurationProvider {
     /**
      * Gets the configuration from the provider
      */
-    getConfiguration(): Promise<Collections.ITypedHash<string>>;
+    getConfiguration(): Promise<Collections.TypedHash<string>>;
 }
 
 /** 
@@ -63,9 +63,9 @@ export class Settings {
     /**
      * Applies the supplied hash to the setting collection overwriting any existing value, or created new values
      * 
-     * @param {Collections.ITypedHash<any>} hash The set of values to add
+     * @param {Collections.TypedHash<any>} hash The set of values to add
      */
-    public apply(hash: Collections.ITypedHash<any>): void {
+    public apply(hash: Collections.TypedHash<any>): void {
         this._settings.merge(hash);
     }
 
