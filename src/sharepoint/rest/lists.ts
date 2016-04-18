@@ -6,7 +6,7 @@ import { ContentTypes } from "./contenttypes";
 import { Fields } from "./fields";
 import { Queryable, QueryableCollection, QueryableSecurable } from "./queryable";
 import * as Util from "../../utils/util";
-import { ITypedHash } from "../../collections/collections";
+import { TypedHash } from "../../collections/collections";
 
 /**
  * Describes a collection of List objects
@@ -52,7 +52,7 @@ export class Lists extends QueryableCollection {
      * @param additionalSettings Will be passed as part of the list creation body
      */
     /*tslint:disable max-line-length */
-    public add(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: ITypedHash<string> = {}): Promise<ListAddResult> {
+    public add(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string> = {}): Promise<ListAddResult> {
 
         let postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.List" },
@@ -190,7 +190,7 @@ export class List extends QueryableSecurable {
      * 
      * 
      */
-    public update(properties: ITypedHash<string>): Promise<ListUpdateResult> {
+    public update(properties: TypedHash<string>): Promise<ListUpdateResult> {
 
         let postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.List" },

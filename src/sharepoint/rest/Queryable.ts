@@ -182,7 +182,6 @@ export class QueryableCollection extends Queryable {
         this._query.add("$select", selects.join(","));
         return this;
     }
-
 }
 
 

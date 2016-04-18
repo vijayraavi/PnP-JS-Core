@@ -27,4 +27,4 @@ Gets the wrapped configuration providers
 
 Loads the configuration values either from the cache or from the wrapped provider
 
-**Returns**: `Promise<ITypedHash<string>>`, , Promise of loaded configuration values
+**Returns**: `Promise<TypedHash<string>>`, , Promise of loaded configuration values

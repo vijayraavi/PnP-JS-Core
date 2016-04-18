@@ -34,7 +34,7 @@ Applies the supplied hash to the setting collection overwriting any existing val
 
 **Parameters**
 
-**hash**: `Collections.ITypedHash.&lt;any&gt;`, The set of values to add
+**hash**: `Collections.TypedHash.&lt;any&gt;`, The set of values to add
 
 
 ### Settings.load(provider) 

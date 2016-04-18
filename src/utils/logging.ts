@@ -31,7 +31,7 @@ export interface LogEntry {
     /**
      * Any associated data that a given logging listener may choose to log or ignore
      */
-    data?: Collections.ITypedHash<string>;
+    data?: Collections.TypedHash<string>;
 }
 
 /**

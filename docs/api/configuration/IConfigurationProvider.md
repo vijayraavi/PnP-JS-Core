@@ -17,5 +17,5 @@ None
 
 **Return values**
 
-`Promise<Collections.ITypedHash<string>>`, Promise of a set of configuration values
+`Promise<Collections.TypedHash<string>>`, Promise of a set of configuration values
 

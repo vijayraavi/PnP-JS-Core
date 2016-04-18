@@ -30,7 +30,7 @@ Gets the title of the SharePoint list, which contains the configuration settings
 
 Loads the configuration values from the SharePoint list
 
-**Returns**: `Promise<ITypedHash<string>>`, Promise of loaded configuration values
+**Returns**: `Promise<TypedHash<string>>`, Promise of loaded configuration values
 
 ### SPListConfigurationProvider.asCaching() 
 
