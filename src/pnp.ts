@@ -5,6 +5,7 @@ import { SharePoint } from "./SharePoint/SharePoint";
 import { PnPClientStorage } from "./utils/Storage";
 import * as Configuration from "./configuration/configuration";
 import { Logger } from "./utils/logging";
+import { Rest } from "./SharePoint/Rest/rest";
 
 /**
  * Root class of the Patterns and Practices namespace, provides an entry point to the library
@@ -16,22 +17,27 @@ export default class PnP {
     public static util = Util;
 
     /**
-     * SharePoint
+     * The full SharePoint library
      */
     public static sharepoint = new SharePoint();
 
     /**
-     * Provides access to local and session storage through
+     * Provides easy access to the REST interface
+     */
+    public static sp = new Rest();
+
+    /**
+     * Provides access to local and session storage
      */
     public static storage: PnPClientStorage = new PnPClientStorage();
 
     /**
-     * Configuration
+     * Global configuration instance to which providers can be added 
      */
     public static configuration = Configuration;
 
     /**
      * Global logging instance to which subscribers can be registered and messages written
      */
-    public static logging = new Logger();
+    public static log = Logger;
 }

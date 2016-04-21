@@ -3,14 +3,14 @@
 import { expect } from "chai";
 import * as Logging from "../../src/utils/logging";
 
-describe("Storage", () => {
+describe("Logging", () => {
 
-    describe("PnPClientStorageWrapper", () => {
+    describe("Logger", () => {
 
-        let logger: Logging.Logger;
+        let logger = Logging.Logger;
 
         beforeEach(() => {
-            logger = new Logging.Logger(Logging.LogLevel.Verbose);
+            logger.clearSubscribers();
         });
 
         it("Can create an Logger instance and subscribe an ILogListener", () => {
@@ -19,7 +19,7 @@ describe("Storage", () => {
             logger.subscribe(new Logging.FunctionListener((e) => {
                 message2 = e.message;
             }));
-            logger.write(message);
+            logger.write(message, Logging.LogLevel.Warning);
             expect(message2).to.eq(message);
         });
 
@@ -39,7 +39,7 @@ describe("Storage", () => {
             logger.subscribe(new Logging.FunctionListener((e) => { return; }));
             logger.subscribe(new Logging.FunctionListener((e) => { return; }));
             logger.subscribe(new Logging.FunctionListener((e) => { return; }));
-            expect(logger.count()).to.eq(3);
+            expect(logger.count).to.eq(3);
         });
     });
 });

@@ -22,6 +22,6 @@ describe("PnP", () => {
     });
 
     it("logging should not be null", () => {
-        expect(pnp.logging).to.not.be.null;
+        expect(pnp.log).to.not.be.null;
     });
 });
