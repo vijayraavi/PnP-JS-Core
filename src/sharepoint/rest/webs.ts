@@ -264,7 +264,6 @@ export class Web extends QueryableSecurable {
         let q = new Web(this, `getcatalog(${type})`);
         q.select("Id");
         return q.get().then((data) => {
-            debugger;
             return new List(data["odata.id"]);
         });
     }
