@@ -1,10 +1,11 @@
 "use strict";
 
-/// <reference path="..\schema\ifile.d.ts" />
 // import { Promise } from "es6-promise";
-/// <reference path="../../../utils/util" />
 import { replaceUrlTokens } from "../../../../sharepoint/util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
+import { IFile } from "../schema/ifile";
+import { IWebPart } from "../schema/iwebpart";
+import { IHiddenView } from "../schema/ihiddenview";
 
 export class ObjectFiles extends ObjectHandlerBase {
     constructor() {

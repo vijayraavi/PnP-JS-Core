@@ -1,8 +1,8 @@
 "use strict";
 
-/// <reference path="..\schema\icustomaction.d.ts" />
 // import { Promise } from "es6-promise";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
+import { ICustomAction } from "../schema/icustomaction";
 
 export class ObjectCustomActions extends ObjectHandlerBase {
     constructor() {

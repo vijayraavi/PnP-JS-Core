@@ -9,7 +9,7 @@ import { Logger } from "./utils/logging";
 /**
  * Root class of the Patterns and Practices namespace, provides an entry point to the library
  */
-class PnP {
+export default class PnP {
     /**
      * Utility methods
      */
@@ -26,7 +26,7 @@ class PnP {
     public static storage: PnPClientStorage = new PnPClientStorage();
 
     /**
-     * Configuration 
+     * Configuration
      */
     public static configuration = Configuration;
 
@@ -35,5 +35,3 @@ class PnP {
      */
     public static logging = new Logger();
 }
-
-export = PnP;
