@@ -3,7 +3,6 @@
 import { expect } from "chai";
 import pnp = require("../src/pnp");
 
-
 describe("PnP", () => {
 
     it("util should not be null", () => {
