@@ -1,8 +1,8 @@
 "use strict";
 
-/// <reference path="..\schema\iwebsettings.d.ts" />
 // import { Promise } from "es6-promise";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
+import { IWebSettings } from "../schema/iwebsettings";
 
 export class ObjectWebSettings extends ObjectHandlerBase {
     constructor() {
