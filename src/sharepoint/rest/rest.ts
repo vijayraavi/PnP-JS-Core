@@ -4,6 +4,7 @@ import { Site } from "./site";
 import { Web } from "./webs";
 import * as Util from "../../utils/util";
 import { Queryable } from "./queryable";
+import { UserProfileQuery } from "./userprofiles";
 
 /**
  * Root of the SharePoint REST module
@@ -13,7 +14,6 @@ export class Rest {
     /**
      * Begins a site collection scoped REST request
      * 
-     * @param url The base url for the request, optional if running in the context of a page
      */
     public get site(): Site {
         return new Site("_api", "site");
@@ -22,10 +22,17 @@ export class Rest {
     /**
      * Begins a web scoped REST request
      * 
-     * @param url The base url for the request, optional if running in the context of a page
      */
     public get web(): Web {
         return new Web("_api", "web");
+    }
+
+    /**
+     * Access to user profile methods
+     *  
+     */
+    public get profiles(): UserProfileQuery {
+        return new UserProfileQuery("_api");
     }
 
     /**
