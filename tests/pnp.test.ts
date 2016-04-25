@@ -1,7 +1,7 @@
 "use strict";
 
 import { expect } from "chai";
-import pnp from "../src/pnp";
+import pnp = require("../src/pnp");
 
 describe("PnP", () => {
 
@@ -22,6 +22,6 @@ describe("PnP", () => {
     });
 
     it("logging should not be null", () => {
-        expect(pnp.logging).to.not.be.null;
+        expect(pnp.log).to.not.be.null;
     });
 });
