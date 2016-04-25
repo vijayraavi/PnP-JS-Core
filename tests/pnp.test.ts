@@ -1,7 +1,8 @@
 "use strict";
 
 import { expect } from "chai";
-import pnp from "../src/pnp";
+import pnp = require("../src/pnp");
+
 
 describe("PnP", () => {
 
