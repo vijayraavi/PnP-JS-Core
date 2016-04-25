@@ -10,7 +10,7 @@ import { Rest } from "./SharePoint/Rest/rest";
 /**
  * Root class of the Patterns and Practices namespace, provides an entry point to the library
  */
-export default class PnP {
+class PnP {
     /**
      * Utility methods
      */
@@ -41,3 +41,5 @@ export default class PnP {
      */
     public static log = Logger;
 }
+
+export = PnP
