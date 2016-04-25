@@ -7,7 +7,7 @@
 
 Interface for configuration providers
 
-### IConfigurationProvider.getConfiguration() 
+### IConfigurationProvider.getConfiguration()
 
 Loads the configuration from the provider in async manner
 

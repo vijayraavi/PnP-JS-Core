@@ -1,8 +1,8 @@
 "use strict";
 
-/// <reference path="..\schema\ifeature.d.ts" />
 // import { Promise } from "es6-promise";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
+import { IFeature } from "../schema/ifeature";
 
 export class ObjectFeatures extends ObjectHandlerBase {
     constructor() {

@@ -1,10 +1,5 @@
 "use strict";
 
-/// <reference path="..\schema\schema.d.ts" />
-/// <reference path="iwaitmessageoptions.d.ts" />
-/// <reference path="ioptions.d.ts" />
-/// <reference path="../../../utils/util" />
-
 // import { Promise } from "es6-promise";
 import { ProvisioningStep } from "./ProvisioningStep";
 import { ObjectNavigation } from "../ObjectHandlers/ObjectNavigation/ObjectNavigation";
@@ -18,6 +13,8 @@ import { ObjectLists } from "../ObjectHandlers/ObjectLists/ObjectLists";
 import { replaceUrlTokens } from "../../../sharepoint/util";
 import * as Resources from "../Resources/Resources";
 import { Log } from "../Provisioning";
+import { SiteSchema } from "../schema/isiteschema";
+import { IOptions } from "./ioptions";
 
 export class Core {
     private handlers;

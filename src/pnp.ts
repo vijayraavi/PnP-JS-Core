@@ -32,7 +32,7 @@ class PnP {
     public static storage: PnPClientStorage = new PnPClientStorage();
 
     /**
-     * Global logging instance to which providers can be added 
+     * Global logging instance to which providers can be added
      */
     public static configuration = Configuration;
 

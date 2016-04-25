@@ -1,11 +1,10 @@
 "use strict";
 
-/// <reference path="..\schema\inavigation.d.ts" />
 // import { Promise } from "es6-promise";
-/// <reference path="../../../utils/util" />
 import { getNodeFromCollectionByTitle, replaceUrlTokens } from "../../../util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
-
+import { INavigation } from "../schema/inavigation";
+import { INavigationNode } from "../schema/inavigationnode";
 
 export class ObjectNavigation extends ObjectHandlerBase {
     constructor() {
