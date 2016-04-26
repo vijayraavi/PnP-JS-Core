@@ -78,7 +78,6 @@ require("./buildtasks/build-typings.js");
 require("./buildtasks/clean.js");
 require("./buildtasks/copyJsToSharePoint.js");
 require("./buildtasks/copyRequireJsToSharePoint.js");
-require("./buildtasks/copyTestsToSharePoint.js");
 require("./buildtasks/default.js");
 require("./buildtasks/istanbul-hook.js");
 require("./buildtasks/lint.js");
