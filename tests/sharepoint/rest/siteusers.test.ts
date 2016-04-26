@@ -9,9 +9,9 @@ describe("SiteUsers", () => {
         expect(siteUsers).to.be.a("object");
     });
     describe("url", () => {
-        it("Should return _api/web/SiteUsers", () => {
+        it("Should return _api/web/siteusers", () => {
             let siteUsers = new SiteUsers("_api/web");
-            expect(siteUsers.toUrl()).to.equal("_api/web/SiteUsers");
+            expect(siteUsers.toUrl()).to.equal("_api/web/siteusers");
         });
     });
 });

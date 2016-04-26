@@ -64,8 +64,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get name(): Queryable {
-        this.append("Name");
-        return new Queryable(this);
+        return new Queryable(this, "Name");
     }
 
     /**
@@ -73,8 +72,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get properties(): QueryableInstance {
-        this.append("Properties");
-        return new QueryableInstance(this);
+        return new QueryableInstance(this, "Properties");
     }
 
     /**
@@ -82,8 +80,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get serverRelativeUrl(): Queryable {
-        this.append("ServerRelativeUrl");
-        return new Queryable(this);
+        return new Queryable(this, "ServerRelativeUrl");
     }
 
     /**

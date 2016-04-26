@@ -49,8 +49,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get value(): Queryable {
-        this.append("$value");
-        return new Queryable(this);
+        return new Queryable(this, "$value");
     }
 
     /**
@@ -58,8 +57,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get checkedOutByUser(): Queryable {
-        this.append("CheckedOutByUser");
-        return new Queryable(this);
+        return new Queryable(this, "CheckedOutByUser");
     }
 
     /**
@@ -67,8 +65,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get eTag(): Queryable {
-        this.append("ETag");
-        return new Queryable(this);
+        return new Queryable(this, "ETag");
     }
 
     /**
@@ -76,8 +73,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get serverRelativeUrl(): Queryable {
-        this.append("ServerRelativeUrl");
-        return new Queryable(this);
+        return new Queryable(this, "ServerRelativeUrl");
     }
 
     /**
@@ -111,7 +107,9 @@ export class Versions extends QueryableCollection {
      * @param versionId The id of the version to retrieve
      */
     public getById(versionId: number): Version {
-        return new Version(this.toUrl().concat(`(${versionId})`));
+        let v = new Version(this);
+        v.concat(`(${versionId})`);
+        return v;
     }
 }
 

@@ -65,7 +65,7 @@ export class Queryable {
      * 
      * @param pathPart The string to concatonate to the url
      */
-    protected concat(pathPart: string) {
+    public concat(pathPart: string) {
         this._url += pathPart;
     }
 

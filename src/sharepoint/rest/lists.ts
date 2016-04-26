@@ -152,8 +152,7 @@ export class List extends QueryableSecurable {
      * 
      */
     public get defaultView(): Queryable {
-        this.append("DefaultViewQueryable");
-        return new Queryable(this);
+        return new Queryable(this, "DefaultView");
     }
 
     /**
@@ -161,8 +160,7 @@ export class List extends QueryableSecurable {
      * 
      */
     public get effectiveBasePermissions(): Queryable {
-        this.append("EffectiveBasePermissions");
-        return new Queryable(this);
+        return new Queryable(this, "EffectiveBasePermissions");
     }
 
     /**
@@ -170,17 +168,15 @@ export class List extends QueryableSecurable {
      * 
      */
     public get eventReceivers(): QueryableCollection {
-        this.append("EventReceivers");
-        return new QueryableCollection(this);
+        return new QueryableCollection(this, "EventReceivers");
     }
 
     /**
      * Gets the related fields of this list
      * 
      */
-    public get getRelatedFields(): Queryable {
-        this.append("getRelatedFields");
-        return new Queryable(this);
+    public get relatedFields(): Queryable {
+        return new Queryable(this, "getRelatedFields");
     }
 
     /**
@@ -188,8 +184,7 @@ export class List extends QueryableSecurable {
      * 
      */
     public get informationRightsManagementSettings(): Queryable {
-        this.append("InformationRightsManagementSettings");
-        return new Queryable(this);
+        return new Queryable(this, "InformationRightsManagementSettings");
     }
 
     /**
@@ -197,8 +192,7 @@ export class List extends QueryableSecurable {
      * 
      */
     public get userCustomActions(): Queryable {
-        this.append("UserCustomActions");
-        return new Queryable(this);
+        return new Queryable(this, "UserCustomActions");
     }
 
     /**
@@ -206,8 +200,7 @@ export class List extends QueryableSecurable {
      * 
      */
     public getView(viewId: string): View {
-        this.append(`getView('${viewId}')`);
-        return new View(this);
+        return new View(this, `getView('${viewId}')`);
     }
 
     /**

@@ -16,7 +16,7 @@ export class Navigation extends Queryable {
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
     constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "Navigation");
+        super(baseUrl, "navigation");
     }
 
     /**

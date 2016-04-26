@@ -35,7 +35,9 @@ export class Fields extends QueryableCollection {
      * @param title The Id of the list  
      */
     public getById(id: string): Field {
-        return new Field(this.toUrl().concat(`('${id}')`));
+        let f = new Field(this);
+        f.concat(`('${id}')`);
+        return f;
     }
 
     /**
@@ -284,7 +286,7 @@ export class Field extends QueryableInstance {
      * @param baseUrl The url or Queryable which forms the parent of this field instance
      */
     constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl);
+        super(baseUrl, path);
     }
 
     /**

@@ -3,7 +3,6 @@
 import { Queryable, QueryableInstance, QueryableCollection } from "./Queryable";
 import { QueryableSecurable } from "./QueryableSecurable";
 import { Lists } from "./lists";
-import { RoleAssignments } from "./roleAssignments";
 import { Navigation } from "./navigation";
 import { SiteUsers } from "./siteUsers";
 import { ContentTypes } from "./contentTypes";
@@ -12,6 +11,7 @@ import { File } from "./files";
 import { TypedHash } from "../../collections/collections";
 import * as Util from "../../utils/util";
 import * as Types from "./types";
+import { Locale } from "../../types/locale";
 import { List } from "./lists";
 
 
@@ -36,7 +36,7 @@ export class Webs extends QueryableCollection {
         url: string,
         description = "",
         template = "STS",
-        language = 1033,
+        language = Locale.EnglishUnitedStates,
         inheritPermissions = true,
         additionalSettings: TypedHash<string | number | boolean> = {}): Promise<WebAddResult> {
 
@@ -87,14 +87,6 @@ export class Web extends QueryableSecurable {
      */
     public get contentTypes(): ContentTypes {
         return new ContentTypes(this);
-    }
-
-    /**
-     * Get the role assignments applied to this web
-     * 
-     */
-    public get roleAssignments(): RoleAssignments {
-        return new RoleAssignments(this);
     }
 
     /**
@@ -250,8 +242,8 @@ export class Web extends QueryableSecurable {
      * @param language The LCID of the site templates to get.
      * @param true to include language-neutral site templates; otherwise false
      */
-    public availableWebTemplates(language = 1033, includeCrossLanugage = true): QueryableCollection {
-        return new QueryableCollection(this, `getavailablewebtemplates(lcid=${language} doincludecrosslanguage=${includeCrossLanugage})`);
+    public availableWebTemplates(language = Locale.EnglishUnitedStates, includeCrossLanugage = true): QueryableCollection {
+        return new QueryableCollection(this, `getavailablewebtemplates(lcid=${language}, doincludecrosslanguage=${includeCrossLanugage})`);
     }
 
     /**
@@ -276,7 +268,7 @@ export class Web extends QueryableSecurable {
 
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
 
-        // don't change "this" instance of the List, make a new one
+        // don't change "this" instance, make a new one
         let q = new Web(this, "getchanges");
         return q.post({ body: postBody });
     }

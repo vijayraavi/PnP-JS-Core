@@ -19,8 +19,8 @@ export class Items extends QueryableCollection {
      * 
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "items");
+    constructor(baseUrl: string | Queryable, path = "items") {
+        super(baseUrl, path);
     }
 
     /**
@@ -29,7 +29,9 @@ export class Items extends QueryableCollection {
      * @param id The integer id of the item to retrieve
      */
     public getById(id: number): Item {
-        return new Item(this.toUrl().concat(`(${id})`));
+        let i = new Item(this);
+        i.concat(`(${id})`);
+        return i;
     }
 
     /**
@@ -78,8 +80,7 @@ export class Item extends QueryableSecurable {
      * 
      */
     public get attachmentFiles(): QueryableCollection {
-        this.append("AttachmentFiles");
-        return new QueryableCollection(this);
+        return new QueryableCollection(this, "AttachmentFiles");
     }
 
     /**
@@ -87,8 +88,7 @@ export class Item extends QueryableSecurable {
      * 
      */
     public get contentType(): ContentType {
-        this.append("ContentType");
-        return new ContentType(this);
+        return new ContentType(this, "ContentType");
     }
 
     /**
@@ -96,8 +96,7 @@ export class Item extends QueryableSecurable {
      * 
      */
     public get effectiveBasePermissions(): Queryable {
-        this.append("EffectiveBasePermissions");
-        return new Queryable(this);
+        return new Queryable(this, "EffectiveBasePermissions");
     }
 
     /**
@@ -105,8 +104,7 @@ export class Item extends QueryableSecurable {
      * 
      */
     public get effectiveBasePermissionsForUI(): Queryable {
-        this.append("EffectiveBasePermissionsForUI");
-        return new Queryable(this);
+        return new Queryable(this, "EffectiveBasePermissionsForUI");
     }
 
     /**
@@ -114,8 +112,7 @@ export class Item extends QueryableSecurable {
      * 
      */
     public get fieldValuesAsHTML(): QueryableInstance {
-        this.append("FieldValuesAsHTML");
-        return new QueryableInstance(this);
+        return new QueryableInstance(this, "FieldValuesAsHTML");
     }
 
     /**
@@ -123,8 +120,7 @@ export class Item extends QueryableSecurable {
      * 
      */
     public get fieldValuesAsText(): QueryableInstance {
-        this.append("FieldValuesAsText");
-        return new QueryableInstance(this);
+        return new QueryableInstance(this, "FieldValuesAsText");
     }
 
     /**
@@ -132,8 +128,7 @@ export class Item extends QueryableSecurable {
      * 
      */
     public get fieldValuesForEdit(): QueryableInstance {
-        this.append("FieldValuesForEdit");
-        return new QueryableInstance(this);
+        return new QueryableInstance(this, "FieldValuesForEdit");
     }
 
     /**
@@ -193,8 +188,8 @@ export class Item extends QueryableSecurable {
      * Moves the list item to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        this.append("recycle");
-        return this.post();
+        let i = new Item(this, "recycle");
+        return i.post();
     }
 
     /**
