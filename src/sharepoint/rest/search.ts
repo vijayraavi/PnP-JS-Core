@@ -249,7 +249,7 @@ export class Search extends QueryableInstance {
      * .......
      * @returns Promise
      */
-    public get(): Promise<any> {
+    public execute(): Promise<SearchResult> {
 
         let formattedBody: any;
         formattedBody = this.searchQuery;

@@ -17,8 +17,10 @@ export class Rest {
      * 
      * @param query The SearchQuery definition
      */
-    public search(query: SearchQuery): SearchResult {
-        return new Search("_api/search", query);
+    public search(query: SearchQuery): Promise<SearchResult> {
+        return new Search("_api/search", query).execute().then(function(results) {
+            return results;
+        });
     }
 
     /**
