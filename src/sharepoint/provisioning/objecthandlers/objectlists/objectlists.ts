@@ -1,9 +1,10 @@
 "use strict";
 
-/// <reference path="..\schema\ilistinstance.d.ts" />
 // import { Promise } from "es6-promise";
 import { Sequencer } from "../../Sequencer/Sequencer";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
+import { IListInstance } from "../schema/ilistinstance";
+import { IField } from "../schema/ifield";
 
 export class ObjectLists extends ObjectHandlerBase {
     constructor() {

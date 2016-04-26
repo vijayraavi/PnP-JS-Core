@@ -15,7 +15,8 @@ global.TSTypings = {
 };
 
 global.TSCompiledOutput = {
-    "RootFolder": 'lib',
+    "RootFolder": 'lib/src',
+    "TestRootFolder": 'lib/tests',
     "JSCodeFiles": [
         'lib/**/*.js',
         '!lib/**/*.test.js'
@@ -30,6 +31,9 @@ global.TSWorkspace = {
     "PnPFile": "src/pnp.ts",
     "Files": [
         'src/**/*.ts',
+    ],
+    "Tests": [
+        'tests/**/*.ts',
     ]
 };
 

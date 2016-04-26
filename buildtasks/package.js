@@ -41,7 +41,7 @@ function packageBundle() {
 
     console.log(global.TSDist.RootFolder + "/" + global.TSDist.BundleFileName);
 
-    return browserify('./lib/pnp.js', {
+    return browserify('./lib/src/pnp.js', {
         debug: false,
         standalone: '$pnp',
         external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
@@ -57,7 +57,7 @@ function packageBundleUglify() {
     console.log(global.TSDist.RootFolder + "/" + global.TSDist.MinifyFileName);
     console.log(global.TSDist.RootFolder + "/" + global.TSDist.MinifyFileName + ".map");
 
-    return browserify('./lib/pnp.js', {
+    return browserify('./lib/src/pnp.js', {
         debug: false,
         standalone: '$pnp',
         external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]

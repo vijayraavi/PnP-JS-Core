@@ -53,31 +53,35 @@ export interface LogListener {
  */
 export class Logger {
 
-    /**
-     * Creates a new instance of the Logger class
-     * 
-     * @constructor
-     * @param activeLogLevel the level used to filter messages (Default: LogLevel.Warning)
-     * @param subscribers [Optional] if provided will initialize the array of subscribed listeners
-     */
-    constructor(public activeLogLevel: LogLevel = LogLevel.Warning, private subscribers: LogListener[] = []) { }
+    private static _instance: LoggerImpl;
+
+    private static get instance(): LoggerImpl {
+        if (typeof Logger._instance === "undefined" || Logger._instance === null) {
+            Logger._instance = new LoggerImpl();
+        }
+        return Logger._instance;
+    }
 
     /**
      * Adds an ILogListener instance to the set of subscribed listeners
      * 
      */
-    public subscribe(listener: LogListener): void {
+    public static subscribe(listener: LogListener): void {
+        Logger.instance.subscribe(listener);
+    }
 
-        Args.objectIsNull(listener, "listener");
-
-        this.subscribers.push(listener);
+    /**
+     * Clears the subscribers collection, returning the collection before modifiction
+     */
+    public static clearSubscribers(): LogListener[] {
+        return Logger.instance.clearSubscribers();
     }
 
     /** 
      * Gets the current subscriber count
      */
-    public count(): number {
-        return this.subscribers.length;
+    public static get count(): number {
+        return Logger.instance.count;
     }
 
     /**
@@ -86,8 +90,8 @@ export class Logger {
      * @param message The message to write
      * @param level [Optional] if supplied will be used as the level of the entry (Default: LogLevel.Verbose)
      */
-    public write(message: string, level: LogLevel = LogLevel.Verbose) {
-        this.log({ level: level, message: message });
+    public static write(message: string, level: LogLevel = LogLevel.Verbose) {
+        Logger.instance.log({ level: level, message: message });
     }
 
     /**
@@ -95,6 +99,46 @@ export class Logger {
      * 
      * @param entry The message to log
      */
+    public static log(entry: LogEntry) {
+        Logger.instance.log(entry);
+    }
+
+    /**
+     * Logs performance tracking data for the the execution duration of the supplied function using console.profile
+     * 
+     * @param name The name of this profile boundary
+     * @param f The function to execute and track within this performance boundary
+     */
+    public static measure<T>(name: string, f: () => T): T {
+        return Logger.instance.measure(name, f);
+    }
+}
+
+class LoggerImpl {
+
+    constructor(public activeLogLevel: LogLevel = LogLevel.Warning, private subscribers: LogListener[] = []) { }
+
+    public subscribe(listener: LogListener): void {
+
+        Args.objectIsNull(listener, "listener");
+
+        this.subscribers.push(listener);
+    }
+
+    public clearSubscribers(): LogListener[] {
+        let s = this.subscribers.slice(0);
+        this.subscribers.length = 0;
+        return s;
+    }
+
+    public get count(): number {
+        return this.subscribers.length;
+    }
+
+    public write(message: string, level: LogLevel = LogLevel.Verbose) {
+        this.log({ level: level, message: message });
+    }
+
     public log(entry: LogEntry) {
 
         Args.objectIsNull(entry, "entry");
@@ -108,12 +152,6 @@ export class Logger {
         }
     }
 
-    /**
-     * Logs performance tracking data for the the execution duration of the supplied function using console.profile
-     * 
-     * @param name The name of this profile boundary
-     * @param f The function to execute and track within this performance boundary
-     */
     public measure<T>(name: string, f: () => T): T {
         console.profile(name);
         try {
@@ -179,18 +217,18 @@ export class AzureInsightsListener implements LogListener {
     constructor(private azureInsightsInstrumentationKey: string) {
         Args.stringIsNullOrEmpty(azureInsightsInstrumentationKey, "azureInsightsInstrumentationKey");
 
-        let appInsights = window["appInsights"] || function(config) {
+        let appInsights = window["appInsights"] || function (config) {
             function r(config) {
-                t[config] = function() {
+                t[config] = function () {
                     let i = arguments;
-                    t.queue.push(function() { t[config].apply(t, i) });
+                    t.queue.push(function () { t[config].apply(t, i) });
                 }
             }
             let t: any = { config: config }, u = document, e: any = window, o = "script", s: any = u.createElement(o), i, f;
             for (s.src = config.url || "//az416426.vo.msecnd.net/scripts/a/ai.0.js", u.getElementsByTagName(o)[0].parentNode.appendChild(s), t.cookie = u.cookie, t.queue = [], i = ["Event", "Exception", "Metric", "PageView", "Trace"]; i.length;) {
                 r("track" + i.pop());
             }
-            return r("setAuthenticatedUserContext"), r("clearAuthenticatedUserContext"), config.disableExceptionTracking || (i = "onerror", r("_" + i), f = e[i], e[i] = function(config, r, u, e, o) {
+            return r("setAuthenticatedUserContext"), r("clearAuthenticatedUserContext"), config.disableExceptionTracking || (i = "onerror", r("_" + i), f = e[i], e[i] = function (config, r, u, e, o) {
                 let s = f && f(config, r, u, e, o);
                 return s !== !0 && t["_" + i](config, r, u, e, o), s
             }), t
