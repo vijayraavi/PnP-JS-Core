@@ -1,180 +1,169 @@
 "use strict";
 
-import { Queryable} from "./Queryable";
+import { Queryable, QueryableInstance } from "./Queryable";
+
 
 /**
- * Describes the search API
- * 
+ * Describes the SearchQuery interface
  */
-export class Search extends Queryable {
-
-    /**
-     * Creates a new instance of the Search class
-     * 
-     * @param baseUrl The url for the search context
-     * @param query The SearchQuery object to execute
-     */
-
-    constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "Search");
-    }
+export interface SearchQuery {
 
     /**
      * A string that contains the text for the search query. 
      */
-    public QueryText: string = "*";
+    Querytext: string;
 
     /**
      * A string that contains the text that replaces the query text, as part of a query transform. 
      */
-    public QueryTemplate: string = null;
+    QueryTemplate?: string;
 
     /**
      * A Boolean value that specifies whether the result tables that are returned for 
      * the result block are mixed with the result tables that are returned for the original query. 
      */
-    public EnableInterleaving: Boolean = true;
+    EnableInterleaving?: Boolean;
 
     /**
      * A Boolean value that specifies whether stemming is enabled. 
      */
-    public EnableStemming: Boolean = true;
+    EnableStemming?: Boolean;
 
     /**
      * A Boolean value that specifies whether duplicate items are removed from the results. 
      */
-    public TrimDuplicates: Boolean = true;
+    TrimDuplicates?: Boolean;
 
     /**
      * A Boolean value that specifies whether the exact terms in the search query are used to find matches, or if nicknames are used also. 
      */
-    public EnableNicknames: Boolean = false;
+    EnableNicknames?: Boolean;
 
     /**
      * A Boolean value that specifies whether the query uses the FAST Query Language (FQL).
      */
-    public EnableFql: Boolean = false;
+    EnableFql?: Boolean;
 
     /**
      * A Boolean value that specifies whether the phonetic forms of the query terms are used to find matches.
      */
-    public EnablePhonetic: Boolean = false;
+    EnablePhonetic?: Boolean;
 
     /**
      * A Boolean value that specifies whether to perform result type processing for the query.
      */
-    public BypassResultTypes: Boolean = false;
+    BypassResultTypes?: Boolean;
 
     /**
      * A Boolean value that specifies whether to return best bet results for the query.
      * This parameter is used only when EnableQueryRules is set to true, otherwise it is ignored.
      */
-    public ProcessBestBets: Boolean = false;
+    ProcessBestBets?: Boolean;
 
     /**
      * A Boolean value that specifies whether to enable query rules for the query.
      */
-    public EnableQueryRules: Boolean = false;
+    EnableQueryRules?: Boolean;
 
     /**
      * A Boolean value that specifies whether to sort search results. 
      */
-    public EnableSorting: Boolean = null;
+    EnableSorting?: Boolean;
 
     /**
      * Specifies whether to return block rank log information in the BlockRankLog property of the interleaved result table. 
      * A block rank log contains the textual information on the block score and the documents that were de-duplicated.
      */
-    public GenerateBlockRankLog: Boolean = null;
+    GenerateBlockRankLog?: Boolean;
 
     /**
      * The result source ID to use for executing the search query.  
      */
-    public SourceId: string = null;
+    SourceId?: string;
 
     /**
      * The ID of the ranking model to use for the query.  
      */
-    public RankingModelId: string = null;
+    RankingModelId?: string;
 
     /**
      * The first row that is included in the search results that are returned. 
      * You use this parameter when you want to implement paging for search results.
      */
-    public StartRow: Number = null;
+    StartRow?: Number;
 
     /**
      * The maximum number of rows overall that are returned in the search results. 
      * Compared to RowsPerPage, RowLimit is the maximum number of rows returned overall.
      */
-    public RowLimit: Number = null;
+    RowLimit?: Number;
 
     /**
      * The maximum number of rows to return per page. 
      * Compared to RowLimit, RowsPerPage refers to the maximum number of rows to return per page,
      * and is used primarily when you want to implement paging for search results.
      */
-    public RowsPerPage: Number = null;
+    RowsPerPage?: Number;
 
     /**
      * The managed properties to return in the search results.  
      */
-    public SelectProperties: string[] = [];
+    SelectProperties?: string[];
 
     /**
      * The locale ID (LCID) for the query.  
      */
-    public Culture: Number = null;
+    Culture?: Number;
 
     /**
      * The set of refinement filters used when issuing a refinement query (FQL)  
      */
-    public RefinementFilters: string[] = [];
+    RefinementFilters?: string[];
 
      /**
       * The set of refiners to return in a search result.
       */
-    public Refiners: string[] = [];
+    Refiners?: string[];
 
     /**
      * The additional query terms to append to the query.
      */
-    public HiddenConstraints: string = null;
+    HiddenConstraints?: string;
 
     /**
      * The list of properties by which the search results are ordered.
      */
-    public SortList: Sort[] = [];
+    SortList?: Sort[];
 
     /**
      * The amount of time in milliseconds before the query request times out. 
      */
-    public Timeout: Number = 30000;
+    Timeout?: Number;
 
     /**
      * The properties to highlight in the search result summary when the property value matches the search terms entered by the user.
      */
-    public HithighlightedProperties: string[] = [];
+    HithighlightedProperties?: string[];
 
     /**
      * The type of the client that issued the query.
      */
-    public ClientType: string = null;
+    ClientType?: string;
 
     /** 
      * The GUID for the user who submitted the search query.
      */
-    public PersonalizationData: string = null;
+    PersonalizationData?: string;
 
     /** 
      * The URL for the search results page.
      */
-    public ResultsURL: string = null;
+    ResultsURL?: string;
 
     /** 
      * Custom tags that identify the query. You can specify multiple query tags
      */
-    public QueryTag: string[] = [];
+    QueryTag?: string[];
 
     // TODO: Properties
 
@@ -183,233 +172,125 @@ export class Search extends Queryable {
     /**
      *  A Boolean value that specifies whether to return personal favorites with the search results.
      */
-    public ProcessPersonalFavorites: Boolean = null;
+    ProcessPersonalFavorites?: Boolean;
 
     /**
      * The location of the queryparametertemplate.xml file. This file is used to enable anonymous users to make Search REST queries.
      */
-    public QueryTemplatePropertiesUrl: string = null;
+    QueryTemplatePropertiesUrl?: string;
+
+    /**
+     * Special rules for reordering search results. 
+     * These rules can specify that documents matching certain conditions are ranked higher or lower in the results. 
+     * This property applies only when search results are sorted based on rank. 
+     */
+    ReorderingRules?: ReorderingRule[];
 
     /**
      * The number of properties to show hit highlighting for in the search results.
      */
-    public HitHighlightedMultivaluePropertyLimit: Number = null;
+    HitHighlightedMultivaluePropertyLimit?: Number;
 
     /**
      * A Boolean value that specifies whether the hit highlighted properties can be ordered.
      */
-    public EnableOrderingHitHighlightedProperty: Boolean = null;
+    EnableOrderingHitHighlightedProperty?: Boolean;
 
     /**
      * The managed properties that are used to determine how to collapse individual search results. 
      * Results are collapsed into one or a specified number of results if they match any of the individual collapse specifications. 
      * In a collapse specification, results are collapsed if their properties match all individual properties in the collapse specification.
      */
-    public CollapseSpecification: String = null;
+    CollapseSpecification?: String;
 
     /**
      * The locale identifier (LCID) of the user interface
      */
-    public UIlanguage: Number = null;
+    UIlanguage?: Number;
 
     /**
      * The preferred number of characters to display in the hit-highlighted summary generated for a search result.
      */
-    public DesiredSnippetLength: Number = null;
+    DesiredSnippetLength?: Number;
 
     /**
      * The maximum number of characters to display in the hit-highlighted summary generated for a search result.
      */
-    public MaxSnippetLength: Number = null;
+    MaxSnippetLength?: Number;
 
     /**
      * The number of characters to display in the result summary for a search result.
      */
-    public SummaryLength: Number = null;
+    SummaryLength?: Number;
+
+}
+
+/**
+ * Describes the search API
+ * 
+ */
+export class Search extends QueryableInstance {
+
+    /**
+     * Creates a new instance of the Search class
+     * 
+     * @param baseUrl The url for the search context
+     * @param query The SearchQuery object to execute
+     */
+    constructor(baseUrl: string | Queryable, query: SearchQuery) {
+        super(baseUrl, "postquery");
+
+        this.searchQuery = query;
+    }
+
+    private searchQuery: SearchQuery = null;
 
     /**
      * .......
      * @returns Promise
      */
-    public getSearchResults(): Promise<any> {
+    public get(): Promise<any> {
 
-        let q = new Queryable("_api/search/query");
+        let formattedBody: any;
+        formattedBody = this.searchQuery;
 
-        q.query.add("querytext", `'${this.QueryText}'`);
-
-        if (this.QueryTemplate) {
-            q.query.add("QueryTemplate", this.QueryTemplate);
+        if (formattedBody.SelectProperties) {
+            formattedBody.SelectProperties = {results: this.searchQuery.SelectProperties};
         }
 
-        q.query.add("EnableInterleaving", this.EnableInterleaving.toString());
-        q.query.add("EnableStemming", this.EnableStemming.toString());
-        q.query.add("TrimDuplicates", this.TrimDuplicates.toString());
-        q.query.add("EnableNicknames", this.EnableNicknames.toString());
-        q.query.add("EnablePhonetic", this.EnablePhonetic.toString());
-        q.query.add("EnableFql", this.EnableFql.toString());
-        q.query.add("BypassResultTypes", this.BypassResultTypes.toString());
-        q.query.add("EnableQueryRules", this.EnableQueryRules.toString());
-
-        if (this.ProcessPersonalFavorites) {
-            q.query.add("ProcessPersonalFavorites", this.ProcessPersonalFavorites.toString());
+        if (formattedBody.RefinementFilters) {
+            formattedBody.RefinementFilters = {results: this.searchQuery.RefinementFilters};
         }
 
-        if (this.EnableQueryRules === true) {
-            q.query.add("ProcessBestBets", this.ProcessBestBets.toString());
+        if (formattedBody.Refiners) {
+            formattedBody.Refiners = {results: this.searchQuery.Refiners};
         }
 
-        if (this.SourceId) {
-            q.query.add("SourceId", this.SourceId);
+        if (formattedBody.SortList) {
+            formattedBody.SortList = {results: this.searchQuery.SortList};
         }
 
-        if (this.RankingModelId) {
-            q.query.add("RankingModelId", this.RankingModelId);
+        if (formattedBody.HithighlightedProperties) {
+            formattedBody.HithighlightedProperties = {results: this.searchQuery.HithighlightedProperties};
         }
 
-        if (this.StartRow) {
-            q.query.add("StartRow", this.StartRow.toString());
+        if (formattedBody.ReorderingRules) {
+            formattedBody.ReorderingRules = {results: this.searchQuery.ReorderingRules};
         }
 
-        if (this.RowLimit) {
-            q.query.add("RowLimit", this.RowLimit.toString());
-        }
+        // TODO: Properties & ReorderingRules
 
-        if (this.RowsPerPage) {
-            q.query.add("RowsPerPage", this.RowsPerPage.toString());
-        }
-
-        if (this.SelectProperties.length > 0) {
-            q.query.add("SelectProperties", `'${this.SelectProperties.toString()}'`);
-        }
-
-        if (this.Culture) {
-            q.query.add("Culture", this.Culture.toString());
-        }
-
-        if (this.RefinementFilters.length > 0) {
-            q.query.add("RefinementFilters", `'${this.RefinementFilters.toString()}'`);
-        }
-
-        if (this.Refiners.length > 0) {
-            q.query.add("Refiners", `'${this.Refiners.toString()}'`);
-        }
-
-        if (this.HiddenConstraints) {
-            q.query.add("HiddenConstraints", this.HiddenConstraints);
-        }
-
-        if (this.SortList.length > 0) {
-            let sort: string;
-            sort = "'";
-            for (let sortItem of this.SortList) {
-                sort += `${sortItem.Property}:${sortItem.Direction},`;
-            }
-            sort += "'";
-
-            q.query.add("SortList", sort);
-
-            // set sorting to true, as SortList has been defined
-            this.EnableSorting = true;
-        }
-
-        if (this.ClientType) {
-            q.query.add("ClientType", this.ClientType.toString());
-        }
-
-        q.query.add("Timeout", this.Timeout.toString());
-
-        if (this.HithighlightedProperties.length > 0) {
-            q.query.add("HithighlightedProperties", `'${this.HithighlightedProperties.toString()}'`);
-        }
-
-        if (this.PersonalizationData) {
-            q.query.add("PersonalizationData", this.PersonalizationData.toString());
-        }
-
-        if (this.ResultsURL) {
-            q.query.add("PersonalizationData", this.ResultsURL.toString());
-        }
-
-        // query tags are separated by semicolon
-        if (this.QueryTag.length > 0) {
-            let queryTag: string;
-            queryTag = "'";
-            for (let sortItem of this.QueryTag) {
-                queryTag += `${sortItem};`;
-            }
-            queryTag += "'";
-
-            q.query.add("QueryTag", queryTag);
-        }
-
-        if (this.QueryTag.length > 0) {
-            q.query.add("QueryTag", `'${this.Refiners.toString()}'`.replace(",", ";"));
-        }
-
-        if (this.QueryTemplatePropertiesUrl) {
-            q.query.add("QueryTemplatePropertiesUrl", this.QueryTemplatePropertiesUrl);
-        }
-
-        if (this.HitHighlightedMultivaluePropertyLimit) {
-            q.query.add("HitHighlightedMultivaluePropertyLimit", this.HitHighlightedMultivaluePropertyLimit.toString());
-        }
-
-        if (this.EnableOrderingHitHighlightedProperty) {
-            q.query.add("EnableOrderingHitHighlightedProperty", this.EnableOrderingHitHighlightedProperty.toString());
-        }
-
-        if (this.CollapseSpecification) {
-            q.query.add("CollapseSpecification", this.CollapseSpecification.toString());
-        }
-
-        if (this.EnableSorting) {
-            q.query.add("EnableSorting", this.EnableSorting.toString());
-        }
-
-        if (this.GenerateBlockRankLog) {
-            q.query.add("GenerateBlockRankLog", this.GenerateBlockRankLog.toString());
-        }
-
-        if (this.UIlanguage) {
-            q.query.add("UIlanguage", this.UIlanguage.toString());
-        }
-
-        if (this.DesiredSnippetLength) {
-            q.query.add("DesiredSnippetLength", this.DesiredSnippetLength.toString());
-        }
-
-        if (this.MaxSnippetLength) {
-            q.query.add("MaxSnippetLength", this.MaxSnippetLength.toString());
-        }
-
-        if (this.SummaryLength) {
-            q.query.add("SummaryLength", this.SummaryLength.toString());
-        }
-
-        return q.get().then((data) => {
+        let postBody = JSON.stringify({request: formattedBody});
+        return this.post({ body: postBody }).then((data) => {
             return new SearchResults(data);
         });
-
-    }
-
-    /**
-     * //TODO: implement
-     * @returns Promise
-     */
-    public getSearchResultsByPOST(): Promise<any> {
-        let q = new Queryable("_api/search/postquery");
-
-        return q.get();
-
-        // TODO reordering rules in POST
     }
 
 }
 
 /**
- * Describes the SearchResult class 
+ * Describes the SearchResults class, which returns the formatted and raw version of the query response 
  */
-
 export class SearchResults {
 
     /**
@@ -419,10 +300,18 @@ export class SearchResults {
     constructor( response: any) {
         this.PrimarySearchResults = this.formatSearchResults(response.PrimaryQueryResult.RelevantResults.Table.Rows);
         this.RawSearchResults = response;
+        this.ElapsedTime = response.ElapsedTime;
+        this.RowCount = response.PrimaryQueryResult.RelevantResults.RowCount;
+        this.TotalRows = response.PrimaryQueryResult.RelevantResults.TotalRows;
+        this.TotalRowsIncludingDuplicates = response.PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates;
     }
 
-    public PrimarySearchResults: any = null;
-    public RawSearchResults: any = null;
+    public PrimarySearchResults: Object;
+    public RawSearchResults: Object;
+    public RowCount: Number;
+    public TotalRows: Number;
+    public TotalRowsIncludingDuplicates: Number;
+    public ElapsedTime: Number;
 
     /**
      * Formats a search results array
@@ -442,6 +331,9 @@ export class SearchResults {
 
 }
 
+/**
+ * Describes the SearchResult class 
+ */
 export class SearchResult {
 
     /**
@@ -460,6 +352,7 @@ export class SearchResult {
  * Defines how search results are sorted.
  */
 export interface Sort {
+
     /**
      * The name for a property by which the search results are ordered.
      */
@@ -471,10 +364,49 @@ export interface Sort {
     Direction: SortDirection;
 }
 
+/**
+ * defines the SortDirection enum
+ */
 export enum SortDirection {
     Ascending = 0,
     Descending = 1,
     FQLFormula = 2
+}
+
+/**
+ * Defines how ReorderingRule interface, used for reordering results
+ */
+export interface ReorderingRule {
+
+    /**
+     * The value to match on
+     */
+    MatchValue: string;
+
+    /**
+     * The rank boosting
+     */
+    Boost: Number;
+
+     /**
+     * The rank boosting
+     */
+    MatchType: ReorderingRuleMatchType;
+}
+
+/**
+ * defines the ReorderingRuleMatchType  enum
+ */
+export enum ReorderingRuleMatchType  {
+    ResultContainsKeyword = 0,
+    TitleContainsKeyword = 1,
+    TitleMatchesKeyword = 2,
+    UrlStartsWith = 3,
+    UrlExactlyMatches = 4,
+    ContentTypeIs = 5,
+    FileExtensionMatches = 6,
+    ResultHasTag = 7,
+    ManualCondition = 8
 }
 
 /**
@@ -495,28 +427,3 @@ export enum QueryPropertyValueType {
     StringArrayType = 4,
     UnSupportedType	= 5
 }
-
-/**
- * 
- */
-export enum ReorderingRuleMatchType {
-    ResultContainsKeyword = 0,
-    TitleContainsKeyword = 1,
-    TitleMatchesKeyword = 2,
-    UrlStartsWith = 3,
-    UrlExactlyMatches = 4,
-    ContentTypeIs = 5,
-    FileExtensionMatches = 6,
-    ResultHasTag = 7,
-    ManualCondition = 8
-}
-
-/*
-
-TODO: Properties of Search to implement in the interface
-
-UIlanguage
-DesiredSnippetLength
-MaxSnippetLength
-SummaryLength
-*/

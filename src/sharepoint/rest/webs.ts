@@ -2,7 +2,6 @@
 
 import { Queryable, QueryableInstance, QueryableCollection } from "./Queryable";
 import { QueryableSecurable } from "./QueryableSecurable";
-import { Search } from "./search";
 import { Lists } from "./lists";
 import { RoleAssignments } from "./roleAssignments";
 import { Navigation } from "./navigation";
@@ -112,14 +111,6 @@ export class Web extends QueryableSecurable {
      */
     public get navigation(): Navigation {
         return new Navigation(this);
-    }
-
-    /**
-     * Executes a search against this web context
-     * 
-     */
-    public get search(): Search {
-        return new Search(this);
     }
 
     /**

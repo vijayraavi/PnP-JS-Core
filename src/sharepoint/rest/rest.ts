@@ -1,5 +1,6 @@
 "use strict";
 
+import { Search, SearchQuery, SearchResult } from "./search";
 import { Site } from "./site";
 import { Web } from "./webs";
 import * as Util from "../../utils/util";
@@ -9,6 +10,16 @@ import { Queryable } from "./queryable";
  * Root of the SharePoint REST module
  */
 export class Rest {
+
+
+    /**
+     * Executes a search against this web context
+     * 
+     * @param query The SearchQuery definition
+     */
+    public search(query: SearchQuery): SearchResult {
+        return new Search("_api/search", query);
+    }
 
     /**
      * Begins a site collection scoped REST request
