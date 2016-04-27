@@ -1,5 +1,6 @@
 "use strict";
 
+import { Search, SearchQuery, SearchResult } from "./search";
 import { Site } from "./site";
 import { Web } from "./webs";
 import * as Util from "../../utils/util";
@@ -10,6 +11,18 @@ import { UserProfileQuery } from "./userprofiles";
  * Root of the SharePoint REST module
  */
 export class Rest {
+
+
+    /**
+     * Executes a search against this web context
+     * 
+     * @param query The SearchQuery definition
+     */
+    public search(query: SearchQuery): Promise<SearchResult> {
+        return new Search("_api/search", query).execute().then(function(results) {
+            return results;
+        });
+    }
 
     /**
      * Begins a site collection scoped REST request
