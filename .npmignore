@@ -11,4 +11,6 @@ coverage/
 server-root/
 src/
 typings/
-lib/**/*.test.js
+lib/tests/
+tests/
+buildtasks/
