@@ -22,7 +22,7 @@ export class HttpClient {
 
         if (typeof options.headers !== "undefined") {
             let temp = <any>new Request("", { headers: options.headers });
-            temp.headers.forEach(function(value, name) {
+            temp.headers.forEach(function (value, name) {
                 headers.append(name, value);
             });
         }
@@ -32,7 +32,11 @@ export class HttpClient {
         }
 
         if (!headers.has("Content-type")) {
-            headers.append("Content-type", "application/json;odata=verbose;charset=utf-8");
+            headers.append("Content-Type", "application/json;odata=verbose;charset=utf-8");
+        }
+
+        if (!headers.has("X-ClientService-ClientTag")) {
+            headers.append("X-ClientService-ClientTag", "SharePoint.PnP.JavaScriptCore");
         }
 
         opts = Util.extend(opts, { headers: headers });
@@ -45,7 +49,7 @@ export class HttpClient {
                 }
                 let webUrl = url.substr(0, index);
                 return this._digestCache.getDigest(webUrl)
-                    .then(function(digest) {
+                    .then(function (digest) {
                         headers.append("X-RequestDigest", digest);
                         return self.fetchRaw(url, opts);
                     });

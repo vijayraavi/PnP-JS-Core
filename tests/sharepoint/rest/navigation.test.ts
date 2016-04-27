@@ -11,7 +11,7 @@ describe("Navigation", () => {
     describe("url", () => {
         it("Should return _api/web/Navigation", () => {
             let navigation = new Navigation("_api/web");
-            expect(navigation.toUrl()).to.equal("_api/web/Navigation");
+            expect(navigation.toUrl()).to.equal("_api/web/navigation");
         });
     });
 });

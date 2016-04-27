@@ -28,7 +28,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
      * 
      * @param key The key whose value we want to retrieve
      */
-    public get(key: string): any {
+    public get<T>(key: string): T {
 
         if (!this.enabled) {
             return null;
@@ -45,14 +45,12 @@ export class PnPClientStorageWrapper implements PnPClientStore {
         if (new Date(persistable.expiration) <= new Date()) {
 
             this.delete(key);
-            o = null;
+            return null;
 
         } else {
 
-            o = persistable.value;
+            return persistable.value as T;
         }
-
-        return o;
     }
 
     /**
@@ -86,7 +84,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
      * @param getter A function which will upon execution provide the desired value
      * @param expire Optional, if provided the expiration of the item, otherwise the default is used
      */
-    public getOrPut(key: string, getter: Function, expire?: Date): any {
+    public getOrPut<T>(key: string, getter: () => T, expire?: Date): T {
         if (!this.enabled) {
             return getter();
         }
@@ -95,7 +93,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
             throw "Function expected for parameter 'getter'.";
         }
 
-        let o = this.get(key);
+        let o = this.get<T>(key);
 
         if (o == null) {
             o = getter();

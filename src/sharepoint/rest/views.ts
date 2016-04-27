@@ -25,7 +25,9 @@ export class Views extends QueryableCollection {
      * @param id The GUID id of the view
      */
     public getById(id: string): View {
-        return new View(this.toUrl().concat(`('${id}')`));
+        let v = new View(this);
+        v.concat(`('${id}')`);
+        return v;
     }
 
     /**

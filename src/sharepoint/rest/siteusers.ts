@@ -14,6 +14,6 @@ export class SiteUsers extends QueryableCollection {
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
     constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "SiteUsers");
+        super(baseUrl, "siteusers");
     }
 }

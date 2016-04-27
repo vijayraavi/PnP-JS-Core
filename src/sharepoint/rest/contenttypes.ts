@@ -13,15 +13,17 @@ export class ContentTypes extends QueryableCollection {
      * 
      * @param baseUrl The url or Queryable which forms the parent of this content types collection
      */
-    constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "contentTypes");
+    constructor(baseUrl: string | Queryable, path = "contenttypes") {
+        super(baseUrl, path);
     }
 
     /**
      * Gets a ContentType by content type id
      */
     public getById(id: string): ContentType {
-        return new ContentType(this.toUrl().concat(`('${id}')`));
+        let ct = new ContentType(this);
+        ct.concat(`('${id}')`);
+        return ct;
     }
 }
 
@@ -36,7 +38,7 @@ export class ContentType extends QueryableInstance {
      * 
      * @param baseUrl The url or Queryable which forms the parent of this content type instance
      */
-    constructor(baseUrl: string | Queryable) {
-        super(baseUrl);
+    constructor(baseUrl: string | Queryable, path?: string) {
+        super(baseUrl, path);
     }
 }
