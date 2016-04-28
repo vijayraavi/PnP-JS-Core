@@ -28,6 +28,7 @@ node_modules
 typings
 lib
 server-root/scripts
+build
 
 # Optional npm cache directory
 .npm

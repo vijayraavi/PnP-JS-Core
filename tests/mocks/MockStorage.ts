@@ -1,8 +1,8 @@
 "use strict";
 
-import Collections = require("../../src/collections/collections");
+import * as Collections  from "../../src/collections/collections";
 
-class MockStorage implements Storage {
+export default class MockStorage implements Storage {
     constructor() {
         this._store = new Collections.Dictionary<string>();
     }
@@ -40,5 +40,3 @@ class MockStorage implements Storage {
     [key: string]: any;
     [index: number]: string;
 }
-
-export = MockStorage;

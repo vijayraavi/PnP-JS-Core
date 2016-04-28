@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { default as SPListConfigurationProvider } from "../../../src/configuration/providers/spListConfigurationProvider";
-import MockStorage = require("../../mocks/MockStorage");
-import Collections = require("../../../src/collections/collections");
+import MockStorage from "../../mocks/MockStorage";
+import * as Collections  from "../../../src/collections/collections";
 
 declare var global: any;
 

@@ -1,7 +1,7 @@
 "use strict";
 
-import {IConfigurationProvider} from "../../src/configuration/configuration";
-import {TypedHash} from "../../src/collections/collections";
+import { IConfigurationProvider } from "../../src/configuration/configuration";
+import { TypedHash } from "../../src/collections/collections";
 
 export default class MockConfigurationProvider implements IConfigurationProvider {
     public shouldThrow: boolean = false;
