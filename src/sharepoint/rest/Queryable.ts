@@ -197,12 +197,12 @@ export class Queryable {
  */
 export class QueryableCollection extends Queryable {
 
-    public filter(filter: string): any {
+    public filter(filter: string): QueryableCollection {
         this._query.add("$filter", filter);
         return this;
     }
 
-    public select(...selects: string[]): any {
+    public select(...selects: string[]): QueryableCollection {
         this._query.add("$select", selects.join(","));
         return this;
     }
@@ -215,7 +215,7 @@ export class QueryableCollection extends Queryable {
  */
 export class QueryableInstance extends Queryable {
 
-    public select(...selects: string[]): any {
+    public select(...selects: string[]): QueryableInstance {
         this._query.add("$select", selects.join(","));
         return this;
     }

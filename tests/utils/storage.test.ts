@@ -1,8 +1,8 @@
 "use strict";
 
 import { expect } from "chai";
-import Storage = require("../../src/utils/Storage");
-import MockStorage = require("../mocks/MockStorage");
+import * as Storage from "../../src/utils/Storage";
+import MockStorage  from "../mocks/MockStorage";
 
 describe("Storage", () => {
 

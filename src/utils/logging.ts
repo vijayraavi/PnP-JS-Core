@@ -1,6 +1,6 @@
 "use strict";
 
-import Collections = require("../collections/Collections");
+import * as Collections from "../collections/Collections";
 import * as Args from "./args";
 
 /**

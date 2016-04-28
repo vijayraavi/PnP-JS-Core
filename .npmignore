@@ -11,6 +11,6 @@ coverage/
 server-root/
 src/
 typings/
-lib/tests/
 tests/
 buildtasks/
+build/
