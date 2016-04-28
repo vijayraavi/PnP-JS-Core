@@ -15,8 +15,8 @@ export class Folders extends QueryableCollection {
      * 
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "folders");
+    constructor(baseUrl: string | Queryable, path = "folders") {
+        super(baseUrl, path);
     }
 
     /**
@@ -24,7 +24,7 @@ export class Folders extends QueryableCollection {
      * 
      */
     public getByName(name: string): Folder {
-        return new Folder(this.toUrl().concat(`('${name}')`));
+        return new Folder(this, `('${name}')`);
     }
 
     /**
@@ -33,9 +33,7 @@ export class Folders extends QueryableCollection {
      * @param url The relative or absolute url where the new folder will be created. Urls starting with a forward slash are absolute.
      */
     public add(url: string): Promise<FolderAddResult> {
-        this.append(`add('${url}')`);
-
-        return this.post({}).then((data) => {
+        return new Folders(this, `add('${url}')`).post({}).then((data) => {
             return {
                 data: data,
                 folder: new Folder(data.ServerRelativeUrl),
@@ -181,8 +179,7 @@ export class Folder extends QueryableInstance {
      * Moves the folder to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        this.append("recycle");
-        return this.post();
+        return new Folder(this, "recycle").post();
     }
 }
 
