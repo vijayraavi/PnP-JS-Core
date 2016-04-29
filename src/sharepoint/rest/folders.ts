@@ -36,21 +36,12 @@ export class Folders extends QueryableCollection {
      * @returns The new Folder and the raw response.
      */
     public add(url: string): Promise<FolderAddResult> {
-        return new Folders(this, `add('${url}')`).post({}).then((response) => {
+        return new Folders(this, `add('${url}')`).post().then((response) => {
             return {
                 data: response,
                 folder: this.getByName(url),
             };
         });
-    }
-
-    /**
-     * Gets a folder by a relative or absolute url
-     * 
-     * @param url The relative or absolute url. Urls starting with a forward slash are absolute.
-     */
-    public getByUrl(url: string): Folder {
-        return new Folder(this, `getByUrl('${url}')`);
     }
 }
 
