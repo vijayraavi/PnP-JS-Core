@@ -9,13 +9,6 @@ import { Item } from "./items";
  */
 export class Files extends QueryableCollection {
 
-    //
-    // TODO:
-    //      Methods (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FileCollectionMethods)
-    //          AddTemplateFile
-    //          GetByUrl
-    //
-
     /**
      * Creates a new instance of the Files class
      * 
@@ -28,7 +21,7 @@ export class Files extends QueryableCollection {
     /**
      * Gets a File by filename
      * 
-     * @param name The name of the file, including extension
+     * @param name The name of the file, including extension.
      */
     public getByName(name: string): File {
         let f = new File(this);
@@ -50,6 +43,23 @@ export class Files extends QueryableCollection {
                 return {
                     data: response,
                     file: this.getByName(url),
+                };
+            });
+    }
+
+    /**
+     * Adds a ghosted file to an existing list or document library.
+     * 
+     * @param fileUrl The server-relative URL where you want to save the file.
+     * @param templateFileType The type of use to create the file.
+     * @returns The template file that was added and the raw response.
+     */
+    public addTemplateFile(fileUrl: string, templateFileType: TemplateFileType): Promise<FileAddResult> {
+        return new Files(this, `addtemplatefile(urloffile='${fileUrl}',templatefiletype=${templateFileType})`)
+            .post().then((response) => {
+                return {
+                    data: response,
+                    file: this.getByName(fileUrl),
                 };
             });
     }
@@ -477,22 +487,13 @@ export class File extends QueryableInstance {
  */
 export class Versions extends QueryableCollection {
 
-    //
-    // TODO:
-    //      Methods (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FileVersionCollectionMethods)
-    //          DeleteAll 
-    //          DeleteById 
-    //          DeleteByLabel 
-    //          RestoreByLabel
-    //
-
     /**
      * Creates a new instance of the File class
      * 
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "versions");
+    constructor(baseUrl: string | Queryable, path = "versions") {
+        super(baseUrl, path);
     }
 
     /**
@@ -505,6 +506,41 @@ export class Versions extends QueryableCollection {
         v.concat(`(${versionId})`);
         return v;
     }
+
+    /**
+     * Deletes all the file version objects in the collection.
+     * 
+     */
+    public deleteAll(): Promise<void> {
+        return new Versions(this, "deleteall").post();
+    }
+
+    /**
+     * Deletes the specified version of the file.
+     * 
+     * @param versionId The ID of the file version to delete.
+     */
+    public deleteById(versionId: number): Promise<void> {
+        return new Versions(this, `deletebyid(vid=${versionId})`).post();
+    }
+
+    /**
+     * Deletes the file version object with the specified version label.
+     * 
+     * @param label The version label of the file version to delete, for example: 1.2
+     */
+    public deleteByLabel(label: string): Promise<void> {
+        return new Versions(this, `deletebylabel(versionlabel='${label}')`).post();
+    }
+
+    /**
+     * Creates a new file version from the file specified by the version label.
+     * 
+     * @param label The version label of the file version to restore, for example: 1.2
+     */
+    public restoreByLabel(label: string): Promise<void> {
+        return new Versions(this, `restorebylabel(versionlabel='${label}')`).post();
+    }
 }
 
 
@@ -514,20 +550,6 @@ export class Versions extends QueryableCollection {
  */
 export class Version extends QueryableInstance {
 
-    // TODO
-    //      Properties (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FileVersionProperties)
-    //          CheckInComment
-    //          Created
-    //          CreatedBy
-    //          ID
-    //          IsCurrentVersion
-    //          Size
-    //          Url
-    //          VersionLabel
-    //      Methods (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FileVersionMethods)
-    //          DeleteObject
-    //
-
     /**
      * Creates a new instance of the Version class
      * 
@@ -536,6 +558,85 @@ export class Version extends QueryableInstance {
      */
     constructor(baseUrl: string | Queryable, path?: string) {
         super(baseUrl, path);
+    }
+
+    /**
+     * Gets a value that specifies the check-in comment.
+     * 
+     */
+    public get checkInComment(): Queryable {
+        return new Queryable(this, "CheckInComment");
+    }
+
+    /**
+     * Gets a value that specifies the creation date and time for the file version.
+     * 
+     */
+    public get created(): Queryable {
+        return new Queryable(this, "Created");
+    }
+
+    /**
+     * Gets a value that specifies the user that represents the creator of the file version.
+     * 
+     */
+    public get createdBy(): Queryable {
+        return new Queryable(this, "CreatedBy");
+    }
+
+    /**
+     * Gets the internal identifier for the file version.
+     * 
+     */
+    public get id(): Queryable {
+        return new Queryable(this, "ID");
+    }
+
+    /**
+     * Gets a value that specifies whether the file version is the current version.
+     * 
+     */
+    public get isCurrentVersion(): Queryable {
+        return new Queryable(this, "IsCurrentVersion");
+    }
+
+    /**
+     * Gets a value that specifies the size of this version of the file.
+     * 
+     */
+    public get size(): Queryable {
+        return new Queryable(this, "Size");
+    }
+
+    /**
+     * Gets a value that specifies the relative URL of the file version based on the URL for the site or subsite.
+     * 
+     */
+    public get url(): Queryable {
+        return new Queryable(this, "Url");
+    }
+
+    /**
+     * Gets a value that specifies the implementation specific identifier of the file.
+     * Uses the majorVersionNumber.minorVersionNumber format, for example: 1.2
+     * 
+     */
+    public get versionLabel(): Queryable {
+        return new Queryable(this, "VersionLabel");
+    }
+
+     /**
+     * Delete a specific version of a file.
+     * 
+     * @param eTag Value used in the IF-Match header, by default "*"
+     */
+    public delete(eTag = "*"): Promise<void> {
+        return this.post({
+            headers: {
+                "IF-Match": eTag,
+                "X-HTTP-Method": "DELETE",
+            },
+        });
     }
 }
 
@@ -558,4 +659,10 @@ export enum WebPartsPersonalizationScope {
 export enum MoveOperations {
     Overwrite = 1,
     AllowBrokenThickets = 8
+}
+
+export enum TemplateFileType {
+    StandardPage = 0,
+    WikiPage = 1,
+    FormPage = 2
 }
