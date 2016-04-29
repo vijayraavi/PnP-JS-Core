@@ -24,19 +24,22 @@ export class Folders extends QueryableCollection {
      * 
      */
     public getByName(name: string): Folder {
-        return new Folder(this, `('${name}')`);
+        let f = new Folder(this);
+        f.concat(`('${name}')`);
+        return f;
     }
 
     /**
      * Adds a new folder to the current folder (relative) or any folder (absolute)
      * 
      * @param url The relative or absolute url where the new folder will be created. Urls starting with a forward slash are absolute.
+     * @returns The new Folder and the raw response.
      */
     public add(url: string): Promise<FolderAddResult> {
-        return new Folders(this, `add('${url}')`).post({}).then((data) => {
+        return new Folders(this, `add('${url}')`).post({}).then((response) => {
             return {
-                data: data,
-                folder: new Folder(data.ServerRelativeUrl),
+                data: response,
+                folder: this.getByName(url),
             };
         });
     }
