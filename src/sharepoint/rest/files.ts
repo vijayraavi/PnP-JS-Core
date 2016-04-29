@@ -12,7 +12,6 @@ export class Files extends QueryableCollection {
     //
     // TODO:
     //      Methods (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FileCollectionMethods)
-    //          Add
     //          AddTemplateFile
     //          GetByUrl
     //
@@ -22,8 +21,8 @@ export class Files extends QueryableCollection {
      * 
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable) {
-        super(baseUrl, "files");
+    constructor(baseUrl: string | Queryable, path = "files") {
+        super(baseUrl, path);
     }
 
     /**
@@ -32,7 +31,27 @@ export class Files extends QueryableCollection {
      * @param name The name of the file, including extension
      */
     public getByName(name: string): File {
-        return new File(this.toUrl().concat(`(\"${name}\")`));
+        let f = new File(this);
+        f.concat(`('${name}')`);
+        return f;
+    }
+
+    /**
+     * Uploads a file.
+     * 
+     * @param url The folder-relative url of the file.
+     * @param shouldOverWrite Should a file with the same name in the same location be overwritten?
+     * @param content The file contents blob.
+     * @returns The new File and the raw response. 
+     */
+    public add(url: string, content: Blob, shouldOverWrite = true): Promise<FileAddResult> {
+        return new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`)
+            .post({ body: content }).then((response) => {
+                return {
+                    data: response,
+                    file: this.getByName(url),
+                };
+            });
     }
 }
 
@@ -45,27 +64,7 @@ export class File extends QueryableInstance {
 
     //
     // TODO:
-    //      Methods (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FileMethods)
-    //          Approve 
-    //          CancelUpload 
-    //          CheckIn 
-    //          CheckOut 
-    //          ContinueUpload 
-    //          CopyTo 
-    //          DeleteObject 
-    //          Deny 
-    //          FinishUpload 
-    //          GetLimitedWebPartManager 
-    //          MoveTo 
-    //          OpenBinaryStream 
-    //          Publish 
-    //          Recycle 
-    //          SaveBinaryStream 
-    //          StartUpload 
-    //          UndoCheckOut 
-    //          Unpublish
-    //      Properties
-    //          Return enums where expected
+    //      Return typed things where expected
     // 
 
     /**
@@ -87,7 +86,7 @@ export class File extends QueryableInstance {
     }
 
     /**
-     * Gets a result indicating the current user who has a file checked out
+     * Gets a result indicating the current user who has the file checked out.
      * 
      */
     public get checkedOutByUser(): Queryable {
@@ -155,7 +154,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get level(): Queryable {
-        return new Queryable(this, "level");
+        return new Queryable(this, "Level");
     }
 
     /**
@@ -269,8 +268,208 @@ export class File extends QueryableInstance {
     public get value(): Queryable {
         return new Queryable(this, "$value");
     }
-}
 
+    /**
+     * Approves the file submitted for content approval with the specified comment.
+     * Only documents in lists that are enabled for content approval can be approved.
+     * 
+     * @param comment The comment for the approval.
+     */
+    public approve(comment: string): Promise<void> {
+        return new File(this, `approve(comment='${comment}')`).post();
+    }
+
+    /**
+     * Stops the chunk upload session without saving the uploaded data.
+     * If the file doesn’t already exist in the library, the partially uploaded file will be deleted.
+     * Use this in response to user action (as in a request to cancel an upload) or an error or exception.
+     * Use the uploadId value that was passed to the StartUpload method that started the upload session.
+     * This method is currently available only on Office 365.
+     * 
+     * @param uploadId The unique identifier of the upload session.
+     */
+    public cancelUpload(uploadId: string): Promise<void> {
+        return new File(this, `cancelupload(uploadId=guid'${uploadId}')`).post();
+    }
+
+    /**
+     * Checks the file in to a document library based on the check-in type.
+     * 
+     * @param comment A comment for the check-in. Its length must be <= 1023.
+     * @param checkinType The check-in type for the file.
+     */
+    public checkin(comment = "", checkinType = CheckinType.Major): Promise<void> {
+        // TODO: Enforce comment length <= 1023
+        return new File(this, `checkin(comment='${comment}',checkintype=${checkinType})`).post();
+    }
+
+    /**
+     * Checks out the file from a document library.
+     */
+    public checkout(): Promise<void> {
+        return new File(this, "checkout").post();
+    }
+
+    /**
+     * Continues the chunk upload session with an additional fragment.
+     * The current file content is not changed.
+     * Use the uploadId value that was passed to the StartUpload method that started the upload session.
+     * This method is currently available only on Office 365.
+     * 
+     * @param uploadId The unique identifier of the upload session.
+     * @param fileOffset The size of the offset into the file where the fragment starts.
+     * @param fragment The file contents.
+     * @returns The size of the total uploaded data in bytes. 
+     */
+    public continueUpload(uploadId: string, fileOffset: number, fragment: Blob): Promise<number> {
+        return new File(this, `continueupload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).post({ body: fragment });
+    }
+
+    /**
+     * Copies the file to the destination url.
+     * 
+     * @param url The absolute url or server relative url of the destination file path to copy to.
+     * @param shouldOverWrite Should a file with the same name in the same location be overwritten?
+     */
+    public copyTo(url: string, shouldOverWrite = true): Promise<void> {
+        return new File(this, `copyto(strnewurl='${url}',boverwrite=${shouldOverWrite})`).post();
+    }
+
+    /**
+     * Delete this file.
+     * 
+     * @param eTag Value used in the IF-Match header, by default "*"
+     */
+    public delete(eTag = "*"): Promise<void> {
+        return this.post({
+            headers: {
+                "IF-Match": eTag,
+                "X-HTTP-Method": "DELETE",
+            },
+        });
+    }
+
+    /**
+     * Denies approval for a file that was submitted for content approval.
+     * Only documents in lists that are enabled for content approval can be denied.
+     * 
+     * @param comment The comment for the denial.
+     */
+    public deny(comment = ""): Promise<void> {
+        return new File(this, `deny(comment='${comment}')`).post();
+    }
+
+    /**
+     * Uploads the last file fragment and commits the file. The current file content is changed when this method completes.
+     * Use the uploadId value that was passed to the StartUpload method that started the upload session.
+     * This method is currently available only on Office 365.
+     * 
+     * @param uploadId The unique identifier of the upload session.
+     * @param fileOffset The size of the offset into the file where the fragment starts.
+     * @param fragment The file contents.
+     * @returns The newly uploaded file. 
+     */
+    public finishUpload(uploadId: string, fileOffset: number, fragment: Blob): Promise<FileAddResult> {
+        return new File(this, `finishupload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
+            .post({ body: fragment }).then((response) => {
+                return {
+                    data: response,
+                    file: new File(response.ServerRelativeUrl),
+                };
+            });
+    }
+
+    /**
+     * Specifies the control set used to access, modify, or add Web Parts associated with this Web Part Page and view.
+     * An exception is thrown if the file is not an ASPX page.
+     * 
+     * @param scope The WebPartsPersonalizationScope view on the Web Parts page.
+     */
+    public getLimitedWebPartManager(scope = WebPartsPersonalizationScope.User): Queryable {
+        return new Queryable(this, `getlimitedwebpartmanager(scope=${scope})`);
+    }
+
+    /**
+     * Moves the file to the specified destination url.
+     * 
+     * @param url The absolute url or server relative url of the destination file path to move to.
+     * @param moveOperations The bitwise MoveOperations value for how to move the file.
+     */
+    public moveTo(url: string, moveOperations = MoveOperations.Overwrite): Promise<void> {
+        return new File(this, `moveto(newurl='${url}',flags=${moveOperations})`).post();
+    }
+
+    /**
+     * Opens the file as a stream.
+     * 
+     */
+    public openBinaryStream(): Queryable {
+        return new Queryable(this, "openbinarystream");
+    }
+
+    /**
+     * Submits the file for content approval with the specified comment.
+     * 
+     * @param comment The comment for the published file. Its length must be <= 1023.
+     */
+    public publish(comment = ""): Promise<void> {
+        return new File(this, `publish(comment='${comment}')`).post();
+    }
+
+    /**
+     * Moves the file to the Recycle Bin and returns the identifier of the new Recycle Bin item.
+     * 
+     * @returns The GUID of the recycled file.
+     */
+    public recycle(): Promise<string> {
+        return new File(this, "recycle").post();
+    }
+
+    /**
+     * Uploads a binary file.
+     * 
+     * @data The file contents.
+     */
+    public saveBinaryStream(data: Blob): Promise<void> {
+        return new File(this, "savebinary").post({ body: data });
+    }
+
+    /**
+     * Starts a new chunk upload session and uploads the first fragment.
+     * The current file content is not changed when this method completes.
+     * The method is idempotent (and therefore does not change the result) as long as you use the same values for uploadId and stream.
+     * The upload session ends either when you use the CancelUpload method or when you successfully
+     * complete the upload session by passing the rest of the file contents through the ContinueUpload and FinishUpload methods.
+     * The StartUpload and ContinueUpload methods return the size of the running total of uploaded data in bytes,
+     * so you can pass those return values to subsequent uses of ContinueUpload and FinishUpload.
+     * This method is currently available only on Office 365.
+     * 
+     * @param uploadId The unique identifier of the upload session.
+     * @param fragment The file contents.
+     * @returns The size of the total uploaded data in bytes. 
+     */
+    public startUpload(uploadId: string, fragment: Blob): Promise<number> {
+        return new File(this, `startupload(uploadId=guid'${uploadId}')`).post({ body: fragment });
+    }
+
+    /**
+     * Reverts an existing checkout for the file.
+     * 
+     */
+    public undoCheckout(): Promise<void> {
+        return new File(this, "undocheckout").post();
+    }
+
+    /**
+     * Removes the file from content approval or unpublish a major version.
+     * 
+     * @param comment The comment for the unpublish operation. Its length must be <= 1023.
+     */
+    public unpublish(comment = ""): Promise<void> {
+        // TODO: Enforce comment length <= 1023
+        return new File(this, `unpublish(comment='${comment}')`).post();
+    }
+}
 
 /**
  * Describes a collection of Version objects
@@ -338,4 +537,25 @@ export class Version extends QueryableInstance {
     constructor(baseUrl: string | Queryable, path?: string) {
         super(baseUrl, path);
     }
+}
+
+export enum CheckinType {
+    Minor = 0,
+    Major = 1,
+    Overwrite = 2
+}
+
+export interface FileAddResult {
+    file: File;
+    data: any;
+}
+
+export enum WebPartsPersonalizationScope {
+    User = 0,
+    Shared = 1
+}
+
+export enum MoveOperations {
+    Overwrite = 1,
+    AllowBrokenThickets = 8
 }
