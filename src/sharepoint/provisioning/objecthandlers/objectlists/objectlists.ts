@@ -258,7 +258,9 @@ export class ObjectLists extends ObjectHandlerBase {
         });
     }
     private GetFieldXmlAttr(fieldXml: string, attr: string) {
-        return jQuery(jQuery.parseXML(fieldXml)).find("Field").attr(attr);
+        var regex = new RegExp(attr + '=[\'|\"](?:(.+?))[\'|\"]');
+        var match = regex.exec(fieldXml);
+        return match[1];
     }
     private GetFieldXml(field: IField, lists: Array<SP.List>, list: SP.List) {
         let fieldXml = "";
