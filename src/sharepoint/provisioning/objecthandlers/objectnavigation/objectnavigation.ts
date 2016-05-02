@@ -5,6 +5,7 @@ import { getNodeFromCollectionByTitle, replaceUrlTokens } from "../../../util";
 import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
 import { INavigation } from "../schema/inavigation";
 import { INavigationNode } from "../schema/inavigationnode";
+import { HttpClient } from "../../../../net/HttpClient";
 
 export class ObjectNavigation extends ObjectHandlerBase {
     constructor() {
@@ -15,8 +16,9 @@ export class ObjectNavigation extends ObjectHandlerBase {
         super.scope_started();
         let clientContext = SP.ClientContext.get_current();
         let navigation = clientContext.get_web().get_navigation();
+
         return new Promise((resolve, reject) => {
-            this.ConfigureQuickLaunch(object.QuickLaunch, clientContext, navigation).then(
+            this.ConfigureQuickLaunch(object.QuickLaunch, clientContext, this.httpClient, navigation).then(
                 () => {
                     super.scope_ended();
                     resolve();
@@ -30,6 +32,7 @@ export class ObjectNavigation extends ObjectHandlerBase {
     private ConfigureQuickLaunch(
         nodes: Array<INavigationNode>,
         clientContext: SP.ClientContext,
+        httpClient: HttpClient,
         navigation: SP.Navigation): Promise<any> {
         return new Promise((resolve, reject) => {
             if (nodes.length === 0) {
@@ -57,13 +60,7 @@ export class ObjectNavigation extends ObjectHandlerBase {
                                 quickLaunchNodeCollection.add(newNode);
                             });
                             clientContext.executeQueryAsync(() => {
-                                jQuery.ajax({
-                                    "url": `${_spPageContextInfo.webAbsoluteUrl}/_api/web/Navigation/QuickLaunch`,
-                                    "type": "get",
-                                    "headers": {
-                                        "accept": "application/json;odata=verbose",
-                                    },
-                                }).done((data: any) => {
+                                httpClient.get(`${_spPageContextInfo.webAbsoluteUrl}/_api/web/Navigation/QuickLaunch`).then((data: any) => {
                                     data = data.d.results;
                                     data.forEach((d: any) => {
                                         let node = navigation.getNodeById(d.Id);
