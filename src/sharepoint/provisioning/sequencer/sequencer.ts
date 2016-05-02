@@ -12,16 +12,14 @@ export class Sequencer {
     public execute() {
         return new Promise((resolve, reject) => {
             let promises = [];
-            promises.push(jQuery.Deferred());
-            promises[0].resolve();
-            promises[0].promise();
+            promises.push(new Promise());
             let index = 1;
             while (this.functions[index - 1] !== undefined) {
                 let i = promises.length - 1;
                 promises.push(this.functions[index - 1].execute(promises[i]));
                 index++;
             };
-            Promise.all(promises).then(resolve, resolve);
+            Promise.all(promises).then(resolve, reject);
         });
     }
     private deferredArray(__functions: Array<any>) {
