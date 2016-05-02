@@ -19,7 +19,8 @@ var gulp = require("gulp"),
     buffer = require("vinyl-buffer"),
     header = require('gulp-header'),
     srcmaps = require("gulp-sourcemaps"),
-    merge = require("merge2");
+    merge = require("merge2"),
+    replace = require("gulp-replace");
 
 // we need to build src (es5, umd) -> build
 // we need to package the definitions in a single file -> dist
@@ -78,6 +79,8 @@ function packageBundle() {
         external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
     }).ignore('*.d.ts').bundle()
         .pipe(src(global.TSDist.BundleFileName))
+        .pipe(replace(/Object\.defineProperty\(exports, "__esModule", \{ value: true \}\);/ig, ""))
+        .pipe(replace(/exports.default = PnP;/ig, "return PnP;"))
         .pipe(buffer())
         .pipe(header(banner, { pkg: global.pkg }))
         .pipe(gulp.dest(global.TSDist.RootFolder));
@@ -94,6 +97,8 @@ function packageBundleUglify() {
         external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
     }).ignore('*.d.ts').bundle()
         .pipe(src(global.TSDist.MinifyFileName))
+        .pipe(replace(/Object\.defineProperty\(exports, "__esModule", \{ value: true \}\);/ig, ""))
+        .pipe(replace(/exports.default = PnP;/ig, "return PnP;"))
         .pipe(buffer())
         .pipe(srcmaps.init({ loadMaps: true }))
         .pipe(uglify())
