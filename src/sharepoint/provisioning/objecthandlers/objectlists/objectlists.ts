@@ -258,8 +258,8 @@ export class ObjectLists extends ObjectHandlerBase {
         });
     }
     private GetFieldXmlAttr(fieldXml: string, attr: string) {
-        var regex = new RegExp(attr + '=[\'|\"](?:(.+?))[\'|\"]');
-        var match = regex.exec(fieldXml);
+        let regex = new RegExp(attr + '=[\'|\"](?:(.+?))[\'|\"]');
+        let match = regex.exec(fieldXml);
         return match[1];
     }
     private GetFieldXml(field: IField, lists: Array<SP.List>, list: SP.List) {
