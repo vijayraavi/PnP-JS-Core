@@ -25,7 +25,7 @@ export class ObjectNavigation extends ObjectHandlerBase {
                 },
                 () => {
                     super.scope_ended();
-                    resolve();
+                    reject();
                 });
         });
     }
@@ -65,7 +65,7 @@ export class ObjectNavigation extends ObjectHandlerBase {
                                     data.forEach((d: any) => {
                                         let node = navigation.getNodeById(d.Id);
                                         let childrenNodeCollection = node.get_children();
-                                        let parentNode = jQuery.grep(nodes, (value: any) => { return value.Title === d.Title; })[0];
+                                        let parentNode = nodes.filter((value: any) => { return value.Title === d.Title; })[0];
                                         if (parentNode && parentNode.Children) {
                                             parentNode.Children.forEach((n: INavigationNode) => {
                                                 const existingNode = getNodeFromCollectionByTitle(temporaryQuickLaunch, n.Title);
