@@ -4,7 +4,7 @@ export class Sequencer {
     private functions: Array<any>;
     private parameter: any;
     private scope: any;
-    constructor(__functions: Array<any>, __parameter: any, __scope: any) {
+    constructor(__functions: any, __parameter: any, __scope: any) {
         this.parameter = __parameter;
         this.scope = __scope;
         this.functions = this.deferredArray(__functions);
@@ -12,16 +12,20 @@ export class Sequencer {
     public execute() {
         return new Promise((resolve, reject) => {
             let promises = [];
-            promises.push(jQuery.Deferred());
-            promises[0].resolve();
-            promises[0].promise();
             let index = 1;
+            promises.push(new Promise(
+                () => {
+                    if (index < 1) {
+                        index = 1;
+                    }
+                }
+            ));
             while (this.functions[index - 1] !== undefined) {
                 let i = promises.length - 1;
                 promises.push(this.functions[index - 1].execute(promises[i]));
                 index++;
             };
-            Promise.all(promises).then(resolve, resolve);
+            Promise.all(promises).then(resolve, reject);
         });
     }
     private deferredArray(__functions: Array<any>) {
