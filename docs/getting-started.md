@@ -32,7 +32,9 @@ Unsure where to begin with working on the project? This guide is designed to get
 	1. `npm install` - installs all of the npm package dependencies (may take awhile the first time)
 	2. `typings install` - installs the required typings files as defined in typings.json 
 
-11. Type `gulp serve` and you should see the browser launch and an alert window display a random string of length 5.
+11. Copy settings.example.js in the root of your project to settings.js. Edit settings.js to reflect your personal environment (usename, password, siteUrl, etc.).
+
+12. Type `gulp serve` and you should see the browser launch and an alert window display a random string of length 5.
 
 Because we are watching the files, any changes will be reflected in the served files after a new build is complete. You can point from a script tag in your SharePoint site to the http://localhost:3000 site to use the files. Any changes you make will be reflected thanks to the watched build.
 
