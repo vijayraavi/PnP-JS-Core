@@ -26,6 +26,6 @@ function copyJstosharepoint(buildServeTaskName) {
 //* SERVE
 //******************************************************************************
 
-gulp.task("sync", ["copyJsToSharePoint"], function() {
+gulp.task(["copyJsToSharePoint"], function() {
     copyJstosharepoint("copyJsToSharePoint");
 });
