@@ -119,8 +119,6 @@ class LoggerImpl {
 
     public subscribe(listener: LogListener): void {
 
-        debugger;
-
         Args.objectIsNull(listener, "listener");
 
         this.subscribers.push(listener);
@@ -143,8 +141,6 @@ class LoggerImpl {
     public log(entry: LogEntry) {
 
         Args.objectIsNull(entry, "entry");
-
-        debugger;
 
         if (entry.level < this.activeLogLevel) {
             return;
