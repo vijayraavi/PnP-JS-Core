@@ -18,7 +18,7 @@ var gulp = require("gulp");
 function copyJstosharepoint(buildServeTaskName) {
    
 
-    gulp.watch(global.TSWorkspace.Files, ["lint", buildServeTaskName]);
+    gulp.watch(global.TSWorkspace.Files, [buildServeTaskName]);
 
 }
 
