@@ -19,16 +19,26 @@ Click on Clone to create your local git repository, which is a "clone" of the ma
 
 Double-click the repo to open it in Team Explorer: You can click on Sync to make sure everything is up-to-date, or Actions->Open in File explorer. 
 
-Generally the Visual Studio tooling gives a nice graphical interface for working with Git, although it is not the only choice. If you want to manage and edit the files you can just open them individually in the Visual Studio editor, or go to File->Open->Web Site… and then choose the directory containing the local repository (even though it is not a web site of course, Visual Studio treats it as a collection of files). You can then use the Visual Studio solution explorer and editor along with any tools you like (e.g. Intellisense, ReSharper, etc.).
+Generally the Visual Studio tooling gives a nice graphical interface for working with Git, although it is not the only choice. If you want to manage and edit the files you can just open them individually in the Visual Studio editor, or go to File->Open->Web Siteâ€¦ and then choose the directory containing the local repository (even though it is not a web site of course, Visual Studio treats it as a collection of files). You can then use the Visual Studio solution explorer and editor along with any tools you like (e.g. Intellisense, ReSharper, etc.).
 
 
 ##Making Changes##
 
 If you want to start making changes you first need to fork the project.
 
+![Forking the Git Repository](images/fork-button.png)
+
 Click on the Fork button on the repository page on the Github site and you will get a new repository created that is a copy but under your own account. You can clone this locally as well, using the same technique as described above. If you already cloned the main repository you will need to choose another name for the clone of your forked repository. The important difference is that you will have write access to this repo so you will be able to make changes and sync them up from your modified local repository.
 
+![Adding a local clone of a forked repository](images/clone-of-fork.png)
+
 After you click Clone you will see a new repository in the list, which you can open as before. Before you open it and start making changes be sure to switch from the *master* branch to the *dev* branch. Usually maintainers only accept pull requests (suggested sets of changes) that are made to the development branch. A common practice is to then periodically merge the dev branch into the master. Go to branches and double-click on the dev branch to switch.
+
+![Switching branches](images/master-branch.png)
+
+You should then see that you are on the dev branch (in bold text).
+
+![Switching branches](images/master-to-dev.png)
 
 Now you can start making changes. You should sync your local repository with your Github fork at frequent intervals, and use descriptive commit messages. Be sure to check that the project still builds and runs and passes all its tests. If you have added functionality make sure that you have also added automated tests where appropriate.
 
