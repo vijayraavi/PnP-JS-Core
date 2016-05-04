@@ -12,7 +12,6 @@ import { UserProfileQuery } from "./userprofiles";
  */
 export class Rest {
 
-
     /**
      * Executes a search against this web context
      * 
