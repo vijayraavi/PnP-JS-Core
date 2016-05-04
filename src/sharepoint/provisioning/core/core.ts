@@ -15,9 +15,11 @@ import * as Resources from "../Resources/Resources";
 import { Log } from "../Provisioning";
 import { SiteSchema } from "../schema/isiteschema";
 import { IOptions } from "./ioptions";
+import { HttpClient } from "../../../net/HttpClient";
 
 export class Core {
     private handlers;
+    private httpClient: HttpClient;
     private options: IOptions;
     private startTime;
     private queueItems: Array<ProvisioningStep>;
@@ -32,46 +34,56 @@ export class Core {
             "Files": ObjectFiles,
             "Lists": ObjectLists,
         };
+        this.httpClient = new HttpClient();
     }
     public applyTemplate(path: string, _options?: IOptions) {
         const url = replaceUrlTokens(path);
         this.options = _options || {};
+
         return new Promise((resolve, reject) => {
-            jQuery.getJSON(url, (template) => {
-                this.start(template, Object.keys(template)).then(resolve, resolve);
-            }).fail(() => {
+            this.httpClient.get(url).then((response) => {
+                if (response.ok) {
+                    response.json<SiteSchema>().then((template) => {
+                        this.start(template, Object.keys(template)).then(resolve, reject);
+                    });
+                } else {
+                    reject(response.statusText);
+                }
+            }, (error) => {
                 Log.error("Provisioning", Resources.Template_invalid);
             });
         });
     }
     private start(json: SiteSchema, queue: Array<string>) {
-        Log.info("Provisioning", Resources.Code_execution_started);
         return new Promise((resolve, reject) => {
             this.startTime = new Date().getTime();
             this.queueItems = [];
+
             queue.forEach((q, index) => {
                 if (!this.handlers[q]) {
                     return;
                 }
                 this.queueItems.push(new ProvisioningStep(q, index, json[q], json.Parameters, this.handlers[q]));
             });
+
             let promises = [];
-            promises.push(jQuery.Deferred());
-            promises[0].resolve();
-            promises[0].promise();
+            promises.push(new Promise(() => {
+                Log.info("Provisioning", Resources.Code_execution_started);
+            }));
             let index = 1;
             while (this.queueItems[index - 1] !== undefined) {
                 let i = promises.length - 1;
                 promises.push(this.queueItems[index - 1].execute(promises[i]));
                 index++;
             };
-            Promise.all(promises).then(
-                () => {
-                    Log.info("Provisioning", Resources.Code_execution_ended);
-                },
-                () => {
-                    Log.info("Provisioning", Resources.Code_execution_ended);
-                });
+
+            Promise.all(promises).then((value) => {
+                Log.info("Provisioning", Resources.Code_execution_ended);
+                resolve(value);
+            }, (error) => {
+                Log.info("Provisioning", Resources.Code_execution_ended);
+                reject(error);
+            });
         });
     }
 }

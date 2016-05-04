@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { default as CachingConfigurationProvider } from "../../../src/configuration/providers/cachingConfigurationProvider";
-import Collections = require("../../../src/collections/collections");
+import  * as Collections  from "../../src/collections/collections";
 import * as Configuration from "../../../src/configuration/configuration";
 import {default as MockConfigurationProvider} from "../../mocks/mockConfigurationProvider";
-import MockStorage = require("../../mocks/MockStorage");
+import MockStorage from "../../mocks/MockStorage";
 import * as storage from "../../../src/utils/storage";
 
 describe("Configuration", () => {

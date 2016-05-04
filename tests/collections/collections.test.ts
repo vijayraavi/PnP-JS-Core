@@ -1,7 +1,7 @@
 "use strict";
 
 import { expect } from "chai";
-import Collections = require("../../src/collections/collections");
+import  * as Collections  from "../../src/collections/collections";
 
 describe("Collections", () => {
 

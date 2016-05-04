@@ -15,14 +15,14 @@ global.TSTypings = {
 };
 
 global.TSCompiledOutput = {
-    "RootFolder": 'lib/src',
-    "TestRootFolder": 'lib/tests',
+    "RootFolder": 'build/src',
+    "TestRootFolder": 'build/tests',
     "JSCodeFiles": [
-        'lib/**/*.js',
-        '!lib/**/*.test.js'
+        'build/**/*.js',
+        '!build/**/*.test.js'
     ],
     "JSTestFiles": [
-        'lib/**/*.test.js'
+        'build/**/*.test.js'
     ],
 };
 
@@ -39,6 +39,7 @@ global.TSWorkspace = {
 
 global.TSDist = {
     "RootFolder": 'dist',
+    "SrcFolder": "lib",
     "BundleFileName": "pnp.js",
     "MinifyFileName": "pnp.min.js",
     "DefinitionFileName": "pnp.d.ts"
@@ -83,4 +84,5 @@ require("./buildtasks/istanbul-hook.js");
 require("./buildtasks/lint.js");
 require("./buildtasks/package.js");
 require("./buildtasks/serve.js");
+require("./buildtasks/sync.js");
 require("./buildtasks/test.js");

@@ -89,7 +89,7 @@ export class Rest {
         let url = Util.combinePaths(addInWebUrl, "_api/SP.AppContextSite(@target)", urlPart);
 
         let instance = new factory(url);
-        instance.query.add("@target", encodeURIComponent(hostWebUrl));
+        instance.query.add("@target", "'" + encodeURIComponent(hostWebUrl) + "'");
         return instance;
     }
 }

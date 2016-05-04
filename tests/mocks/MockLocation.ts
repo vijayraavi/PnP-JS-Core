@@ -1,6 +1,6 @@
 "use strict";
 
-class MockLocation implements Location {
+export default class MockLocation implements Location {
     public hash: string;
     public host: string;
     public hostname: string;
@@ -26,5 +26,3 @@ class MockLocation implements Location {
         return "MockLocation.toString";
     }
 }
-
-export = MockLocation
