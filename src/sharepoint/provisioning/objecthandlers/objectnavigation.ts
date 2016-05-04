@@ -1,11 +1,10 @@
 "use strict";
 
-// import { Promise } from "es6-promise";
-import { getNodeFromCollectionByTitle, replaceUrlTokens } from "../../../util";
-import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
+import { getNodeFromCollectionByTitle, replaceUrlTokens } from "../../util";
+import { ObjectHandlerBase } from "./ObjectHandlerBase";
 import { INavigation } from "../schema/inavigation";
 import { INavigationNode } from "../schema/inavigationnode";
-import { HttpClient } from "../../../../net/HttpClient";
+import { HttpClient } from "../../../net/HttpClient";
 
 export class ObjectNavigation extends ObjectHandlerBase {
     constructor() {

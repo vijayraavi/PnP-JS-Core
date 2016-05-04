@@ -1,14 +1,14 @@
-// import { Promise } from "es6-promise";
-
 export class Sequencer {
     private functions: Array<any>;
     private parameter: any;
     private scope: any;
+
     constructor(__functions: any, __parameter: any, __scope: any) {
         this.parameter = __parameter;
         this.scope = __scope;
         this.functions = this.deferredArray(__functions);
     }
+
     public execute() {
         return new Promise((resolve, reject) => {
             let promises = [];
@@ -34,6 +34,7 @@ export class Sequencer {
         return functions;
     }
 }
+
 class DeferredObject {
     private func: any;
     private parameter: any;

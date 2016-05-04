@@ -1,9 +1,8 @@
-// import { Promise } from "es6-promise";
-import * as Resources from "../../Resources/Resources";
-import { Log } from "../../Provisioning";
-import { HttpClient } from "../../../../net/HttpClient";
+import { HttpClient } from "../../../net/HttpClient";
+import { Logger } from "../../../utils/logging";
 
 export class ObjectHandlerBase {
+
     public httpClient: HttpClient;
     private name: string;
 
@@ -11,13 +10,16 @@ export class ObjectHandlerBase {
         this.name = name;
         this.httpClient = new HttpClient();
     }
+
     public ProvisionObjects(objects: any, parameters?) {
         return new Promise((resolve, reject) => { resolve("Not implemented."); });
     }
+
     public scope_started() {
-        Log.info(this.name, Resources.Code_execution_started);
+        Logger.write(`Provisioning: ${this.name} Code execution scope started`);
     }
+
     public scope_ended() {
-        Log.info(this.name, Resources.Code_execution_ended);
+        Logger.write(`Provisioning: ${this.name} Code execution scope stopped`);
     }
 }

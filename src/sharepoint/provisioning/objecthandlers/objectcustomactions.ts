@@ -1,7 +1,6 @@
 "use strict";
 
-// import { Promise } from "es6-promise";
-import { ObjectHandlerBase } from "../ObjectHandlerBase/ObjectHandlerBase";
+import { ObjectHandlerBase } from "./ObjectHandlerBase";
 import { ICustomAction } from "../schema/icustomaction";
 
 export class ObjectCustomActions extends ObjectHandlerBase {
