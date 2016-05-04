@@ -73,7 +73,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get contentTypeOrder(): QueryableCollection {
-        return new QueryableCollection(this, "ContentTypeOrder");
+        return new QueryableCollection(this, "contentTypeOrder");
     }
 
     /**
@@ -97,7 +97,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get itemCount(): Queryable {
-        return new Queryable(this, "ItemCount");
+        return new Queryable(this, "itemCount");
     }
 
     /**
@@ -105,7 +105,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get listItemAllFields(): Item {
-        return new Item(this, "ListItemAllFields");
+        return new Item(this, "listItemAllFields");
     }
 
     /**
@@ -113,7 +113,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get name(): Queryable {
-        return new Queryable(this, "Name");
+        return new Queryable(this, "name");
     }
 
     /**
@@ -121,7 +121,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get parentFolder() {
-        return new Folder(this, "ParentFolder");
+        return new Folder(this, "parentFolder");
     }
 
     /**
@@ -129,7 +129,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get properties(): QueryableInstance {
-        return new QueryableInstance(this, "Properties");
+        return new QueryableInstance(this, "properties");
     }
 
     /**
@@ -137,7 +137,7 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get serverRelativeUrl(): Queryable {
-        return new Queryable(this, "ServerRelativeUrl");
+        return new Queryable(this, "serverRelativeUrl");
     }
 
     /**
@@ -145,14 +145,14 @@ export class Folder extends QueryableInstance {
      * 
      */
     public get uniqueContentTypeOrder(): QueryableCollection {
-        return new QueryableCollection(this, "UniqueContentTypeOrder");
+        return new QueryableCollection(this, "uniqueContentTypeOrder");
     }
 
     /**
      * Gets this folder's welcome page
      */
     public get welcomePage(): Queryable {
-        return new Queryable(this, "WelcomePage");
+        return new Queryable(this, "welcomePage");
     }
 
      /**
@@ -161,7 +161,7 @@ export class Folder extends QueryableInstance {
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
-        return this.post({
+        return new Folder(this).post({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",

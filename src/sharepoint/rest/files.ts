@@ -50,12 +50,12 @@ export class Files extends QueryableCollection {
     /**
      * Adds a ghosted file to an existing list or document library.
      * 
-     * @param fileUrl The server-relative URL where you want to save the file.
+     * @param fileUrl The server-relative url where you want to save the file.
      * @param templateFileType The type of use to create the file.
      * @returns The template file that was added and the raw response.
      */
     public addTemplateFile(fileUrl: string, templateFileType: TemplateFileType): Promise<FileAddResult> {
-        return new Files(this, `addtemplatefile(urloffile='${fileUrl}',templatefiletype=${templateFileType})`)
+        return new Files(this, `addTemplateFile(urloffile='${fileUrl}',templatefiletype=${templateFileType})`)
             .post().then((response) => {
                 return {
                     data: response,
@@ -72,11 +72,6 @@ export class Files extends QueryableCollection {
  */
 export class File extends QueryableInstance {
 
-    //
-    // TODO:
-    //      Return typed things where expected
-    // 
-
     /**
      * Creates a new instance of the File class
      * 
@@ -92,7 +87,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get author(): Queryable {
-        return new Queryable(this, "Author");
+        return new Queryable(this, "author");
     }
 
     /**
@@ -100,7 +95,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get checkedOutByUser(): Queryable {
-        return new Queryable(this, "CheckedOutByUser");
+        return new Queryable(this, "checkedOutByUser");
     }
 
     /**
@@ -108,7 +103,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get checkInComment(): Queryable {
-        return new Queryable(this, "CheckInComment");
+        return new Queryable(this, "checkInComment");
     }
 
     /**
@@ -117,7 +112,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get checkOutType(): Queryable {
-        return new Queryable(this, "CheckOutType");
+        return new Queryable(this, "checkOutType");
     }
 
     /**
@@ -125,7 +120,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get contentTag(): Queryable {
-        return new Queryable(this, "ContentTag");
+        return new Queryable(this, "contentTag");
     }
 
     /**
@@ -133,7 +128,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get customizedPageStatus(): Queryable {
-        return new Queryable(this, "CustomizedPageStatus");
+        return new Queryable(this, "customizedPageStatus");
     }
 
     /**
@@ -141,7 +136,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get eTag(): Queryable {
-        return new Queryable(this, "ETag");
+        return new Queryable(this, "eTag");
     }
 
     /**
@@ -149,14 +144,14 @@ export class File extends QueryableInstance {
      * 
      */
     public get exists(): Queryable {
-        return new Queryable(this, "Exists");
+        return new Queryable(this, "exists");
     }
 
     /**
      * Gets the size of the file in bytes, excluding the size of any Web Parts that are used in the file.
      */
     public get length(): Queryable {
-        return new Queryable(this, "Length");
+        return new Queryable(this, "length");
     }
 
     /**
@@ -164,7 +159,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get level(): Queryable {
-        return new Queryable(this, "Level");
+        return new Queryable(this, "level");
     }
 
     /**
@@ -172,7 +167,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get listItemAllFields(): Item {
-        return new Item(this, "ListItemAllFields");
+        return new Item(this, "listItemAllFields");
     }
 
     /**
@@ -180,7 +175,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get lockedByUser(): Queryable {
-        return new Queryable(this, "LockedByUser");
+        return new Queryable(this, "lockedByUser");
     }
 
     /**
@@ -188,7 +183,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get majorVersion(): Queryable {
-        return new Queryable(this, "MajorVersion");
+        return new Queryable(this, "majorVersion");
     }
 
     /**
@@ -196,7 +191,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get minorVersion(): Queryable {
-        return new Queryable(this, "MinorVersion");
+        return new Queryable(this, "minorVersion");
     }
 
     /**
@@ -204,7 +199,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get modifiedBy(): Queryable {
-        return new Queryable(this, "ModifiedBy");
+        return new Queryable(this, "modifiedBy");
     }
 
     /**
@@ -212,7 +207,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get name(): Queryable {
-        return new Queryable(this, "Name");
+        return new Queryable(this, "name");
     }
 
     /**
@@ -220,7 +215,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get serverRelativeUrl(): Queryable {
-        return new Queryable(this, "ServerRelativeUrl");
+        return new Queryable(this, "serverRelativeUrl");
     }
 
     /**
@@ -228,7 +223,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get timeCreated(): Queryable {
-        return new Queryable(this, "TimeCreated");
+        return new Queryable(this, "timeCreated");
     }
 
     /**
@@ -236,7 +231,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get timeLastModified(): Queryable {
-        return new Queryable(this, "TimeLastModified");
+        return new Queryable(this, "timeLastModified");
     }
 
     /**
@@ -244,7 +239,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get title(): Queryable {
-        return new Queryable(this, "Title");
+        return new Queryable(this, "title");
     }
 
     /**
@@ -252,7 +247,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get uiVersion(): Queryable {
-        return new Queryable(this, "UiVersion");
+        return new Queryable(this, "uiVersion");
     }
 
     /**
@@ -260,7 +255,7 @@ export class File extends QueryableInstance {
      * 
      */
     public get uiVersionLabel(): Queryable {
-        return new Queryable(this, "UiVersionLabel");
+        return new Queryable(this, "uiVersionLabel");
     }
 
     /**
@@ -299,7 +294,7 @@ export class File extends QueryableInstance {
      * @param uploadId The unique identifier of the upload session.
      */
     public cancelUpload(uploadId: string): Promise<void> {
-        return new File(this, `cancelupload(uploadId=guid'${uploadId}')`).post();
+        return new File(this, `cancelUpload(uploadId=guid'${uploadId}')`).post();
     }
 
     /**
@@ -332,7 +327,7 @@ export class File extends QueryableInstance {
      * @returns The size of the total uploaded data in bytes. 
      */
     public continueUpload(uploadId: string, fileOffset: number, fragment: Blob): Promise<number> {
-        return new File(this, `continueupload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).post({ body: fragment });
+        return new File(this, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).post({ body: fragment });
     }
 
     /**
@@ -342,7 +337,7 @@ export class File extends QueryableInstance {
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten?
      */
     public copyTo(url: string, shouldOverWrite = true): Promise<void> {
-        return new File(this, `copyto(strnewurl='${url}',boverwrite=${shouldOverWrite})`).post();
+        return new File(this, `copyTo(strnewurl='${url}',boverwrite=${shouldOverWrite})`).post();
     }
 
     /**
@@ -351,7 +346,7 @@ export class File extends QueryableInstance {
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
-        return this.post({
+        return new File(this).post({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -380,7 +375,7 @@ export class File extends QueryableInstance {
      * @returns The newly uploaded file. 
      */
     public finishUpload(uploadId: string, fileOffset: number, fragment: Blob): Promise<FileAddResult> {
-        return new File(this, `finishupload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
+        return new File(this, `finishUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
             .post({ body: fragment }).then((response) => {
                 return {
                     data: response,
@@ -396,7 +391,7 @@ export class File extends QueryableInstance {
      * @param scope The WebPartsPersonalizationScope view on the Web Parts page.
      */
     public getLimitedWebPartManager(scope = WebPartsPersonalizationScope.User): Queryable {
-        return new Queryable(this, `getlimitedwebpartmanager(scope=${scope})`);
+        return new Queryable(this, `getLimitedWebPartManager(scope=${scope})`);
     }
 
     /**
@@ -406,7 +401,7 @@ export class File extends QueryableInstance {
      * @param moveOperations The bitwise MoveOperations value for how to move the file.
      */
     public moveTo(url: string, moveOperations = MoveOperations.Overwrite): Promise<void> {
-        return new File(this, `moveto(newurl='${url}',flags=${moveOperations})`).post();
+        return new File(this, `moveTo(newurl='${url}',flags=${moveOperations})`).post();
     }
 
     /**
@@ -414,7 +409,7 @@ export class File extends QueryableInstance {
      * 
      */
     public openBinaryStream(): Queryable {
-        return new Queryable(this, "openbinarystream");
+        return new Queryable(this, "openBinaryStream");
     }
 
     /**
@@ -441,7 +436,7 @@ export class File extends QueryableInstance {
      * @data The file contents.
      */
     public saveBinaryStream(data: Blob): Promise<void> {
-        return new File(this, "savebinary").post({ body: data });
+        return new File(this, "saveBinary").post({ body: data });
     }
 
     /**
@@ -459,7 +454,7 @@ export class File extends QueryableInstance {
      * @returns The size of the total uploaded data in bytes. 
      */
     public startUpload(uploadId: string, fragment: Blob): Promise<number> {
-        return new File(this, `startupload(uploadId=guid'${uploadId}')`).post({ body: fragment });
+        return new File(this, `startUpload(uploadId=guid'${uploadId}')`).post({ body: fragment });
     }
 
     /**
@@ -467,7 +462,7 @@ export class File extends QueryableInstance {
      * 
      */
     public undoCheckout(): Promise<void> {
-        return new File(this, "undocheckout").post();
+        return new File(this, "undoCheckout").post();
     }
 
     /**
@@ -512,7 +507,7 @@ export class Versions extends QueryableCollection {
      * 
      */
     public deleteAll(): Promise<void> {
-        return new Versions(this, "deleteall").post();
+        return new Versions(this, "deleteAll").post();
     }
 
     /**
@@ -521,7 +516,7 @@ export class Versions extends QueryableCollection {
      * @param versionId The ID of the file version to delete.
      */
     public deleteById(versionId: number): Promise<void> {
-        return new Versions(this, `deletebyid(vid=${versionId})`).post();
+        return new Versions(this, `deleteById(vid=${versionId})`).post();
     }
 
     /**
@@ -530,7 +525,7 @@ export class Versions extends QueryableCollection {
      * @param label The version label of the file version to delete, for example: 1.2
      */
     public deleteByLabel(label: string): Promise<void> {
-        return new Versions(this, `deletebylabel(versionlabel='${label}')`).post();
+        return new Versions(this, `deleteByLabel(versionlabel='${label}')`).post();
     }
 
     /**
@@ -539,7 +534,7 @@ export class Versions extends QueryableCollection {
      * @param label The version label of the file version to restore, for example: 1.2
      */
     public restoreByLabel(label: string): Promise<void> {
-        return new Versions(this, `restorebylabel(versionlabel='${label}')`).post();
+        return new Versions(this, `restoreByLabel(versionlabel='${label}')`).post();
     }
 }
 
@@ -565,7 +560,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get checkInComment(): Queryable {
-        return new Queryable(this, "CheckInComment");
+        return new Queryable(this, "checkInComment");
     }
 
     /**
@@ -573,7 +568,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get created(): Queryable {
-        return new Queryable(this, "Created");
+        return new Queryable(this, "created");
     }
 
     /**
@@ -581,7 +576,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get createdBy(): Queryable {
-        return new Queryable(this, "CreatedBy");
+        return new Queryable(this, "createdBy");
     }
 
     /**
@@ -589,7 +584,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get id(): Queryable {
-        return new Queryable(this, "ID");
+        return new Queryable(this, "id");
     }
 
     /**
@@ -597,7 +592,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get isCurrentVersion(): Queryable {
-        return new Queryable(this, "IsCurrentVersion");
+        return new Queryable(this, "isCurrentVersion");
     }
 
     /**
@@ -605,7 +600,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get size(): Queryable {
-        return new Queryable(this, "Size");
+        return new Queryable(this, "size");
     }
 
     /**
@@ -613,7 +608,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get url(): Queryable {
-        return new Queryable(this, "Url");
+        return new Queryable(this, "url");
     }
 
     /**
@@ -622,7 +617,7 @@ export class Version extends QueryableInstance {
      * 
      */
     public get versionLabel(): Queryable {
-        return new Queryable(this, "VersionLabel");
+        return new Queryable(this, "versionLabel");
     }
 
      /**
