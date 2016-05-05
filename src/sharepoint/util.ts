@@ -17,16 +17,6 @@ export class Util {
     }
 
     /**
-     * Retrieves the node with the given title from a collection of SP.NavigationNode
-     */
-    public static getNodeFromCollectionByTitle(nodeCollection: Array<SP.NavigationNode>, title: string) {
-        const f = nodeCollection.filter((val: SP.NavigationNode) => {
-            return val.get_title() === title;
-        });
-        return f[0] || null;
-    };
-
-    /**
      * Replaces URL tokens in a string
      */
     public static replaceUrlTokens(url: string) {
