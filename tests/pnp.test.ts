@@ -18,7 +18,7 @@ describe("PnP", () => {
     });
 
     it("configuration should not be null", () => {
-        expect(pnp.configuration).to.not.be.null;
+        expect(pnp.config).to.not.be.null;
     });
 
     it("logging should not be null", () => {

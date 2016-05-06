@@ -76,6 +76,31 @@ export class Lists extends QueryableCollection {
     /*tslint:enable */
 
     /**
+     * Ensures that the specified list exists in the collection (note: settings are not updated if the list exists)
+     *
+     * @param title The new list's title
+     * @param description The new list's description
+     * @param template The list template value
+     * @param enableContentTypes If true content types will be allowed and enabled, otherwise they will be disallowed and not enabled
+     * @param additionalSettings Will be passed as part of the list creation body
+     */
+    /*tslint:disable max-line-length */
+    public ensure(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ListEnsureResult> {
+
+        return new Promise((resolve, reject) => {
+            
+            let list: List = this.getByTitle(title);
+
+            list.get().then((d) => resolve({ created: false, list: list, data: d })).catch(() => {
+
+                this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => resolve({ created: true, list: this.getByTitle(title), data: r.data }));
+
+            }).catch(() => reject());
+        });
+    }
+    /*tslint:enable */
+
+    /**
      * Gets a list that is the default asset location for images or other files, which the users upload to their wiki pages.
      */
     /*tslint:disable member-access */
@@ -335,5 +360,11 @@ export interface ListAddResult {
 
 export interface ListUpdateResult {
     list: List;
+    data: any;
+}
+
+export interface ListEnsureResult {
+    list: List;
+    created: boolean;
     data: any;
 }

@@ -24,18 +24,20 @@ export class Queryable {
         if (typeof baseUrl === "string") {
             // we need to do some extra parsing to get the parent url correct if we are
             // being created from just a string.
-            if (baseUrl.lastIndexOf("/") < 0) {
-                this._parentUrl = baseUrl;
-                this._url = Util.combinePaths(baseUrl, path);
-            } else if (baseUrl.lastIndexOf("/") > baseUrl.lastIndexOf("(")) {
-                let index = baseUrl.lastIndexOf("/");
-                this._parentUrl = baseUrl.slice(0, index);
-                path = Util.combinePaths(baseUrl.slice(index), path);
+
+            let urlStr = baseUrl as string;
+            if (urlStr.lastIndexOf("/") < 0) {
+                this._parentUrl = urlStr;
+                this._url = Util.combinePaths(urlStr, path);
+            } else if (urlStr.lastIndexOf("/") > urlStr.lastIndexOf("(")) {
+                let index = urlStr.lastIndexOf("/");
+                this._parentUrl = urlStr.slice(0, index);
+                path = Util.combinePaths(urlStr.slice(index), path);
                 this._url = Util.combinePaths(this._parentUrl, path);
             } else {
-                let index = baseUrl.lastIndexOf("(");
-                this._parentUrl = baseUrl.slice(0, index);
-                this._url = Util.combinePaths(baseUrl, path);
+                let index = urlStr.lastIndexOf("(");
+                this._parentUrl = urlStr.slice(0, index);
+                this._url = Util.combinePaths(urlStr, path);
             }
         } else {
             let q = baseUrl as Queryable;

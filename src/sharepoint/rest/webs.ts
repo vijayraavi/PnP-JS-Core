@@ -74,6 +74,13 @@ export class Webs extends QueryableCollection {
 export class Web extends QueryableSecurable {
 
     constructor(baseUrl: string | Queryable, path?: string) {
+
+        let urlStr = baseUrl as string;
+        if (urlStr.indexOf("_api") < 0) {
+            // try and handle the case where someone created a new web/site and didn't append _api
+            baseUrl = Util.combinePaths(urlStr, "_api");
+        }
+
         super(baseUrl, path);
     }
 
