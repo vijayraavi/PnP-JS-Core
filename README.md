@@ -21,10 +21,6 @@ Please use [http://aka.ms/OfficeDevPnP](http://aka.ms/OfficeDevPnP) for getting 
 We have an active [Yammer Group](http://aka.ms/OfficeDevPnPSIGJavaScriptYammer) dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please [report it](https://github.com/OfficeDev/PnP-JS-Core/issues).
 
 
-### Prerequisites ###
-See the [Quick Start Guide](docs/getting-started.md) for setting up your environment.
-
-
 ### Wiki ###
 
 Please see [the wiki](https://github.com/OfficeDev/PnP-JS-Core/wiki) for tips on getting started, configuring your development environment, and using the library.
