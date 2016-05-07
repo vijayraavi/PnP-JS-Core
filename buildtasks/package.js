@@ -78,7 +78,7 @@ function packageBundle() {
     return browserify('./build/src/pnp.js', {
         debug: false,
         standalone: '$pnp',
-        external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
+        external: ["es6-promise", "whatwg-fetch", "node-fetch"]
     }).ignore('*.d.ts').bundle()
         .pipe(src(global.TSDist.BundleFileName))
         .pipe(replace(/Object\.defineProperty\(exports, "__esModule", \{ value: true \}\);/ig, ""))
@@ -96,7 +96,7 @@ function packageBundleUglify() {
     return browserify('./build/src/pnp.js', {
         debug: false,
         standalone: '$pnp',
-        external: ["es6-promise", "jquery", "whatwg-fetch", "node-fetch"]
+        external: ["es6-promise", "whatwg-fetch", "node-fetch"]
     }).ignore('*.d.ts').bundle()
         .pipe(src(global.TSDist.MinifyFileName))
         .pipe(replace(/Object\.defineProperty\(exports, "__esModule", \{ value: true \}\);/ig, ""))
