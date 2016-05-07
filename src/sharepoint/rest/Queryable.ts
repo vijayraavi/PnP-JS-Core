@@ -220,6 +220,10 @@ export class QueryableCollection extends Queryable {
         this._query.add("$select", selects.join(","));
         return this;
     }
+   public expand(...expands: string[]): QueryableCollection {
+        this._query.add("$expand", expands.join(","));
+        return this;
+    }
 }
 
 
@@ -231,6 +235,10 @@ export class QueryableInstance extends Queryable {
 
     public select(...selects: string[]): QueryableInstance {
         this._query.add("$select", selects.join(","));
+        return this;
+    }
+    public expand(...expands: string[]): QueryableInstance {
+        this._query.add("$expand", expands.join(","));
         return this;
     }
 }
