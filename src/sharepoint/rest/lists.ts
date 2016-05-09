@@ -88,14 +88,16 @@ export class Lists extends QueryableCollection {
     public ensure(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ListEnsureResult> {
 
         return new Promise((resolve, reject) => {
-            
+
             let list: List = this.getByTitle(title);
 
             list.get().then((d) => resolve({ created: false, list: list, data: d })).catch(() => {
 
-                this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => resolve({ created: true, list: this.getByTitle(title), data: r.data }));
+                this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => {
+                    resolve({ created: true, list: this.getByTitle(title), data: r.data })
+                });
 
-            }).catch(() => reject());
+            }).catch((e) => reject(e));
         });
     }
     /*tslint:enable */
