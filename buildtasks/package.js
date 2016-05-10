@@ -37,7 +37,7 @@ function packageDefinitions() {
 
     // create a project specific to our typings build and specify the outFile. This will result
     // in a single pnp.d.ts file being creating and piped to the typings folder
-    var typingsProject = tsc.createProject('tsconfig.json', { "declaration": true, "outFile": "pnp.js" });
+    var typingsProject = tsc.createProject('tsconfig.json', { "declaration": true, "outFile": "pnp.js", "removeComments" : false });
 
     return gulp.src(src)
         .pipe(tsc(typingsProject))
