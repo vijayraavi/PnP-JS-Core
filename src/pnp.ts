@@ -1,9 +1,9 @@
 "use strict";
 
-import * as Util from "./utils/Util";
+import { Util } from "./utils/Util";
 import { SharePoint } from "./SharePoint/SharePoint";
 import { PnPClientStorage } from "./utils/Storage";
-import * as Configuration from "./configuration/configuration";
+import { Settings } from "./configuration/configuration";
 import { Logger } from "./utils/logging";
 import { Rest } from "./SharePoint/Rest/rest";
 
@@ -32,9 +32,9 @@ export default class PnP {
     public static storage: PnPClientStorage = new PnPClientStorage();
 
     /**
-     * Global configuration instance to which providers can be added 
+     * Global configuration instance to which providers can be added
      */
-    public static configuration = Configuration;
+    public static config = new Settings();
 
     /**
      * Global logging instance to which subscribers can be registered and messages written
