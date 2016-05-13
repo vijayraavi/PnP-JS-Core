@@ -1,7 +1,7 @@
 "use strict";
 
 import { IComposedLook } from "../schema/icomposedlook";
-import { Util } from "../../util";
+import { Util } from "../util";
 import { ObjectHandlerBase } from "./ObjectHandlerBase";
 
 export class ObjectComposedLook extends ObjectHandlerBase {

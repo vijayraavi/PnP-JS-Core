@@ -1,6 +1,6 @@
 "use strict";
 
-import { Util } from "../../util";
+import { Util } from "../util";
 import { ObjectHandlerBase } from "./ObjectHandlerBase";
 import { INavigation } from "../schema/inavigation";
 import { INavigationNode } from "../schema/inavigationnode";

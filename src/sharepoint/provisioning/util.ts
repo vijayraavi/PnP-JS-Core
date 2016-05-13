@@ -1,13 +1,6 @@
 "use strict";
 export class Util {
     /**
-     * Retrieves the list ID of the current page from _spPageContextInfo
-     */
-    public static getListId(): string {
-        return _spPageContextInfo.hasOwnProperty("pageListId") ? _spPageContextInfo.pageListId.substring(1, 37) : "";
-    }
-
-    /**
      * Make URL relative to host
      *
      * @param url The URL to make relative

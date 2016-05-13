@@ -1,7 +1,7 @@
 "use strict";
 
 import * as CoreUtil from "../../../utils/util";
-import { Util } from "../../../sharepoint/util";
+import { Util } from "../util";
 import { ObjectHandlerBase } from "./ObjectHandlerBase";
 import { IFile } from "../schema/ifile";
 import { IWebPart } from "../schema/iwebpart";

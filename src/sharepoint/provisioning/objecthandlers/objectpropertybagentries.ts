@@ -1,6 +1,6 @@
 "use strict";
 
-import { Util } from "../../../sharepoint/util";
+import { Util } from "../util";
 import { ObjectHandlerBase } from "./ObjectHandlerBase";
 import { IPropertyBagEntry } from "../schema/ipropertybagentry";
 
