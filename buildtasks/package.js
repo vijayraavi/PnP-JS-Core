@@ -35,7 +35,7 @@ function packageDefinitions() {
     var src = global.TSWorkspace.Files.slice(0);
     src.push(global.TSTypings.Main);
     src.push("!src/sharepoint/provisioning/**/*.*");
-    
+
     var src2 = ["src/sharepoint/provisioning/**/*.ts"];
     src2.push(global.TSTypings.Main);
 
@@ -152,19 +152,18 @@ function packageProvisioningBundleUglify() {
 //******************************************************************************
 //* PACKAGE
 //******************************************************************************
-//gulp.task("package", ["build", "test"], function () {
-gulp.task("package", ["build"], function () {
-    
+gulp.task("package", ["build", "test"], function () {
+
     // build and package the definition files
     packageDefinitions();
-    
+
     // build and package the lib folder
     packageLib();
-    
+
     // bundle the core
     packageBundle();
     packageBundleUglify();
-    
+
     // bundle provisioning
     packageProvisioningBundle();
     packageProvisioningBundleUglify();
