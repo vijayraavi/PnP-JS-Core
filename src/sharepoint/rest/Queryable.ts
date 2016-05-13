@@ -222,6 +222,22 @@ export class QueryableCollection extends Queryable {
         this._query.add("$select", selects.join(","));
         return this;
     }
+    public expand(...expands: string[]): QueryableCollection {
+        this._query.add("$expand", expands.join(","));
+        return this;
+    }
+    public orderby(...orderbys: string[]): QueryableCollection {
+        this._query.add("$orderby", orderbys.join(","));
+        return this;
+    }
+    public skip(skip: number): QueryableCollection {
+        this._query.add("$skip", skip.toString());
+        return this;
+    }
+    public top(top: number): QueryableCollection {
+        this._query.add("$top", top.toString());
+        return this;
+    }
 }
 
 
@@ -233,6 +249,14 @@ export class QueryableInstance extends Queryable {
 
     public select(...selects: string[]): QueryableInstance {
         this._query.add("$select", selects.join(","));
+        return this;
+    }
+    public expand(...expands: string[]): QueryableInstance {
+        this._query.add("$expand", expands.join(","));
+        return this;
+    }
+    public orderby(...orderbys: string[]): QueryableInstance {
+        this._query.add("$orderbys", orderbys.join(","));
         return this;
     }
 }
