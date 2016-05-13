@@ -154,17 +154,16 @@ function packageProvisioningBundleUglify() {
 //******************************************************************************
 gulp.task("package", ["build", "test"], function () {
 
-    // build and package the definition files
-    packageDefinitions();
-
-    // build and package the lib folder
-    packageLib();
-
-    // bundle the core
-    packageBundle();
-    packageBundleUglify();
-
-    // bundle provisioning
-    packageProvisioningBundle();
-    packageProvisioningBundleUglify();
+    return merge([
+        // build and package the definition files
+        packageDefinitions(),
+        // build and package the lib folder
+        packageLib(),
+        // bundle the core
+        packageBundle(),
+        packageBundleUglify(),
+        // bundle provisioning
+        packageProvisioningBundle(),
+        packageProvisioningBundleUglify(),
+    ]);
 });
