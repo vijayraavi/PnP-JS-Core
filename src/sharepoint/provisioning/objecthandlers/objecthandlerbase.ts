@@ -27,13 +27,13 @@ export class ObjectHandlerBase {
      * Writes to Logger when scope has started
      */
     public scope_started() {
-        Logger.write(`Provisioning: ${this.name} Code execution scope started`);
+        Logger.write(`${this.name}: Code execution scope started`);
     }
 
     /**
      * Writes to Logger when scope has stopped
      */
     public scope_ended() {
-        Logger.write(`Provisioning: ${this.name} Code execution scope stopped`);
+        Logger.write(`${this.name}: Code execution scope stopped`);
     }
 }
