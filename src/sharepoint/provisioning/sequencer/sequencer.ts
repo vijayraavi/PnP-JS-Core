@@ -23,10 +23,8 @@ export class Sequencer {
             let promises = [];
             let index = 1;
             promises.push(new Promise(
-                () => {
-                    if (index < 1) {
-                        index = 1;
-                    }
+                (res) => {
+                    res();
                 }
             ));
             while (this.functions[index - 1] !== undefined) {
