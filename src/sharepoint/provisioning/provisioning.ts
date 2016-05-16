@@ -82,8 +82,9 @@ export class Provisioning {
             });
 
             let promises = [];
-            promises.push(new Promise(() => {
+            promises.push(new Promise((res) => {
                 Logger.write("Provisioning: Code execution scope started", Logger.LogLevel.Info);
+                res();
             }));
             let index = 1;
             while (this.queueItems[index - 1] !== undefined) {
