@@ -3,7 +3,7 @@
     "files.exclude": {
         "**/.git": true,
         "**/.DS_Store": true,
-        "lib/": false,
+        "lib/": true,
         "build/": true,
         "node_modules/": true,
         "server-root/require.js": true,
