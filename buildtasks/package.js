@@ -68,7 +68,7 @@ function packageLib() {
     var packageProject = tsc.createProject({
         "declaration": true,
         "removeComments": false,
-        "module": "umd",
+        "module": "commonjs",
         "target": "es5",
         "jsx": "react"
     });
