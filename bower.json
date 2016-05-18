@@ -41,6 +41,5 @@
     "repository": {
         "type": "git",
         "url": "git://github.com/OfficeDev/PnP-JS-Core/"
-    },
-    "private": true
+    }
 }
