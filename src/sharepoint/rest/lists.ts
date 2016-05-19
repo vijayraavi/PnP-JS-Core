@@ -41,7 +41,7 @@ export class Lists extends QueryableCollection {
      */
     public getById(id: string): List {
         let list = new List(this);
-        list.concat(`(guid'${id.replace(/[^a-zA-Z0-9_-]/g,"")}')`);
+        list.concat(`(${id})`);
         return list;
     }
 
