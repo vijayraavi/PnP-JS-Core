@@ -36,7 +36,8 @@
         "typings/",
         "tests/",
         "buildtasks/",
-        "build/"
+        "build/",
+        "lib/"
     ],
     "repository": {
         "type": "git",
