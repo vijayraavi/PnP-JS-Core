@@ -19,7 +19,7 @@ var gulp = require("gulp");
 //******************************************************************************
 
 gulp.task("build-serve-dist", ["package"], function() {
-    var distFiles = global.TSDist.RootFolder + "/*.{js,map}"
+    var distFiles = global.TSDist.RootFolder + "/*.{js,map,d.ts}"
 
     return gulp.src(distFiles)
         .pipe(gulp.dest(global.PnPLocalServer.RootFolder + "/" +  global.PnPLocalServer.ScriptsRootFolder));

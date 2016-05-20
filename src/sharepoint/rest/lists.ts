@@ -297,12 +297,15 @@ export class List extends QueryableSecurable {
     /**
      * Returns a collection of items from the list based on the specified query.
      */
-    public getItemsByCAMLQuery(query: Types.CamlQuery): Promise<any> {
+    public getItemsByCAMLQuery(query: Types.CamlQuery, ...expands: string[]): Promise<any> {
 
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) });
 
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "getitems");
+
+        q = q.expand.apply(q, expands);
+
         return q.post({ body: postBody });
     }
 
