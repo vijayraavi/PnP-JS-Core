@@ -26,15 +26,15 @@ describe("Lists", () => {
         });
     });
     describe("getById", () => {
-        it("Should return _api/web/lists('4FC65058-FDDE-4FAD-AB21-2E881E1CF527')", () => {
+        it("Should return _api/web/lists(4FC65058-FDDE-4FAD-AB21-2E881E1CF527)", () => {
             let list = lists.getById("4FC65058-FDDE-4FAD-AB21-2E881E1CF527");
-            expect(list.toUrl()).to.equal("_api/web/lists(guid'4FC65058-FDDE-4FAD-AB21-2E881E1CF527')");
+            expect(list.toUrl()).to.equal("_api/web/lists(4FC65058-FDDE-4FAD-AB21-2E881E1CF527)");
         });
     });
     describe("getById with {}", () => {
-        it("Should return _api/web/lists('4FC65058-FDDE-4FAD-AB21-2E881E1CF527')", () => {
+        it("Should return _api/web/lists({4FC65058-FDDE-4FAD-AB21-2E881E1CF527})", () => {
             let list = lists.getById("{4FC65058-FDDE-4FAD-AB21-2E881E1CF527}");
-            expect(list.toUrl()).to.equal("_api/web/lists(guid'4FC65058-FDDE-4FAD-AB21-2E881E1CF527')");
+            expect(list.toUrl()).to.equal("_api/web/lists({4FC65058-FDDE-4FAD-AB21-2E881E1CF527})");
         });
     });
 });
