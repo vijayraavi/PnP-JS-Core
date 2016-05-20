@@ -41,7 +41,7 @@ export class Lists extends QueryableCollection {
      */
     public getById(id: string): List {
         let list = new List(this);
-        list.concat(`(${id})`);
+        list.concat(`('${id}')`);
         return list;
     }
 
