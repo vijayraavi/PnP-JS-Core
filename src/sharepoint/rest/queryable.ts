@@ -12,6 +12,8 @@ declare var _spPageContextInfo: any;
  */
 export class Queryable {
 
+    // a change
+
     /**
      * Creates a new instance of the Queryable class
      *
