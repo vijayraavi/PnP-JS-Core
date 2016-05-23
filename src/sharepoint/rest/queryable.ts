@@ -4,6 +4,8 @@ import { Util } from "../../utils/util";
 import { Dictionary } from "../../collections/collections";
 import { HttpClient } from "../../net/HttpClient";
 
+declare var _spPageContextInfo: any;
+
 /**
  * Queryable Base Class
  *
