@@ -163,6 +163,19 @@ export class Util {
         return typeof candidateFunction === "function";
     }
 
+    /** 
+     * @returns whether the provided parameter is a JavaScript Array or not. 
+    */
+    public static isArray(array: any): boolean {
+
+        if (Array.isArray) {
+            return Array.isArray(array);
+        }
+
+        return array && typeof array.length === "number" && array.constructor === Array;
+    }
+
+
     /**
      * Determines if a string is null or empty or undefined
      *

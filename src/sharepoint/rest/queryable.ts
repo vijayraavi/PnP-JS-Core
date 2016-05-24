@@ -3,16 +3,19 @@
 import { Util } from "../../utils/util";
 import { Dictionary } from "../../collections/collections";
 import { HttpClient } from "../../net/HttpClient";
+import { ODataParser } from "./odata";
 
 declare var _spPageContextInfo: any;
+
+export interface QueryableConstructor {
+    new (baseUrl: string | Queryable, path?: string): any;
+}
 
 /**
  * Queryable Base Class
  *
  */
 export class Queryable {
-
-    // a change
 
     /**
      * Creates a new instance of the Queryable class
@@ -21,7 +24,7 @@ export class Queryable {
      * @param baseUrl A string or Queryable that should form the base part of the url
      *
      */
-    constructor(baseUrl: string | Queryable, path?: string) {
+    constructor(baseUrl: string | Queryable, path?: string, protected parser: ODataParser<any> = null) {
 
         this._query = new Dictionary<string>();
 
@@ -136,7 +139,7 @@ export class Queryable {
      * Executes the currently built request
      *
      */
-    public get(parser: (r: Response) => Promise<any> = this.defaultParser): Promise<any> {
+    public get<T>(parser: (r: Response) => Promise<T> = this.defaultParser): Promise<T> {
         let client = new HttpClient();
         return client.get(this.toUrlAndQuery()).then(function (response) {
 
@@ -145,9 +148,6 @@ export class Queryable {
             }
 
             return parser(response);
-
-        }).then(function (parsed) {
-            return parsed.hasOwnProperty("d") ? parsed.d.hasOwnProperty("results") ? parsed.d.results : parsed.d : parsed;
         });
     }
 
