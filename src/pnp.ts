@@ -56,7 +56,7 @@ export const thing = function (show: (s) => void) {
 
     sp.web.lists.getByTitle("Config3").get().then((g: { Title: string }) => show(g.Title));
 
-    sp.web.lists.getByTitle("Config3").getAs<any, { Title: string, Value: string }>().then((g: any) => show(g.Title));
+    sp.web.lists.getByTitle("Config3").getAs<any, { Title: string, Value: string }>().then(g => show(g.Title));
 
     sp.web.lists.getByTitle("Config3").items.getById(2).getAs(ODataEntity(MyItem)).then(d => show(d.Title));
 
