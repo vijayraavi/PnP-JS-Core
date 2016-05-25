@@ -50,11 +50,13 @@ class MyItem extends Item {
 
 export const thing = function (show: (s) => void) {
 
-    sp.web.lists.get().then((g) => g.Title);
+    sp.web.lists.getByTitle("Config3").get().then((g) => show(g.Title));
 
-    sp.web.lists.get().then((g: any) => g.Title);
+    sp.web.lists.getByTitle("Config3").get().then((g: any) => show(g.Title));
 
-    sp.web.lists.getAs<any, { Title: string, Value: string }>().then((g: any) => g.Title);
+    sp.web.lists.getByTitle("Config3").get().then((g: { Title: string }) => show(g.Title));
+
+    sp.web.lists.getByTitle("Config3").getAs<any, { Title: string, Value: string }>().then((g: any) => show(g.Title));
 
     sp.web.lists.getByTitle("Config3").items.getById(2).getAs(ODataEntity(MyItem)).then(d => show(d.Title));
 
