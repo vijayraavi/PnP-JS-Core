@@ -1,71 +1,77 @@
-import { Queryable, QueryableConstructor } from "./queryable";
+import { QueryableConstructor } from "./queryable";
 import { Util } from "../../utils/util";
-import { Item } from "./items";
 
-export interface ODataParser<T> {
-    parse(r: Response): Promise<T>;
+export interface ODataParser<T, U> {
+    parse(r: Response): Promise<U>;
 }
 
+export class ODataDefaultParser implements ODataParser<any, any> {
 
-export class ODataEntity<T extends Queryable> {
-
-    public "odata.editLink": string;
-    public "odata.etag": string;
-    public "odata.id": string;
-    public "odata.type": string;
-
-    constructor(private factory: QueryableConstructor) {
-    }
-
-    public toQueryable(source: any): T {
-
-        let n = new this.factory(this["odata.editLink"]);
-        return n;
+    public parse(r: Response): Promise<any> {
+        return parseImpl(r);
     }
 }
 
-export abstract class ODataParserBase<T extends Queryable> implements ODataParser<T> {
-    constructor(private factory: QueryableConstructor) {
+export function ODataValue<T>(): ODataParser<any, T> {
+    return new ODataValueParserImpl<T>();
+}
+
+export function ODataEntity<T>(factory: QueryableConstructor<T>): ODataParser<T, T> {
+    return new ODataEntityParserImpl(factory);
+}
+
+export function ODataArray<T>(factory: QueryableConstructor<T>): ODataParser<T, T[]> {
+    return new ODataArrayParserImpl<T>(factory);
+}
+
+class ODataValueParserImpl<T> implements ODataParser<any, T> {
+    public parse(r: Response): Promise<T> {
+        return parseImpl(r).then(d => d as T);
     }
+}
+
+class ODataEntityParserImpl<T> implements ODataParser<T, T> {
+
+    constructor(protected factory: QueryableConstructor<T>) { }
 
     public parse(r: Response): Promise<T> {
-        return r.json().then(function (json) {
-            if (json.hasOwnProperty("d")) {
-                if (json.d.hasOwnProperty("results")) {
-                    return json.d.results;
-                }
-
-                return json.d;
-
-            } else if (json.hasOwnProperty("value")) {
-
-                return json.value;
-            }
-
-            return json;
+        return parseImpl(r).then(d => {
+            let o = new this.factory(d["odata.editLink"]);
+            return Util.extend(o, d);
         });
     }
 }
 
-export class ODataEntityParser<T extends Queryable> extends ODataParserBase<T> {
+class ODataArrayParserImpl<T> implements ODataParser<T, T[]> {
 
-    constructor(factory: QueryableConstructor) {
-        super(factory);
+    constructor(protected factory: QueryableConstructor<T>) { }
+
+    public parse(r: Response): Promise<T[]> {
+        return parseImpl(r).then((d: any[]) => {
+            return d.map(v => {
+                let o = new this.factory(v["odata.editLink"]);
+                return Util.extend(o, v);
+            });
+        });
     }
-
-
-
-
 }
 
-class test extends Queryable {
+function parseImpl(r: Response): Promise<any> {
 
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path, new ODataEntityParser<Item>(Item));
-    }
+    return r.json().then(function (json) {
 
+        if (json.hasOwnProperty("d")) {
+            if (json.d.hasOwnProperty("results")) {
+                return json.d.results;
+            }
 
+            return json.d;
 
+        } else if (json.hasOwnProperty("value")) {
+
+            return json.value;
+        }
+
+        return json;
+    });
 }
-
-

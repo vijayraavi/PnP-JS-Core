@@ -194,7 +194,7 @@ export class Util {
      *
      */
     /* tslint:disable:forin */
-    public static extend<T, S>(target: T, source: S, noOverwrite: Boolean = false): T & S {
+    public static extend<T, S>(target: T, source: S, noOverwrite = false): T & S {
 
         let result = <T & S>{};
         for (let id in target) {
