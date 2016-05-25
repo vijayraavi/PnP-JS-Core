@@ -6,7 +6,7 @@ import { Settings } from "./configuration/configuration";
 import { Logger } from "./utils/logging";
 import { Rest } from "./SharePoint/Rest/rest";
 
-import { ODataEntity, ODataArray } from "./sharepoint/rest/odata";
+import { ODataEntity, ODataEntityArray } from "./sharepoint/rest/odata";
 import { Item } from "./sharepoint/rest/items";
 
 /**
@@ -60,9 +60,12 @@ export const thing = function (show: (s) => void) {
 
     sp.web.lists.getByTitle("Config3").items.getById(2).getAs(ODataEntity(MyItem)).then(d => show(d.Title));
 
-    sp.web.lists.getByTitle("Config3").items.getAs(ODataArray(MyItem)).then(d => {
+    sp.web.lists.getByTitle("Config3").items.getAs(ODataEntityArray(MyItem)).then(d => {
         d.forEach(i => {
             show(i.Title);
+
+            // also i is a full REST item
+            i.select("Title", "Value").get().then(show);
         });
     });
 

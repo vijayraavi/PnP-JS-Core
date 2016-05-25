@@ -20,8 +20,8 @@ export function ODataEntity<T>(factory: QueryableConstructor<T>): ODataParser<T,
     return new ODataEntityParserImpl(factory);
 }
 
-export function ODataArray<T>(factory: QueryableConstructor<T>): ODataParser<T, T[]> {
-    return new ODataArrayParserImpl<T>(factory);
+export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataParser<T, T[]> {
+    return new ODataEntityArrayParserImpl<T>(factory);
 }
 
 class ODataValueParserImpl<T> implements ODataParser<any, T> {
@@ -42,7 +42,7 @@ class ODataEntityParserImpl<T> implements ODataParser<T, T> {
     }
 }
 
-class ODataArrayParserImpl<T> implements ODataParser<T, T[]> {
+class ODataEntityArrayParserImpl<T> implements ODataParser<T, T[]> {
 
     constructor(protected factory: QueryableConstructor<T>) { }
 
