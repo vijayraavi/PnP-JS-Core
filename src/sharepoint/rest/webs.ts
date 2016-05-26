@@ -5,6 +5,7 @@ import { QueryableSecurable } from "./QueryableSecurable";
 import { Lists } from "./lists";
 import { Navigation } from "./navigation";
 import { SiteUsers } from "./siteUsers";
+import { SiteGroups } from "./sitegroups";
 import { ContentTypes } from "./contentTypes";
 import { Folders, Folder } from "./folders";
 import { File } from "./files";
@@ -117,6 +118,14 @@ export class Web extends QueryableSecurable {
      */
     public get siteUsers(): SiteUsers {
         return new SiteUsers(this);
+    }
+
+    /**
+     * Gets the site groups
+     *
+     */
+    public get siteGroups(): SiteGroups {
+        return new SiteGroups(this);
     }
 
     /**
