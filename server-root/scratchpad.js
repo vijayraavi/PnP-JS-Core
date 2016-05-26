@@ -2,7 +2,7 @@
 
 require.config({
     paths: {
-        'jquery': '../Style Library/test/jquery',
+        //'jquery': '../Style Library/test/jquery',
         'pnp': 'https://localhost:3000/scripts/pnp'
     },
     shim: {
@@ -12,25 +12,35 @@ require.config({
     }
 });
 
-require(["jquery", "pnp"], function ($, pnp) {
-
+require(["pnp"], function (pnp) {
+    let rStr = pnp.util.getRandomString(10);
+    
     let show = function (data) {
         $(function () {
-            $("#testingshow").append("<div style='border:2px solid #000000;margin:5px;padding:4px;'>" + JSON.stringify(data) + "</div>");
+            var str = syntaxHighlight(JSON.stringify(data, undefined, 4));
+            $("#testingshow").append("<pre>" + str + "</pre>");
         });
     }
 
     let showRaw = function (data) {
-        $(function () {
-            $("#testingshow").append("<div style='border:2px solid #000000;margin:5px;padding:4px;'>" + data + "</div>");
+        $(function () {            
+            $("#testingshow").append("<div>" + data + "</div>");
         });
     }
-
-
-
-
-
-
+    
+    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").delete().then(show);
+    // pnp.sp.web.siteUsers.get().then(show);
+    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").update({"Title": "Fred Jo Bob"}).then(show);
+    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").get().then(show);
+    // pnp.sp.web.siteUsers.getByLoginName("i:0#.f|membership|mike@devtenant.onmicrosoft.com").get().then(show);
+    // pnp.sp.web.siteUsers.getById(12).groups.get().then(show);
+    // pnp.sp.web.siteUsers.removeById(12).then(show);
+    // pnp.sp.web.siteUsers.removeByLoginName("i:0#.f|membership|mike@devtenant.onmicrosoft.com").then(show);
+    // pnp.sp.web.siteGroups.add({"Title": `New Group ${rStr}`}).then(show);
+    // pnp.sp.web.siteGroups.removeById(22).then(show);
+    // pnp.sp.web.siteGroups.removeByLoginName(`New Group ${rStr}`).then(show);
+    // pnp.sp.web.siteGroups.get().then(show);
+    // pnp.sp.web.siteGroups.getById(3).users().get().then(show);
     // pnp.sp.web.lists.filter("Title eq 'Documents'").filter("Title eq 'Config'").select("Title", "Description").get().then(show);
     // pnp.sp.web.lists.getByTitle("Documents").items.get().then(show);
     // pnp.sp.web.roleAssignments.get().then(show);
@@ -42,7 +52,7 @@ require(["jquery", "pnp"], function ($, pnp) {
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library").folders.get().then(show);    
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library").name.get().then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library").properties.select("vti_x005f_dirlateststamp").get().then(show);
-    //pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.get().then(show);
+    // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.get().then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.getByName("tests.js").get().then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.getByName("tests.js").value.get((r) => r.text()).then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.getByName("tests.js").eTag.get((r) => r.json().then((d) => d.value)).then(show);
@@ -166,5 +176,25 @@ require(["jquery", "pnp"], function ($, pnp) {
     // var caml = { ViewXml: "<View><ViewFields><FieldRef Name='Title' /><FieldRef Name='RoleAssignments' /></ViewFields><RowLimit>10</RowLimit></View>" };
     
     // pnp.sp.web.lists.getByTitle("Config3").getItemsByCAMLQuery(caml, "RoleAssignments").then(show);  
+
+function syntaxHighlight(json) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}
+
 
 });
