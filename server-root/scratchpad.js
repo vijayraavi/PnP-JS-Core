@@ -14,7 +14,7 @@ require.config({
 
 require(["pnp"], function (pnp) {
     let rStr = pnp.util.getRandomString(10);
-    
+
     let show = function (data) {
         $(function () {
             var str = syntaxHighlight(JSON.stringify(data, undefined, 4));
@@ -23,24 +23,27 @@ require(["pnp"], function (pnp) {
     }
 
     let showRaw = function (data) {
-        $(function () {            
+        $(function () {
             $("#testingshow").append("<div>" + data + "</div>");
         });
     }
-    
-    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").delete().then(show);
-    // pnp.sp.web.siteUsers.get().then(show);
-    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").update({"Title": "Fred Jo Bob"}).then(show);
-    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").get().then(show);
-    // pnp.sp.web.siteUsers.getByLoginName("i:0#.f|membership|mike@devtenant.onmicrosoft.com").get().then(show);
-    // pnp.sp.web.siteUsers.getById(12).groups.get().then(show);
-    // pnp.sp.web.siteUsers.removeById(12).then(show);
-    // pnp.sp.web.siteUsers.removeByLoginName("i:0#.f|membership|mike@devtenant.onmicrosoft.com").then(show);
-    // pnp.sp.web.siteGroups.add({"Title": `New Group ${rStr}`}).then(show);
-    // pnp.sp.web.siteGroups.removeById(22).then(show);
-    // pnp.sp.web.siteGroups.removeByLoginName(`New Group ${rStr}`).then(show);
+
     // pnp.sp.web.siteGroups.get().then(show);
-    // pnp.sp.web.siteGroups.getById(3).users().get().then(show);
+    // pnp.sp.web.siteGroups.add({ "Title": "Test Group 1" }).then(show);
+    // pnp.sp.web.siteGroups.getById(11).get().then(show);
+    // pnp.sp.web.siteGroups.removeById(13).get().then(show);
+    // pnp.sp.web.siteGroups.removeByLoginName("Delete My By Name").then(show);        
+    // pnp.sp.web.siteGroups.getByName("Test Group 1").get().then(show);
+    // pnp.sp.web.siteGroups.getById(11).users.get().then(show);
+    // pnp.sp.web.siteGroups.getByName("Test Group 1-5").update({ Title: "Test Group 1-6" }).then((r) => {        
+    //     r.group.users.get().then(show);        
+    // });
+    //pnp.sp.web.roleDefinitions.add("Test1", "Description", 180, { High: '176', Low: '138612801' }).then(show);
+    //pnp.sp.web.roleDefinitions.getByName("Test1").update({ BasePermissions: { High: '0', Low: '138612801' }, Name: "Fred" }).then(show);
+    // pnp.sp.web.userCustomActions.get().then(show);
+    // pnp.sp.web.lists.getByTitle("Documents").userCustomActions.get().then(show);
+    // pnp.sp.web.siteUsers.get().then(show);
+    // pnp.sp.web.siteUsers.getById(9).get().then(show);
     // pnp.sp.web.lists.filter("Title eq 'Documents'").filter("Title eq 'Config'").select("Title", "Description").get().then(show);
     // pnp.sp.web.lists.getByTitle("Documents").items.get().then(show);
     // pnp.sp.web.roleAssignments.get().then(show);
@@ -165,36 +168,36 @@ require(["pnp"], function (pnp) {
     //     $("#testingshow").append("<div id='profiletest'><input type='file' /><button>Upload</button></div>");        
     //     var div = $("#testingshow").find("#profiletest");
     //     var btn = div.find("button");
-        
+
     //     btn.on('click', function(e) {
     //        e.preventDefault();           
     //        var file = $(this).closest("div").find("input")[0].files[0];
     //        pnp.sp.profiles.setMyProfilePic(file).then(show);
     //     });
     // });
-  
+
     // var caml = { ViewXml: "<View><ViewFields><FieldRef Name='Title' /><FieldRef Name='RoleAssignments' /></ViewFields><RowLimit>10</RowLimit></View>" };
-    
+
     // pnp.sp.web.lists.getByTitle("Config3").getItemsByCAMLQuery(caml, "RoleAssignments").then(show);  
 
-function syntaxHighlight(json) {
-    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        var cls = 'number';
-        if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-                cls = 'key';
-            } else {
-                cls = 'string';
+    function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
             }
-        } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-        } else if (/null/.test(match)) {
-            cls = 'null';
-        }
-        return '<span class="' + cls + '">' + match + '</span>';
-    });
-}
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
 
 
 });
