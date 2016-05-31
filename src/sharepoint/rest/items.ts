@@ -243,7 +243,7 @@ export class PagedItemCollection<T> {
     /**
      * Contains the results of the query
      */
-    public resultData: T;
+    public results: T;
 
     /**
      * The url to the next set of results
@@ -267,7 +267,7 @@ export class PagedItemCollection<T> {
         return r.json().then(d => {
             let col = new PagedItemCollection();
             col.nextUrl = d["odata.nextLink"];
-            col.resultData = d.value;
+            col.results = d.value;
             return col;
         });
     }
