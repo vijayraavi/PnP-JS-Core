@@ -217,7 +217,7 @@ export class UserProfileQuery extends QueryableInstance {
 
 class ProfileLoader extends Queryable {
 
-    constructor(baseUrl: string | Queryable, path = "sp.userprofiles.profileloader.getprofileloader") {
+    constructor(baseUrl: string | Queryable, path = "_api/sp.userprofiles.profileloader.getprofileloader") {
         super(baseUrl, path);
     }
 
