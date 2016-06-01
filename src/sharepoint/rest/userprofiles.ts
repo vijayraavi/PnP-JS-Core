@@ -6,7 +6,7 @@ import * as FileUtil from "../../utils/files";
 
 export class UserProfileQuery extends QueryableInstance {
 
-    constructor(baseUrl: string | Queryable, path = "sp.userprofiles.peoplemanager") {
+    constructor(baseUrl: string | Queryable, path = "_api/sp.userprofiles.peoplemanager") {
         super(baseUrl, path);
 
         this.profileLoader = new ProfileLoader(baseUrl);
@@ -217,7 +217,7 @@ export class UserProfileQuery extends QueryableInstance {
 
 class ProfileLoader extends Queryable {
 
-    constructor(baseUrl: string | Queryable, path = "sp.userprofiles.profileloader.getprofileloader") {
+    constructor(baseUrl: string | Queryable, path = "_api/sp.userprofiles.profileloader.getprofileloader") {
         super(baseUrl, path);
     }
 

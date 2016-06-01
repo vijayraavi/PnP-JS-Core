@@ -274,7 +274,7 @@ export class QueryableCollection extends Queryable {
     }
 
     /**
-     * Skips the specified number of items (does not work with list items)
+     * Skips the specified number of items
      * 
      * @param skip The number of items to skip
      */

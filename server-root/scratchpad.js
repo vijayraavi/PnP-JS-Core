@@ -1,5 +1,3 @@
-/// <reference path="./scripts/pnp.d.ts" />
-
 require.config({
     paths: {
         //'jquery': '../Style Library/test/jquery',
@@ -28,6 +26,12 @@ require(["pnp"], function (pnp) {
         });
     }
 
+    // pnp.sp.web.get().then(show);
+    
+    // pnp.sp.web.lists.getByTitle("Config3").items.orderBy("Title").top(1).getPaged().then(d => {
+    //     show(d);
+    //     d.getNext().then(d => show(d));
+    // });    
     // pnp.sp.web.siteGroups.get().then(show);
     // pnp.sp.web.siteGroups.add({ "Title": "Test Group 1" }).then(show);
     // pnp.sp.web.siteGroups.getById(11).get().then(show);
@@ -35,7 +39,7 @@ require(["pnp"], function (pnp) {
     // pnp.sp.web.siteGroups.removeByLoginName("Delete My By Name").then(show);        
     // pnp.sp.web.siteGroups.getByName("Test Group 1").get().then(show);
     // pnp.sp.web.siteGroups.getById(11).users.get().then(show);
-    // pnp.sp.web.siteGroups.getByName("Test Group 1-5").update({ Title: "Test Group 1-6" }).then((r) => {        
+    // pnp.sp.web.siteGroups.getByName("Test Group 1").update({ Title: "Test Group 1-2" }).then((r) => {        
     //     r.group.users.get().then(show);        
     // });
     //pnp.sp.web.roleDefinitions.add("Test1", "Description", 180, { High: '176', Low: '138612801' }).then(show);
@@ -179,6 +183,9 @@ require(["pnp"], function (pnp) {
     // var caml = { ViewXml: "<View><ViewFields><FieldRef Name='Title' /><FieldRef Name='RoleAssignments' /></ViewFields><RowLimit>10</RowLimit></View>" };
 
     // pnp.sp.web.lists.getByTitle("Config3").getItemsByCAMLQuery(caml, "RoleAssignments").then(show);  
+
+    //pnp.sp.search("Title").then(show);
+
 
     function syntaxHighlight(json) {
         json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

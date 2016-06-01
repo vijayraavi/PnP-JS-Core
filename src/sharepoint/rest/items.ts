@@ -35,6 +35,24 @@ export class Items extends QueryableCollection {
     }
 
     /**
+     * Skips the specified number of items (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#sectionSection6)
+     * 
+     * @param skip The starting id where the page should start, use with top to specify pages
+     */
+    public skip(skip: number): QueryableCollection {
+        this._query.add("$skiptoken", encodeURIComponent(`Paged=TRUE&p_ID=${skip}`));
+        return this;
+    }
+
+    /**
+     * Gets a collection designed to aid in paging through data
+     * 
+     */
+    public getPaged(): Promise<PagedItemCollection<any>> {
+        return this.get(r => PagedItemCollection.fromResponse(r));
+    }
+
+    /**
      * Adds a new item to the collection
      *
      * @param properties The new items's properties
@@ -215,4 +233,55 @@ export interface ItemAddResult {
 export interface ItemUpdateResult {
     item: Item;
     data: any;
+}
+
+/**
+ * Provides paging functionality for list items
+ */
+export class PagedItemCollection<T> {
+
+    /**
+     * Contains the results of the query
+     */
+    public results: T;
+
+    /**
+     * The url to the next set of results
+     */
+    private nextUrl: string;
+
+    /**
+     * If true there are more results available in the set, otherwise there are not
+     */
+    public get hasNext(): boolean {
+        return typeof this.nextUrl === "string" && this.nextUrl.length > 0;
+    }
+
+    /**
+     * Creats a new instance of the PagedItemCollection class from the response
+     * 
+     * @param r Response instance from which this collection will be created
+     * 
+     */
+    public static fromResponse(r: Response): Promise<PagedItemCollection<any>> {
+        return r.json().then(d => {
+            let col = new PagedItemCollection();
+            col.nextUrl = d["odata.nextLink"];
+            col.results = d.value;
+            return col;
+        });
+    }
+
+    /**
+     * Gets the next set of results, or resolves to null if no results are available
+     */
+    public getNext(): Promise<PagedItemCollection<any>> {
+
+        if (this.hasNext) {
+            let items = new Items(this.nextUrl, null);
+            return items.getPaged();
+        }
+
+        return new Promise<any>(r => r(null));
+    }
 }
