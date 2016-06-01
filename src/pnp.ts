@@ -56,13 +56,13 @@ export const thing = function (show: (s) => void) {
 
     sp.web.lists.getByTitle("Config3").get().then((g: { Title: string }) => show(g.Title));
 
-    sp.web.lists.getByTitle("Config3").getAs<any, { Title: string, Value: string }>().then(g => show(g.Title));
+    sp.web.lists.getByTitle("Config3").getAs<any, { Title: string }>().then(g => show(g.Title));
 
     sp.web.lists.getByTitle("Config3").items.getById(2).getAs(ODataEntity(MyItem)).then(d => show(d.Title));
 
     sp.web.lists.getByTitle("Config3").items.getAs(ODataEntityArray(MyItem)).then(d => {
         d.forEach(i => {
-            show(i.Title);
+            show("Title: " + i.Title);
 
             // also i is a full REST item
             i.select("Title", "Value").get().then(show);

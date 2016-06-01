@@ -7,6 +7,7 @@ import { ContentType } from "./contenttypes";
 import { TypedHash } from "../../collections/collections";
 import { Util } from "../../utils/util";
 import * as Types from "./types";
+import { ODataParserBase } from "./odata";
 
 /**
  * Describes a collection of Item objects
@@ -49,7 +50,7 @@ export class Items extends QueryableCollection {
      * 
      */
     public getPaged(): Promise<PagedItemCollection<any>> {
-        return this.get(r => PagedItemCollection.fromResponse(r));
+        return this.getAs(new PagedItemCollectionParser());
     }
 
     /**
@@ -77,6 +78,11 @@ export class Items extends QueryableCollection {
     }
 }
 
+class PagedItemCollectionParser extends ODataParserBase<any, PagedItemCollection<any>> {
+    public parse(r: Response): Promise<PagedItemCollection<any>> {
+        return PagedItemCollection.fromResponse(r);
+    }
+}
 
 /**
  * Descrines a single Item instance

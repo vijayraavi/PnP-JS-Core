@@ -163,8 +163,12 @@ export class Queryable {
      *
      * @param factory The contructor for the class to create
      */
-    protected getParent<T extends Queryable>(factory: { new (q: string | Queryable): T }, baseUrl: string | Queryable = this.parentUrl): T {
-        let parent = new factory(baseUrl);
+    protected getParent<T extends Queryable>(
+        factory: { new (q: string | Queryable, path?: string): T },
+        baseUrl: string | Queryable = this.parentUrl,
+        path?: string): T {
+
+        let parent = new factory(baseUrl, path);
         let target = this.query.get("@target");
         if (target !== null) {
             parent.query.add("@target", target);

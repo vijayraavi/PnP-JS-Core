@@ -27,9 +27,19 @@ gulp.task("build", ["clean", "lint", "build-typings"], function () {
     //        .js.pipe(replace(/(\(function \(factory\) {)/g, '$1/* istanbul ignore next */'))
 
     return gulp.src(src)
-        .pipe(plumber({ errorHandler: (err) => console.log(err.toString()) }))
+        .pipe(plumber())
         .pipe(tsc(global.tsProject))
         .pipe(gulp.dest(global.TSCompiledOutput.RootFolder))
         .pipe(print());
+});
+
+gulp.task("build-serve", function () {
+    var src = global.TSWorkspace.Files.slice(0);
+    src.push(global.TSTypings.Main);
+
+    return gulp.src(src)
+        .pipe(plumber())
+        .pipe(tsc(global.tsProject))
+        .pipe(gulp.dest(global.TSCompiledOutput.RootFolder));
 });
 
