@@ -49,7 +49,10 @@ export class Queryable {
         } else {
             let q = baseUrl as Queryable;
             this._parentUrl = q._url;
-            this._query.merge(q._query);
+            let target = q._query.get("@target");
+            if (target !== null) {
+                this._query.add("@target", target);
+            }
             this._url = Util.combinePaths(this._parentUrl, path);
         }
     }
@@ -268,7 +271,7 @@ export class QueryableCollection extends Queryable {
     }
 
     /**
-     * Skips the specified number of items (does not work with list items)
+     * Skips the specified number of items
      * 
      * @param skip The number of items to skip
      */

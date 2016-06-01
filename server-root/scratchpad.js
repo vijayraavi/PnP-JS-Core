@@ -1,8 +1,6 @@
-/// <reference path="scripts/pnp.d.ts" />
-
 require.config({
     paths: {
-        'jquery': '../Style Library/test/jquery',
+        //'jquery': '../Style Library/test/jquery',
         'pnp': 'https://localhost:3000/scripts/pnp'
     },
     shim: {
@@ -12,25 +10,46 @@ require.config({
     }
 });
 
-require(["jquery", "pnp"], function ($, pnp) {
+require(["pnp"], function (pnp) {
+    let rStr = pnp.util.getRandomString(10);
 
     let show = function (data) {
         $(function () {
-            $("#testingshow").append("<div style='border:2px solid #000000;margin:5px;padding:4px;'>" + JSON.stringify(data) + "</div>");
+            var str = syntaxHighlight(JSON.stringify(data, undefined, 4));
+            $("#testingshow").append("<pre>" + str + "</pre>");
         });
     }
 
     let showRaw = function (data) {
         $(function () {
-            $("#testingshow").append("<div style='border:2px solid #000000;margin:5px;padding:4px;'>" + data + "</div>");
+            $("#testingshow").append("<div>" + data + "</div>");
         });
     }
 
     pnp.thing(show);
 
-
-
-
+    // pnp.sp.web.get().then(show);
+    
+    // pnp.sp.web.lists.getByTitle("Config3").items.orderBy("Title").top(1).getPaged().then(d => {
+    //     show(d);
+    //     d.getNext().then(d => show(d));
+    // });    
+    // pnp.sp.web.siteGroups.get().then(show);
+    // pnp.sp.web.siteGroups.add({ "Title": "Test Group 1" }).then(show);
+    // pnp.sp.web.siteGroups.getById(11).get().then(show);
+    // pnp.sp.web.siteGroups.removeById(13).get().then(show);
+    // pnp.sp.web.siteGroups.removeByLoginName("Delete My By Name").then(show);        
+    // pnp.sp.web.siteGroups.getByName("Test Group 1").get().then(show);
+    // pnp.sp.web.siteGroups.getById(11).users.get().then(show);
+    // pnp.sp.web.siteGroups.getByName("Test Group 1").update({ Title: "Test Group 1-2" }).then((r) => {        
+    //     r.group.users.get().then(show);        
+    // });
+    //pnp.sp.web.roleDefinitions.add("Test1", "Description", 180, { High: '176', Low: '138612801' }).then(show);
+    //pnp.sp.web.roleDefinitions.getByName("Test1").update({ BasePermissions: { High: '0', Low: '138612801' }, Name: "Fred" }).then(show);
+    // pnp.sp.web.userCustomActions.get().then(show);
+    // pnp.sp.web.lists.getByTitle("Documents").userCustomActions.get().then(show);
+    // pnp.sp.web.siteUsers.get().then(show);
+    // pnp.sp.web.siteUsers.getById(9).get().then(show);
     // pnp.sp.web.lists.filter("Title eq 'Documents'").filter("Title eq 'Config'").select("Title", "Description").get().then(show);
     // pnp.sp.web.lists.getByTitle("Documents").items.get().then(show);
     // pnp.sp.web.roleAssignments.get().then(show);
@@ -42,7 +61,7 @@ require(["jquery", "pnp"], function ($, pnp) {
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library").folders.get().then(show);    
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library").name.get().then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library").properties.select("vti_x005f_dirlateststamp").get().then(show);
-    //pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.get().then(show);
+    // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.get().then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.getByName("tests.js").get().then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.getByName("tests.js").value.get((r) => r.text()).then(show);
     // pnp.sp.site.rootWeb.getFolderByServerRelativeUrl("/sites/dev/Style Library/test").files.getByName("tests.js").eTag.get((r) => r.json().then((d) => d.value)).then(show);
@@ -155,16 +174,39 @@ require(["jquery", "pnp"], function ($, pnp) {
     //     $("#testingshow").append("<div id='profiletest'><input type='file' /><button>Upload</button></div>");        
     //     var div = $("#testingshow").find("#profiletest");
     //     var btn = div.find("button");
-        
+
     //     btn.on('click', function(e) {
     //        e.preventDefault();           
     //        var file = $(this).closest("div").find("input")[0].files[0];
     //        pnp.sp.profiles.setMyProfilePic(file).then(show);
     //     });
     // });
-  
+
     // var caml = { ViewXml: "<View><ViewFields><FieldRef Name='Title' /><FieldRef Name='RoleAssignments' /></ViewFields><RowLimit>10</RowLimit></View>" };
-    
+
     // pnp.sp.web.lists.getByTitle("Config3").getItemsByCAMLQuery(caml, "RoleAssignments").then(show);  
+
+    //pnp.sp.search("Title").then(show);
+
+
+    function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
 
 });

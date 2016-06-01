@@ -20,11 +20,11 @@ var gulp = require("gulp"),
 //******************************************************************************
 //* BUILD
 //******************************************************************************
-gulp.task("build", ["lint", "clean", "build-typings"], function () {
+gulp.task("build", ["clean", "lint", "build-typings"], function () {
     var src = global.TSWorkspace.Files.slice(0);
     src.push(global.TSTypings.Main);
 
-//        .js.pipe(replace(/(\(function \(factory\) {)/g, '$1/* istanbul ignore next */'))
+    //        .js.pipe(replace(/(\(function \(factory\) {)/g, '$1/* istanbul ignore next */'))
 
     return gulp.src(src)
         .pipe(plumber({ errorHandler: (err) => console.log(err.toString()) }))

@@ -9,6 +9,7 @@ import { QueryableSecurable } from "./QueryableSecurable";
 import { Util } from "../../utils/util";
 import { TypedHash } from "../../collections/collections";
 import * as Types from "./types";
+import { UserCustomActions } from "./usercustomactions";
 
 /**
  * Describes a collection of List objects
@@ -185,6 +186,14 @@ export class List extends QueryableSecurable {
     }
 
     /**
+     * Get all custom actions on a site collection
+     * 
+     */
+    public get userCustomActions(): UserCustomActions {
+        return new UserCustomActions(this);
+    }
+
+    /**
      * Gets the effective base permissions of this list
      *
      */
@@ -214,14 +223,6 @@ export class List extends QueryableSecurable {
      */
     public get informationRightsManagementSettings(): Queryable {
         return new Queryable(this, "InformationRightsManagementSettings");
-    }
-
-    /**
-     * Gets the user custom actions attached to this list
-     *
-     */
-    public get userCustomActions(): Queryable {
-        return new Queryable(this, "UserCustomActions");
     }
 
     /**
@@ -256,8 +257,7 @@ export class List extends QueryableSecurable {
             let retList: List = this;
 
             if (properties.hasOwnProperty("Title")) {
-                retList = this.getParent(List);
-                retList.append(`getByTitle('${properties["Title"]}')`);
+                retList = this.getParent(List, this.parentUrl, `getByTitle('${properties["Title"]}')`);
             }
 
             return {

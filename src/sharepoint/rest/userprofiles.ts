@@ -7,7 +7,7 @@ import { ODataValue } from "./odata";
 
 export class UserProfileQuery extends QueryableInstance {
 
-    constructor(baseUrl: string | Queryable, path = "sp.userprofiles.peoplemanager") {
+    constructor(baseUrl: string | Queryable, path = "_api/sp.userprofiles.peoplemanager") {
         super(baseUrl, path);
 
         this.profileLoader = new ProfileLoader(baseUrl);
@@ -218,7 +218,7 @@ export class UserProfileQuery extends QueryableInstance {
 
 class ProfileLoader extends Queryable {
 
-    constructor(baseUrl: string | Queryable, path = "sp.userprofiles.profileloader.getprofileloader") {
+    constructor(baseUrl: string | Queryable, path = "_api/sp.userprofiles.profileloader.getprofileloader") {
         super(baseUrl, path);
     }
 
@@ -240,8 +240,7 @@ class ProfileLoader extends Queryable {
      * 
      */
     public get ownerUserProfile(): Promise<Types.UserProfile> {
-        let q = this.getParent(ProfileLoader);
-        q.append("sp.userprofiles.profileloader.getowneruserprofile");
+        let q = this.getParent(ProfileLoader, this.parentUrl, "sp.userprofiles.profileloader.getowneruserprofile");
         return q.postAs<any, Types.UserProfile>();
     }
 

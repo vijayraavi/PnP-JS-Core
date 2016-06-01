@@ -18,7 +18,7 @@ var gulp = require("gulp");
 //* BUILD-SERVE-DIST
 //******************************************************************************
 
-gulp.task("build-serve-dist", ["package"], function() {
+gulp.task("build-serve-dist", ["package-notest"], function() {
     var distFiles = global.TSDist.RootFolder + "/*.{js,map,d.ts}"
 
     return gulp.src(distFiles)
