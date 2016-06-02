@@ -45,7 +45,7 @@ class ODataEntityParserImpl<T> extends ODataParserBase<T, T> {
 
     public parse(r: Response): Promise<T> {
         return super.parse(r).then(d => {
-            let o = new this.factory(Util.combinePaths("_api", d["odata.editLink"]));
+            let o = new this.factory(Util.combinePaths("_api", d["odata.editLink"]), null);
             return Util.extend(o, d);
         });
     }
@@ -60,7 +60,7 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T, T[]> {
     public parse(r: Response): Promise<T[]> {
         return super.parse(r).then((d: any[]) => {
             return d.map(v => {
-                let o = new this.factory(Util.combinePaths("_api", v["odata.editLink"]));
+                let o = new this.factory(Util.combinePaths("_api", v["odata.editLink"]), null);
                 return Util.extend(o, v);
             });
         });
