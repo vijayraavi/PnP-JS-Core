@@ -7,8 +7,6 @@ export interface ODataParser<T, U> {
 
 export abstract class ODataParserBase<T, U> implements ODataParser<T, U> {
 
-    constructor(protected factory: QueryableConstructor<T> = null) { }
-
     public parse(r: Response): Promise<U> {
 
         return r.json().then(function (json) {
@@ -41,9 +39,9 @@ class ODataValueParserImpl<T> extends ODataParserBase<any, T> {
 
 class ODataEntityParserImpl<T> extends ODataParserBase<T, T> {
 
-    constructor(factory: QueryableConstructor<T>) {
-        super(factory);
-    }
+    constructor(protected factory: QueryableConstructor<T>) {
+        super();
+     }
 
     public parse(r: Response): Promise<T> {
         return super.parse(r).then(d => {
@@ -55,9 +53,9 @@ class ODataEntityParserImpl<T> extends ODataParserBase<T, T> {
 
 class ODataEntityArrayParserImpl<T> extends ODataParserBase<T, T[]> {
 
-    constructor(factory: QueryableConstructor<T>) {
-        super(factory);
-    }
+    constructor(protected factory: QueryableConstructor<T>) {
+        super();
+     }
 
     public parse(r: Response): Promise<T[]> {
         return super.parse(r).then((d: any[]) => {
