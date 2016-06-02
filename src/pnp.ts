@@ -38,8 +38,6 @@ export const config = new Settings();
  */
 export const log = Logger;
 
-
-
 class MyItem extends Item {
 
     public Title: string;
@@ -74,7 +72,8 @@ export const thing = function (show: (s) => void) {
 /**
  * Enables use of the import pnp from syntax
  */
-export default {
+// creating this class instead of directly assigning to default fixes issue #116
+let Def = {
     /**
      * Global configuration instance to which providers can be added
      */
@@ -100,5 +99,9 @@ export default {
      * Utility methods
      */
     util: util,
+};
 
-}
+/**
+ * Enables use of the import pnp from syntax
+ */
+export default Def;

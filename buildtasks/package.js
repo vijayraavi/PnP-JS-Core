@@ -84,14 +84,17 @@ function packageLib() {
 function packageBundle() {
 
     console.log(global.TSDist.RootFolder + "/" + global.TSDist.BundleFileName);
+    console.log(global.TSDist.RootFolder + "/" + global.TSDist.BundleFileName + ".map");
 
     return browserify('./build/src/pnp.js', {
-        debug: false,
+        debug: true,
         standalone: '$pnp',
     }).ignore('*.d.ts').bundle()
         .pipe(src(global.TSDist.BundleFileName))
         .pipe(buffer())
+        .pipe(srcmaps.init({ loadMaps: true }))
         .pipe(header(banner, { pkg: global.pkg }))
+        .pipe(srcmaps.write('./'))
         .pipe(gulp.dest(global.TSDist.RootFolder));
 }
 
@@ -101,7 +104,7 @@ function packageBundleUglify() {
     console.log(global.TSDist.RootFolder + "/" + global.TSDist.MinifyFileName + ".map");
 
     return browserify('./build/src/pnp.js', {
-        debug: false,
+        debug: true,
         standalone: '$pnp',
     }).ignore('*.d.ts').bundle()
         .pipe(src(global.TSDist.MinifyFileName))
