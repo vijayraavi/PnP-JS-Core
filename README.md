@@ -11,7 +11,9 @@ Please use [http://aka.ms/OfficeDevPnP](http://aka.ms/OfficeDevPnP) for getting 
 
 ### Get Started ###
 
-Add the npm package to your TypeScript project
+**NPM**
+
+Add the npm package to your project
 
     npm install sp-pnp-js --save dev
 
@@ -21,6 +23,11 @@ Import the root object and start interacting with the SharePoint REST API
 	...
 	pnp.sp.web.select("Title").get().then(() => ...);
 
+**Bower**
+
+Add the package from bower
+
+    bower install sp-pnp-js
 
 
 ### Get Help ###
