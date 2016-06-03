@@ -28,6 +28,7 @@
         "jsconfig.json",
         "settings.js",
         "settings.example.js",
+        "package.json",
         "tsconfig.json",
         "tslint.json",
         "coverage/",
