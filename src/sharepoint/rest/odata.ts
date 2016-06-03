@@ -31,6 +31,12 @@ export abstract class ODataParserBase<T, U> implements ODataParser<T, U> {
 export class ODataDefaultParser extends ODataParserBase<any, any> {
 }
 
+export class ODataRawParserImpl implements ODataParser<any, any> {
+    public parse(r: Response): Promise<any> {
+        return r.json();
+    }
+}
+
 class ODataValueParserImpl<T> extends ODataParserBase<any, T> {
     public parse(r: Response): Promise<T> {
         return super.parse(r).then(d => d as T);
@@ -41,7 +47,7 @@ class ODataEntityParserImpl<T> extends ODataParserBase<T, T> {
 
     constructor(protected factory: QueryableConstructor<T>) {
         super();
-     }
+    }
 
     public parse(r: Response): Promise<T> {
         return super.parse(r).then(d => {
@@ -55,7 +61,7 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T, T[]> {
 
     constructor(protected factory: QueryableConstructor<T>) {
         super();
-     }
+    }
 
     public parse(r: Response): Promise<T[]> {
         return super.parse(r).then((d: any[]) => {
@@ -66,6 +72,8 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T, T[]> {
         });
     }
 }
+
+export let ODataRaw = new ODataRawParserImpl();
 
 export function ODataValue<T>(): ODataParser<any, T> {
     return new ODataValueParserImpl<T>();
