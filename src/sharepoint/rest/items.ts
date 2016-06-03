@@ -7,6 +7,7 @@ import { ContentType } from "./contenttypes";
 import { TypedHash } from "../../collections/collections";
 import { Util } from "../../utils/util";
 import * as Types from "./types";
+import { ODataParserBase } from "./odata";
 
 /**
  * Describes a collection of Item objects
@@ -49,7 +50,7 @@ export class Items extends QueryableCollection {
      * 
      */
     public getPaged(): Promise<PagedItemCollection<any>> {
-        return this.get(r => PagedItemCollection.fromResponse(r));
+        return this.getAs(new PagedItemCollectionParser());
     }
 
     /**
@@ -61,13 +62,13 @@ export class Items extends QueryableCollection {
 
         let parentList = this.getParent(QueryableInstance);
 
-        return parentList.select("ListItemEntityTypeFullName").get().then((d) => {
+        return parentList.select("ListItemEntityTypeFullName").getAs<any, { ListItemEntityTypeFullName: string }>().then((d) => {
 
             let postBody = JSON.stringify(Util.extend({
                 "__metadata": { "type": d.ListItemEntityTypeFullName },
             }, properties));
 
-            return this.post({ body: postBody }).then((data) => {
+            return this.postAs<any, { Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
@@ -77,6 +78,11 @@ export class Items extends QueryableCollection {
     }
 }
 
+class PagedItemCollectionParser extends ODataParserBase<any, PagedItemCollection<any>> {
+    public parse(r: Response): Promise<PagedItemCollection<any>> {
+        return PagedItemCollection.fromResponse(r);
+    }
+}
 
 /**
  * Descrines a single Item instance
@@ -167,7 +173,7 @@ export class Item extends QueryableSecurable {
 
         let parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
 
-        return parentList.select("ListItemEntityTypeFullName").get().then((d) => {
+        return parentList.select("ListItemEntityTypeFullName").getAs<any, { ListItemEntityTypeFullName: string }>().then((d) => {
 
             let postBody = JSON.stringify(Util.extend({
                 "__metadata": { "type": d.ListItemEntityTypeFullName },

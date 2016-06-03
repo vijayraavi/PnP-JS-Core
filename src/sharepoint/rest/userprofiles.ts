@@ -3,6 +3,7 @@
 import { Queryable, QueryableInstance, QueryableCollection } from "./Queryable";
 import * as Types from "./types";
 import * as FileUtil from "../../utils/files";
+import { ODataValue } from "./odata";
 
 export class UserProfileQuery extends QueryableInstance {
 
@@ -19,7 +20,7 @@ export class UserProfileQuery extends QueryableInstance {
      */
     public get editProfileLink(): Promise<string> {
         let q = new UserProfileQuery(this, "EditProfileLink");
-        return q.get();
+        return q.getAs(ODataValue<string>());
     }
 
     /**
@@ -27,7 +28,7 @@ export class UserProfileQuery extends QueryableInstance {
      */
     public get isMyPeopleListPublic(): Promise<boolean> {
         let q = new UserProfileQuery(this, "IsMyPeopleListPublic");
-        return q.get();
+        return q.getAs(ODataValue<boolean>());
     }
 
     /**
@@ -240,7 +241,7 @@ class ProfileLoader extends Queryable {
      */
     public get ownerUserProfile(): Promise<Types.UserProfile> {
         let q = this.getParent(ProfileLoader, this.parentUrl, "sp.userprofiles.profileloader.getowneruserprofile");
-        return q.post();
+        return q.postAs<any, Types.UserProfile>();
     }
 
     /**
@@ -249,7 +250,7 @@ class ProfileLoader extends Queryable {
      */
     public get userProfile(): Promise<Types.UserProfile> {
         let q = new ProfileLoader(this, "getuserprofile");
-        return q.post();
+        return q.postAs<any, Types.UserProfile>();
     }
 
     /**

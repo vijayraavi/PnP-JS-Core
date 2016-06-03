@@ -26,6 +26,8 @@ require(["pnp"], function (pnp) {
         });
     }
 
+    pnp.thing(show);
+
     // pnp.sp.web.get().then(show);
     
     // pnp.sp.web.lists.getByTitle("Config3").items.orderBy("Title").top(1).getPaged().then(d => {
@@ -152,10 +154,10 @@ require(["pnp"], function (pnp) {
     //pnp.sp.web.applyTheme("/sites/dev/_catalogs/theme/15/palette011.spcolor", "/sites/dev/_catalogs/theme/15/fontscheme007.spfont", "/sites/dev/Style%20Library/DSC_0024.JPG", false).then(show);
     //pnp.sp.site.getWebUrlFromPageUrl("https://318studios.sharepoint.com/sites/dev/SitePages/DevHome.aspx").then(show);
     //pnp.sp.web.mapToIcon("blah.xlsx").then(show);    
-    //pnp.sp.profiles.editProfileLink.then(show);
-    //pnp.sp.profiles.isMyPeopleListPublic.then(show);
-    //pnp.sp.profiles.amIFollowedBy("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
-    //pnp.sp.profiles.amIFollowing("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
+    // pnp.sp.profiles.editProfileLink.then(show);
+    // pnp.sp.profiles.isMyPeopleListPublic.then(show);
+    // pnp.sp.profiles.amIFollowedBy("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
+    // pnp.sp.profiles.amIFollowing("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
     //pnp.sp.profiles.getFollowedTags().then(show);
     //pnp.sp.profiles.getFollowersFor("i:0#.f|membership|patrick@three18studios.com").then(show);
     //pnp.sp.profiles.myFollowers.get().then(show);

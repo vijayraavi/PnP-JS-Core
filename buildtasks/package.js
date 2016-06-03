@@ -167,7 +167,7 @@ gulp.task("package", ["build", "test"], function () {
     ]);
 });
 
-gulp.task("package-notest", ["build"], function () {
+gulp.task("package-serve", ["build-serve"], function () {
 
     return merge([
         // build and package the definition files
@@ -176,9 +176,7 @@ gulp.task("package-notest", ["build"], function () {
         packageLib(),
         // bundle the core
         packageBundle(),
-        packageBundleUglify(),
         // bundle provisioning
-        packageProvisioningBundle(),
-        packageProvisioningBundleUglify(),
+        packageProvisioningBundle()
     ]);
 });
