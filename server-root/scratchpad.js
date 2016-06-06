@@ -26,8 +26,6 @@ require(["pnp"], function (pnp) {
         });
     }
 
-    pnp.thing(show);
-
     // pnp.sp.web.get().then(show);
     
     // pnp.sp.web.lists.getByTitle("Config3").items.orderBy("Title").top(1).getPaged().then(d => {
