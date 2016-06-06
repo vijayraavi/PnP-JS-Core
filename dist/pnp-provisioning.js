@@ -1,5 +1,5 @@
 /**
- * sp-pnp-js v0.0.16 - A reusable JavaScript library targeting SharePoint client-side development.
+ * sp-pnp-js v0.0.17 - A reusable JavaScript library targeting SharePoint client-side development.
  * Copyright (c) 2016 Microsoft and other contributors
  * MIT
  */
