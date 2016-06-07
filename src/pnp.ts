@@ -1,10 +1,10 @@
 "use strict";
 
-import { Util } from "./utils/Util";
-import { PnPClientStorage } from "./utils/Storage";
+import { Util } from "./utils/util";
+import { PnPClientStorage } from "./utils/storage";
 import { Settings } from "./configuration/configuration";
 import { Logger } from "./utils/logging";
-import { Rest } from "./SharePoint/Rest/rest";
+import { Rest } from "./sharepoint/rest/rest";
 
 /**
  * Root class of the Patterns and Practices namespace, provides an entry point to the library
