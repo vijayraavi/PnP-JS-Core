@@ -26,16 +26,15 @@ require(["pnp"], function (pnp) {
         });
     }
 
-// accept: application/json; odata=nometadata
-// application/json; odata=verbose
-
     pnp.setup({
         headers: {
             "Accept": "application/json; odata=verbose"
         }
     });
 
-    pnp.sp.web.get().then(show);
+    pnp.sp.web.lists.getByTitle("Config3").items.add({ Title: "Another Item" }).then(function (result) {
+        show(result.data);
+    });
 
     // pnp.sp.web.lists.getByTitle("Config3").items.get().then(show);
 
