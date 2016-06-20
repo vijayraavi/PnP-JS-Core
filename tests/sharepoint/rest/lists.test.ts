@@ -107,9 +107,9 @@ describe("List", () => {
     });
 
     describe("userCustomActions", () => {
-        it("should return _api/web/lists/getByTitle('Tasks')/UserCustomActions", () => {
+        it("should return _api/web/lists/getByTitle('Tasks')/usercustomactions", () => {
             expect(list.userCustomActions.toUrl())
-                .to.eq("_api/web/lists/getByTitle('Tasks')/UserCustomActions");
+                .to.eq("_api/web/lists/getByTitle('Tasks')/usercustomactions");
         });
     });
 

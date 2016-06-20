@@ -1,5 +1,3 @@
-/// <reference path="./scripts/pnp.d.ts" />
-
 require.config({
     paths: {
         //'jquery': '../Style Library/test/jquery',
@@ -14,7 +12,7 @@ require.config({
 
 require(["pnp"], function (pnp) {
     let rStr = pnp.util.getRandomString(10);
-    
+
     let show = function (data) {
         $(function () {
             var str = syntaxHighlight(JSON.stringify(data, undefined, 4));
@@ -23,24 +21,43 @@ require(["pnp"], function (pnp) {
     }
 
     let showRaw = function (data) {
-        $(function () {            
+        $(function () {
             $("#testingshow").append("<div>" + data + "</div>");
         });
     }
-    
-    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").delete().then(show);
-    // pnp.sp.web.siteUsers.get().then(show);
-    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").update({"Title": "Fred Jo Bob"}).then(show);
-    // pnp.sp.web.siteUsers.getByEmail("mike@DevTenant.onmicrosoft.com").get().then(show);
-    // pnp.sp.web.siteUsers.getByLoginName("i:0#.f|membership|mike@devtenant.onmicrosoft.com").get().then(show);
-    // pnp.sp.web.siteUsers.getById(12).groups.get().then(show);
-    // pnp.sp.web.siteUsers.removeById(12).then(show);
-    // pnp.sp.web.siteUsers.removeByLoginName("i:0#.f|membership|mike@devtenant.onmicrosoft.com").then(show);
-    // pnp.sp.web.siteGroups.add({"Title": `New Group ${rStr}`}).then(show);
-    // pnp.sp.web.siteGroups.removeById(22).then(show);
-    // pnp.sp.web.siteGroups.removeByLoginName(`New Group ${rStr}`).then(show);
+
+    pnp.setup({
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
+    });
+
+    pnp.sp.web.lists.getByTitle("Config3").items.add({ Title: "Another Item" }).then(function (result) {
+        show(result.data);
+    });
+
+    // pnp.sp.web.lists.getByTitle("Config3").items.get().then(show);
+
+    // pnp.sp.web.lists.getByTitle("Config3").items.orderBy("Title").top(1).getPaged().then(d => {
+    //     show(d);
+    //     d.getNext().then(d => show(d));
+    // });    
     // pnp.sp.web.siteGroups.get().then(show);
-    // pnp.sp.web.siteGroups.getById(3).users().get().then(show);
+    // pnp.sp.web.siteGroups.add({ "Title": "Test Group 1" }).then(show);
+    // pnp.sp.web.siteGroups.getById(11).get().then(show);
+    // pnp.sp.web.siteGroups.removeById(13).get().then(show);
+    // pnp.sp.web.siteGroups.removeByLoginName("Delete My By Name").then(show);        
+    // pnp.sp.web.siteGroups.getByName("Test Group 1").get().then(show);
+    // pnp.sp.web.siteGroups.getById(11).users.get().then(show);
+    // pnp.sp.web.siteGroups.getByName("Test Group 1").update({ Title: "Test Group 1-2" }).then((r) => {        
+    //     r.group.users.get().then(show);        
+    // });
+    //pnp.sp.web.roleDefinitions.add("Test1", "Description", 180, { High: '176', Low: '138612801' }).then(show);
+    //pnp.sp.web.roleDefinitions.getByName("Test1").update({ BasePermissions: { High: '0', Low: '138612801' }, Name: "Fred" }).then(show);
+    // pnp.sp.web.userCustomActions.get().then(show);
+    // pnp.sp.web.lists.getByTitle("Documents").userCustomActions.get().then(show);
+    // pnp.sp.web.siteUsers.get().then(show);
+    // pnp.sp.web.siteUsers.getById(9).get().then(show);
     // pnp.sp.web.lists.filter("Title eq 'Documents'").filter("Title eq 'Config'").select("Title", "Description").get().then(show);
     // pnp.sp.web.lists.getByTitle("Documents").items.get().then(show);
     // pnp.sp.web.roleAssignments.get().then(show);
@@ -145,10 +162,10 @@ require(["pnp"], function (pnp) {
     //pnp.sp.web.applyTheme("/sites/dev/_catalogs/theme/15/palette011.spcolor", "/sites/dev/_catalogs/theme/15/fontscheme007.spfont", "/sites/dev/Style%20Library/DSC_0024.JPG", false).then(show);
     //pnp.sp.site.getWebUrlFromPageUrl("https://318studios.sharepoint.com/sites/dev/SitePages/DevHome.aspx").then(show);
     //pnp.sp.web.mapToIcon("blah.xlsx").then(show);    
-    //pnp.sp.profiles.editProfileLink.then(show);
-    //pnp.sp.profiles.isMyPeopleListPublic.then(show);
-    //pnp.sp.profiles.amIFollowedBy("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
-    //pnp.sp.profiles.amIFollowing("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
+    // pnp.sp.profiles.editProfileLink.then(show);
+    // pnp.sp.profiles.isMyPeopleListPublic.then(show);
+    // pnp.sp.profiles.amIFollowedBy("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
+    // pnp.sp.profiles.amIFollowing("i:0#.w|ylo001\_spocrawler_18_3996").then(show);
     //pnp.sp.profiles.getFollowedTags().then(show);
     //pnp.sp.profiles.getFollowersFor("i:0#.f|membership|patrick@three18studios.com").then(show);
     //pnp.sp.profiles.myFollowers.get().then(show);
@@ -165,36 +182,39 @@ require(["pnp"], function (pnp) {
     //     $("#testingshow").append("<div id='profiletest'><input type='file' /><button>Upload</button></div>");        
     //     var div = $("#testingshow").find("#profiletest");
     //     var btn = div.find("button");
-        
+
     //     btn.on('click', function(e) {
     //        e.preventDefault();           
     //        var file = $(this).closest("div").find("input")[0].files[0];
     //        pnp.sp.profiles.setMyProfilePic(file).then(show);
     //     });
     // });
-  
+
     // var caml = { ViewXml: "<View><ViewFields><FieldRef Name='Title' /><FieldRef Name='RoleAssignments' /></ViewFields><RowLimit>10</RowLimit></View>" };
-    
+
     // pnp.sp.web.lists.getByTitle("Config3").getItemsByCAMLQuery(caml, "RoleAssignments").then(show);  
 
-function syntaxHighlight(json) {
-    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        var cls = 'number';
-        if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-                cls = 'key';
-            } else {
-                cls = 'string';
+    //pnp.sp.search("Title").then(show);
+
+
+    function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
             }
-        } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-        } else if (/null/.test(match)) {
-            cls = 'null';
-        }
-        return '<span class="' + cls + '">' + match + '</span>';
-    });
-}
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
 
 
 });

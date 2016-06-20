@@ -1,6 +1,6 @@
 "use strict";
 
-import { Queryable, QueryableInstance, QueryableCollection } from "./Queryable";
+import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 import {SiteUser, SiteUsers} from "./siteusers";
 import { Util } from "../../utils/util";
 
@@ -95,11 +95,10 @@ export class SiteGroups extends QueryableCollection {
      *
      * @param props The properties to be updated
      */
-    /*tslint:disable max-line-length */
     public add(properties: GroupWriteableProperties): Promise<GroupAddResult> {
         let postBody = JSON.stringify(Util.extend(
-            {"__metadata": { "type": "SP.Group" }}, properties));
-        
+            { "__metadata": { "type": "SP.Group" } }, properties));
+
         return this.post({ body: postBody }).then((data) => {
             return {
                 data: data,
@@ -108,45 +107,34 @@ export class SiteGroups extends QueryableCollection {
         });
     }
 
-    /*tslint:enable */
-
     /**
-     * Gets a user from the collection by email
+     * Gets a group from the collection by name
      *
-     * @param email The email of the user
-     * @param expandUsersGroups boolean Whether or not to expand the user's groups.  Default: false
+     * @param email The name of the group
      */
     public getByName(groupName: string): SiteGroup {
-        return new SiteGroup(this.toUrl(), `getByName('${groupName}')`);
+        return new SiteGroup(this, `getByName('${groupName}')`);
     }
 
     /**
-     * Gets a user from the collection by id
+     * Gets a group from the collection by id
      *
-     * @param id The id of the user
+     * @param id The id of the group
      */
     public getById(id: number) {
-        return new SiteGroup(this.toUrl(), `getById('${id}')`);
+        let sg = new SiteGroup(this);
+        sg.concat(`(${id})`);
+        return sg;
     }
 
     /**
-     * Gets a user from the collection by login name
+     * Removes the group with the specified member ID from the collection.
      *
-     * @param loginName The login name of the user
+     * @param id The id of the group to remove
      */
-    public getByLoginName(loginName: string): SiteGroup {
-        return new SiteGroup(this.toUrl(), `getByloginName('${encodeURIComponent(loginName)}')`);
-    }
-
-    /**
-     * Removes a user from the collection by id
-     *
-     * @param id The id of the user
-     */
-    public removeById(id: number | Queryable): Promise<void> {
-        let postBody = "{}";
-        this.append(`removeById('${id}')`);
-        return this.post({postBody: postBody});
+    public removeById(id: number): Promise<void> {
+        let g = new SiteGroups(this, `removeById('${id}')`);
+        return g.post();
     }
 
     /**
@@ -155,80 +143,65 @@ export class SiteGroups extends QueryableCollection {
      * @param loginName The login name of the user
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        let postBody = "{}";
-        this.append(`removeByLoginName('${loginName}')`);
-        return this.post({postBody: postBody});
+        let g = new SiteGroups(this, `removeByLoginName('${loginName}')`);
+        return g.post();
     }
 }
 
 
 /**
- * Describes a single user
+ * Describes a single group
  *
  */
 export class SiteGroup extends QueryableInstance {
     /**
-     * Creates a new instance of the User class
+     * Creates a new instance of the Group class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path Optional, passes the path to the user
+     * @param baseUrl The url or Queryable which forms the parent of this site group
+     * @param path Optional, passes the path to the group
      */
     constructor(baseUrl: string | Queryable, path?: string) {
         super(baseUrl, path);
     }
 
     /**
-     * Get's the groups for this user.
+     * Get's the users for this group
      *
      */
-    public get users() { return new SiteUsers(this.toUrl(), "users"); }
+    public get users() {
+        return new SiteUsers(this, "users");
+    }
 
     /**
-    * Updates this user instance with the supplied properties
+    * Updates this group instance with the supplied properties
     *
-    * @param properties A plain object of property names and values to update for the user
-    * @param eTag Value used in the IF-Match header, by default "*"
+    * @param properties A GroupWriteableProperties object of property names and values to update for the user
     */
     /* tslint:disable member-access */
-    public update(properties: GroupWriteableProperties, eTag = "*"): Promise<GroupUpdateResult> {
+    public update(properties: GroupWriteableProperties): Promise<GroupUpdateResult> {
 
-        let postBody = Util.extend({"__metadata": { "type": "SP.Group" }}, properties);
+        let postBody = Util.extend({ "__metadata": { "type": "SP.Group" } }, properties);
 
         return this.post({
             body: JSON.stringify(postBody),
             headers: {
-                "IF-Match": eTag,
                 "X-HTTP-Method": "MERGE",
             }
-        })
-            .then((data) => {
+        }).then((data) => {
 
-                let retGroup: SiteGroup = this;
+            let retGroup: SiteGroup = this;
 
-                if (properties.hasOwnProperty("Title")) {
-                    retGroup = this.getParent(SiteGroup);
-                    retGroup.append(`getByTitle('${properties["Title"]}') `);
-                }
+            if (properties.hasOwnProperty("Title")) {
+                retGroup = this.getParent(SiteGroup, this.parentUrl, `getByName('${properties["Title"]}')`);
+            }
 
-                return {
-                    data: data,
-                    group: retGroup,
-                };
-            });
-    }
-    /* tslint:enable */
-
-    /**
-     * Delete this web
-     *
-     */
-    public delete(): Promise<void> {
-        return this.post({
-            headers: {
-                "X-HTTP-Method": "DELETE",
-            },
+            return {
+                data: data,
+                group: retGroup,
+            };
         });
     }
+    /* tslint:enable */
 }
 
 export interface SiteGroupAddResult {

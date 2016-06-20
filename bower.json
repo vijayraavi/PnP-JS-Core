@@ -23,21 +23,18 @@
     ],
     "ignore": [
         "**/.*",
-        "bower.json",
         "gulpfile.js",
         "jsconfig.json",
         "settings.js",
         "settings.example.js",
+        "package.json",
         "tsconfig.json",
         "tslint.json",
-        "coverage/",
         "server-root/",
         "src/",
-        "typings/",
         "tests/",
         "buildtasks/",
-        "build/",
-        "lib/"
+        "typings.json/"
     ],
     "repository": {
         "type": "git",

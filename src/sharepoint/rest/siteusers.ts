@@ -1,8 +1,9 @@
 "use strict";
 
-import { Queryable, QueryableInstance, QueryableCollection } from "./Queryable";
+import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 import { SiteGroups } from "./sitegroups";
 import { Util } from "../../utils/util";
+import { UserIdInfo, PrincipalType } from "./types";
 
 /**
  * Properties that provide a getter, but no setter.
@@ -13,7 +14,7 @@ export interface UserReadOnlyProperties {
     isHiddenInUI?: boolean;
     loginName?: string;
     principalType?: PrincipalType;
-    userIdInfo?: { nameId?: string, nameIdIssuer?: string };
+    userIdInfo?: UserIdInfo;
 }
 
 /**
@@ -24,19 +25,6 @@ export interface UserWriteableProperties {
     isSiteAdmin?: string;
     email?: string;
     title?: string;
-}
-
-/**
- * Principal Type enum
- *
- */
-export enum PrincipalType {
-    None = 0,
-    User = 1,
-    DistributionList = 2,
-    SecurityGroup = 4,
-    SharePointGroup = 8,
-    All = 15
 }
 
 /**
@@ -72,10 +60,9 @@ export class SiteUsers extends QueryableCollection {
      * Gets a user from the collection by email
      *
      * @param email The email of the user
-     * @param expandUsersGroups boolean Whether or not to expand the user's groups.  Default: false
      */
-    public getByEmail(email: string, expandUsersGroups = false): SiteUser {
-        return new SiteUser(this.toUrl(), `getByEmail('${email}')`);
+    public getByEmail(email: string): SiteUser {
+        return new SiteUser(this, `getByEmail('${email}')`);
     }
 
     /**
@@ -83,8 +70,8 @@ export class SiteUsers extends QueryableCollection {
      *
      * @param id The id of the user
      */
-    public getById(id: number, expandUsersGroups = false): SiteUser {
-        return new SiteUser(this.toUrl(), `getById('${id}')`);
+    public getById(id: number): SiteUser {
+        return new SiteUser(this, `getById(${id})`);
     }
 
     /**
@@ -92,8 +79,11 @@ export class SiteUsers extends QueryableCollection {
      *
      * @param loginName The email address of the user
      */
-    public getByLoginName(loginName: string, expandUsersGroups = false): SiteUser {
-        return new SiteUser(this.toUrl(), `getByloginName('${encodeURIComponent(loginName)}')`);
+    public getByLoginName(loginName: string): SiteUser {
+        let su = new SiteUser(this);
+        su.concat("(@v)");
+        su.query.add("@v", encodeURIComponent(loginName));
+        return su;
     }
 
     /**
@@ -102,9 +92,8 @@ export class SiteUsers extends QueryableCollection {
      * @param id The id of the user
      */
     public removeById(id: number | Queryable): Promise<void> {
-        // t postBody = "{}";
-        this.append(`removeById('${id}')`);
-        return this.post();
+        let o = new SiteUsers(this, `removeById(${id})`);
+        return o.post();
     }
 
     /**
@@ -113,9 +102,22 @@ export class SiteUsers extends QueryableCollection {
      * @param loginName The login name of the user
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        // let postBody = "{}";
-        this.append(`removeByLoginName('${encodeURIComponent(loginName)}')`);
-        return this.post();
+        let o = new SiteUsers(this, `removeByLoginName(@v)`);
+        o.query.add("@v", encodeURIComponent(loginName));
+        return o.post();
+    }
+
+    /**
+     * Add a user to a group
+     * 
+     * @param loginName The login name of the user to add to the group
+     * 
+     */
+    public add(loginName: string): Promise<SiteUser> {
+
+        let postBody = JSON.stringify({ "__metadata": { "type": "SP.User" }, LoginName: loginName });
+
+        return this.post({ body: postBody }).then((data) => this.getByLoginName(loginName));
     }
 }
 
@@ -139,42 +141,31 @@ export class SiteUser extends QueryableInstance {
      * Get's the groups for this user.
      *
      */
-    public get groups() { return new SiteGroups(this.toUrl(), "groups"); }
+    public get groups() {
+        return new SiteGroups(this, "groups");
+    }
 
     /**
     * Updates this user instance with the supplied properties
     *
     * @param properties A plain object of property names and values to update for the user
-    * @param eTag Value used in the IF-Match header, by default "*"
     */
-    /* tslint:disable member-access */
-    public update(properties: UserWriteableProperties, eTag = "*"): Promise<UserUpdateResult> {
+    public update(properties: UserWriteableProperties): Promise<UserUpdateResult> {
 
-        let postBody = Util.extend({"__metadata": { "type": "SP.User" }}, properties);
+        let postBody = Util.extend({ "__metadata": { "type": "SP.User" } }, properties);
 
         return this.post({
             body: JSON.stringify(postBody),
             headers: {
-                "IF-Match": eTag,
                 "X-HTTP-Method": "MERGE",
-            }
-        })
-            .then((data) => {
-
-                let retUser: SiteUser = this;
-
-                if (properties.hasOwnProperty("Title")) {
-                    retUser = this.getParent(SiteUser);
-                    retUser.append(`getByTitle('${properties["Title"]}') `);
-                }
-
-                return {
-                    data: data,
-                    user: retUser,
-                };
-            });
+            },
+        }).then((data) => {
+            return {
+                data: data,
+                user: this,
+            };
+        });
     }
-    /* tslint:enable */
 
     /**
      * Delete this user
