@@ -22,31 +22,33 @@ export class SPRequestExecutorClient implements HttpClientImpl {
 
         return new Promise((resolve, reject) => {
             executor.executeAsync(
-            {
-                error: function (error: SP.ResponseInfo) {
-                    reject(error);
-                },
-                headers: headers,
-                method: options.method,
-                success: (response: SP.ResponseInfo) => {
-                    let responseHeaders = new Headers();
-                    for (let h in response.headers) {
-                        if (response.headers[h]) {
-                            responseHeaders.append(h, response.headers[h]);
-                        }
-                    }
-
-                    let result = new Response(<any>response.body, {
-                        headers: responseHeaders,
-                        status: response.statusCode,
-                        statusText: response.statusText,
-                    });
-
-                    resolve(result);
-                },
-                url: url,
-            }
-        );
+                {
+                    error: (error: SP.ResponseInfo) => {
+                        reject(this.convertToResponse(error));
+                    },
+                    headers: headers,
+                    method: options.method,
+                    success: (response: SP.ResponseInfo) => {
+                        resolve(this.convertToResponse(response));
+                    },
+                    url: url,
+                }
+            );
         });
     }
+
+    private convertToResponse = (spResponse: SP.ResponseInfo): Response => {
+        let responseHeaders = new Headers();
+        for (let h in spResponse.headers) {
+            if (spResponse.headers[h]) {
+                responseHeaders.append(h, spResponse.headers[h]);
+            }
+        }
+
+        return new Response(<any>spResponse.body, {
+            headers: responseHeaders,
+            status: spResponse.statusCode,
+            statusText: spResponse.statusText,
+        });
+    };
 }
