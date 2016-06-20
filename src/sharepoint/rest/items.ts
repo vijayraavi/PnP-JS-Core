@@ -60,6 +60,8 @@ export class Items extends QueryableCollection {
      */
     public add(properties: TypedHash<string | number | boolean> = {}): Promise<ItemAddResult> {
 
+        this.addBatchDependency();
+
         let parentList = this.getParent(QueryableInstance);
 
         return parentList.select("ListItemEntityTypeFullName").getAs<any, { ListItemEntityTypeFullName: string }>().then((d) => {
@@ -68,12 +70,16 @@ export class Items extends QueryableCollection {
                 "__metadata": { "type": d.ListItemEntityTypeFullName },
             }, properties));
 
-            return this.postAs<any, { Id: number }>({ body: postBody }).then((data) => {
+            let promise = this.postAs<any, { Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
                 };
             });
+
+            this.clearBatchDependency();
+
+            return promise;
         });
     }
 }
@@ -171,6 +177,8 @@ export class Item extends QueryableSecurable {
      */
     public update(properties: TypedHash<string | number | boolean>, eTag = "*"): Promise<ItemUpdateResult> {
 
+        this.addBatchDependency();
+
         let parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
 
         return parentList.select("ListItemEntityTypeFullName").getAs<any, { ListItemEntityTypeFullName: string }>().then((d) => {
@@ -179,7 +187,7 @@ export class Item extends QueryableSecurable {
                 "__metadata": { "type": d.ListItemEntityTypeFullName },
             }, properties));
 
-            return this.post({
+            let promise = this.post({
                 body: postBody,
                 headers: {
                     "IF-Match": eTag,
@@ -191,6 +199,10 @@ export class Item extends QueryableSecurable {
                     item: this,
                 };
             });
+
+            this.clearBatchDependency();
+
+            return promise;
         });
     }
 
