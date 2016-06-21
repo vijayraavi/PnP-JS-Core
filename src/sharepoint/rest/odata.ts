@@ -258,11 +258,12 @@ export class ODataBatch {
 
         batchBody.push(`--batch_${this._batchId}--\n`);
 
+        let batchHeaders = new Headers();
+        batchHeaders.append("Content-Type", `multipart/mixed; boundary=batch_${this._batchId}`);
+
         let batchOptions = {
-            body: batchBody.join(""),
-            headers: {
-                "Content-Type": `multipart/mixed; boundary=batch_${this._batchId}`,
-            },
+            "body": batchBody.join(""),
+            "headers": batchHeaders,
         };
 
         let client = new HttpClient();

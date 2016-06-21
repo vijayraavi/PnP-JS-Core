@@ -2,7 +2,7 @@
 
 import { Util } from "../../utils/util";
 import { Dictionary } from "../../collections/collections";
-import { HttpClient } from "../../net/HttpClient";
+import { FetchOptions, HttpClient } from "../../net/HttpClient";
 import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
 import { ICachingOptions, CachingParserWrapper, CachingOptions } from "./caching";
 import { RuntimeConfig } from "../../configuration/pnplibconfig";
@@ -211,19 +211,19 @@ export class Queryable {
      * Executes the currently built request
      *
      */
-    public get(parser: ODataParser<any, any> = new ODataDefaultParser(), getOptions: any = {}): Promise<any> {
+    public get(parser: ODataParser<any, any> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<any> {
         return this.getImpl(getOptions, parser);
     }
 
-    public getAs<T, U>(parser: ODataParser<T, U> = new ODataDefaultParser(), getOptions: any = {}): Promise<U> {
+    public getAs<T, U>(parser: ODataParser<T, U> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<U> {
         return this.getImpl(getOptions, parser);
     }
 
-    protected post(postOptions: any = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
+    protected post(postOptions: FetchOptions = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
         return this.postImpl(postOptions, parser);
     }
 
-    protected postAs<T, U>(postOptions: any = {}, parser: ODataParser<T, U> = new ODataDefaultParser()): Promise<U> {
+    protected postAs<T, U>(postOptions: FetchOptions = {}, parser: ODataParser<T, U> = new ODataDefaultParser()): Promise<U> {
         return this.postImpl(postOptions, parser);
     }
 
@@ -245,7 +245,7 @@ export class Queryable {
         return parent;
     }
 
-    private getImpl<U>(getOptions: any = {}, parser: ODataParser<any, U>): Promise<U> {
+    private getImpl<U>(getOptions: FetchOptions = {}, parser: ODataParser<any, U>): Promise<U> {
 
         if (this._useCaching) {
             let options = new CachingOptions(this.toUrlAndQuery().toLowerCase());
@@ -282,7 +282,7 @@ export class Queryable {
         }
     }
 
-    private postImpl<U>(postOptions: any, parser: ODataParser<any, U>): Promise<U> {
+    private postImpl<U>(postOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
 
         if (this._batch === null) {
 
