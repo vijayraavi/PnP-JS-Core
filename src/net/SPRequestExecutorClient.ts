@@ -15,13 +15,15 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             iterator,
             temp;
 
-        if (options.headers) {
+        if (options.headers && options.headers instanceof Headers) {
             iterator = options.headers.entries();
             temp = iterator.next();
             while (!temp.done) {
                 headers[temp.value[0]] = temp.value[1];
                 temp = iterator.next();
             }
+        } else {
+            headers = options.headers;
         }
 
         return new Promise((resolve, reject) => {
