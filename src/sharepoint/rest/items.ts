@@ -222,10 +222,12 @@ export class Item extends QueryableSecurable {
      *
      * @param action Display mode: 0: view, 1: edit, 2: mobileView, 3: interactivePreview
      */
-    public getWopiFrameUrl(action = 0): Promise<void> {
+    public getWopiFrameUrl(action = 0): Promise<string> {
         let i = new Item(this, "getWOPIFrameUrl(@action)");
         i._query.add("@action", <any>action);
-        return i.post();
+        return i.post().then((data: { GetWOPIFrameUrl: string }) => {
+            return data.GetWOPIFrameUrl;
+        });
     }
 
     /**
