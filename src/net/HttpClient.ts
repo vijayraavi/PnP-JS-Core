@@ -14,7 +14,6 @@ export interface FetchOptions {
     cache?: string | RequestCache;
 }
 
-
 export class HttpClient {
 
     constructor(private _impl = new FetchClient()) {
