@@ -12,12 +12,15 @@ export class SPRequestExecutorClient implements HttpClientImpl {
         let addinWebUrl = url.substring(0, url.indexOf("/_api")),
             executor = new SP.RequestExecutor(addinWebUrl),
             headers: { [key: string]: string; } = {},
-            iterator = options.headers.entries(),
+            iterator,
             temp = iterator.next();
 
-        while (!temp.done) {
-            headers[temp.value[0]] = temp.value[1];
-            temp = iterator.next();
+        if (options.headers) {
+            iterator = options.headers.entries();
+            while (!temp.done) {
+                headers[temp.value[0]] = temp.value[1];
+                temp = iterator.next();
+            }
         }
 
         return new Promise((resolve, reject) => {
