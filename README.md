@@ -35,17 +35,20 @@ Add the package from bower
 We have active [Yammer](http://aka.ms/OfficeDevPnPSIGJavaScriptYammer) and [Gitter](https://gitter.im/OfficeDev/PnP-JS-Core) communities dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please [report it](https://github.com/OfficeDev/PnP-JS-Core/issues).
 
 
-
 ### Wiki ###
 
 Please see [the wiki](https://github.com/OfficeDev/PnP-JS-Core/wiki) for tips on getting started, configuring your development environment, and using the library.
 
 
 ### Authors ###
-This project's contributors include Microsoft and [community contributors](AUTHORS). Work is done as as open source community project. 
+This project's contributors include Microsoft and [community contributors](AUTHORS). Work is done as as open source community project.
 
 
-###"Sharing is Caring"###
+### Code of Conduct ###
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+
+### "Sharing is Caring" ###
 ----------
 ### Disclaimer ###
 **THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
