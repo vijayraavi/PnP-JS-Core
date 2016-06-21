@@ -13,10 +13,11 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             executor = new SP.RequestExecutor(addinWebUrl),
             headers: { [key: string]: string; } = {},
             iterator,
-            temp = iterator.next();
+            temp;
 
         if (options.headers) {
             iterator = options.headers.entries();
+            temp = iterator.next();
             while (!temp.done) {
                 headers[temp.value[0]] = temp.value[1];
                 temp = iterator.next();
