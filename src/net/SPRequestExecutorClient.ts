@@ -2,83 +2,37 @@
 
 import { HttpClientImpl } from "./httpClient";
 
-declare var global: any;
-
 /**
- * Makes requests using the fetch API
+ * Makes requests using the SP.RequestExecutor library.
  */
 export class SPRequestExecutorClient implements HttpClientImpl {
-
     /**
-     * One promise for loading the SP.RequestExecutor script file.
+     * Fetches a URL using the SP.RequestExecutor library.
      */
-    private static loadingPromise: Promise<void>;
-
     public fetch(url: string, options: any): Promise<Response> {
-        let addinWebUrl = url.substring(0, url.indexOf("/_api"));
-        return this.ensureSPRequestExecutor(addinWebUrl).then(() => {
-            return this.executeRequest(addinWebUrl, url, options);
-        });
-    }
-
-    private convertToResponse = (spResponse: SP.ResponseInfo): Response => {
-        let responseHeaders = new Headers();
-        for (let h in spResponse.headers) {
-            if (spResponse.headers[h]) {
-                responseHeaders.append(h, spResponse.headers[h]);
-            }
+        if (typeof SP === "undefined" || typeof SP.RequestExecutor === "undefined") {
+            throw new Error("SP.RequestExecutor is undefined. " +
+                "Load the SP.RequestExecutor.js library (/_layouts/15/SP.RequestExecutor.js) before loading the PnP JS Core library.");
         }
 
-        return new Response(<any>spResponse.body, {
-            headers: responseHeaders,
-            status: spResponse.statusCode,
-            statusText: spResponse.statusText,
-        });
-    };
+        let addinWebUrl = url.substring(0, url.indexOf("/_api")),
+            executor = new SP.RequestExecutor(addinWebUrl),
+            headers: { [key: string]: string; } = {},
+            iterator,
+            temp;
 
-    private ensureSPRequestExecutor = (addinWebUrl: string): Promise<void> => {
-        if (!SPRequestExecutorClient.loadingPromise) {
-            // Initialize new promise for loading the script
-            SPRequestExecutorClient.loadingPromise = new Promise<void>((resolve, reject) => {
-                if (typeof SP === "undefined" || typeof SP.RequestExecutor === "undefined") {
-                    // load the SP.RequestExecutor from the addin web.
-                    let head = document.getElementsByTagName("head")[0],
-                        script = document.createElement("script");
-                    script.type = "text/javascript";
-                    script.onload = () => {
-                        resolve();
-                    };
-                    script.src = addinWebUrl + "/_layouts/15/SP.RequestExecutor.js";
-                    head.appendChild(script);
-                } else {
-                    // SP.RequestExecutor already loaded
-                    resolve();
-                }
-            });
-        }
-
-        return SPRequestExecutorClient.loadingPromise;
-
-    };
-
-    private executeRequest = (addinWebUrl: string, url: string, options: any): Promise<Response> => {
-        return new Promise((resolve, reject) => {
-            let executor = new SP.RequestExecutor(addinWebUrl),
-                headers: { [key: string]: string; } = {},
-                iterator,
-                temp;
-
-            if (options.headers && options.headers instanceof Headers) {
-                iterator = options.headers.entries();
+        if (options.headers && options.headers instanceof Headers) {
+            iterator = options.headers.entries();
+            temp = iterator.next();
+            while (!temp.done) {
+                headers[temp.value[0]] = temp.value[1];
                 temp = iterator.next();
-                while (!temp.done) {
-                    headers[temp.value[0]] = temp.value[1];
-                    temp = iterator.next();
-                }
-            } else {
-                headers = options.headers;
             }
+        } else {
+            headers = options.headers;
+        }
 
+        return new Promise((resolve, reject) => {
             executor.executeAsync(
                 {
                     error: (error: SP.ResponseInfo) => {
@@ -92,6 +46,24 @@ export class SPRequestExecutorClient implements HttpClientImpl {
                     url: url,
                 }
             );
+        });
+    }
+
+    /**
+     * Converts a SharePoint REST API response to a fetch API response.
+     */
+    private convertToResponse = (spResponse: SP.ResponseInfo): Response => {
+        let responseHeaders = new Headers();
+        for (let h in spResponse.headers) {
+            if (spResponse.headers[h]) {
+                responseHeaders.append(h, spResponse.headers[h]);
+            }
+        }
+
+        return new Response(<any>spResponse.body, {
+            headers: responseHeaders,
+            status: spResponse.statusCode,
+            statusText: spResponse.statusText,
         });
     };
 }
