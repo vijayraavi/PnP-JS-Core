@@ -35,6 +35,7 @@ export class SPRequestExecutorClient implements HttpClientImpl {
         return new Promise((resolve, reject) => {
             executor.executeAsync(
                 {
+                    body: options.body,
                     error: (error: SP.ResponseInfo) => {
                         reject(this.convertToResponse(error));
                     },
