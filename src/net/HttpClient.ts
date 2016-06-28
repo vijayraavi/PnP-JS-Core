@@ -4,6 +4,7 @@ import { FetchClient } from "./fetchClient";
 import { DigestCache } from "./digestCache";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
+import { SPRequestExecutorClient } from "./SPRequestExecutorClient";
 
 export interface FetchOptions {
     method?: string;
@@ -16,11 +17,20 @@ export interface FetchOptions {
 
 export class HttpClient {
 
-    constructor(private _impl = new FetchClient()) {
+    private _digestCache: DigestCache;
+
+    private _impl: HttpClientImpl;
+
+    constructor() {
+
+        if (RuntimeConfig.useSPRequestExecutor) {
+            this._impl = new SPRequestExecutorClient();
+        } else {
+            this._impl = new FetchClient();
+        }
+
         this._digestCache = new DigestCache(this);
     }
-
-    private _digestCache: DigestCache;
 
     public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 

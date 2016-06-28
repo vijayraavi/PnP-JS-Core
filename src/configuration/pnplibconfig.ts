@@ -21,6 +21,11 @@ export interface LibraryConfiguration {
      * Defines the default timeout in seconds used by the usingCaching method, default 30
      */
     defaultCachingTimeoutSeconds?: number;
+
+    /**
+     * If true the SP.RequestExecutor will be used to make the requests, you must include the required external libs
+     */
+    useSPRequestExecutor?: boolean;
 }
 
 export class RuntimeConfigImpl {
@@ -31,12 +36,14 @@ export class RuntimeConfigImpl {
         this._defaultCachingStore = "session";
         this._defaultCachingTimeoutSeconds = 30;
         this._globalCacheDisable = false;
+        this._useSPRequestExecutor = false;
     }
 
     private _headers: TypedHash<string>;
     private _defaultCachingStore: "session" | "local";
     private _defaultCachingTimeoutSeconds: number;
     private _globalCacheDisable: boolean;
+    private _useSPRequestExecutor;
 
     public set(config: LibraryConfiguration): void {
 
@@ -55,6 +62,11 @@ export class RuntimeConfigImpl {
         if (config.hasOwnProperty("defaultCachingTimeoutSeconds")) {
             this._defaultCachingTimeoutSeconds = config.defaultCachingTimeoutSeconds;
         }
+
+        if (config.hasOwnProperty("useSPRequestExecutor")) {
+            this._useSPRequestExecutor = config.useSPRequestExecutor;
+
+        }
     }
 
     public get headers(): TypedHash<string> {
@@ -71,6 +83,10 @@ export class RuntimeConfigImpl {
 
     public get globalCacheDisable(): boolean {
         return this._globalCacheDisable;
+    }
+
+    public get useSPRequestExecutor(): boolean {
+        return this._useSPRequestExecutor;
     }
 }
 
