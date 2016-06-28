@@ -77,7 +77,8 @@ export class Lists extends QueryableCollection {
     /*tslint:enable */
 
     /**
-     * Ensures that the specified list exists in the collection (note: settings are not updated if the list exists)
+     * Ensures that the specified list exists in the collection (note: settings are not updated if the list exists,
+     * not supported for batching)
      *
      * @param title The new list's title
      * @param description The new list's description
@@ -88,6 +89,10 @@ export class Lists extends QueryableCollection {
     /*tslint:disable max-line-length */
     public ensure(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ListEnsureResult> {
 
+        if (this.hasBatch) {
+            throw new Error("The ensure method is not supported as part of a batch.");
+        }
+
         return new Promise((resolve, reject) => {
 
             let list: List = this.getByTitle(title);
@@ -95,7 +100,7 @@ export class Lists extends QueryableCollection {
             list.get().then((d) => resolve({ created: false, list: list, data: d })).catch(() => {
 
                 this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => {
-                    resolve({ created: true, list: this.getByTitle(title), data: r.data })
+                    resolve({ created: true, list: this.getByTitle(title), data: r.data });
                 });
 
             }).catch((e) => reject(e));

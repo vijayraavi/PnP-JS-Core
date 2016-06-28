@@ -26,15 +26,17 @@ require(["pnp"], function (pnp) {
         });
     }
 
-    pnp.setup({
-        headers: {
-            "Accept": "application/json; odata=verbose"
-        }
-    });
+    // pnp.setup({
+    //     headers: {
+    //         "Accept": "application/json; odata=verbose"
+    //     }
+    // });
 
-    pnp.sp.web.lists.getByTitle("Config3").items.add({ Title: "Another Item" }).then(function (result) {
-        show(result.data);
-    });
+    // pnp.thing(show);
+
+    // pnp.sp.web.lists.getByTitle("Config3").items.add({ Title: "Another Item" }).then(function (result) {
+    //     show(result.data);
+    // });
 
     // pnp.sp.web.lists.getByTitle("Config3").items.get().then(show);
 
