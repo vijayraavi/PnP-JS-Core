@@ -6,45 +6,76 @@
     <title>{{#ifCond model.name '==' project.name}}{{project.name}}{{else}}{{model.name}} | {{project.name}}{{/ifCond}}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{relativeURL "assets/css/main.css"}}">
-    <script src="{{relativeURL "assets/js/modernizr.js"}}"></script>
+    <link rel="stylesheet" href="{{relativeURL "assets/css/from-main.css"}}">
+    <link rel="stylesheet" href="{{relativeURL "assets/css/fabric.css"}}">
+    <link rel="stylesheet" href="{{relativeURL "assets/css/fabric.components.css"}}">
+    <link rel="stylesheet" href="{{relativeURL "assets/css/custom.css"}}">
+
+    <script   src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+    <script src="{{relativeURL "assets/js/jquery.fabric.min.js"}}"></script>
+    <script src="{{relativeURL "assets/js/menu.js"}}"></script>
+    <script src="{{relativeURL "assets/js/page.js"}}"></script>
 </head>
 <body>
 
-{{> header}}
+<div class="ms-Grid">
 
-<div class="container container-main">
-    <div class="row">
-        <div class="col-8 col-content">
-            {{{contents}}}
+    <div class="ms-Grid-row header-row">
+        <div class="ms-Grid-col ms-u-sm12">
+            {{> header}}
         </div>
-        <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-            <nav class="tsd-navigation primary">
-                <ul>
-                    {{#each navigation.children}}
-                        {{> navigation}}
-                    {{/each}}
+    </div>
+
+    <div class="ms-Grid-row">
+        <div class="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg2">
+            <nav class="primary">
+                <ul class="ms-ContextualMenu is-open">
+                    {{mainNav navigation }}
                 </ul>
             </nav>
-
-            <nav class="tsd-navigation secondary menu-sticky">
-                <ul class="before-current">
+            <nav class="secondary">
+                <ul id="secondaryNav">
                     {{#each toc.children}}
                         {{> toc.root}}
                     {{/each}}
                 </ul>
             </nav>
         </div>
+        <div class="ms-Grid-col ms-u-sm6 ms-u-md8 ms-u-lg10">
+            <div class="ms-Grid">
+                <div class="ms-Grid-row">
+                    <div class="ms-Grid-col ms-u-sm12">
+                        <h1 class="ms-font-xxl">{{#compact}}
+                        {{model.kindString}}&nbsp;
+                        {{model.name}}
+                        {{#if model.typeParameters}}
+                        &lt;
+                        {{#each model.typeParameters}}
+                        {{#if @index}},&nbsp;{{/if}}
+                        {{name}}
+                        {{/each}}
+                        &gt;
+                        {{/if}}
+                        {{/compact}}</h1>
+                    </div>
+                </div>
+                <div class="ms-Grid-row">
+                    <div class="ms-Grid-col ms-u-sm12">
+                       {{{contents}}}
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+    <div class="ms-Grid-row">
+        <div class="ms-Grid-col ms-u-sm12">
+            {{> footer}}
+        </div>
     </div>
 </div>
 
-{{> footer}}
-
 <div class="overlay"></div>
-<script src="{{relativeURL "assets/js/main.js"}}"></script>
 <script>if (location.protocol == 'file:') document.write('<script src="{{relativeURL "assets/js/search.js"}}"><' + '/script>');</script>
-
-{{> analytics}}
 
 </body>
 </html>
