@@ -3,404 +3,470 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>sp-pnp-js</title>
+	<title>Patterns and Practices JS Core</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="assets/css/main.css">
-	<script src="assets/js/modernizr.js"></script>
+	<link rel="stylesheet" href="assets/css/from-main.css">
+	<link rel="stylesheet" href="assets/css/fabric.css">
+	<link rel="stylesheet" href="assets/css/fabric.components.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
+	<script   src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<script src="assets/js/jquery.fabric.min.js"></script>
+	<script src="assets/js/menu.js"></script>
+	<script src="assets/js/page.js"></script>
 </head>
 <body>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
+<div class="ms-Grid">
+	<div class="ms-Grid-row header-row">
+		<div class="ms-Grid-col ms-u-sm12">
+			<header class="ms-Grid">
+				<div class="ms-Grid-row top-row">
+					<div class="ms-Grid-col ms-u-md12 ms-u-lg7">
+						<a href="index.html" class="title ms-font-xxl ms-fontColor-white" style="text-decoration:none">Patterns and Practices JS Core</a>
 					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="index.html" class="title">sp-pnp-js</a>
+					<div class="ms-Grid-col ms-u-lg1 ms-u-lgPush3 ms-u-hiddenMd">
+						<span class="ms-font-xxl ms-fontColor-white">#PnPJSCore</span>
+					</div>
 				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
+				<div class="ms-Grid-row ms-bgColor-white">
+					<div class="ms-Grid-col ms-u-md12 ms-u-hiddenSm">
+						<div class="ms-Breadcrumb">
+							<div class="ms-Breadcrumb-overflow">
+								<div class="ms-Breadcrumb-overflowButton ms-Icon ms-Icon--ellipsis" tabindex="1"></div>
+								<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i>
+								<div class="ms-Breadcrumb-overflowMenu">
+									<ul class="ms-ContextualMenu is-open"></ul>
+								</div>
 							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-externals" checked />
-							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+							<ul class="ms-Breadcrumb-list">
+								<li class="ms-Breadcrumb-listItem">
+									<a href="globals.html" class="ms-Breadcrumb-itemLink">Index</a>
+									<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i>
+								</li>
+							</ul>
 						</div>
 					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
 				</div>
-			</div>
+			</header>
 		</div>
 	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="globals.html">Globals</a>
-				</li>
-			</ul>
-			<h1> sp-pnp-js</h1>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg2">
+			<nav class="primary">
+				<ul class="ms-ContextualMenu is-open">
+					<ul class="ms-ContextualMenu is-open">        <li class="ms-ContextualMenu-item">
+							<a href="globals.html" class="ms-ContextualMenu-link ">Index</a>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">collections</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+							<ul class="ms-ContextualMenu">
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_collections_collections_.html">collections</a>
+								</li>
+							</ul>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">configuration</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+							<ul class="ms-ContextualMenu">
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_configuration_configuration_.html">configuration</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_configuration_pnplibconfig_.html">pnplibconfig</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">providers</span>
+									<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+									<ul class="ms-ContextualMenu">
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_configuration_providers_cachingconfigurationprovider_.html">cachingConfigurationProvider</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_configuration_providers_providers_.html">providers</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_configuration_providers_splistconfigurationprovider_.html">spListConfigurationProvider</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">net</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+							<ul class="ms-ContextualMenu">
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_net_httpclient_.html">HttpClient</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_net_sprequestexecutorclient_.html">SPRequestExecutorClient</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_net_digestcache_.html">digestCache</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_net_fetchclient_.html">fetchClient</a>
+								</li>
+							</ul>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<a class="ms-ContextualMenu-link  " href="modules/_pnp_.html">pnp</a>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">sharepoint</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+							<ul class="ms-ContextualMenu">
+								<li class="ms-ContextualMenu-item">
+									<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">provisioning</span>
+									<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+									<ul class="ms-ContextualMenu">
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_provisioning_.html">provisioning</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">schema</span>
+											<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+											<ul class="ms-ContextualMenu">
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_icontenttype_.html">IContentType</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_inavigation_.html">inavigation</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_inavigationnode_.html">inavigationnode</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_icomposedlook_.html">icomposedlook</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_icontents_.html">icontents</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_icontenttypebinding_.html">icontenttypebinding</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_icustomaction_.html">icustomaction</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ifeature_.html">ifeature</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ifield_.html">ifield</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ifile_.html">ifile</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ifolder_.html">ifolder</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ihiddenview_.html">ihiddenview</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ilistinstance_.html">ilistinstance</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ilistinstancefieldref_.html">ilistinstancefieldref</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_ipropertybagentry_.html">ipropertybagentry</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_iroleassignment_.html">iroleassignment</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_isecurity_.html">isecurity</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_isiteschema_.html">isiteschema</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_iview_.html">iview</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_iwebpart_.html">iwebpart</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_schema_iwebsettings_.html">iwebsettings</a>
+												</li>
+											</ul>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_util_.html">util</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">ObjectHandlers</span>
+											<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+											<ul class="ms-ContextualMenu">
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectcomposedlook_.html">ObjectComposedLook</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectcustomactions_.html">ObjectCustomActions</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectfeatures_.html">ObjectFeatures</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectfiles_.html">ObjectFiles</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objecthandlerbase_.html">ObjectHandlerBase</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectlists_.html">ObjectLists</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectnavigation_.html">ObjectNavigation</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectpropertybagentries_.html">ObjectPropertyBagEntries</a>
+												</li>
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_objecthandlers_objectwebsettings_.html">ObjectWebSettings</a>
+												</li>
+											</ul>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_provisioningstep_.html">ProvisioningStep</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">Sequencer</span>
+											<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+											<ul class="ms-ContextualMenu">
+												<li class="ms-ContextualMenu-item">
+													<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_provisioning_sequencer_sequencer_.html">Sequencer</a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">rest</span>
+									<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+									<ul class="ms-ContextualMenu">
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_caching_.html">caching</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_contenttypes_.html">contenttypes</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_fields_.html">fields</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_files_.html">files</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_folders_.html">folders</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_items_.html">items</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_lists_.html">lists</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_navigation_.html">navigation</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_odata_.html">odata</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_queryable_.html">queryable</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_rest_.html">rest</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_roles_.html">roles</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_search_.html">search</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_site_.html">site</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_sitegroups_.html">sitegroups</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_siteusers_.html">siteusers</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_types_.html">types</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_usercustomactions_.html">usercustomactions</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_userprofiles_.html">userprofiles</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_views_.html">views</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_webs_.html">webs</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_queryablesecurable_.html">queryablesecurable</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_quicklaunch_.html">quickLaunch</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_topnavigationbar_.html">topNavigationBar</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">types</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+							<ul class="ms-ContextualMenu">
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_types_locale_.html">locale</a>
+								</li>
+							</ul>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu ">utils</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+							<ul class="ms-ContextualMenu">
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_utils_files_.html">files</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_utils_logging_.html">logging</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_utils_storage_.html">storage</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_utils_util_.html">util</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</ul>
+			</nav>
+			<nav class="secondary">
+				<ul id="secondaryNav">
+				</ul>
+			</nav>
 		</div>
-	</div>
-</header>
-<div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<p><img src="https://camo.githubusercontent.com/a732087ed949b0f2f84f5f02b8c79f1a9dd96f65/687474703a2f2f692e696d6775722e636f6d2f6c3031686876452e706e67" alt="Office 365 Developer Patterns and Practices"></p>
-				<h1 id="javascript-core-component">JavaScript Core Component</h1>
-				<p><a href="https://badge.fury.io/js/sp-pnp-js"><img src="https://badge.fury.io/js/sp-pnp-js.svg" alt="npm version"></a> <a href="https://gitter.im/OfficeDev/PnP-JS-Core?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/OfficeDev/PnP-JS-Core.svg" alt="Join the chat at https://gitter.im/OfficeDev/PnP-JS-Core"></a> <a href="https://www.npmjs.com/package/sp-pnp-js"><img src="https://img.shields.io/npm/dm/sp-pnp-js.svg" alt="Downloads"></a></p>
-				<p>The Patterns and Practices JavaScript Core Library was created to help developers by simplifying common operations within SharePoint. This is aligned with helping folks transitioning into client side development in support of the upcoming SharePoint Framework. Currently it contains a fluent API for working with the full SharePoint REST API as well as utility and helper functions. This takes the guess work out of creating REST requests, letting developers focus on the what and less on the how.</p>
-				<p>Please use <a href="http://aka.ms/OfficeDevPnP">http://aka.ms/OfficeDevPnP</a> for getting latest information around the whole <em>Office 365 Developer Patterns and Practices program</em>.</p>
-				<h3 id="get-started">Get Started</h3>
-				<p><strong>NPM</strong></p>
-				<p>Add the npm package to your project</p>
-				<pre><code>npm <span class="hljs-keyword">install </span><span class="hljs-built_in">sp</span>-pnp-<span class="hljs-keyword">js </span>--save-dev
+		<div class="ms-Grid-col ms-u-sm6 ms-u-md8 ms-u-lg10">
+			<div class="ms-Grid">
+				<div class="ms-Grid-row">
+					<div class="ms-Grid-col ms-u-sm12">
+						<h1 class="ms-font-xxl"> Patterns and Practices JS Core</h1>
+					</div>
+				</div>
+				<div class="ms-Grid-row">
+					<div class="ms-Grid-col ms-u-sm12">
+						<div class="tsd-panel tsd-typography">
+							<p><img src="https://camo.githubusercontent.com/a732087ed949b0f2f84f5f02b8c79f1a9dd96f65/687474703a2f2f692e696d6775722e636f6d2f6c3031686876452e706e67" alt="Office 365 Developer Patterns and Practices"></p>
+							<h1 id="javascript-core-component">JavaScript Core Component</h1>
+							<p><a href="https://badge.fury.io/js/sp-pnp-js"><img src="https://badge.fury.io/js/sp-pnp-js.svg" alt="npm version"></a> <a href="https://gitter.im/OfficeDev/PnP-JS-Core?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/OfficeDev/PnP-JS-Core.svg" alt="Join the chat at https://gitter.im/OfficeDev/PnP-JS-Core"></a> <a href="https://www.npmjs.com/package/sp-pnp-js"><img src="https://img.shields.io/npm/dm/sp-pnp-js.svg" alt="Downloads"></a></p>
+							<p>The Patterns and Practices JavaScript Core Library was created to help developers by simplifying common operations within SharePoint. This is aligned with helping folks transitioning into client side development in support of the upcoming SharePoint Framework. Currently it contains a fluent API for working with the full SharePoint REST API as well as utility and helper functions. This takes the guess work out of creating REST requests, letting developers focus on the what and less on the how.</p>
+							<p>Please use <a href="http://aka.ms/OfficeDevPnP">http://aka.ms/OfficeDevPnP</a> for getting latest information around the whole <em>Office 365 Developer Patterns and Practices program</em>.</p>
+							<h3 id="get-started">Get Started</h3>
+							<p><strong>NPM</strong></p>
+							<p>Add the npm package to your project</p>
+							<pre><code>npm <span class="hljs-keyword">install </span><span class="hljs-built_in">sp</span>-pnp-<span class="hljs-keyword">js </span>--save-dev
 </code></pre><p>Import the root object and start interacting with the SharePoint REST API</p>
-				<pre><code><span class="hljs-keyword">import</span> pnp <span class="hljs-keyword">from</span> <span class="hljs-string">"sp-pnp-js"</span>
+							<pre><code><span class="hljs-keyword">import</span> pnp <span class="hljs-keyword">from</span> <span class="hljs-string">"sp-pnp-js"</span>
 ...
 pnp.sp.web.<span class="hljs-built_in">select</span>(<span class="hljs-string">"Title"</span>).get().<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ...);
 </code></pre><p><strong>Bower</strong></p>
-				<p>Add the package from bower</p>
-				<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-built_in">sp</span>-pnp-<span class="hljs-keyword">js</span>
+							<p>Add the package from bower</p>
+							<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-built_in">sp</span>-pnp-<span class="hljs-keyword">js</span>
 </code></pre><h3 id="get-help">Get Help</h3>
-				<p>We have active <a href="http://aka.ms/OfficeDevPnPSIGJavaScriptYammer">Yammer</a> and <a href="https://gitter.im/OfficeDev/PnP-JS-Core">Gitter</a> communities dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please <a href="https://github.com/OfficeDev/PnP-JS-Core/issues">report it</a>.</p>
-				<h3 id="wiki">Wiki</h3>
-				<p>Please see <a href="https://github.com/OfficeDev/PnP-JS-Core/wiki">the wiki</a> for tips on getting started, configuring your development environment, and using the library.</p>
-				<h3 id="authors">Authors</h3>
-				<p>This project&#39;s contributors include Microsoft and <a href="AUTHORS">community contributors</a>. Work is done as as open source community project.</p>
-				<h3 id="code-of-conduct">Code of Conduct</h3>
-				<p>This project has adopted the <a href="https://opensource.microsoft.com/codeofconduct/">Microsoft Open Source Code of Conduct</a>. For more information see the <a href="https://opensource.microsoft.com/codeofconduct/faq/">Code of Conduct FAQ</a> or contact <a href="mailto:opencode@microsoft.com">opencode@microsoft.com</a> with any additional questions or comments.</p>
-				<h3 id="-sharing-is-caring-">&quot;Sharing is Caring&quot;</h3>
-				<h3 id="disclaimer">Disclaimer</h3>
-				<p><strong>THIS CODE IS PROVIDED <em>AS IS</em> WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.</strong></p>
+							<p>We have active <a href="http://aka.ms/OfficeDevPnPSIGJavaScriptYammer">Yammer</a> and <a href="https://gitter.im/OfficeDev/PnP-JS-Core">Gitter</a> communities dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please <a href="https://github.com/OfficeDev/PnP-JS-Core/issues">report it</a>.</p>
+							<h3 id="wiki">Wiki</h3>
+							<p>Please see <a href="https://github.com/OfficeDev/PnP-JS-Core/wiki">the wiki</a> for tips on getting started, configuring your development environment, and using the library.</p>
+							<h3 id="authors">Authors</h3>
+							<p>This project&#39;s contributors include Microsoft and <a href="AUTHORS">community contributors</a>. Work is done as as open source community project.</p>
+							<h3 id="code-of-conduct">Code of Conduct</h3>
+							<p>This project has adopted the <a href="https://opensource.microsoft.com/codeofconduct/">Microsoft Open Source Code of Conduct</a>. For more information see the <a href="https://opensource.microsoft.com/codeofconduct/faq/">Code of Conduct FAQ</a> or contact <a href="mailto:opencode@microsoft.com">opencode@microsoft.com</a> with any additional questions or comments.</p>
+							<h3 id="-sharing-is-caring-">&quot;Sharing is Caring&quot;</h3>
+							<h3 id="disclaimer">Disclaimer</h3>
+							<p><strong>THIS CODE IS PROVIDED <em>AS IS</em> WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.</strong></p>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class="globals  ">
-						<a href="globals.html"><em>Globals</em></a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_collections_collections_.html">"collections/collections"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_configuration_configuration_.html">"configuration/configuration"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_configuration_pnplibconfig_.html">"configuration/pnplibconfig"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_configuration_providers_cachingconfigurationprovider_.html">"configuration/providers/caching<wbr>Configuration<wbr>Provider"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_configuration_providers_providers_.html">"configuration/providers/providers"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_configuration_providers_splistconfigurationprovider_.html">"configuration/providers/sp<wbr>List<wbr>Configuration<wbr>Provider"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_net_httpclient_.html">"net/<wbr>Http<wbr>Client"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_net_sprequestexecutorclient_.html">"net/SPRequest<wbr>Executor<wbr>Client"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_pnp_.html">"pnp"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_provisioning_provisioning_.html">"sharepoint/provisioning/provisioning"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_provisioning_schema_icontenttype_.html">"sharepoint/provisioning/schema/IContent<wbr>Type"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_provisioning_schema_inavigation_.html">"sharepoint/provisioning/schema/inavigation"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_provisioning_schema_inavigationnode_.html">"sharepoint/provisioning/schema/inavigationnode"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_provisioning_util_.html">"sharepoint/provisioning/util"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_caching_.html">"sharepoint/rest/caching"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_contenttypes_.html">"sharepoint/rest/contenttypes"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_fields_.html">"sharepoint/rest/fields"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_files_.html">"sharepoint/rest/files"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_folders_.html">"sharepoint/rest/folders"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_items_.html">"sharepoint/rest/items"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_lists_.html">"sharepoint/rest/lists"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_navigation_.html">"sharepoint/rest/navigation"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_odata_.html">"sharepoint/rest/odata"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_queryable_.html">"sharepoint/rest/queryable"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_rest_.html">"sharepoint/rest/rest"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_roles_.html">"sharepoint/rest/roles"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_search_.html">"sharepoint/rest/search"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_site_.html">"sharepoint/rest/site"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_sitegroups_.html">"sharepoint/rest/sitegroups"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_siteusers_.html">"sharepoint/rest/siteusers"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_types_.html">"sharepoint/rest/types"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_usercustomactions_.html">"sharepoint/rest/usercustomactions"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_userprofiles_.html">"sharepoint/rest/userprofiles"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_views_.html">"sharepoint/rest/views"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_sharepoint_rest_webs_.html">"sharepoint/rest/webs"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_types_locale_.html">"types/locale"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_files_.html">"utils/files"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_logging_.html">"utils/logging"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_storage_.html">"utils/storage"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_util_.html">"utils/util"</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_net_digestcache_.html">"net/digest<wbr>Cache"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_net_fetchclient_.html">"net/fetch<wbr>Client"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectcomposedlook_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Composed<wbr>Look"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectcustomactions_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Custom<wbr>Actions"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectfeatures_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Features"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectfiles_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Files"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objecthandlerbase_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Handler<wbr>Base"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectlists_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Lists"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectnavigation_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Navigation"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectpropertybagentries_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Property<wbr>Bag<wbr>Entries"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_objecthandlers_objectwebsettings_.html">"sharepoint/provisioning/<wbr>Object<wbr>Handlers/<wbr>Object<wbr>Web<wbr>Settings"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_provisioningstep_.html">"sharepoint/provisioning/<wbr>Provisioning<wbr>Step"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_sequencer_sequencer_.html">"sharepoint/provisioning/<wbr>Sequencer/<wbr>Sequencer"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_icomposedlook_.html">"sharepoint/provisioning/schema/icomposedlook"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_icontents_.html">"sharepoint/provisioning/schema/icontents"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_icontenttypebinding_.html">"sharepoint/provisioning/schema/icontenttypebinding"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_icustomaction_.html">"sharepoint/provisioning/schema/icustomaction"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ifeature_.html">"sharepoint/provisioning/schema/ifeature"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ifield_.html">"sharepoint/provisioning/schema/ifield"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ifile_.html">"sharepoint/provisioning/schema/ifile"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ifolder_.html">"sharepoint/provisioning/schema/ifolder"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ihiddenview_.html">"sharepoint/provisioning/schema/ihiddenview"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ilistinstance_.html">"sharepoint/provisioning/schema/ilistinstance"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ilistinstancefieldref_.html">"sharepoint/provisioning/schema/ilistinstancefieldref"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_ipropertybagentry_.html">"sharepoint/provisioning/schema/ipropertybagentry"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_iroleassignment_.html">"sharepoint/provisioning/schema/iroleassignment"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_isecurity_.html">"sharepoint/provisioning/schema/isecurity"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_isiteschema_.html">"sharepoint/provisioning/schema/isiteschema"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_iview_.html">"sharepoint/provisioning/schema/iview"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_iwebpart_.html">"sharepoint/provisioning/schema/iwebpart"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_provisioning_schema_iwebsettings_.html">"sharepoint/provisioning/schema/iwebsettings"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_rest_queryablesecurable_.html">"sharepoint/rest/queryablesecurable"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_rest_quicklaunch_.html">"sharepoint/rest/quick<wbr>Launch"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_sharepoint_rest_topnavigationbar_.html">"sharepoint/rest/top<wbr>Navigation<wbr>Bar"</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-				</ul>
-			</nav>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm12">
+			<footer>
+				<div class="container">
+					<h2>Legend</h2>
+					<div class="tsd-legend-group">
+						<ul class="tsd-legend">
+							<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+							<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+							<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+							<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+							<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+							<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+							<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+							<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+							<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+							<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+							<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+							<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+							<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+						</ul>
+					</div>
+				</div>
+			</footer>
 		</div>
 	</div>
-</div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
-<script src="assets/js/main.js"></script>
 <script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

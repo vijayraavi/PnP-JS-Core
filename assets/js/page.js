@@ -1,0 +1,5 @@
+$(() => {
+
+    $("nav.primary > ul").ContextualMenuCustom();
+
+});

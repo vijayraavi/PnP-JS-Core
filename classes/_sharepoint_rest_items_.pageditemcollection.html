@@ -3,251 +3,82 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PagedItemCollection | sp-pnp-js</title>
+	<title>PagedItemCollection | Patterns and Practices JS Core</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="../assets/css/main.css">
-	<script src="../assets/js/modernizr.js"></script>
+	<link rel="stylesheet" href="../assets/css/from-main.css">
+	<link rel="stylesheet" href="../assets/css/fabric.css">
+	<link rel="stylesheet" href="../assets/css/fabric.components.css">
+	<link rel="stylesheet" href="../assets/css/custom.css">
+	<script   src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<script src="../assets/js/jquery.fabric.min.js"></script>
+	<script src="../assets/js/menu.js"></script>
+	<script src="../assets/js/page.js"></script>
 </head>
 <body>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
+<div class="ms-Grid">
+	<div class="ms-Grid-row header-row">
+		<div class="ms-Grid-col ms-u-sm12">
+			<header class="ms-Grid">
+				<div class="ms-Grid-row top-row">
+					<div class="ms-Grid-col ms-u-md12 ms-u-lg7">
+						<a href="../index.html" class="title ms-font-xxl ms-fontColor-white" style="text-decoration:none">Patterns and Practices JS Core</a>
 					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="../index.html" class="title">sp-pnp-js</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-externals" checked />
-							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="../globals.html">Globals</a>
-				</li>
-				<li>
-					<a href="../modules/_sharepoint_rest_items_.html">&quot;sharepoint/rest/items&quot;</a>
-				</li>
-				<li>
-					<a href="_sharepoint_rest_items_.pageditemcollection.html">PagedItemCollection</a>
-				</li>
-			</ul>
-			<h1>Class PagedItemCollection&lt;T&gt;</h1>
-		</div>
-	</div>
-</header>
-<div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Provides paging functionality for list items</p>
+					<div class="ms-Grid-col ms-u-lg1 ms-u-lgPush3 ms-u-hiddenMd">
+						<span class="ms-font-xxl ms-fontColor-white">#PnPJSCore</span>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-type-parameters">
-				<h3>Type parameters</h3>
-				<ul class="tsd-type-parameters">
-					<li>
-						<h4>T</h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">PagedItemCollection</span>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_sharepoint_rest_items_.pageditemcollection.html#nexturl" class="tsd-kind-icon">next<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_sharepoint_rest_items_.pageditemcollection.html#results" class="tsd-kind-icon">results</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Accessors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_sharepoint_rest_items_.pageditemcollection.html#hasnext" class="tsd-kind-icon">has<wbr>Next</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_sharepoint_rest_items_.pageditemcollection.html#getnext" class="tsd-kind-icon">get<wbr>Next</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_sharepoint_rest_items_.pageditemcollection.html#fromresponse" class="tsd-kind-icon">from<wbr>Response</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="nexturl" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> next<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">next<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/fb59b5d/src/sharepoint/rest/items.ts#L283">sharepoint/rest/items.ts:283</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The url to the next set of results</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="results" class="tsd-anchor"></a>
-					<h3>results</h3>
-					<div class="tsd-signature tsd-kind-icon">results<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/fb59b5d/src/sharepoint/rest/items.ts#L278">sharepoint/rest/items.ts:278</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Contains the results of the query</p>
-						</div>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Accessors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="hasnext" class="tsd-anchor"></a>
-					<h3>has<wbr>Next</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> hasNext<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/fb59b5d/src/sharepoint/rest/items.ts#L288">sharepoint/rest/items.ts:288</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>If true there are more results available in the set, otherwise there are not</p>
+				<div class="ms-Grid-row ms-bgColor-white">
+					<div class="ms-Grid-col ms-u-md12 ms-u-hiddenSm">
+						<div class="ms-Breadcrumb">
+							<div class="ms-Breadcrumb-overflow">
+								<div class="ms-Breadcrumb-overflowButton ms-Icon ms-Icon--ellipsis" tabindex="1"></div>
+								<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i>
+								<div class="ms-Breadcrumb-overflowMenu">
+									<ul class="ms-ContextualMenu is-open"></ul>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getnext" class="tsd-anchor"></a>
-					<h3>get<wbr>Next</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Next<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/fb59b5d/src/sharepoint/rest/items.ts#L310">sharepoint/rest/items.ts:310</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Gets the next set of results, or resolves to null if no results are available</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="fromresponse" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> from<wbr>Response</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">from<wbr>Response<span class="tsd-signature-symbol">(</span>r<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/fb59b5d/src/sharepoint/rest/items.ts#L298">sharepoint/rest/items.ts:298</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Creats a new instance of the PagedItemCollection class from the response</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>r: <span class="tsd-signature-type">Response</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Response instance from which this collection will be created</p>
-									</div>
+							<ul class="ms-Breadcrumb-list">
+								<li class="ms-Breadcrumb-listItem">
+									<a href="../globals.html" class="ms-Breadcrumb-itemLink">Index</a>
+									<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i>
 								</li>
+								<li class="ms-Breadcrumb-listItem">
+									<a href="../modules/_sharepoint_rest_items_.html" class="ms-Breadcrumb-itemLink">&quot;sharepoint/rest/items&quot;</a>
+								<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i></li>
+								<li class="ms-Breadcrumb-listItem">
+									<a href="_sharepoint_rest_items_.pageditemcollection.html" class="ms-Breadcrumb-itemLink">PagedItemCollection</a>
+								<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i></li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</div>
+					</div>
+				</div>
+			</header>
+		</div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg2">
+			<nav class="primary">
+				<ul class="ms-ContextualMenu is-open">
+					<ul class="ms-ContextualMenu is-open">        <li class="ms-ContextualMenu-item">
+							<a href="../globals.html" class="ms-ContextualMenu-link ">Index</a>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu " style="padding-left:18px">sharepoint</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu " style="padding-left:22px">rest</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<a class="ms-ContextualMenu-link  is-selected" href="../modules/_sharepoint_rest_items_.html" style="padding-left:30px">items</a>
 						</li>
 					</ul>
-				</section>
-			</section>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
-					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="../modules/_sharepoint_rest_items_.html">"sharepoint/rest/items"</a>
-					</li>
 				</ul>
 			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
+			<nav class="secondary">
+				<ul id="secondaryNav">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
 						<a href="_sharepoint_rest_items_.item.html" class="tsd-kind-icon">Item</a>
 					</li>
@@ -290,72 +121,249 @@
 				</ul>
 			</nav>
 		</div>
-	</div>
-</div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
-			</ul>
+		<div class="ms-Grid-col ms-u-sm6 ms-u-md8 ms-u-lg10">
+			<div class="ms-Grid">
+				<div class="ms-Grid-row">
+					<div class="ms-Grid-col ms-u-sm12">
+						<h1 class="ms-font-xxl">Class PagedItemCollection&lt;T&gt;</h1>
+					</div>
+				</div>
+				<div class="ms-Grid-row">
+					<div class="ms-Grid-col ms-u-sm12">
+						<section class="tsd-panel tsd-comment">
+							<div class="comment ms-font-m">
+								<div class="lead">
+									<p>Provides paging functionality for list items</p>
+								</div>
+							</div>
+						</section>
+						<section class="tsd-panel tsd-type-parameters">
+							<h3>Type parameters</h3>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+						</section>
+						<section class="tsd-panel tsd-hierarchy">
+							<h3>Hierarchy</h3>
+							<ul class="tsd-hierarchy">
+								<li>
+									<span class="target">PagedItemCollection</span>
+								</li>
+							</ul>
+						</section>
+						<section class="tsd-panel-group tsd-index-group">
+							<h2>Index</h2>
+							<section class="tsd-panel tsd-index-panel">
+								<div class="tsd-index-content">
+									<section class="tsd-index-section ">
+										<h3>Properties</h3>
+										<ul class="tsd-index-list">
+											<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_sharepoint_rest_items_.pageditemcollection.html#nexturl" class="tsd-kind-icon">next<wbr>Url</a></li>
+											<li class="tsd-kind-property tsd-parent-kind-class"><a href="_sharepoint_rest_items_.pageditemcollection.html#results" class="tsd-kind-icon">results</a></li>
+										</ul>
+									</section>
+									<section class="tsd-index-section ">
+										<h3>Accessors</h3>
+										<ul class="tsd-index-list">
+											<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_sharepoint_rest_items_.pageditemcollection.html#hasnext" class="tsd-kind-icon">has<wbr>Next</a></li>
+										</ul>
+									</section>
+									<section class="tsd-index-section ">
+										<h3>Methods</h3>
+										<ul class="tsd-index-list">
+											<li class="tsd-kind-method tsd-parent-kind-class"><a href="_sharepoint_rest_items_.pageditemcollection.html#getnext" class="tsd-kind-icon">get<wbr>Next</a></li>
+											<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_sharepoint_rest_items_.pageditemcollection.html#fromresponse" class="tsd-kind-icon">from<wbr>Response</a></li>
+										</ul>
+									</section>
+								</div>
+							</section>
+						</section>
+						<section class="tsd-panel-group tsd-member-group ">
+							<h2>Properties</h2>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a name="nexturl" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> next<wbr>Url</h3>
+								<div class="tsd-signature tsd-kind-icon">next<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/5b6cf13/src/sharepoint/rest/items.ts#L283">sharepoint/rest/items.ts:283</a></li>
+									</ul>
+								</aside>
+								<div class="comment ms-font-m">
+									<div class="lead">
+										<p>The url to the next set of results</p>
+									</div>
+								</div>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+								<a name="results" class="tsd-anchor"></a>
+								<h3>results</h3>
+								<div class="tsd-signature tsd-kind-icon">results<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/5b6cf13/src/sharepoint/rest/items.ts#L278">sharepoint/rest/items.ts:278</a></li>
+									</ul>
+								</aside>
+								<div class="comment ms-font-m">
+									<div class="lead">
+										<p>Contains the results of the query</p>
+									</div>
+								</div>
+							</section>
+						</section>
+						<section class="tsd-panel-group tsd-member-group ">
+							<h2>Accessors</h2>
+							<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+								<a name="hasnext" class="tsd-anchor"></a>
+								<h3>has<wbr>Next</h3>
+								<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> hasNext<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/5b6cf13/src/sharepoint/rest/items.ts#L288">sharepoint/rest/items.ts:288</a></li>
+											</ul>
+										</aside>
+										<div class="comment ms-font-m">
+											<div class="lead">
+												<p>If true there are more results available in the set, otherwise there are not</p>
+											</div>
+										</div>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+									</li>
+								</ul>
+							</section>
+						</section>
+						<section class="tsd-panel-group tsd-member-group ">
+							<h2>Methods</h2>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+								<a name="getnext" class="tsd-anchor"></a>
+								<h3>get<wbr>Next</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+									<li class="tsd-signature tsd-kind-icon">get<wbr>Next<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/5b6cf13/src/sharepoint/rest/items.ts#L310">sharepoint/rest/items.ts:310</a></li>
+											</ul>
+										</aside>
+										<div class="comment ms-font-m">
+											<div class="lead">
+												<p>Gets the next set of results, or resolves to null if no results are available</p>
+											</div>
+										</div>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a name="fromresponse" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagStatic">Static</span> from<wbr>Response</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+									<li class="tsd-signature tsd-kind-icon">from<wbr>Response<span class="tsd-signature-symbol">(</span>r<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in <a href="https://github.com/patrick-rodgers/PnP-JS-Core/blob/5b6cf13/src/sharepoint/rest/items.ts#L298">sharepoint/rest/items.ts:298</a></li>
+											</ul>
+										</aside>
+										<div class="comment ms-font-m">
+											<div class="lead">
+												<p>Creats a new instance of the PagedItemCollection class from the response</p>
+											</div>
+										</div>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>r: <span class="tsd-signature-type">Response</span></h5>
+												<div class="comment ms-font-m">
+													<p>Response instance from which this collection will be created</p>
+												</div>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_sharepoint_rest_items_.pageditemcollection.html" class="tsd-signature-type">PagedItemCollection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</section>
+						</section>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm12">
+			<footer>
+				<div class="container">
+					<h2>Legend</h2>
+					<div class="tsd-legend-group">
+						<ul class="tsd-legend">
+							<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+							<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+							<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+							<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+							<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+							<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+							<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+							<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+							<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+							<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+							<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+							<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+							<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+						</ul>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
 </div>
 <div class="overlay"></div>
-<script src="../assets/js/main.js"></script>
 <script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>
