@@ -1,6 +1,6 @@
 {
   "name": "sp-pnp-js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A reusable JavaScript library targeting SharePoint client-side development.",
   "main": "./lib/pnp.js",
   "typings": "./lib/pnp",
@@ -11,7 +11,7 @@
   "devDependencies": {
     "browser-sync": "^2.11.1",
     "browserify": "^13.0.0",
-    "chai": "^3.5.0", 
+    "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.1",
     "gulp-header": "1.8.2",

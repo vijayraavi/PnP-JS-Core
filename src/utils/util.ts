@@ -236,4 +236,26 @@ export class Util {
     public static isUrlAbsolute(url: string): boolean {
         return /^https?:\/\/|^\/\//i.test(url);
     }
+
+    /**
+     * Attempts to make the supplied relative url absolute based on the _spPageContextInfo object, if available
+     * 
+     * @param url The relative url to make absolute
+     */
+    public static makeUrlAbsolute(url: string): string {
+
+        if (Util.isUrlAbsolute(url)) {
+            return url;
+        }
+
+        if (typeof _spPageContextInfo !== "undefined") {
+            if (_spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
+                return Util.combinePaths(_spPageContextInfo.webAbsoluteUrl, url);
+            } else if (_spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
+                return Util.combinePaths(_spPageContextInfo.webServerRelativeUrl, url);
+            }
+        } else {
+            return url;
+        }
+    }
 }

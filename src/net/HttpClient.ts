@@ -4,16 +4,35 @@ import { FetchClient } from "./fetchClient";
 import { DigestCache } from "./digestCache";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
+import { SPRequestExecutorClient } from "./SPRequestExecutorClient";
+
+export interface FetchOptions {
+    method?: string;
+    headers?: HeaderInit | { [index: string]: string };
+    body?: BodyInit;
+    mode?: string | RequestMode;
+    credentials?: string | RequestCredentials;
+    cache?: string | RequestCache;
+}
 
 export class HttpClient {
 
-    constructor(private _impl = new FetchClient()) {
+    private _digestCache: DigestCache;
+
+    private _impl: HttpClientImpl;
+
+    constructor() {
+
+        if (RuntimeConfig.useSPRequestExecutor) {
+            this._impl = new SPRequestExecutorClient();
+        } else {
+            this._impl = new FetchClient();
+        }
+
         this._digestCache = new DigestCache(this);
     }
 
-    private _digestCache: DigestCache;
-
-    public fetch(url: string, options: any = {}): Promise<Response> {
+    public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 
         let self = this;
 
@@ -60,7 +79,7 @@ export class HttpClient {
         return self.fetchRaw(url, opts);
     }
 
-    public fetchRaw(url: string, options: any = {}): Promise<Response> {
+    public fetchRaw(url: string, options: FetchOptions = {}): Promise<Response> {
 
         let retry = (ctx): void => {
 
@@ -103,18 +122,18 @@ export class HttpClient {
         });
     }
 
-    public get(url: string, options: any = {}): Promise<Response> {
+    public get(url: string, options: FetchOptions = {}): Promise<Response> {
         let opts = Util.extend(options, { method: "GET" });
         return this.fetch(url, opts);
     }
 
-    public post(url: string, options: any = {}): Promise<Response> {
+    public post(url: string, options: FetchOptions = {}): Promise<Response> {
         let opts = Util.extend(options, { method: "POST" });
         return this.fetch(url, opts);
     }
 
     private mergeHeaders(target: Headers, source: any): void {
-       if (typeof source !== "undefined") {
+        if (typeof source !== "undefined") {
             let temp = <any>new Request("", { headers: source });
             temp.headers.forEach((value, name) => {
                 target.append(name, value);

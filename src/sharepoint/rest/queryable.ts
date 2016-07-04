@@ -2,8 +2,10 @@
 
 import { Util } from "../../utils/util";
 import { Dictionary } from "../../collections/collections";
-import { HttpClient } from "../../net/HttpClient";
-import { ODataParser, ODataDefaultParser } from "./odata";
+import { FetchOptions, HttpClient } from "../../net/HttpClient";
+import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
+import { ICachingOptions, CachingParserWrapper, CachingOptions } from "./caching";
+import { RuntimeConfig } from "../../configuration/pnplibconfig";
 
 declare var _spPageContextInfo: any;
 
@@ -27,6 +29,7 @@ export class Queryable {
     constructor(baseUrl: string | Queryable, path?: string) {
 
         this._query = new Dictionary<string>();
+        this._batch = null;
 
         if (typeof baseUrl === "string") {
             // we need to do some extra parsing to get the parent url correct if we are
@@ -49,6 +52,10 @@ export class Queryable {
         } else {
             let q = baseUrl as Queryable;
             this._parentUrl = q._url;
+            // only copy batch if we don't already have one
+            if (!this.hasBatch && q.hasBatch) {
+                this._batch = q._batch;
+            }
             let target = q._query.get("@target");
             if (target !== null) {
                 this._query.add("@target", target);
@@ -63,6 +70,11 @@ export class Queryable {
     protected _query: Dictionary<string>;
 
     /**
+     * Tracks the batch of which this query may be part
+     */
+    private _batch: ODataBatch;
+
+    /**
      * Tracks the url as it is built
      */
     private _url: string;
@@ -71,6 +83,16 @@ export class Queryable {
      * Stores the parent url used to create this instance, for recursing back up the tree if needed
      */
     private _parentUrl: string;
+
+    /**
+     * Explicitly tracks if we are using caching for this request
+     */
+    private _useCaching: boolean;
+
+    /**
+     * Any options that were supplied when caching was enabled
+     */
+    private _cachingOptions: ICachingOptions;
 
     /**
      * Directly concatonates the supplied string to the current url, not normalizing "/" chars
@@ -91,6 +113,32 @@ export class Queryable {
     }
 
     /**
+     * Blocks a batch call from occuring, MUST be cleared with clearBatchDependency before a request will execute
+     */
+    protected addBatchDependency() {
+        if (this._batch !== null) {
+            this._batch.incrementBatchDep();
+        }
+    }
+
+    /**
+     * Clears a batch request dependency
+     */
+    protected clearBatchDependency() {
+        if (this._batch !== null) {
+            this._batch.decrementBatchDep();
+        }
+    }
+
+    /**
+     * Indicates if the current query has a batch associated
+     *
+     */
+    protected get hasBatch(): boolean {
+        return this._batch !== null;
+    }
+
+    /**
      * Gets the parent url used when creating this instance
      *
      */
@@ -107,21 +155,42 @@ export class Queryable {
     }
 
     /**
+     * Adds this query to the supplied batch
+     * 
+     * @example
+     * let b = pnp.sp.createBatch(); 
+     * pnp.sp.web.addToBatch(b).get().then(...);
+     */
+    public inBatch(batch: ODataBatch): this {
+        if (this._batch !== null) {
+            // TODO: what do we want to do?
+            throw new Error("This query is already part of a batch.");
+        }
+
+        this._batch = batch;
+
+        return this;
+    }
+
+    /**
+     * Enables caching for this request
+     * 
+     * @param options Defines the options used when caching this request
+     */
+    public usingCaching(options?: ICachingOptions): this {
+        if (!RuntimeConfig.globalCacheDisable) {
+            this._useCaching = true;
+            this._cachingOptions = options;
+        }
+        return this;
+    }
+
+    /**
      * Gets the currentl url, made server relative or absolute based on the availability of the _spPageContextInfo object
      *
      */
     public toUrl(): string {
-        if (!Util.isUrlAbsolute(this._url)) {
-            if (typeof _spPageContextInfo !== "undefined") {
-                if (_spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
-                    return Util.combinePaths(_spPageContextInfo.webAbsoluteUrl, this._url);
-                } else if (_spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
-                    return Util.combinePaths(_spPageContextInfo.webServerRelativeUrl, this._url);
-                }
-            }
-        }
-
-        return this._url;
+        return Util.makeUrlAbsolute(this._url);
     }
 
     /**
@@ -142,19 +211,19 @@ export class Queryable {
      * Executes the currently built request
      *
      */
-    public get(parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
-        return this.getImpl(parser);
+    public get(parser: ODataParser<any, any> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<any> {
+        return this.getImpl(getOptions, parser);
     }
 
-    public getAs<T, U>(parser: ODataParser<T, U> = new ODataDefaultParser()): Promise<U> {
-        return this.getImpl(parser);
+    public getAs<T, U>(parser: ODataParser<T, U> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<U> {
+        return this.getImpl(getOptions, parser);
     }
 
-    protected post(postOptions: any = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
+    protected post(postOptions: FetchOptions = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
         return this.postImpl(postOptions, parser);
     }
 
-    protected postAs<T, U>(postOptions: any = {}, parser: ODataParser<T, U> = new ODataDefaultParser()): Promise<U> {
+    protected postAs<T, U>(postOptions: FetchOptions = {}, parser: ODataParser<T, U> = new ODataDefaultParser()): Promise<U> {
         return this.postImpl(postOptions, parser);
     }
 
@@ -176,42 +245,73 @@ export class Queryable {
         return parent;
     }
 
-    private getImpl<U>(parser: ODataParser<any, U>): Promise<U> {
-        let client = new HttpClient();
-        return client.get(this.toUrlAndQuery()).then(function (response) {
+    private getImpl<U>(getOptions: FetchOptions = {}, parser: ODataParser<any, U>): Promise<U> {
 
-            if (!response.ok) {
-                throw "Error making GET request: " + response.statusText;
+        if (this._useCaching) {
+            let options = new CachingOptions(this.toUrlAndQuery().toLowerCase());
+            if (typeof this._cachingOptions !== "undefined") {
+                options = Util.extend(options, this._cachingOptions);
             }
 
-            return parser.parse(response);
-        });
+            // check if we have the data in cache and if so return a resolved promise
+            let data = options.store.get(options.key);
+            if (data !== null) {
+                return new Promise(resolve => resolve(data));
+            }
+
+            // if we don't then wrap the supplied parser in the caching parser wrapper
+            // and send things on their way
+            parser = new CachingParserWrapper(parser, options);
+        }
+
+        if (this._batch === null) {
+
+            // we are not part of a batch, so proceed as normal
+            let client = new HttpClient();
+            return client.get(this.toUrlAndQuery(), getOptions).then(function (response) {
+
+                if (!response.ok) {
+                    throw "Error making GET request: " + response.statusText;
+                }
+
+                return parser.parse(response);
+            });
+        } else {
+
+            return this._batch.add(this.toUrlAndQuery(), "GET", {}, parser);
+        }
     }
 
-    private postImpl<U>(postOptions: any, parser: ODataParser<any, U>): Promise<U> {
+    private postImpl<U>(postOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
 
-        let client = new HttpClient();
+        if (this._batch === null) {
 
-        return client.post(this.toUrlAndQuery(), postOptions).then(function (response) {
+            // we are not part of a batch, so proceed as normal
+            let client = new HttpClient();
 
-            // 200 = OK (delete)
-            // 201 = Created (create)
-            // 204 = No Content (update)
-            if (!response.ok) {
-                throw "Error making POST request: " + response.statusText;
-            }
+            return client.post(this.toUrlAndQuery(), postOptions).then(function (response) {
 
-            if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
-                || response.status === 204) {
+                // 200 = OK (delete)
+                // 201 = Created (create)
+                // 204 = No Content (update)
+                if (!response.ok) {
+                    throw "Error making POST request: " + response.statusText;
+                }
 
-                // in these cases the server has returned no content, so we create an empty object
-                // this was done because the fetch browser methods throw exceptions with no content
-                return new Promise<any>((resolve, reject) => { resolve({}); });
-            }
+                if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
+                    || response.status === 204) {
 
-            // pipe our parsed content
-            return parser.parse(response);
-        });
+                    // in these cases the server has returned no content, so we create an empty object
+                    // this was done because the fetch browser methods throw exceptions with no content
+                    return new Promise<any>((resolve, reject) => { resolve({}); });
+                }
+
+                // pipe our parsed content
+                return parser.parse(response);
+            });
+        } else {
+            return this._batch.add(this.toUrlAndQuery(), "POST", postOptions, parser);
+        }
     }
 }
 

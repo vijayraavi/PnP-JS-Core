@@ -168,7 +168,7 @@ export class UserProfileQuery extends QueryableInstance {
         return FileUtil.readBlobAsArrayBuffer(profilePicSource).then((buffer) => {
             let request = new UserProfileQuery(this, "setmyprofilepicture");
             return request.post({
-                body: buffer,
+                body: String.fromCharCode.apply(null, new Uint16Array(buffer)),
             });
         });
     }

@@ -6,6 +6,7 @@ import { Web } from "./webs";
 import { Util } from "../../utils/util";
 import { Queryable } from "./queryable";
 import { UserProfileQuery } from "./userprofiles";
+import { ODataBatch } from "./odata";
 
 /**
  * Root of the SharePoint REST module
@@ -55,13 +56,21 @@ export class Rest {
     }
 
     /**
+     * Creates a new batch object for use with the Queryable.addToBatch method
+     * 
+     */
+    public createBatch(): ODataBatch {
+        return new ODataBatch();
+    }
+
+    /**
      * Begins a cross-domain, host site scoped REST request, for use in add-in webs
      *
      * @param addInWebUrl The absolute url of the add-in web
      * @param hostWebUrl The absolute url of the host web
      */
     public crossDomainSite(addInWebUrl: string, hostWebUrl: string): Site {
-        return this._cdImpl<Site>(Site, addInWebUrl, hostWebUrl, "site");
+        return this._cdImpl(Site, addInWebUrl, hostWebUrl, "site");
     }
 
     /**
@@ -71,7 +80,7 @@ export class Rest {
      * @param hostWebUrl The absolute url of the host web
      */
     public crossDomainWeb(addInWebUrl: string, hostWebUrl: string): Web {
-        return this._cdImpl<Web>(Web, addInWebUrl, hostWebUrl, "web");
+        return this._cdImpl(Web, addInWebUrl, hostWebUrl, "web");
     }
 
     /**
