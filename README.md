@@ -30,6 +30,13 @@ Add the package from bower
     bower install sp-pnp-js
 
 
+### API Documentation ###
+
+Explore the [API documentation](http://officedev.github.io/PnP-JS-Core/).
+
+These pages are generated from the source comments as part of each release. We are always looking for help making these resources better. To make updates, edit the comments in the source and submit a PR against the dev branch. We will merge it there and refresh the pages as part of each release. Updates made directly to the gh-pages branch will be overwritten.
+
+
 ### Get Help ###
 
 We have active [Yammer](http://aka.ms/OfficeDevPnPSIGJavaScriptYammer) and [Gitter](https://gitter.im/OfficeDev/PnP-JS-Core) communities dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please [report it](https://github.com/OfficeDev/PnP-JS-Core/issues).
