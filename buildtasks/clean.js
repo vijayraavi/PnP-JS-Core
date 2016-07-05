@@ -12,7 +12,7 @@
 //******************************************************************************
 
 var gulp = require("gulp"),
-    clean = require('gulp-clean');
+    del = require('del');
 
 //******************************************************************************
 //* CLEAN
@@ -26,6 +26,5 @@ gulp.task('clean', function() {
     directories.push(global.TSDist.SrcFolder);
     directories.push(global.PnPLocalServer.RootFolder + "/" + global.PnPLocalServer.ScriptsRootFolder);
 
-    return gulp.src(directories, { read: false })
-        .pipe(clean());
+    return del(directories);
 });
