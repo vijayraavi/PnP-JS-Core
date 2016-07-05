@@ -14,7 +14,6 @@
 var gulp = require("gulp"),
     tsc = require("gulp-typescript"),
     print = require('gulp-print'),
-    replace = require('gulp-replace'),
     plumber = require('gulp-plumber');
 
 //******************************************************************************
@@ -23,8 +22,6 @@ var gulp = require("gulp"),
 gulp.task("build", ["clean", "lint", "build-typings"], function () {
     var src = global.TSWorkspace.Files.slice(0);
     src.push(global.TSTypings.Main);
-
-    //        .js.pipe(replace(/(\(function \(factory\) {)/g, '$1/* istanbul ignore next */'))
 
     return gulp.src(src)
         .pipe(plumber())
