@@ -2,7 +2,7 @@
 
 var gulp = require("gulp"),
     typedoc = require("gulp-typedoc"),
-    clean = require('gulp-clean'),
+    del = require('del'),
     handlebars = require('handlebars');
 
 //******************************************************************************
@@ -10,8 +10,7 @@ var gulp = require("gulp"),
 //******************************************************************************
 
 gulp.task("clean-docs", function () {
-    return gulp.src("docs", { read: false })
-        .pipe(clean());
+    return del("docs");
 });
 
 gulp.task("docs", ["clean-docs"], function () {
