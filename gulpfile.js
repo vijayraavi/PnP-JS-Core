@@ -86,3 +86,4 @@ require("./buildtasks/package.js");
 require("./buildtasks/serve.js");
 require("./buildtasks/sync.js");
 require("./buildtasks/test.js");
+require("./buildtasks/docs.js");
