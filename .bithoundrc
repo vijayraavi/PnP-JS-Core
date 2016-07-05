@@ -4,5 +4,10 @@
     "**/server-root/**",
     "**/docs/**",
     "**/dist/**"
-  ]
+  ],
+  "dependencies": {
+    "mute": [
+      "tslint"
+    ]
+  }
 }
