@@ -133,7 +133,7 @@ export class HttpClient {
     }
 
     private mergeHeaders(target: Headers, source: any): void {
-        if (typeof source !== "undefined") {
+        if (typeof source !== "undefined" && source !== null) {
             let temp = <any>new Request("", { headers: source });
             temp.headers.forEach((value, name) => {
                 target.append(name, value);
