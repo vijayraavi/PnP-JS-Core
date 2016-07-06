@@ -1,5 +1,11 @@
 import { TypedHash } from "../collections/collections";
 
+export interface NodeClientData {
+    clientId: string;
+    clientSecret: string;
+    siteUrl: string;
+}
+
 export interface LibraryConfiguration {
 
     /**
@@ -26,6 +32,11 @@ export interface LibraryConfiguration {
      * If true the SP.RequestExecutor will be used to make the requests, you must include the required external libs
      */
     useSPRequestExecutor?: boolean;
+
+    /**
+     * If set the library will use node-fetch, typically for use with testing but works with any valid client id/secret pair
+     */
+    nodeClientOptions?: NodeClientData;
 }
 
 export class RuntimeConfigImpl {
@@ -43,7 +54,9 @@ export class RuntimeConfigImpl {
     private _defaultCachingStore: "session" | "local";
     private _defaultCachingTimeoutSeconds: number;
     private _globalCacheDisable: boolean;
-    private _useSPRequestExecutor;
+    private _useSPRequestExecutor: boolean;
+    private _useNodeClient: boolean;
+    private _nodeClientData: NodeClientData;
 
     public set(config: LibraryConfiguration): void {
 
@@ -65,7 +78,12 @@ export class RuntimeConfigImpl {
 
         if (config.hasOwnProperty("useSPRequestExecutor")) {
             this._useSPRequestExecutor = config.useSPRequestExecutor;
+        }
 
+        if (config.hasOwnProperty("nodeClientOptions")) {
+            this._useNodeClient = true;
+            this._useSPRequestExecutor = false; // just don't allow this conflict
+            this._nodeClientData = config.nodeClientOptions;
         }
     }
 
@@ -87,6 +105,14 @@ export class RuntimeConfigImpl {
 
     public get useSPRequestExecutor(): boolean {
         return this._useSPRequestExecutor;
+    }
+
+    public get useNodeFetchClient(): boolean {
+        return this._useNodeClient;
+    }
+
+    public get nodeRequestOptions(): NodeClientData {
+        return this._nodeClientData;
     }
 }
 
