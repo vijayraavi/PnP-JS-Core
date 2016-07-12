@@ -1,4 +1,7 @@
 "use strict";
+
+declare var global: any;
+
 export class Util {
 
     /**
@@ -248,11 +251,11 @@ export class Util {
             return url;
         }
 
-        if (typeof _spPageContextInfo !== "undefined") {
-            if (_spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
-                return Util.combinePaths(_spPageContextInfo.webAbsoluteUrl, url);
-            } else if (_spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
-                return Util.combinePaths(_spPageContextInfo.webServerRelativeUrl, url);
+        if (typeof global._spPageContextInfo !== "undefined") {
+            if (global._spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
+                return Util.combinePaths(global._spPageContextInfo.webAbsoluteUrl, url);
+            } else if (global._spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
+                return Util.combinePaths(global._spPageContextInfo.webServerRelativeUrl, url);
             }
         } else {
             return url;

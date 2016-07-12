@@ -56,5 +56,8 @@
   "bugs": {
     "url": "https://github.com/OfficeDev/PnP-JS-Core/issues"
   },
-  "homepage": "https://github.com/OfficeDev/PnP-JS-Core"
+  "homepage": "https://github.com/OfficeDev/PnP-JS-Core",
+  "browser": {
+    "./build/src/net/nodefetchclient.js": "./build/src/net/nodefetchclientbrowser.js"
+  }
 }

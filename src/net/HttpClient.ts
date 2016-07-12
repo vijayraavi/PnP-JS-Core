@@ -1,10 +1,11 @@
 "use strict";
 
-import { FetchClient } from "./fetchClient";
-import { DigestCache } from "./digestCache";
+import { FetchClient } from "./fetchclient";
+import { DigestCache } from "./digestcache";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
-import { SPRequestExecutorClient } from "./SPRequestExecutorClient";
+import { SPRequestExecutorClient } from "./sprequestexecutorclient";
+import { NodeFetchClient } from "./nodefetchclient";
 
 export interface FetchOptions {
     method?: string;
@@ -17,20 +18,13 @@ export interface FetchOptions {
 
 export class HttpClient {
 
-    private _digestCache: DigestCache;
-
-    private _impl: HttpClientImpl;
-
     constructor() {
-
-        if (RuntimeConfig.useSPRequestExecutor) {
-            this._impl = new SPRequestExecutorClient();
-        } else {
-            this._impl = new FetchClient();
-        }
-
+        this._impl = this.getFetchImpl();
         this._digestCache = new DigestCache(this);
     }
+
+    private _digestCache: DigestCache;
+    private _impl: HttpClientImpl;
 
     public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 
@@ -85,6 +79,8 @@ export class HttpClient {
 
             this._impl.fetch(url, options).then((response) => ctx.resolve(response)).catch((response) => {
 
+                console.log("response: " + response);
+
                 // grab our current delay
                 let delay = ctx.delay;
 
@@ -130,6 +126,17 @@ export class HttpClient {
     public post(url: string, options: FetchOptions = {}): Promise<Response> {
         let opts = Util.extend(options, { method: "POST" });
         return this.fetch(url, opts);
+    }
+
+    protected getFetchImpl(): HttpClientImpl {
+        if (RuntimeConfig.useSPRequestExecutor) {
+            return new SPRequestExecutorClient();
+        } else if (RuntimeConfig.useNodeFetchClient) {
+            let opts = RuntimeConfig.nodeRequestOptions;
+            return new NodeFetchClient(opts.siteUrl, opts.clientId, opts.clientSecret);
+        } else {
+            return new FetchClient();
+        }
     }
 
     private mergeHeaders(target: Headers, source: any): void {
