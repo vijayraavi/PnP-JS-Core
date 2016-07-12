@@ -275,7 +275,8 @@ export class Web extends QueryableSecurable {
     /**
      * Returns the list gallery on the site.
      *
-     * @param type The gallery type
+     * @param type The gallery type - WebTemplateCatalog = 111, WebPartCatalog = 113 ListTemplateCatalog = 114,
+     * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
     /* tslint:disable member-access */
     public getCatalog(type: number): Promise<List> {

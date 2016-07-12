@@ -1,7 +1,25 @@
 "use strict";
 
+import pnp from "../../../src/pnp";
+import { testSettings } from "../../test-config.test";
 import { expect } from "chai";
 import { Web } from "../../../src/sharepoint/rest/webs";
+import { Util } from "../../../src/utils/util";
+
+
+describe("Webs", () => {
+
+    if (testSettings.enableWebTests) {
+
+        describe("add", () => {
+            it("should add a new child web", function () {
+                // allow 30 seconds for the web to be created
+                this.timeout(30000);
+                return expect(pnp.sp.web.webs.add("web.webs.add test", "websaddtest")).to.eventually.be.fulfilled;
+            });
+        });
+    }
+});
 
 describe("Web", () => {
 
@@ -34,7 +52,8 @@ describe("Web", () => {
     });
 
     describe("lists", () => {
-        it("should return _api/web/lists", () => {
+        it("should return _api/web/lists", function () {
+            this.timeout(5000);
             expect(web.lists.toUrl()).to.eq("_api/web/lists");
         });
     });
@@ -89,4 +108,173 @@ describe("Web", () => {
             expect(web.getUserById(4).toUrl()).to.eq("_api/web/getUserById(4)");
         });
     });
+
+    if (testSettings.enableWebTests) {
+
+        describe("webs", () => {
+            it("should get the collection of all child webs", () => {
+                return expect(pnp.sp.web.webs.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("contentTypes", () => {
+            it("should get the collection of all content types in this web", function () {
+                this.timeout(5000);
+                return expect(pnp.sp.web.contentTypes.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("lists", () => {
+            it("should get the collection of all lists in this web", () => {
+                return expect(pnp.sp.web.lists.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("navigation", () => {
+            it("should get the navigation for this web", () => {
+                return expect(pnp.sp.web.navigation.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("siteUsers", () => {
+            it("should get the site users for this web", () => {
+                return expect(pnp.sp.web.siteUsers.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("siteGroups", () => {
+            it("should get the site groups for this web", () => {
+                return expect(pnp.sp.web.siteGroups.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("folders", () => {
+            it("should get the folders for this web", () => {
+                return expect(pnp.sp.web.folders.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("userCustomActions", () => {
+            it("should get the user custom actions for this web", () => {
+                return expect(pnp.sp.web.userCustomActions.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("roleDefinitions", () => {
+            it("should get the role definitions for this web", () => {
+                return expect(pnp.sp.web.roleDefinitions.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("getFolderByServerRelativeUrl", () => {
+            it("should get a folder by the server relative url", function () {
+                this.timeout(15000);
+
+                return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<any, { ServerRelativeUrl: string }>().then(w => {
+                    let url = Util.combinePaths(w.ServerRelativeUrl, "SitePages");
+                    return pnp.sp.web.getFolderByServerRelativeUrl(url);
+                })).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("getFileByServerRelativeUrl", () => {
+            it("should get a file by the server relative url", function () {
+                this.timeout(15000);
+
+                return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<any, { ServerRelativeUrl: string }>().then(w => {
+                    let url = Util.combinePaths(w.ServerRelativeUrl, "SitePages", "Home.aspx");
+                    return pnp.sp.web.getFileByServerRelativeUrl(url);
+                })).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("update", () => {
+            it("should update the title of the web", function () {
+                this.timeout(15000);
+                return expect(pnp.sp.web.select("Title").getAs<any, { Title: string }>().then(w => {
+
+                    let newTitle = w.Title + " updated";
+                    pnp.sp.web.update({ Title: newTitle }).then(() => {
+
+                        pnp.sp.web.select("Title").getAs<any, { Title: string }>().then(w2 => {
+                            if (w2.Title !== newTitle) {
+                                throw new Error("Update web failed");
+                            }
+                        });
+                    });
+                })).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("delete", () => {
+            it("should create and then delete a new sub-web", function () {
+                this.timeout(30000);
+                return expect(pnp.sp.web.webs.add("Better be deleted!", "web-delete-test").then(result => {
+                    return result.web.delete();
+                })).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("applyTheme", () => {
+            it("should apply a theme to our web", function () {
+                this.timeout(60000);
+                return expect(pnp.sp.web.applyTheme(
+                    "/sites/dev/_catalogs/theme/15/palette011.spcolor",
+                    "/sites/dev/_catalogs/theme/15/fontscheme007.spfont",
+                    "",
+                    false
+                )).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("applyWebTemplate", () => {
+            it("should apply a web template to a web");
+        });
+
+        describe("doesUserHavePermissions", () => {
+            it("should check a users permissions", function () {
+                return expect(pnp.sp.web.doesUserHavePermissions({ High: "432", Low: "1011028719" })).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("ensureUser", () => {
+            it("should ensure that a given user exists in the web");
+        });
+
+        describe("availableWebTemplates", () => {
+            it("should check for all the available web templates", function () {
+                return expect(pnp.sp.web.availableWebTemplates().getAs<any, any[]>()).to.eventually.be.not.empty;
+            });
+        });
+
+        describe("getCatalog", () => {
+            it("should get the specified catalog", function () {
+                return expect(pnp.sp.web.getCatalog(114)).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("getChanges", () => {
+            it("should get the changes specified by the query", function () {
+                return expect(pnp.sp.web.getChanges({
+                    Add: true,
+                })).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("customListTemplate", () => {
+            it("should get all the custom list template for the site", function () {
+                return expect(pnp.sp.web.customListTemplate.get()).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("getUserById", () => {
+            it("should get a user by id");
+        });
+
+        describe("mapToIcon", () => {
+            it("should map an icon url by filename", function () {
+                return expect(pnp.sp.web.mapToIcon("test.docx")).to.eventually.be.fulfilled;
+            });
+        });
+    }
 });

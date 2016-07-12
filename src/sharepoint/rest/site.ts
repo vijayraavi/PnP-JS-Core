@@ -49,7 +49,7 @@ export class Site extends QueryableInstance {
      * @param absoluteWebUrl The absolute url of the web whose document libraries should be returned
      */
     public getDocumentLibraries(absoluteWebUrl: string): Promise<any> {
-        let q = new Queryable("_api/sp.web.getdocumentlibraries(@v)");
+        let q = new Queryable("", "_api/sp.web.getdocumentlibraries(@v)");
         q.query.add("@v", "'" + absoluteWebUrl + "'");
         return q.get();
     }
@@ -60,7 +60,7 @@ export class Site extends QueryableInstance {
      * @param absolutePageUrl The absolute url of the page
      */
     public getWebUrlFromPageUrl(absolutePageUrl: string): Promise<string> {
-        let q = new Queryable("_api/sp.web.getweburlfrompageurl(@v)");
+        let q = new Queryable("", "_api/sp.web.getweburlfrompageurl(@v)");
         q.query.add("@v", "'" + absolutePageUrl + "'");
         return q.get();
     }
