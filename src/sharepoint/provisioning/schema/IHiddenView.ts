@@ -1,3 +1,5 @@
+"use strict";
+
 export interface IHiddenView {
     List: string;
     Url: string;

@@ -1,3 +1,4 @@
+"use strict";
 
 import { RoleAssignments } from "./roles";
 import { Queryable, QueryableInstance } from "./queryable";

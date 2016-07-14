@@ -1,4 +1,5 @@
 "use strict";
+
 export class Util {
     /**
      * Make URL relative to host

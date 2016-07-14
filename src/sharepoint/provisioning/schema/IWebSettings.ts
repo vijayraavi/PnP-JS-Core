@@ -1,3 +1,5 @@
+"use strict";
+
 export interface IWebSettings {
     WelcomePage: string;
     AlternateCssUrl: string;

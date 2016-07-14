@@ -1,3 +1,5 @@
+"use strict";
+
 import { IListInstance } from "./ilistinstance";
 import { ICustomAction } from "./icustomaction";
 import { IFeature } from "./ifeature";

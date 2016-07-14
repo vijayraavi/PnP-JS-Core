@@ -1,3 +1,5 @@
+"use strict";
+
 import { IContents } from "./icontents";
 
 export interface IWebPart {
