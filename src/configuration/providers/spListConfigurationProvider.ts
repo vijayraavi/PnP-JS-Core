@@ -1,3 +1,5 @@
+"use strict";
+
 import {IConfigurationProvider} from "../configuration";
 import {TypedHash} from "../../collections/collections";
 import { default as CachingConfigurationProvider } from "./cachingConfigurationProvider";

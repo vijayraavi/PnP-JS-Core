@@ -1,3 +1,5 @@
+"use strict";
+
 import { TypedHash } from "../collections/collections";
 
 export interface NodeClientData {

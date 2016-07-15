@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Describes a ProvisioningStep 
  */

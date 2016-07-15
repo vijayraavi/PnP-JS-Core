@@ -1,3 +1,5 @@
+"use strict";
+
 import { QueryableConstructor } from "./queryable";
 import { Util } from "../../utils/util";
 import { Logger } from "../../utils/logging";

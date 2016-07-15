@@ -1,3 +1,5 @@
+"use strict";
+
 import {IConfigurationProvider} from "../configuration";
 import {TypedHash} from "../../collections/collections";
 import * as storage from "../../utils/storage";

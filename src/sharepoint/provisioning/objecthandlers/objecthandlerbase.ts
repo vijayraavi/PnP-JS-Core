@@ -1,3 +1,5 @@
+"use strict";
+
 import { HttpClient } from "../../../net/HttpClient";
 import { Logger } from "../../../utils/logging";
 
