@@ -1,3 +1,5 @@
+"use strict";
+
 import { ODataParser } from "./odata";
 import { PnPClientStore, PnPClientStorage } from "../../utils/storage";
 import { Util } from "../../utils/util";

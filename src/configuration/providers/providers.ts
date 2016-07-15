@@ -1,3 +1,5 @@
+"use strict";
+
 import {default as cachingConfigurationProvider} from "./cachingConfigurationProvider";
 import {default as spListConfigurationProvider} from "./spListConfigurationProvider";
 

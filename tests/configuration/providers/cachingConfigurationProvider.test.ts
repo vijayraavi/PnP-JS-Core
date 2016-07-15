@@ -1,3 +1,5 @@
+"use strict";
+
 import { expect } from "chai";
 import { default as CachingConfigurationProvider } from "../../../src/configuration/providers/cachingConfigurationProvider";
 import  * as Collections  from "../../../src/collections/collections";

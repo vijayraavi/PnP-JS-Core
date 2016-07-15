@@ -1,3 +1,5 @@
+"use strict";
+
 import { expect } from "chai";
 import { default as SPListConfigurationProvider } from "../../../src/configuration/providers/spListConfigurationProvider";
 import MockStorage from "../../mocks/MockStorage";

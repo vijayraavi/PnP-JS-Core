@@ -1,3 +1,5 @@
+"use strict";
+
 import { IFolder } from "./ifolder";
 import { IListInstanceFieldRef } from "./ilistinstancefieldref";
 import { IField } from "./ifield";

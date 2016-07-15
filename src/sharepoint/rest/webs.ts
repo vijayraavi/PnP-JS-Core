@@ -3,6 +3,7 @@
 import { Queryable, QueryableCollection } from "./queryable";
 import { QueryableSecurable } from "./queryablesecurable";
 import { Lists } from "./lists";
+import { Fields } from "./fields";
 import { Navigation } from "./navigation";
 import { SiteGroups } from "./sitegroups";
 import { ContentTypes } from "./contenttypes";
@@ -98,6 +99,22 @@ export class Web extends QueryableSecurable {
      */
     public get lists(): Lists {
         return new Lists(this);
+    }
+    
+    /**
+     * Gets the fields in this web
+     *
+     */
+    public get fields(): Fields {
+        return new Fields(this);
+    }
+
+    /**
+     * Gets the available fields in this web
+     *
+     */
+    public get availablefields(): Fields {
+        return new Fields(this, "availablefields");
     }
 
     /**
