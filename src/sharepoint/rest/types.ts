@@ -478,3 +478,20 @@ export enum PrincipalType {
     SharePointGroup = 8,
     All = 15
 }
+
+export interface DocumentLibraryInformation {
+    AbsoluteUrl?: string;
+    Modified?: Date;
+    ModifiedFriendlyDisplay?: string;
+    ServerRelativeUrl?: string;
+    Title?: string;
+}
+
+export interface ContextInfo {
+    FormDigestTimeoutSeconds?: number;
+    FormDigestValue?: number;
+    LibraryVersion?: string;
+    SiteFullUrl?: string;
+    SupportedSchemaVersions?: string[];
+    WebFullUrl?: string;
+}

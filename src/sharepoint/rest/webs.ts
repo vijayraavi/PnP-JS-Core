@@ -15,6 +15,7 @@ import * as Types from "./types";
 import { List } from "./lists";
 import { SiteUsers, SiteUser } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
+import { extractOdataId } from "./odata";
 
 
 export class Webs extends QueryableCollection {
@@ -62,7 +63,7 @@ export class Webs extends QueryableCollection {
         return q.post({ body: postBody }).then((data) => {
             return {
                 data: data,
-                web: new Web(this, props.Url),
+                web: new Web(extractOdataId(data), ""),
             };
         });
     }
@@ -283,7 +284,7 @@ export class Web extends QueryableSecurable {
         let q = new Web(this, `getcatalog(${type})`);
         q.select("Id");
         return q.get().then((data) => {
-            return new List(data["odata.id"]);
+            return new List(extractOdataId(data));
         });
     }
     /* tslint:enable */

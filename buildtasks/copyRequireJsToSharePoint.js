@@ -22,15 +22,15 @@ var gulp = require("gulp"),
 // use gulp-merge ?
 gulp.task("copyRequireJsToSharePoint", function() {
     
-    if (global.settings.siteUrl === "") {
+    if (global.settings.spsave.siteUrl === "") {
         throw "A required custom 'settings.js' file is not present in root of this repository. Make a copy of settings.example.js, rename it as settings.js, and fill out the appropriate settings for your site.";
     }
     
     return gulp.src("./bower_components/requirejs/require.js")
         .pipe(spsave({
-            username: global.settings.username,
-            password: global.settings.password,
-            siteUrl: global.settings.siteUrl,
+            username: global.settings.spsave.username,
+            password: global.settings.spsave.password,
+            siteUrl: global.settings.spsave.siteUrl,
             folder: "Style%20Library/pnp",
             checkin: true,
             checkinType: 1

@@ -53,7 +53,6 @@ describe("Web", () => {
 
     describe("lists", () => {
         it("should return _api/web/lists", function () {
-            this.timeout(5000);
             expect(web.lists.toUrl()).to.eq("_api/web/lists");
         });
     });
@@ -118,8 +117,7 @@ describe("Web", () => {
         });
 
         describe("contentTypes", () => {
-            it("should get the collection of all content types in this web", function () {
-                this.timeout(5000);
+            it("should get the collection of all content types in this web", () => {
                 return expect(pnp.sp.web.contentTypes.get()).to.eventually.be.fulfilled;
             });
         });
@@ -155,7 +153,8 @@ describe("Web", () => {
         });
 
         describe("userCustomActions", () => {
-            it("should get the user custom actions for this web", () => {
+            it("should get the user custom actions for this web", function () {
+                this.timeout(7000);
                 return expect(pnp.sp.web.userCustomActions.get()).to.eventually.be.fulfilled;
             });
         });
@@ -168,8 +167,6 @@ describe("Web", () => {
 
         describe("getFolderByServerRelativeUrl", () => {
             it("should get a folder by the server relative url", function () {
-                this.timeout(15000);
-
                 return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<any, { ServerRelativeUrl: string }>().then(w => {
                     let url = Util.combinePaths(w.ServerRelativeUrl, "SitePages");
                     return pnp.sp.web.getFolderByServerRelativeUrl(url);
@@ -179,8 +176,6 @@ describe("Web", () => {
 
         describe("getFileByServerRelativeUrl", () => {
             it("should get a file by the server relative url", function () {
-                this.timeout(15000);
-
                 return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<any, { ServerRelativeUrl: string }>().then(w => {
                     let url = Util.combinePaths(w.ServerRelativeUrl, "SitePages", "Home.aspx");
                     return pnp.sp.web.getFileByServerRelativeUrl(url);
@@ -190,7 +185,6 @@ describe("Web", () => {
 
         describe("update", () => {
             it("should update the title of the web", function () {
-                this.timeout(15000);
                 return expect(pnp.sp.web.select("Title").getAs<any, { Title: string }>().then(w => {
 
                     let newTitle = w.Title + " updated";
@@ -217,6 +211,7 @@ describe("Web", () => {
 
         describe("applyTheme", () => {
             it("should apply a theme to our web", function () {
+                // this takes a long time to process
                 this.timeout(60000);
                 return expect(pnp.sp.web.applyTheme(
                     "/sites/dev/_catalogs/theme/15/palette011.spcolor",
@@ -249,7 +244,7 @@ describe("Web", () => {
 
         describe("getCatalog", () => {
             it("should get the specified catalog", function () {
-                return expect(pnp.sp.web.getCatalog(114)).to.eventually.be.fulfilled;
+                return expect(pnp.sp.site.rootWeb.getCatalog(113)).to.eventually.be.fulfilled;
             });
         });
 

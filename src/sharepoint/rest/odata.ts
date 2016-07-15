@@ -4,6 +4,22 @@ import { Logger } from "../../utils/logging";
 import { HttpClient } from "../../net/httpclient";
 import { RuntimeConfig } from "../../configuration/pnplibconfig";
 
+export function extractOdataId(candidate: any): string {
+
+    if (candidate.hasOwnProperty("odata.id")) {
+        return candidate["odata.id"];
+    } else if (candidate.hasOwnProperty("__metadata") && candidate.__metadata.hasOwnProperty("id")) {
+        return candidate.__metadata.id;
+    } else {
+        Logger.log({
+            data: candidate,
+            level: Logger.LogLevel.Error,
+            message: "Could not extract odata id in object, you may be using nometadata. Object data logged to logger.",
+        });
+        throw new Error("Could not extract odata id in object, you may be using nometadata. Object data logged to logger.");
+    }
+}
+
 export interface ODataParser<T, U> {
     parse(r: Response): Promise<U>;
 }
@@ -12,21 +28,17 @@ export abstract class ODataParserBase<T, U> implements ODataParser<T, U> {
 
     public parse(r: Response): Promise<U> {
 
-        return r.json().then(function (json) {
-
+        return r.json().then(json => {
+            let result = json;
             if (json.hasOwnProperty("d")) {
                 if (json.d.hasOwnProperty("results")) {
-                    return json.d.results;
+                    result = json.d.results;
                 }
-
-                return json.d;
-
+                return result = json.d;
             } else if (json.hasOwnProperty("value")) {
-
-                return json.value;
+                result = json.value;
             }
-
-            return json;
+            return result;
         });
     }
 }

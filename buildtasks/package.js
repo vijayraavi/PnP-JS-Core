@@ -140,7 +140,7 @@ function packageProvisioningBundleUglify() {
 //******************************************************************************
 //* PACKAGE
 //******************************************************************************
-gulp.task("package", ["build", "test"], function () {
+gulp.task("package", ["build"], function () {
 
     return merge([
         // build and package the definition files

@@ -1,7 +1,5 @@
 "use strict";
 
-import * as Collections from "../collections/Collections";
-
 /**
  * Interface that defines a log entry
  * 
@@ -18,7 +16,7 @@ export interface LogEntry {
     /**
      * Any associated data that a given logging listener may choose to log or ignore
      */
-    data?: Collections.TypedHash<string>;
+    data?: any;
 }
 
 /**

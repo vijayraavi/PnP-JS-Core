@@ -29,14 +29,14 @@ describe("Site", () => {
 
         describe("getDocumentLibraries", () => {
             it("should get the site's document libraries", () => {
-                return expect(pnp.sp.site.getDocumentLibraries(testSettings.siteUrl)).to.eventually.be.fulfilled;
+                return expect(pnp.sp.site.getDocumentLibraries(testSettings.siteUrl)).to.eventually.not.be.empty;
             });
         });
 
         describe("getWebUrlFromPageUrl", () => {
             it("should get the site's url from the pages url", () => {
-                let pageUrl = Util.combinePaths(testSettings.siteUrl, "/SitePages/Home.aspx");
-                return expect(pnp.sp.site.getWebUrlFromPageUrl(pageUrl)).to.eventually.equal(testSettings.siteUrl.replace(/\/$/, ""));
+                let pageUrl = Util.combinePaths(testSettings.webUrl, "/SitePages/Home.aspx");
+                return expect(pnp.sp.site.getWebUrlFromPageUrl(pageUrl)).to.eventually.equal(testSettings.webUrl.replace(/\/$/, ""));
             });
         });
     }

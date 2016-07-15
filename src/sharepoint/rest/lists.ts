@@ -10,6 +10,7 @@ import { Util } from "../../utils/util";
 import { TypedHash } from "../../collections/collections";
 import * as Types from "./types";
 import { UserCustomActions } from "./usercustomactions";
+import { extractOdataId } from "./odata";
 
 /**
  * Describes a collection of List objects
@@ -115,7 +116,7 @@ export class Lists extends QueryableCollection {
     public ensureSiteAssetsLibrary(): Promise<List> {
         let q = new Lists(this, "ensuresiteassetslibrary");
         return q.post().then((json) => {
-            return new List(<string>json["odata.id"]);
+            return new List(extractOdataId(json));
         });
     }
     /*tslint:enable */
@@ -127,7 +128,7 @@ export class Lists extends QueryableCollection {
     public ensureSitePagesLibrary(): Promise<List> {
         let q = new Lists(this, "ensuresitepageslibrary");
         return q.post().then((json) => {
-            return new List(<string>json["odata.id"]);
+            return new List(extractOdataId(json));
         });
     }
     /*tslint:enable */
