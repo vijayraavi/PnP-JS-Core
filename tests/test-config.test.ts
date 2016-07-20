@@ -3,6 +3,7 @@ declare var global: any;
 import * as chai from "chai";
 import pnp from "../src/pnp";
 import { Util } from "../src/utils/util";
+import { Web } from "../src/sharepoint/rest/webs";
 import * as chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 
@@ -41,9 +42,9 @@ before(function (done: MochaDone) {
 
             // re-setup the node client to use the new web
             pnp.setup({
-                headers: {
-                    "Accept": "application/json;odata=verbose",
-                },
+                // headers: {
+                //     "Accept": "application/json;odata=verbose",
+                // },
                 nodeClientOptions: {
                     clientId: testSettings.clientId,
                     clientSecret: testSettings.clientSecret,
@@ -53,6 +54,8 @@ before(function (done: MochaDone) {
 
             done();
         });
+    } else {
+        done();
     }
 });
 
@@ -64,17 +67,16 @@ after(() => {
 });
 
 // this can be used to clean up lots of test sub webs :)
-// import { Web } from "../src/sharepoint/rest/webs";
-// function cleanUpAllSubsites() {
-//     pnp.sp.site.rootWeb.webs.select("Title").get().then((w) => {
-//         w.forEach(element => {
-//             let web = new Web(element["odata.id"], "");
-//             web.webs.select("Title").get().then((sw: any[]) => {
-//                 return Promise.all(sw.map((value, index, arr) => {
-//                         let web2 = new Web(value["odata.id"], "");
-//                         return web2.delete();
-//                     }));
-//             }).then(() => { web.delete(); });
-//         });
-//     });
-// }
+export function cleanUpAllSubsites() {
+    pnp.sp.site.rootWeb.webs.select("Title").get().then((w) => {
+        w.forEach(element => {
+            let web = new Web(element["odata.id"], "");
+            web.webs.select("Title").get().then((sw: any[]) => {
+                return Promise.all(sw.map((value, index, arr) => {
+                        let web2 = new Web(value["odata.id"], "");
+                        return web2.delete();
+                    }));
+            }).then(() => { web.delete(); });
+        });
+    });
+}

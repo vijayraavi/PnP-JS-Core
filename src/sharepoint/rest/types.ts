@@ -497,3 +497,81 @@ export interface ContextInfo {
     SupportedSchemaVersions?: string[];
     WebFullUrl?: string;
 }
+
+export interface RenderListData {
+    Row: any[];
+    FirstRow: number;
+    FolderPermissions: string;
+    LastRow: number;
+    FilterLink: string;
+    ForceNoHierarchy: string;
+    HierarchyHasIndention: string;
+}
+
+export enum PageType {
+    Invalid = -1,
+    DefaultView,
+    NormalView,
+    DialogView,
+    View,
+    DisplayForm,
+    DisplayFormDialog,
+    EditForm,
+    EditFormDialog,
+    NewForm,
+    NewFormDialog,
+    SolutionForm,
+    PAGE_MAXITEMS
+}
+
+export interface ListFormData {
+    ContentType?: string;
+    Title?: string;
+    Author?: string;
+    Editor?: string;
+    Created?: Date;
+    Modified: Date;
+    Attachments?: any;
+    ListSchema?: any;
+    FormControlMode?: number;
+    FieldControlModes?: {
+        Title?: number,
+        Author?: number,
+        Editor?: number,
+        Created?: number,
+        Modified?: number,
+        Attachments?: number
+    };
+    WebAttributes?: {
+        WebUrl?: string,
+        EffectivePresenceEnabled?: boolean,
+        AllowScriptableWebParts?: boolean,
+        PermissionCustomizePages?: boolean,
+        LCID?: number,
+        CurrentUserId?: number
+    };
+    ItemAttributes?: {
+        Id?: number,
+        FsObjType?: number,
+        ExternalListItem?: boolean,
+        Url?: string,
+        EffectiveBasePermissionsLow?: number,
+        EffectiveBasePermissionsHigh?: number
+    };
+    ListAttributes?: {
+        Id?: string,
+        BaseType?: number,
+        Direction?: string,
+        ListTemplateType?: number,
+        DefaultItemOpen?: number,
+        EnableVersioning?: boolean
+    };
+    CSRCustomLayout?: boolean;
+    PostBackRequired?: boolean;
+    PreviousPostBackHandled?: boolean;
+    UploadMode?: boolean;
+    SubmitButtonID?: string;
+    ItemContentTypeName?: string;
+    ItemContentTypeId?: string;
+    JSLinks?: string;
+}

@@ -4,11 +4,12 @@ import { Items } from "./items";
 import { Views, View } from "./views";
 import { ContentTypes } from "./contenttypes";
 import { Fields } from "./fields";
-import { Queryable, QueryableCollection } from "./queryable";
+import { Forms } from "./forms";
+import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 import { QueryableSecurable } from "./queryablesecurable";
 import { Util } from "../../utils/util";
 import { TypedHash } from "../../collections/collections";
-import * as Types from "./types";
+import { ControlMode, RenderListData, ChangeQuery, CamlQuery, ChangeLogitemQuery, ListFormData } from "./types";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId } from "./odata";
 
@@ -184,11 +185,19 @@ export class List extends QueryableSecurable {
     }
 
     /**
+     * Gets the forms in this list
+     *
+     */
+    public get forms(): Forms {
+        return new Forms(this);
+    }
+
+    /**
      * Gets the default view of this list
      *
      */
-    public get defaultView(): Queryable {
-        return new Queryable(this, "DefaultView");
+    public get defaultView(): QueryableInstance {
+        return new QueryableInstance(this, "DefaultView");
     }
 
     /**
@@ -291,7 +300,7 @@ export class List extends QueryableSecurable {
     /**
      * Returns the collection of changes from the change log that have occurred within the list, based on the specified query.
      */
-    public getChanges(query: Types.ChangeQuery): Promise<any> {
+    public getChanges(query: ChangeQuery): Promise<any> {
 
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
 
@@ -303,7 +312,7 @@ export class List extends QueryableSecurable {
     /**
      * Returns a collection of items from the list based on the specified query.
      */
-    public getItemsByCAMLQuery(query: Types.CamlQuery, ...expands: string[]): Promise<any> {
+    public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) });
 
@@ -318,7 +327,7 @@ export class List extends QueryableSecurable {
     /**
      * See: https://msdn.microsoft.com/en-us/library/office/dn292554.aspx
      */
-    public getListItemChangesSinceToken(query: Types.ChangeLogitemQuery): Promise<string> {
+    public getListItemChangesSinceToken(query: ChangeLogitemQuery): Promise<string> {
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) });
 
         // don't change "this" instance of the List, make a new one
@@ -332,26 +341,48 @@ export class List extends QueryableSecurable {
      */
     public recycle(): Promise<string> {
         this.append("recycle");
-        return this.post();
+        return this.post().then(data => {
+            if (data.hasOwnProperty("Recycle")) {
+                return data.Recycle;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
      * Renders list data based on the view xml provided
      */
-    public renderListData(viewXml: string): Promise<string> {
+    public renderListData(viewXml: string): Promise<RenderListData> {
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "renderlistdata(@viewXml)");
         q.query.add("@viewXml", "'" + viewXml + "'");
-        return q.post();
+        return q.post().then(data => {
+            // data will be a string, so we parse it again
+            data = JSON.parse(data);
+            if (data.hasOwnProperty("RenderListData")) {
+                return data.RenderListData;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
-     * Renders list form data based on parameters provided
+     * Gets the field values and field schema attributes for a list item.
      */
-    public renderListFormData(itemId: number, formId: string, mode: Types.ControlMode): Promise<string> {
+    public renderListFormData(itemId: number, formId: string, mode: ControlMode): Promise<ListFormData> {
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "renderlistformdata(itemid=" + itemId + ", formid='" + formId + "', mode=" + mode + ")");
-        return q.post();
+        return q.post().then(data => {
+            // data will be a string, so we parse it again
+            data = JSON.parse(data);
+            if (data.hasOwnProperty("ListData")) {
+                return data.ListData;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
@@ -360,7 +391,13 @@ export class List extends QueryableSecurable {
     public reserveListItemId(): Promise<number> {
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "reservelistitemid");
-        return q.post();
+        return q.post().then(data => {
+            if (data.hasOwnProperty("ReserveListItemId")) {
+                return data.ReserveListItemId;
+            } else {
+                return data;
+            }
+        });
     }
 }
 

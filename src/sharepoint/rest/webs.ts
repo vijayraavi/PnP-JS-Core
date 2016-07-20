@@ -100,7 +100,7 @@ export class Web extends QueryableSecurable {
     public get lists(): Lists {
         return new Lists(this);
     }
-    
+
     /**
      * Gets the fields in this web
      *
