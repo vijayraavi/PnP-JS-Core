@@ -57,7 +57,7 @@ export class HttpClient {
 
         if (opts.method && opts.method.toUpperCase() !== "GET") {
             if (!headers.has("X-RequestDigest")) {
-                let index = url.indexOf("/_api/");
+                let index = url.indexOf("_api/");
                 if (index < 0) {
                     throw new Error("Unable to determine API url");
                 }
@@ -75,11 +75,14 @@ export class HttpClient {
 
     public fetchRaw(url: string, options: FetchOptions = {}): Promise<Response> {
 
+        // here we need to normalize the headers
+        let rawHeaders = new Headers();
+        this.mergeHeaders(rawHeaders, options.headers);
+        options = Util.extend(options, { headers: rawHeaders });
+
         let retry = (ctx): void => {
 
             this._impl.fetch(url, options).then((response) => ctx.resolve(response)).catch((response) => {
-
-                console.log("response: " + response);
 
                 // grab our current delay
                 let delay = ctx.delay;

@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "module": "umd",
+        "module": "commonjs",
         "jsx": "react",
         "declaration": false,
         "sourceMap": true,
