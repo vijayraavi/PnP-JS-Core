@@ -36,6 +36,9 @@ Explore the [API documentation](http://officedev.github.io/PnP-JS-Core/).
 
 These pages are generated from the source comments as part of each release. We are always looking for help making these resources better. To make updates, edit the comments in the source and submit a PR against the dev branch. We will merge it there and refresh the pages as part of each release. Updates made directly to the gh-pages branch will be overwritten.
 
+### Samples Add-In ###
+
+Checkout a [SharePoint hosted Add-In containing samples](https://github.com/OfficeDev/PnP/tree/dev/Samples/SharePoint.pnp-js-core) on using the library from both a SharePoint hosted add-in as well as a script editor web part. This will allow you to execute the samples as well as intract with the API.
 
 ### Get Help ###
 
@@ -57,10 +60,10 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ### "Sharing is Caring" ###
 
-
+```
 ### Disclaimer ###
 **THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
-
+```
 
 
 
