@@ -157,9 +157,12 @@ export class Queryable {
     /**
      * Adds this query to the supplied batch
      * 
-     * @example
+     * @example 
+     * ```
+     * 
      * let b = pnp.sp.createBatch(); 
-     * pnp.sp.web.addToBatch(b).get().then(...);
+     * pnp.sp.web.inBatch(b).get().then(...);
+     * ```
      */
     public inBatch(batch: ODataBatch): this {
         if (this._batch !== null) {
