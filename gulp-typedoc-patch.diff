@@ -1,0 +1,67 @@
+From 348ffec0dc6d2a2278a3945356648b3ac9865ee7 Mon Sep 17 00:00:00 2001
+From: jornh <jornhansen@gmail.com>
+Date: Sat, 23 Jul 2016 16:22:02 +0200
+Subject: [PATCH] add a `gulp typedoc` task
+
+---
+ buildtasks/doc.js | 34 ++++++++++++++++++++++++++++++++++
+ gulpfile.js       |  1 +
+ 2 files changed, 35 insertions(+)
+ create mode 100644 buildtasks/doc.js
+
+diff --git a/buildtasks/doc.js b/buildtasks/doc.js
+new file mode 100644
+index 0000000..eaa3020
+--- /dev/null
++++ b/buildtasks/doc.js
+@@ -0,0 +1,34 @@
++//******************************************************************************
++//* doc.js
++//*
++//* Defines a custom gulp task for generating docs 
++//* and open the default browser to the default html page. 
++//******************************************************************************
++
++"use strict";
++
++//******************************************************************************
++//* DEPENDENCIES
++//******************************************************************************
++var gulp = require("gulp");
++var typedoc = require("gulp-typedoc");
++
++var src = global.TSWorkspace.Files.slice(0);
++    src.push(global.TSTypings.Main);
++
++//******************************************************************************
++//* DOC(ument the API) - could be more ... later ... ;)
++//******************************************************************************
++
++gulp.task("typedoc", function() {
++    return gulp
++        .src(src)
++        .pipe(typedoc({
++            module: "commonjs",
++            target: "es5",
++            out: "docs/",
++           // theme: "/path/to/my/theme",
++            name: "PnP-JS-Core"
++        }))
++    ;
++});
+\ No newline at end of file
+diff --git a/gulpfile.js b/gulpfile.js
+index ad418ac..5a139b7 100644
+--- a/gulpfile.js
++++ b/gulpfile.js
+@@ -80,6 +80,7 @@ require("./buildtasks/clean.js");
+ require("./buildtasks/copyJsToSharePoint.js");
+ require("./buildtasks/copyRequireJsToSharePoint.js");
+ require("./buildtasks/default.js");
++require("./buildtasks/doc.js");
+ require("./buildtasks/istanbul-hook.js");
+ require("./buildtasks/lint.js");
+ require("./buildtasks/package.js");
+-- 
+2.9.0.windows.1
+
