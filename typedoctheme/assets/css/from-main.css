@@ -323,3 +323,56 @@ footer .tsd-legend { display: inline-block; width: 25%; padding: 0; font-size: 1
 .tsd-is-static.tsd-kind-event.tsd-parent-kind-enum.tsd-is-private > .tsd-kind-icon:before { background-position: -119px -187px; }
 .tsd-is-static.tsd-kind-event.tsd-parent-kind-interface > .tsd-kind-icon:before { background-position: -204px -187px; }
 .tsd-is-static.tsd-kind-event.tsd-parent-kind-interface.tsd-is-inherited > .tsd-kind-icon:before { background-position: -221px -187px; }
+
+/* Visual Studio-like style based on original C# coloring by Jason Diamond <jason@diamond.name> */
+.hljs { display: inline-block; padding: 0.5em; background: white; color: black; }
+
+.hljs-comment, .hljs-annotation, .hljs-template_comment, .diff .hljs-header, .hljs-chunk, .apache .hljs-cbracket { color: #008000; }
+
+.hljs-keyword, .hljs-id, .hljs-built_in, .css .smalltalk .hljs-class, .hljs-winutils, .bash .hljs-variable, .tex .hljs-command, .hljs-request, .hljs-status, .nginx .hljs-title { color: #00f; }
+
+.xml .hljs-tag { color: #00f; }
+.xml .hljs-tag .hljs-value { color: #00f; }
+
+.hljs-string, .hljs-title, .hljs-parent, .hljs-tag .hljs-value, .hljs-rules .hljs-value { color: #a31515; }
+
+.ruby .hljs-symbol { color: #a31515; }
+.ruby .hljs-symbol .hljs-string { color: #a31515; }
+
+.hljs-template_tag, .django .hljs-variable, .hljs-addition, .hljs-flow, .hljs-stream, .apache .hljs-tag, .hljs-date, .tex .hljs-formula, .coffeescript .hljs-attribute { color: #a31515; }
+
+.ruby .hljs-string, .hljs-decorator, .hljs-filter .hljs-argument, .hljs-localvars, .hljs-array, .hljs-attr_selector, .hljs-pseudo, .hljs-pi, .hljs-doctype, .hljs-deletion, .hljs-envvar, .hljs-shebang, .hljs-preprocessor, .hljs-pragma, .userType, .apache .hljs-sqbracket, .nginx .hljs-built_in, .tex .hljs-special, .hljs-prompt { color: #2b91af; }
+
+.hljs-phpdoc, .hljs-javadoc, .hljs-xmlDocTag { color: #808080; }
+
+.vhdl .hljs-typename { font-weight: bold; }
+.vhdl .hljs-string { color: #666666; }
+.vhdl .hljs-literal { color: #a31515; }
+.vhdl .hljs-attribute { color: #00b0e8; }
+
+.xml .hljs-attribute { color: #f00; }
+
+dl.tsd-comment-tags { overflow: hidden; }
+dl.tsd-comment-tags dt { clear: both; float: left; padding: 1px 5px; margin: 0 10px 0 0; border-radius: 4px; border: 1px solid #808080; color: #808080; font-size: 0.8em; font-weight: normal; }
+dl.tsd-comment-tags dd { margin: 0 0 10px 0; }
+dl.tsd-comment-tags p { margin: 0; }
+
+.tsd-panel.tsd-comment .lead { font-size: 1.1em; line-height: 1.333em; margin-bottom: 2em; }
+.tsd-panel.tsd-comment .lead:last-child { margin-bottom: 0; }
+
+
+ul.tsd-parameters, ul.tsd-type-parameters { list-style: square; margin: 0; padding-left: 20px; }
+ul.tsd-parameters > li.tsd-parameter-siganture, ul.tsd-type-parameters > li.tsd-parameter-siganture { list-style: none; margin-left: -20px; }
+ul.tsd-parameters h5, ul.tsd-type-parameters h5 { font-size: 16px; margin: 1em 0 0.5em 0; }
+ul.tsd-parameters .tsd-comment, ul.tsd-type-parameters .tsd-comment { margin-top: -0.5em; }
+
+/** Correct font family set oddly in IE 6, Safari 4/5, and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; _font-family: "courier new", monospace; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
+
+code, pre { font-family: Menlo, Monaco, Consolas, "Courier New", monospace; padding: 0.2em; margin: 0; font-size: 14px; background-color: rgba(0, 0, 0, 0.04); }
+
+pre { padding: 10px; }
+pre code { padding: 0; font-size: 100%; background-color: transparent; }
