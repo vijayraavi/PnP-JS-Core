@@ -101,13 +101,19 @@
 									<a class="ms-ContextualMenu-link  " href="modules/_net_httpclient_.html">HttpClient</a>
 								</li>
 								<li class="ms-ContextualMenu-item">
-									<a class="ms-ContextualMenu-link  " href="modules/_net_sprequestexecutorclient_.html">SPRequestExecutorClient</a>
+									<a class="ms-ContextualMenu-link  " href="modules/_net_nodefetchclientbrowser_.html">NodeFetchClientBrowser</a>
 								</li>
 								<li class="ms-ContextualMenu-item">
-									<a class="ms-ContextualMenu-link  " href="modules/_net_digestcache_.html">digestCache</a>
+									<a class="ms-ContextualMenu-link  " href="modules/_net_digestcache_.html">digestcache</a>
 								</li>
 								<li class="ms-ContextualMenu-item">
-									<a class="ms-ContextualMenu-link  " href="modules/_net_fetchclient_.html">fetchClient</a>
+									<a class="ms-ContextualMenu-link  " href="modules/_net_fetchclient_.html">fetchclient</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_net_nodefetchclient_.html">nodefetchclient</a>
+								</li>
+								<li class="ms-ContextualMenu-item">
+									<a class="ms-ContextualMenu-link  " href="modules/_net_sprequestexecutorclient_.html">sprequestexecutorclient</a>
 								</li>
 							</ul>
 						</li>
@@ -264,6 +270,9 @@
 											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_folders_.html">folders</a>
 										</li>
 										<li class="ms-ContextualMenu-item">
+											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_forms_.html">forms</a>
+										</li>
+										<li class="ms-ContextualMenu-item">
 											<a class="ms-ContextualMenu-link  " href="modules/_sharepoint_rest_items_.html">items</a>
 										</li>
 										<li class="ms-ContextualMenu-item">
@@ -371,7 +380,7 @@
 						<div class="tsd-panel tsd-typography">
 							<p><img src="https://camo.githubusercontent.com/a732087ed949b0f2f84f5f02b8c79f1a9dd96f65/687474703a2f2f692e696d6775722e636f6d2f6c3031686876452e706e67" alt="Office 365 Developer Patterns and Practices"></p>
 							<h1 id="javascript-core-component">JavaScript Core Component</h1>
-							<p><a href="https://badge.fury.io/js/sp-pnp-js"><img src="https://badge.fury.io/js/sp-pnp-js.svg" alt="npm version"></a> <a href="https://gitter.im/OfficeDev/PnP-JS-Core?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/OfficeDev/PnP-JS-Core.svg" alt="Join the chat at https://gitter.im/OfficeDev/PnP-JS-Core"></a> <a href="https://www.npmjs.com/package/sp-pnp-js"><img src="https://img.shields.io/npm/dm/sp-pnp-js.svg" alt="Downloads"></a></p>
+							<p><a href="https://badge.fury.io/js/sp-pnp-js"><img src="https://badge.fury.io/js/sp-pnp-js.svg" alt="npm version"></a> <a href="https://gitter.im/OfficeDev/PnP-JS-Core?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/OfficeDev/PnP-JS-Core.svg" alt="Join the chat at https://gitter.im/OfficeDev/PnP-JS-Core"></a> <a href="https://www.npmjs.com/package/sp-pnp-js"><img src="https://img.shields.io/npm/dm/sp-pnp-js.svg" alt="Downloads"></a> <a href="https://www.bithound.io/github/OfficeDev/PnP-JS-Core"><img src="https://www.bithound.io/github/OfficeDev/PnP-JS-Core/badges/score.svg" alt="bitHound Overall Score"></a></p>
 							<p>The Patterns and Practices JavaScript Core Library was created to help developers by simplifying common operations within SharePoint. This is aligned with helping folks transitioning into client side development in support of the upcoming SharePoint Framework. Currently it contains a fluent API for working with the full SharePoint REST API as well as utility and helper functions. This takes the guess work out of creating REST requests, letting developers focus on the what and less on the how.</p>
 							<p>Please use <a href="http://aka.ms/OfficeDevPnP">http://aka.ms/OfficeDevPnP</a> for getting latest information around the whole <em>Office 365 Developer Patterns and Practices program</em>.</p>
 							<h3 id="get-started">Get Started</h3>
@@ -385,7 +394,12 @@ pnp.sp.web.<span class="hljs-built_in">select</span>(<span class="hljs-string">"
 </code></pre><p><strong>Bower</strong></p>
 							<p>Add the package from bower</p>
 							<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-built_in">sp</span>-pnp-<span class="hljs-keyword">js</span>
-</code></pre><h3 id="get-help">Get Help</h3>
+</code></pre><h3 id="api-documentation">API Documentation</h3>
+							<p>Explore the <a href="http://officedev.github.io/PnP-JS-Core/">API documentation</a>.</p>
+							<p>These pages are generated from the source comments as part of each release. We are always looking for help making these resources better. To make updates, edit the comments in the source and submit a PR against the dev branch. We will merge it there and refresh the pages as part of each release. Updates made directly to the gh-pages branch will be overwritten.</p>
+							<h3 id="samples-add-in">Samples Add-In</h3>
+							<p>Checkout a <a href="https://github.com/OfficeDev/PnP/tree/dev/Samples/SharePoint.pnp-js-core">SharePoint hosted Add-In containing samples</a> on using the library from both a SharePoint hosted add-in as well as a script editor web part. This will allow you to execute the samples as well as intract with the API.</p>
+							<h3 id="get-help">Get Help</h3>
 							<p>We have active <a href="http://aka.ms/OfficeDevPnPSIGJavaScriptYammer">Yammer</a> and <a href="https://gitter.im/OfficeDev/PnP-JS-Core">Gitter</a> communities dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please <a href="https://github.com/OfficeDev/PnP-JS-Core/issues">report it</a>.</p>
 							<h3 id="wiki">Wiki</h3>
 							<p>Please see <a href="https://github.com/OfficeDev/PnP-JS-Core/wiki">the wiki</a> for tips on getting started, configuring your development environment, and using the library.</p>

@@ -1,0 +1,523 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>NodeFetchClient | Patterns and Practices JS Core</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/from-main.css">
+	<link rel="stylesheet" href="../assets/css/fabric.css">
+	<link rel="stylesheet" href="../assets/css/fabric.components.css">
+	<link rel="stylesheet" href="../assets/css/custom.css">
+	<script   src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<script src="../assets/js/jquery.fabric.min.js"></script>
+	<script src="../assets/js/menu.js"></script>
+	<script src="../assets/js/page.js"></script>
+</head>
+<body>
+<div class="ms-Grid">
+	<div class="ms-Grid-row header-row">
+		<div class="ms-Grid-col ms-u-sm12">
+			<header class="ms-Grid">
+				<div class="ms-Grid-row top-row">
+					<div class="ms-Grid-col ms-u-md12 ms-u-lg7">
+						<a href="../index.html" class="title ms-font-xxl ms-fontColor-white" style="text-decoration:none">Patterns and Practices JS Core</a>
+					</div>
+					<div class="ms-Grid-col ms-u-lg1 ms-u-lgPush3 ms-u-hiddenMd">
+						<span class="ms-font-xxl ms-fontColor-white">#PnPJSCore</span>
+					</div>
+				</div>
+				<div class="ms-Grid-row ms-bgColor-white">
+					<div class="ms-Grid-col ms-u-md12 ms-u-hiddenSm">
+						<div class="ms-Breadcrumb">
+							<div class="ms-Breadcrumb-overflow">
+								<div class="ms-Breadcrumb-overflowButton ms-Icon ms-Icon--ellipsis" tabindex="1"></div>
+								<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i>
+								<div class="ms-Breadcrumb-overflowMenu">
+									<ul class="ms-ContextualMenu is-open"></ul>
+								</div>
+							</div>
+							<ul class="ms-Breadcrumb-list">
+								<li class="ms-Breadcrumb-listItem">
+									<a href="../globals.html" class="ms-Breadcrumb-itemLink">Index</a>
+									<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i>
+								</li>
+								<li class="ms-Breadcrumb-listItem">
+									<a href="../modules/_net_nodefetchclient_.html" class="ms-Breadcrumb-itemLink">&quot;net/nodefetchclient&quot;</a>
+								<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i></li>
+								<li class="ms-Breadcrumb-listItem">
+									<a href="_net_nodefetchclient_.nodefetchclient.html" class="ms-Breadcrumb-itemLink">NodeFetchClient</a>
+								<i class="ms-Breadcrumb-chevron ms-Icon ms-Icon--chevronRight"></i></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</header>
+		</div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg2">
+			<nav class="primary">
+				<ul class="ms-ContextualMenu is-open">
+					<ul class="ms-ContextualMenu is-open">        <li class="ms-ContextualMenu-item">
+							<a href="../globals.html" class="ms-ContextualMenu-link ">Index</a>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<span class="ms-ContextualMenu-link ms-ContextualMenu-link--hasMenu " style="padding-left:18px">net</span>
+							<i class="ms-ContextualMenu-subMenuIcon ms-Icon ms-Icon--chevronRight"></i>
+						</li>
+						<li class="ms-ContextualMenu-item">
+							<a class="ms-ContextualMenu-link  is-selected" href="../modules/_net_nodefetchclient_.html" style="padding-left:26px">nodefetchclient</a>
+						</li>
+					</ul>
+				</ul>
+			</nav>
+			<nav class="secondary">
+				<ul id="secondaryNav">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-is-external">
+						<a href="_net_nodefetchclient_.nodefetchclient.html" class="tsd-kind-icon">Node<wbr>Fetch<wbr>Client</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#_clientid" class="tsd-kind-icon">_client<wbr>Id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#_clientsecret" class="tsd-kind-icon">_client<wbr>Secret</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#_realm" class="tsd-kind-icon">_realm</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#siteurl" class="tsd-kind-icon">site<wbr>Url</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#token" class="tsd-kind-icon">token</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#sharepointserviceprincipal" class="tsd-kind-icon">Share<wbr>Point<wbr>Service<wbr>Principal</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#fetch" class="tsd-kind-icon">fetch</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#getaddinonlyaccesstoken" class="tsd-kind-icon">get<wbr>Add<wbr>InOnly<wbr>Access<wbr>Token</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#getauthurl" class="tsd-kind-icon">get<wbr>Auth<wbr>Url</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#getformattedprincipal" class="tsd-kind-icon">get<wbr>Formatted<wbr>Principal</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#getrealm" class="tsd-kind-icon">get<wbr>Realm</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="_net_nodefetchclient_.nodefetchclient.html#todate" class="tsd-kind-icon">to<wbr>Date</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
+						<a href="../interfaces/_net_nodefetchclient_.authtoken.html" class="tsd-kind-icon">Auth<wbr>Token</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-external tsd-is-not-exported">
+						<a href="../modules/_net_nodefetchclient_.html#global" class="tsd-kind-icon">global</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-external tsd-is-not-exported">
+						<a href="../modules/_net_nodefetchclient_.html#nodefetch" class="tsd-kind-icon">node<wbr>Fetch</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-external tsd-is-not-exported">
+						<a href="../modules/_net_nodefetchclient_.html#require" class="tsd-kind-icon">require</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-external tsd-is-not-exported">
+						<a href="../modules/_net_nodefetchclient_.html#u" class="tsd-kind-icon">u</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="ms-Grid-col ms-u-sm6 ms-u-md8 ms-u-lg10">
+			<div class="ms-Grid">
+				<div class="ms-Grid-row">
+					<div class="ms-Grid-col ms-u-sm12">
+						<h1 class="ms-font-xxl">Class NodeFetchClient</h1>
+					</div>
+				</div>
+				<div class="ms-Grid-row">
+					<div class="ms-Grid-col ms-u-sm12">
+						<section class="tsd-panel tsd-comment">
+							<div class="comment ms-font-m">
+								<div class="lead">
+									<p>Fetch client for use within nodejs, requires you register a client id and secret with app only permissions</p>
+								</div>
+							</div>
+						</section>
+						<section class="tsd-panel tsd-hierarchy">
+							<h3>Hierarchy</h3>
+							<ul class="tsd-hierarchy">
+								<li>
+									<span class="target">NodeFetchClient</span>
+								</li>
+							</ul>
+						</section>
+						<section class="tsd-panel">
+							<h3>Implements</h3>
+							<ul class="tsd-hierarchy">
+								<li><a href="../interfaces/_net_httpclient_.httpclientimpl.html" class="tsd-signature-type">HttpClientImpl</a></li>
+							</ul>
+						</section>
+						<section class="tsd-panel-group tsd-index-group">
+							<h2>Index</h2>
+							<section class="tsd-panel tsd-index-panel">
+								<div class="tsd-index-content">
+									<section class="tsd-index-section tsd-is-external">
+										<h3>Constructors</h3>
+										<ul class="tsd-index-list">
+											<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#constructor" class="tsd-kind-icon">constructor</a></li>
+										</ul>
+									</section>
+									<section class="tsd-index-section tsd-is-external">
+										<h3>Properties</h3>
+										<ul class="tsd-index-list">
+											<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#_clientid" class="tsd-kind-icon">_client<wbr>Id</a></li>
+											<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#_clientsecret" class="tsd-kind-icon">_client<wbr>Secret</a></li>
+											<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#_realm" class="tsd-kind-icon">_realm</a></li>
+											<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#siteurl" class="tsd-kind-icon">site<wbr>Url</a></li>
+											<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#token" class="tsd-kind-icon">token</a></li>
+											<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#sharepointserviceprincipal" class="tsd-kind-icon">Share<wbr>Point<wbr>Service<wbr>Principal</a></li>
+										</ul>
+									</section>
+									<section class="tsd-index-section tsd-is-external">
+										<h3>Methods</h3>
+										<ul class="tsd-index-list">
+											<li class="tsd-kind-method tsd-parent-kind-class tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#fetch" class="tsd-kind-icon">fetch</a></li>
+											<li class="tsd-kind-method tsd-parent-kind-class tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#getaddinonlyaccesstoken" class="tsd-kind-icon">get<wbr>Add<wbr>InOnly<wbr>Access<wbr>Token</a></li>
+											<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#getauthurl" class="tsd-kind-icon">get<wbr>Auth<wbr>Url</a></li>
+											<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#getformattedprincipal" class="tsd-kind-icon">get<wbr>Formatted<wbr>Principal</a></li>
+											<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#getrealm" class="tsd-kind-icon">get<wbr>Realm</a></li>
+											<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="_net_nodefetchclient_.nodefetchclient.html#todate" class="tsd-kind-icon">to<wbr>Date</a></li>
+										</ul>
+									</section>
+								</div>
+							</section>
+						</section>
+						<section class="tsd-panel-group tsd-member-group tsd-is-external">
+							<h2>Constructors</h2>
+							<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
+								<a name="constructor" class="tsd-anchor"></a>
+								<h3>constructor</h3>
+								<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
+									<li class="tsd-signature tsd-kind-icon">new <wbr>Node<wbr>Fetch<wbr>Client<span class="tsd-signature-symbol">(</span>siteUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, _clientId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, _clientSecret<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, _realm<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_net_nodefetchclient_.nodefetchclient.html" class="tsd-signature-type">NodeFetchClient</a></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in net/nodefetchclient.ts:23</li>
+											</ul>
+										</aside>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>siteUrl: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5>_clientId: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5>_clientSecret: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagDefault value">Default value</span> _realm: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <a href="_net_nodefetchclient_.nodefetchclient.html" class="tsd-signature-type">NodeFetchClient</a></h4>
+									</li>
+								</ul>
+							</section>
+						</section>
+						<section class="tsd-panel-group tsd-member-group tsd-is-external">
+							<h2>Properties</h2>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="_clientid" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> _client<wbr>Id</h3>
+								<div class="tsd-signature tsd-kind-icon">_client<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in net/nodefetchclient.ts:25</li>
+									</ul>
+								</aside>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="_clientsecret" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> _client<wbr>Secret</h3>
+								<div class="tsd-signature tsd-kind-icon">_client<wbr>Secret<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in net/nodefetchclient.ts:25</li>
+									</ul>
+								</aside>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="_realm" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> _realm</h3>
+								<div class="tsd-signature tsd-kind-icon">_realm<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in net/nodefetchclient.ts:25</li>
+									</ul>
+								</aside>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-external">
+								<a name="siteurl" class="tsd-anchor"></a>
+								<h3>site<wbr>Url</h3>
+								<div class="tsd-signature tsd-kind-icon">site<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in net/nodefetchclient.ts:25</li>
+									</ul>
+								</aside>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="token" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> token</h3>
+								<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_net_nodefetchclient_.authtoken.html" class="tsd-signature-type">AuthToken</a><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in net/nodefetchclient.ts:34</li>
+									</ul>
+								</aside>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static tsd-is-external">
+								<a name="sharepointserviceprincipal" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> Share<wbr>Point<wbr>Service<wbr>Principal</h3>
+								<div class="tsd-signature tsd-kind-icon">Share<wbr>Point<wbr>Service<wbr>Principal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;00000003-0000-0ff1-ce00-000000000000&quot;</span></div>
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in net/nodefetchclient.ts:33</li>
+									</ul>
+								</aside>
+							</section>
+						</section>
+						<section class="tsd-panel-group tsd-member-group tsd-is-external">
+							<h2>Methods</h2>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-external">
+								<a name="fetch" class="tsd-anchor"></a>
+								<h3>fetch</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-external">
+									<li class="tsd-signature tsd-kind-icon">fetch<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<p>Implementation of <a href="../interfaces/_net_httpclient_.httpclientimpl.html">HttpClientImpl</a>.<a href="../interfaces/_net_httpclient_.httpclientimpl.html#fetch">fetch</a></p>
+											<ul>
+												<li>Defined in net/nodefetchclient.ts:36</li>
+											</ul>
+										</aside>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>url: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5>options: <span class="tsd-signature-type">any</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-external">
+								<a name="getaddinonlyaccesstoken" class="tsd-anchor"></a>
+								<h3>get<wbr>Add<wbr>InOnly<wbr>Access<wbr>Token</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-external">
+									<li class="tsd-signature tsd-kind-icon">get<wbr>Add<wbr>InOnly<wbr>Access<wbr>Token<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_net_nodefetchclient_.authtoken.html" class="tsd-signature-type">AuthToken</a><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in net/nodefetchclient.ts:51</li>
+											</ul>
+										</aside>
+										<div class="comment ms-font-m">
+											<div class="lead">
+												<p>Gets an add-in only authentication token based on the supplied site url, client id and secret</p>
+											</div>
+										</div>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_net_nodefetchclient_.authtoken.html" class="tsd-signature-type">AuthToken</a><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="getauthurl" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Auth<wbr>Url</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+									<li class="tsd-signature tsd-kind-icon">get<wbr>Auth<wbr>Url<span class="tsd-signature-symbol">(</span>realm<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in net/nodefetchclient.ts:109</li>
+											</ul>
+										</aside>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>realm: <span class="tsd-signature-type">string</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="getformattedprincipal" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Formatted<wbr>Principal</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+									<li class="tsd-signature tsd-kind-icon">get<wbr>Formatted<wbr>Principal<span class="tsd-signature-symbol">(</span>principalName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, hostName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, realm<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in net/nodefetchclient.ts:130</li>
+											</ul>
+										</aside>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>principalName: <span class="tsd-signature-type">any</span></h5>
+											</li>
+											<li>
+												<h5>hostName: <span class="tsd-signature-type">any</span></h5>
+											</li>
+											<li>
+												<h5>realm: <span class="tsd-signature-type">any</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+									</li>
+								</ul>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="getrealm" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Realm</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+									<li class="tsd-signature tsd-kind-icon">get<wbr>Realm<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in net/nodefetchclient.ts:84</li>
+											</ul>
+										</aside>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</section>
+							<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a name="todate" class="tsd-anchor"></a>
+								<h3><span class="tsd-flag ts-flagPrivate">Private</span> to<wbr>Date</h3>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
+									<li class="tsd-signature tsd-kind-icon">to<wbr>Date<span class="tsd-signature-symbol">(</span>epoch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Date</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in net/nodefetchclient.ts:139</li>
+											</ul>
+										</aside>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>epoch: <span class="tsd-signature-type">string</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Date</span></h4>
+									</li>
+								</ul>
+							</section>
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm12">
+			<footer>
+				<div class="container">
+					<h2>Legend</h2>
+					<div class="tsd-legend-group">
+						<ul class="tsd-legend">
+							<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+							<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+							<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+							<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+							<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+							<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+							<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+							<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+							<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+							<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+							<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+							<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+							<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+						</ul>
+						<ul class="tsd-legend">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+							<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+						</ul>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+</div>
+<div class="overlay"></div>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
