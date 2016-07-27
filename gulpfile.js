@@ -57,8 +57,11 @@ global.pkg = require("./package.json");
 global.banner = [
     "/**",
     " * <%= pkg.name %> v<%= pkg.version %> - <%= pkg.description %>",
+    " * <%= pkg.license %> (https://github.com/OfficeDev/PnP-JS-Core/blob/master/LICENSE)",
     " * Copyright (c) 2016 Microsoft",
-    " * <%= pkg.license %>",
+    " * docs: http://officedev.github.io/PnP-JS-Core",
+    " * source: <%=pkg.homepage %>",
+    " * bugs: <%=pkg.bugs.url %>",
     " */", ""
 ].join("\n");
 
@@ -66,7 +69,7 @@ global.banner = [
 try {
     global.settings = require("./settings.js");
 } catch (e) {
-    global.settings = {username: "", password: "", siteUrl: "", folder: ""};
+    global.settings = { username: "", password: "", siteUrl: "", folder: "" };
 }
 
 //******************************************************************************
