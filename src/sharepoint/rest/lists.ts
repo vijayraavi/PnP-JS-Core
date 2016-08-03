@@ -315,8 +315,11 @@ export class List extends QueryableSecurable {
      * @param expands A URI with a $expand System Query Option indicates that Entries associated with
      * the Entry or Collection of Entries identified by the Resource Path 
      * section of the URI must be represented inline (i.e. eagerly loaded). 
+     * see:
      * 
-     * see http://www.odata.org/documentation/odata-version-2-0/uri-conventions/#ExpandSystemQueryOption
+     * https://msdn.microsoft.com/en-us/library/office/fp142385.aspx
+     * 
+     * http://www.odata.org/documentation/odata-version-2-0/uri-conventions/#ExpandSystemQueryOption
      */
     public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
