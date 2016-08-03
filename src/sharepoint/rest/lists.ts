@@ -311,6 +311,12 @@ export class List extends QueryableSecurable {
 
     /**
      * Returns a collection of items from the list based on the specified query.
+     * @param CamlQuery Value used in the IF-Match header, by default "*"     
+     * @param expands A URI with a $expand System Query Option indicates that Entries associated with
+     * the Entry or Collection of Entries identified by the Resource Path 
+     * section of the URI must be represented inline (i.e. eagerly loaded). 
+     * 
+     * see http://www.odata.org/documentation/odata-version-2-0/uri-conventions/#ExpandSystemQueryOption
      */
     public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
