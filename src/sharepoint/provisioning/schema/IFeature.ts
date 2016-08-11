@@ -1,3 +1,5 @@
+"use strict";
+
 export interface IFeature {
     ID: string;
     Deactivate: boolean;

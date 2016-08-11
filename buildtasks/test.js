@@ -31,6 +31,6 @@ gulp.task("build-tests", ["clean"], function() {
 
 gulp.task("test", ["build", "build-tests", "istanbul:hook"], function() {
     return gulp.src(global.TSCompiledOutput.JSTestFiles)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot' }))
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
         .pipe(istanbul.writeReports());
 });

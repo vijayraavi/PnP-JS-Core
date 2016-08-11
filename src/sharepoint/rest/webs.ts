@@ -3,6 +3,7 @@
 import { Queryable, QueryableCollection } from "./queryable";
 import { QueryableSecurable } from "./queryablesecurable";
 import { Lists } from "./lists";
+import { Fields } from "./fields";
 import { Navigation } from "./navigation";
 import { SiteGroups } from "./sitegroups";
 import { ContentTypes } from "./contenttypes";
@@ -15,6 +16,7 @@ import * as Types from "./types";
 import { List } from "./lists";
 import { SiteUsers, SiteUser } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
+import { extractOdataId } from "./odata";
 
 
 export class Webs extends QueryableCollection {
@@ -62,7 +64,7 @@ export class Webs extends QueryableCollection {
         return q.post({ body: postBody }).then((data) => {
             return {
                 data: data,
-                web: new Web(this, props.Url),
+                web: new Web(extractOdataId(data), ""),
             };
         });
     }
@@ -97,6 +99,22 @@ export class Web extends QueryableSecurable {
      */
     public get lists(): Lists {
         return new Lists(this);
+    }
+
+    /**
+     * Gets the fields in this web
+     *
+     */
+    public get fields(): Fields {
+        return new Fields(this);
+    }
+
+    /**
+     * Gets the available fields in this web
+     *
+     */
+    public get availablefields(): Fields {
+        return new Fields(this, "availablefields");
     }
 
     /**
@@ -275,14 +293,15 @@ export class Web extends QueryableSecurable {
     /**
      * Returns the list gallery on the site.
      *
-     * @param type The gallery type
+     * @param type The gallery type - WebTemplateCatalog = 111, WebPartCatalog = 113 ListTemplateCatalog = 114,
+     * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
     /* tslint:disable member-access */
     public getCatalog(type: number): Promise<List> {
         let q = new Web(this, `getcatalog(${type})`);
         q.select("Id");
         return q.get().then((data) => {
-            return new List(data["odata.id"]);
+            return new List(extractOdataId(data));
         });
     }
     /* tslint:enable */

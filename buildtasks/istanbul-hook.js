@@ -13,13 +13,13 @@
 //******************************************************************************
 
 var gulp = require("gulp"),
-istanbul = require("gulp-istanbul");
+    istanbul = require("gulp-istanbul");
 
 //******************************************************************************
 //* ISTANBUL:HOOK
 //******************************************************************************
 
-gulp.task("istanbul:hook", ["build"], function() {
+gulp.task("istanbul:hook", ["build"], function () {
     return gulp.src(global.TSCompiledOutput.JSCodeFiles)
         // Covering files
         .pipe(istanbul())

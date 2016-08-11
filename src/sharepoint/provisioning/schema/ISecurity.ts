@@ -1,3 +1,5 @@
+"use strict";
+
 import { IRoleAssignment } from "./iroleassignment";
 
 export interface ISecurity {

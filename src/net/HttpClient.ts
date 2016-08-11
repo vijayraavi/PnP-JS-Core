@@ -1,10 +1,11 @@
 "use strict";
 
-import { FetchClient } from "./fetchClient";
-import { DigestCache } from "./digestCache";
+import { FetchClient } from "./fetchclient";
+import { DigestCache } from "./digestcache";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
-import { SPRequestExecutorClient } from "./SPRequestExecutorClient";
+import { SPRequestExecutorClient } from "./sprequestexecutorclient";
+import { NodeFetchClient } from "./nodefetchclient";
 
 export interface FetchOptions {
     method?: string;
@@ -17,20 +18,13 @@ export interface FetchOptions {
 
 export class HttpClient {
 
-    private _digestCache: DigestCache;
-
-    private _impl: HttpClientImpl;
-
     constructor() {
-
-        if (RuntimeConfig.useSPRequestExecutor) {
-            this._impl = new SPRequestExecutorClient();
-        } else {
-            this._impl = new FetchClient();
-        }
-
+        this._impl = this.getFetchImpl();
         this._digestCache = new DigestCache(this);
     }
+
+    private _digestCache: DigestCache;
+    private _impl: HttpClientImpl;
 
     public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 
@@ -63,7 +57,7 @@ export class HttpClient {
 
         if (opts.method && opts.method.toUpperCase() !== "GET") {
             if (!headers.has("X-RequestDigest")) {
-                let index = url.indexOf("/_api/");
+                let index = url.indexOf("_api/");
                 if (index < 0) {
                     throw new Error("Unable to determine API url");
                 }
@@ -80,6 +74,11 @@ export class HttpClient {
     }
 
     public fetchRaw(url: string, options: FetchOptions = {}): Promise<Response> {
+
+        // here we need to normalize the headers
+        let rawHeaders = new Headers();
+        this.mergeHeaders(rawHeaders, options.headers);
+        options = Util.extend(options, { headers: rawHeaders });
 
         let retry = (ctx): void => {
 
@@ -132,8 +131,19 @@ export class HttpClient {
         return this.fetch(url, opts);
     }
 
+    protected getFetchImpl(): HttpClientImpl {
+        if (RuntimeConfig.useSPRequestExecutor) {
+            return new SPRequestExecutorClient();
+        } else if (RuntimeConfig.useNodeFetchClient) {
+            let opts = RuntimeConfig.nodeRequestOptions;
+            return new NodeFetchClient(opts.siteUrl, opts.clientId, opts.clientSecret);
+        } else {
+            return new FetchClient();
+        }
+    }
+
     private mergeHeaders(target: Headers, source: any): void {
-        if (typeof source !== "undefined") {
+        if (typeof source !== "undefined" && source !== null) {
             let temp = <any>new Request("", { headers: source });
             temp.headers.forEach((value, name) => {
                 target.append(name, value);

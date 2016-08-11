@@ -3,6 +3,7 @@
 import { Queryable, QueryableInstance } from "./queryable";
 import { Web } from "./webs";
 import { UserCustomActions } from "./usercustomactions";
+import { ContextInfo, DocumentLibraryInformation } from "./types";
 
 /**
  * Describes a site collection
@@ -38,9 +39,17 @@ export class Site extends QueryableInstance {
     /**
      * Gets the context information for the site.
      */
-    public getContextInfo(): Promise<any> {
+    public getContextInfo(): Promise<ContextInfo> {
         let q = new Site("", "_api/contextinfo");
-        return q.post();
+        return q.post().then(data => {
+            if (data.hasOwnProperty("GetContextWebInformation")) {
+                let info = data.GetContextWebInformation;
+                info.SupportedSchemaVersions = info.SupportedSchemaVersions.results;
+                return info;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
@@ -48,10 +57,16 @@ export class Site extends QueryableInstance {
      * 
      * @param absoluteWebUrl The absolute url of the web whose document libraries should be returned
      */
-    public getDocumentLibraries(absoluteWebUrl: string): Promise<any> {
-        let q = new Queryable("_api/sp.web.getdocumentlibraries(@v)");
+    public getDocumentLibraries(absoluteWebUrl: string): Promise<DocumentLibraryInformation[]> {
+        let q = new Queryable("", "_api/sp.web.getdocumentlibraries(@v)");
         q.query.add("@v", "'" + absoluteWebUrl + "'");
-        return q.get();
+        return q.get().then(data => {
+            if (data.hasOwnProperty("GetDocumentLibraries")) {
+                return data.GetDocumentLibraries;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
@@ -60,8 +75,14 @@ export class Site extends QueryableInstance {
      * @param absolutePageUrl The absolute url of the page
      */
     public getWebUrlFromPageUrl(absolutePageUrl: string): Promise<string> {
-        let q = new Queryable("_api/sp.web.getweburlfrompageurl(@v)");
+        let q = new Queryable("", "_api/sp.web.getweburlfrompageurl(@v)");
         q.query.add("@v", "'" + absolutePageUrl + "'");
-        return q.get();
+        return q.get().then(data => {
+            if (data.hasOwnProperty("GetWebUrlFromPageUrl")) {
+                return data.GetWebUrlFromPageUrl;
+            } else {
+                return data;
+            }
+        });
     }
 }

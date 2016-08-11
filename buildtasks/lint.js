@@ -20,8 +20,12 @@ var gulp = require("gulp"),
 //* LINT
 //******************************************************************************
 
-gulp.task("lint", function() {
+gulp.task("lint", function () {
     return gulp.src(global.TSWorkspace.Files)
-        .pipe(tslint({}))
-        .pipe(tslint.report("verbose"));
+        .pipe(tslint({
+            formatter: "prose"
+        }))
+        .pipe(tslint.report({
+            emitError: false
+        }));
 });

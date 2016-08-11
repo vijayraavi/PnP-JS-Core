@@ -19,8 +19,7 @@ var gulp = require("gulp"),
     buffer = require("vinyl-buffer"),
     header = require('gulp-header'),
     srcmaps = require("gulp-sourcemaps"),
-    merge = require("merge2"),
-    replace = require("gulp-replace");
+    merge = require("merge2");
 
 // we need to build src (es5, umd) -> build
 // we need to package the definitions in a single file -> dist
@@ -141,7 +140,7 @@ function packageProvisioningBundleUglify() {
 //******************************************************************************
 //* PACKAGE
 //******************************************************************************
-gulp.task("package", ["build", "test"], function () {
+gulp.task("package", ["build"], function () {
 
     return merge([
         // build and package the definition files
