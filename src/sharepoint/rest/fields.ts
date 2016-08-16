@@ -30,7 +30,7 @@ export class Fields extends QueryableCollection {
     }
 
     /**
-     * Gets a field from the collection by internal name or title
+     * Gets a field from the collection by using internal name or title
      *
      * @param name The case-sensitive internal name or title of the field
      */
