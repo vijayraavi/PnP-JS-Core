@@ -34,8 +34,8 @@ export class Fields extends QueryableCollection {
      *
      * @param name The case-sensitive internal name or title of the field
      */
-    public getbyInternalNameOrTitle(name: string): Field {
-        return new Field(this, `getbyInternalNameOrTitle('${name}')`);
+    public getByInternalNameOrTitle(name: string): Field {
+        return new Field(this, `getByInternalNameOrTitle('${name}')`);
     }
 
     /**
