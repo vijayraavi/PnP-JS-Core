@@ -30,6 +30,15 @@ export class Fields extends QueryableCollection {
     }
 
     /**
+     * Gets a field from the collection by internal name or title
+     *
+     * @param name The case-sensitive internal name or title of the field
+     */
+    public getbyInternalNameOrTitle(name: string): Field {
+        return new Field(this, `getbyInternalNameOrTitle('${name}')`);
+    }
+
+    /**
      * Gets a list from the collection by guid id
      *
      * @param title The Id of the list
