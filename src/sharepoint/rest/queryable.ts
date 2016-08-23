@@ -2,7 +2,7 @@
 
 import { Util } from "../../utils/util";
 import { Dictionary } from "../../collections/collections";
-import { FetchOptions, HttpClient } from "../../net/HttpClient";
+import { FetchOptions, HttpClient } from "../../net/httpclient";
 import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
 import { ICachingOptions, CachingParserWrapper, CachingOptions } from "./caching";
 import { RuntimeConfig } from "../../configuration/pnplibconfig";
