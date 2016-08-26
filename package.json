@@ -59,6 +59,7 @@
   },
   "homepage": "https://github.com/OfficeDev/PnP-JS-Core",
   "browser": {
-    "./build/src/net/nodefetchclient.js": "./build/src/net/nodefetchclientbrowser.js"
+    "./build/src/net/nodefetchclient.js": "./build/src/net/nodefetchclientbrowser.js",
+    "./lib/net/nodefetchclient.js": "./lib/net/nodefetchclientbrowser.js"
   }
 }
