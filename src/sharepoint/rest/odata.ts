@@ -173,21 +173,25 @@ export class ODataBatch {
 
     /**
      * Execute the current batch and resolve the associated promises
+     * 
+     * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
-    public execute(): void {
-        if (this._batchDepCount > 0) {
-            setTimeout(() => this.execute(), 100);
-        } else {
-            this.executeImpl();
-        }
+    public execute(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            if (this._batchDepCount > 0) {
+                setTimeout(() => this.execute(), 100);
+            } else {
+                this.executeImpl().then(() => resolve()).catch(reject);
+            }
+        });
     }
 
-    private executeImpl(): void {
+    private executeImpl(): Promise<any[]> {
 
         // if we don't have any requests, don't bother sending anything
         // this could be due to caching further upstream, or just an empty batch 
         if (this._requests.length < 1) {
-            return;
+            return new Promise<any[]>(r => r());
         }
 
         // build all the requests, send them, pipe results in order to parsers
@@ -283,7 +287,7 @@ export class ODataBatch {
         };
 
         let client = new HttpClient();
-        client.post(Util.makeUrlAbsolute("/_api/$batch"), batchOptions)
+        return client.post(Util.makeUrlAbsolute("/_api/$batch"), batchOptions)
             .then(r => r.text())
             .then(this._parseResponse)
             .then(responses => {
@@ -291,6 +295,8 @@ export class ODataBatch {
                     // this is unfortunate
                     throw new Error("Could not properly parse responses to match requests in batch.");
                 }
+
+                let resolutions: Promise<any>[] = [];
 
                 for (let i = 0; i < responses.length; i++) {
                     let request = this._requests[i];
@@ -300,8 +306,10 @@ export class ODataBatch {
                         request.reject(new Error(response.statusText));
                     }
 
-                    request.parser.parse(response).then(request.resolve).catch(request.reject);
+                    resolutions.push(request.parser.parse(response).then(request.resolve).catch(request.reject));
                 }
+
+                return Promise.all(resolutions);
             });
     }
 
