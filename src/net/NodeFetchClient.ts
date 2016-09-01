@@ -22,6 +22,9 @@ export interface AuthToken {
  */
 export class NodeFetchClient implements HttpClientImpl {
 
+    private static SharePointServicePrincipal: string = "00000003-0000-0ff1-ce00-000000000000";
+    private token: AuthToken = null;
+
     constructor(public siteUrl: string, private _clientId: string, private _clientSecret: string, private _realm = "") {
 
         // here we "cheat" and set the globals for fetch things when this client is instantiated
@@ -29,9 +32,6 @@ export class NodeFetchClient implements HttpClientImpl {
         global.Request = nodeFetch.Request;
         global.Response = nodeFetch.Response;
     }
-
-    private static SharePointServicePrincipal: string = "00000003-0000-0ff1-ce00-000000000000";
-    private token: AuthToken = null;
 
     public fetch(url: string, options: any): Promise<Response> {
 

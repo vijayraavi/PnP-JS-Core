@@ -20,51 +20,6 @@ export interface QueryableConstructor<T> {
 export class Queryable {
 
     /**
-     * Creates a new instance of the Queryable class
-     *
-     * @constructor
-     * @param baseUrl A string or Queryable that should form the base part of the url
-     *
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-
-        this._query = new Dictionary<string>();
-        this._batch = null;
-
-        if (typeof baseUrl === "string") {
-            // we need to do some extra parsing to get the parent url correct if we are
-            // being created from just a string.
-
-            let urlStr = baseUrl as string;
-            if (urlStr.lastIndexOf("/") < 0) {
-                this._parentUrl = urlStr;
-                this._url = Util.combinePaths(urlStr, path);
-            } else if (urlStr.lastIndexOf("/") > urlStr.lastIndexOf("(")) {
-                let index = urlStr.lastIndexOf("/");
-                this._parentUrl = urlStr.slice(0, index);
-                path = Util.combinePaths(urlStr.slice(index), path);
-                this._url = Util.combinePaths(this._parentUrl, path);
-            } else {
-                let index = urlStr.lastIndexOf("(");
-                this._parentUrl = urlStr.slice(0, index);
-                this._url = Util.combinePaths(urlStr, path);
-            }
-        } else {
-            let q = baseUrl as Queryable;
-            this._parentUrl = q._url;
-            // only copy batch if we don't already have one
-            if (!this.hasBatch && q.hasBatch) {
-                this._batch = q._batch;
-            }
-            let target = q._query.get("@target");
-            if (target !== null) {
-                this._query.add("@target", target);
-            }
-            this._url = Util.combinePaths(this._parentUrl, path);
-        }
-    }
-
-    /**
      * Tracks the query parts of the url
      */
     protected _query: Dictionary<string>;
@@ -152,6 +107,51 @@ export class Queryable {
      */
     public get query(): Dictionary<string> {
         return this._query;
+    }
+
+    /**
+     * Creates a new instance of the Queryable class
+     *
+     * @constructor
+     * @param baseUrl A string or Queryable that should form the base part of the url
+     *
+     */
+    constructor(baseUrl: string | Queryable, path?: string) {
+
+        this._query = new Dictionary<string>();
+        this._batch = null;
+
+        if (typeof baseUrl === "string") {
+            // we need to do some extra parsing to get the parent url correct if we are
+            // being created from just a string.
+
+            let urlStr = baseUrl as string;
+            if (urlStr.lastIndexOf("/") < 0) {
+                this._parentUrl = urlStr;
+                this._url = Util.combinePaths(urlStr, path);
+            } else if (urlStr.lastIndexOf("/") > urlStr.lastIndexOf("(")) {
+                let index = urlStr.lastIndexOf("/");
+                this._parentUrl = urlStr.slice(0, index);
+                path = Util.combinePaths(urlStr.slice(index), path);
+                this._url = Util.combinePaths(this._parentUrl, path);
+            } else {
+                let index = urlStr.lastIndexOf("(");
+                this._parentUrl = urlStr.slice(0, index);
+                this._url = Util.combinePaths(urlStr, path);
+            }
+        } else {
+            let q = baseUrl as Queryable;
+            this._parentUrl = q._url;
+            // only copy batch if we don't already have one
+            if (!this.hasBatch && q.hasBatch) {
+                this._batch = q._batch;
+            }
+            let target = q._query.get("@target");
+            if (target !== null) {
+                this._query.add("@target", target);
+            }
+            this._url = Util.combinePaths(this._parentUrl, path);
+        }
     }
 
     /**

@@ -18,13 +18,13 @@ export interface FetchOptions {
 
 export class HttpClient {
 
+    private _digestCache: DigestCache;
+    private _impl: HttpClientImpl;
+
     constructor() {
         this._impl = this.getFetchImpl();
         this._digestCache = new DigestCache(this);
     }
-
-    private _digestCache: DigestCache;
-    private _impl: HttpClientImpl;
 
     public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 
@@ -50,7 +50,7 @@ export class HttpClient {
         }
 
         if (!headers.has("X-ClientService-ClientTag")) {
-            headers.append("X-ClientService-ClientTag", "PnPCoreJS");
+            headers.append("X-ClientService-ClientTag", "PnPCoreJS:1.0.4");
         }
 
         opts = Util.extend(opts, { headers: headers });
