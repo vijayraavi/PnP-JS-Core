@@ -5,8 +5,7 @@
   "main": "./lib/pnp.js",
   "typings": "./lib/pnp",
   "dependencies": {
-    "es6-promise": "^3.0.0",
-    "whatwg-fetch": "^0.11.1"
+    "es6-promise": "^3.0.0"
   },
   "devDependencies": {
     "browser-sync": "^2.11.1",
