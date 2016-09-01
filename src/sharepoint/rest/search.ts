@@ -289,6 +289,13 @@ export class Search extends QueryableInstance {
  */
 export class SearchResults {
 
+    public PrimarySearchResults: Object;
+    public RawSearchResults: Object;
+    public RowCount: Number;
+    public TotalRows: Number;
+    public TotalRowsIncludingDuplicates: Number;
+    public ElapsedTime: Number;
+
     /**
      * Creates a new instance of the SearchResult class
      * 
@@ -302,13 +309,6 @@ export class SearchResults {
         this.TotalRows = response.PrimaryQueryResult.RelevantResults.TotalRows;
         this.TotalRowsIncludingDuplicates = response.PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates;
     }
-
-    public PrimarySearchResults: Object;
-    public RawSearchResults: Object;
-    public RowCount: Number;
-    public TotalRows: Number;
-    public TotalRowsIncludingDuplicates: Number;
-    public ElapsedTime: Number;
 
     /**
      * Formats a search results array

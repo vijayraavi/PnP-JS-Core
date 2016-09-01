@@ -174,7 +174,7 @@ export class RoleDefinition extends QueryableInstance {
      *
      * @param properties A plain object hash of values to update for the web
      */
-    /* tslint:disable member-access */
+    /* tslint:disable no-string-literal */
     public update(properties: TypedHash<string | number | boolean | BasePermissions>): Promise<RoleDefinitionUpdateResult> {
 
         if (typeof properties.hasOwnProperty("BasePermissions")) {

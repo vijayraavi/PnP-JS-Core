@@ -126,13 +126,13 @@ export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataPars
  */
 export class ODataBatch {
 
+    private _batchDepCount: number;
+    private _requests: ODataBatchRequestInfo[];
+
     constructor(private _batchId = Util.getGUID()) {
         this._requests = [];
         this._batchDepCount = 0;
     }
-
-    private _batchDepCount: number;
-    private _requests: ODataBatchRequestInfo[];
 
     /**
      * Adds a request to a batch (not designed for public use)
