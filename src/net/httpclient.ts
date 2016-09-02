@@ -5,7 +5,7 @@ import { DigestCache } from "./digestcache";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { SPRequestExecutorClient } from "./sprequestexecutorclient";
-import { NodeFetchClient } from "./nodefetchlient";
+import { NodeFetchClient } from "./nodefetchclient";
 
 export interface FetchOptions {
     method?: string;
