@@ -1,18 +1,18 @@
 "use strict";
 
-import { ProvisioningStep } from "./ProvisioningStep";
-import { ObjectNavigation } from "./ObjectHandlers/ObjectNavigation";
-import { ObjectPropertyBagEntries } from "./ObjectHandlers/ObjectPropertyBagEntries";
-import { ObjectFeatures } from "./ObjectHandlers/ObjectFeatures";
-import { ObjectWebSettings } from "./ObjectHandlers/ObjectWebSettings";
-import { ObjectComposedLook } from "./ObjectHandlers/ObjectComposedLook";
-import { ObjectCustomActions } from "./ObjectHandlers/ObjectCustomActions";
-import { ObjectFiles } from "./ObjectHandlers/ObjectFiles";
-import { ObjectLists } from "./ObjectHandlers/ObjectLists";
+import { ProvisioningStep } from "./provisioningstep";
+import { ObjectNavigation } from "./objecthandlers/objectnavigation";
+import { ObjectPropertyBagEntries } from "./objecthandlers/objectpropertybagentries";
+import { ObjectFeatures } from "./objecthandlers/objectfeatures";
+import { ObjectWebSettings } from "./objecthandlers/objectwebsettings";
+import { ObjectComposedLook } from "./objecthandlers/objectcomposedlook";
+import { ObjectCustomActions } from "./objecthandlers/objectcustomactions";
+import { ObjectFiles } from "./objecthandlers/objectfiles";
+import { ObjectLists } from "./objecthandlers/objectlists";
 import { Util } from "./util";
 import { Logger } from "../../utils/logging";
-import { SiteSchema } from "./schema/isiteschema";
-import { HttpClient } from "../../net/HttpClient";
+import { SiteSchema } from "./schema/ISiteSchema";
+import { HttpClient } from "../../net/httpclient";
 
 /**
  * Root class of Provisioning 
