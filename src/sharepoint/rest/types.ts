@@ -1,3 +1,5 @@
+"use strict";
+
 // reference: https://msdn.microsoft.com/en-us/library/office/dn600183.aspx
 
 /**
@@ -463,4 +465,113 @@ export interface HashTag {
 
 export interface HashTagCollection {
     Items: HashTag[];
+}
+
+export interface UserIdInfo {
+    NameId?: string;
+    NameIdIssuer?: string;
+}
+
+export enum PrincipalType {
+    None = 0,
+    User = 1,
+    DistributionList = 2,
+    SecurityGroup = 4,
+    SharePointGroup = 8,
+    All = 15
+}
+
+export interface DocumentLibraryInformation {
+    AbsoluteUrl?: string;
+    Modified?: Date;
+    ModifiedFriendlyDisplay?: string;
+    ServerRelativeUrl?: string;
+    Title?: string;
+}
+
+export interface ContextInfo {
+    FormDigestTimeoutSeconds?: number;
+    FormDigestValue?: number;
+    LibraryVersion?: string;
+    SiteFullUrl?: string;
+    SupportedSchemaVersions?: string[];
+    WebFullUrl?: string;
+}
+
+export interface RenderListData {
+    Row: any[];
+    FirstRow: number;
+    FolderPermissions: string;
+    LastRow: number;
+    FilterLink: string;
+    ForceNoHierarchy: string;
+    HierarchyHasIndention: string;
+}
+
+export enum PageType {
+    Invalid = -1,
+    DefaultView,
+    NormalView,
+    DialogView,
+    View,
+    DisplayForm,
+    DisplayFormDialog,
+    EditForm,
+    EditFormDialog,
+    NewForm,
+    NewFormDialog,
+    SolutionForm,
+    PAGE_MAXITEMS
+}
+
+export interface ListFormData {
+    ContentType?: string;
+    Title?: string;
+    Author?: string;
+    Editor?: string;
+    Created?: Date;
+    Modified: Date;
+    Attachments?: any;
+    ListSchema?: any;
+    FormControlMode?: number;
+    FieldControlModes?: {
+        Title?: number,
+        Author?: number,
+        Editor?: number,
+        Created?: number,
+        Modified?: number,
+        Attachments?: number
+    };
+    WebAttributes?: {
+        WebUrl?: string,
+        EffectivePresenceEnabled?: boolean,
+        AllowScriptableWebParts?: boolean,
+        PermissionCustomizePages?: boolean,
+        LCID?: number,
+        CurrentUserId?: number
+    };
+    ItemAttributes?: {
+        Id?: number,
+        FsObjType?: number,
+        ExternalListItem?: boolean,
+        Url?: string,
+        EffectiveBasePermissionsLow?: number,
+        EffectiveBasePermissionsHigh?: number
+    };
+    ListAttributes?: {
+        Id?: string,
+        BaseType?: number,
+        Direction?: string,
+        ListTemplateType?: number,
+        DefaultItemOpen?: number,
+        EnableVersioning?: boolean
+    };
+    CSRCustomLayout?: boolean;
+    PostBackRequired?: boolean;
+    PreviousPostBackHandled?: boolean;
+    UploadMode?: boolean;
+    SubmitButtonID?: string;
+    ItemContentTypeName?: string;
+    ItemContentTypeId?: string;
+    JSLinks?: string;
 }

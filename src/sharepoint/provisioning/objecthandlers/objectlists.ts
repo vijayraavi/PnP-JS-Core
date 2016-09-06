@@ -1,14 +1,26 @@
 "use strict";
 
-import { Sequencer } from "../Sequencer/Sequencer";
-import { ObjectHandlerBase } from "./ObjectHandlerBase";
-import { IListInstance } from "../schema/ilistinstance";
-import { IField } from "../schema/ifield";
+import { Sequencer } from "../sequencer/sequencer";
+import { ObjectHandlerBase } from "./objecthandlerbase";
+import { IListInstance } from "../schema/IListInstance";
+import { IField } from "../schema/IField";
 
+/**
+ * Describes the Lists Object Handler
+ */
 export class ObjectLists extends ObjectHandlerBase {
+    /**
+     * Creates a new instance of the ObjectLists class
+     */
     constructor() {
         super("Lists");
     }
+
+    /**
+     * Provision Lists
+     * 
+     * @param objects The lists to provision
+     */
     public ProvisionObjects(objects: Array<IListInstance>) {
         super.scope_started();
         return new Promise((resolve, reject) => {

@@ -1,4 +1,7 @@
 "use strict";
+
+declare var global: any;
+
 export class Util {
 
     /**
@@ -99,7 +102,7 @@ export class Util {
             path += "?" + encodeURIComponent((new Date()).getTime().toString());
         }
         let head = document.getElementsByTagName("head");
-        if (head.length > 1) {
+        if (head.length > 0) {
             let e = document.createElement("link");
             head[0].appendChild(e);
             e.setAttribute("type", "text/css");
@@ -163,6 +166,19 @@ export class Util {
         return typeof candidateFunction === "function";
     }
 
+    /** 
+     * @returns whether the provided parameter is a JavaScript Array or not. 
+    */
+    public static isArray(array: any): boolean {
+
+        if (Array.isArray) {
+            return Array.isArray(array);
+        }
+
+        return array && typeof array.length === "number" && array.constructor === Array;
+    }
+
+
     /**
      * Determines if a string is null or empty or undefined
      *
@@ -181,7 +197,7 @@ export class Util {
      *
      */
     /* tslint:disable:forin */
-    public static extend<T, S>(target: T, source: S, noOverwrite: Boolean = false): T & S {
+    public static extend<T, S>(target: T, source: S, noOverwrite = false): T & S {
 
         let result = <T & S>{};
         for (let id in target) {
@@ -222,5 +238,27 @@ export class Util {
      */
     public static isUrlAbsolute(url: string): boolean {
         return /^https?:\/\/|^\/\//i.test(url);
+    }
+
+    /**
+     * Attempts to make the supplied relative url absolute based on the _spPageContextInfo object, if available
+     * 
+     * @param url The relative url to make absolute
+     */
+    public static makeUrlAbsolute(url: string): string {
+
+        if (Util.isUrlAbsolute(url)) {
+            return url;
+        }
+
+        if (typeof global._spPageContextInfo !== "undefined") {
+            if (global._spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
+                return Util.combinePaths(global._spPageContextInfo.webAbsoluteUrl, url);
+            } else if (global._spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
+                return Util.combinePaths(global._spPageContextInfo.webServerRelativeUrl, url);
+            }
+        } else {
+            return url;
+        }
     }
 }

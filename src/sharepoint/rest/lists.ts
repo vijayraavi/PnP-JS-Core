@@ -4,11 +4,14 @@ import { Items } from "./items";
 import { Views, View } from "./views";
 import { ContentTypes } from "./contenttypes";
 import { Fields } from "./fields";
-import { Queryable, QueryableCollection } from "./queryable";
-import { QueryableSecurable } from "./QueryableSecurable";
+import { Forms } from "./forms";
+import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
+import { QueryableSecurable } from "./queryablesecurable";
 import { Util } from "../../utils/util";
 import { TypedHash } from "../../collections/collections";
-import * as Types from "./types";
+import { ControlMode, RenderListData, ChangeQuery, CamlQuery, ChangeLogitemQuery, ListFormData } from "./types";
+import { UserCustomActions } from "./usercustomactions";
+import { extractOdataId } from "./odata";
 
 /**
  * Describes a collection of List objects
@@ -41,7 +44,7 @@ export class Lists extends QueryableCollection {
      */
     public getById(id: string): List {
         let list = new List(this);
-        list.concat(`(guid'${id}')`);
+        list.concat(`('${id}')`);
         return list;
     }
 
@@ -67,16 +70,14 @@ export class Lists extends QueryableCollection {
         }, additionalSettings));
 
         return this.post({ body: postBody }).then((data) => {
-            return {
-                list: this.getByTitle(title),
-                data: data
-            };
+            return { data: data, list: this.getByTitle(title) };
         });
     }
     /*tslint:enable */
 
     /**
-     * Ensures that the specified list exists in the collection (note: settings are not updated if the list exists)
+     * Ensures that the specified list exists in the collection (note: settings are not updated if the list exists,
+     * not supported for batching)
      *
      * @param title The new list's title
      * @param description The new list's description
@@ -87,14 +88,18 @@ export class Lists extends QueryableCollection {
     /*tslint:disable max-line-length */
     public ensure(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ListEnsureResult> {
 
+        if (this.hasBatch) {
+            throw new Error("The ensure method is not supported as part of a batch.");
+        }
+
         return new Promise((resolve, reject) => {
 
             let list: List = this.getByTitle(title);
 
-            list.get().then((d) => resolve({ created: false, list: list, data: d })).catch(() => {
+            list.get().then((d) => resolve({ created: false, data: d, list: list })).catch(() => {
 
                 this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => {
-                    resolve({ created: true, list: this.getByTitle(title), data: r.data })
+                    resolve({ created: true, data: r.data, list: this.getByTitle(title) });
                 });
 
             }).catch((e) => reject(e));
@@ -109,7 +114,7 @@ export class Lists extends QueryableCollection {
     public ensureSiteAssetsLibrary(): Promise<List> {
         let q = new Lists(this, "ensuresiteassetslibrary");
         return q.post().then((json) => {
-            return new List(<string>json["odata.id"]);
+            return new List(extractOdataId(json));
         });
     }
     /*tslint:enable */
@@ -121,7 +126,7 @@ export class Lists extends QueryableCollection {
     public ensureSitePagesLibrary(): Promise<List> {
         let q = new Lists(this, "ensuresitepageslibrary");
         return q.post().then((json) => {
-            return new List(<string>json["odata.id"]);
+            return new List(extractOdataId(json));
         });
     }
     /*tslint:enable */
@@ -177,11 +182,27 @@ export class List extends QueryableSecurable {
     }
 
     /**
+     * Gets the forms in this list
+     *
+     */
+    public get forms(): Forms {
+        return new Forms(this);
+    }
+
+    /**
      * Gets the default view of this list
      *
      */
-    public get defaultView(): Queryable {
-        return new Queryable(this, "DefaultView");
+    public get defaultView(): QueryableInstance {
+        return new QueryableInstance(this, "DefaultView");
+    }
+
+    /**
+     * Get all custom actions on a site collection
+     * 
+     */
+    public get userCustomActions(): UserCustomActions {
+        return new UserCustomActions(this);
     }
 
     /**
@@ -217,14 +238,6 @@ export class List extends QueryableSecurable {
     }
 
     /**
-     * Gets the user custom actions attached to this list
-     *
-     */
-    public get userCustomActions(): Queryable {
-        return new Queryable(this, "UserCustomActions");
-    }
-
-    /**
      * Gets a view by view guid id
      *
      */
@@ -238,7 +251,7 @@ export class List extends QueryableSecurable {
      * @param properties A plain object hash of values to update for the list
      * @param eTag Value used in the IF-Match header, by default "*"
      */
-    /* tslint:disable member-access */
+    /* tslint:disable no-string-literal */
     public update(properties: TypedHash<string | number | boolean>, eTag = "*"): Promise<ListUpdateResult> {
 
         let postBody = JSON.stringify(Util.extend({
@@ -256,8 +269,7 @@ export class List extends QueryableSecurable {
             let retList: List = this;
 
             if (properties.hasOwnProperty("Title")) {
-                retList = this.getParent(List);
-                retList.append(`getByTitle('${properties["Title"]}')`);
+                retList = this.getParent(List, this.parentUrl, `getByTitle('${properties["Title"]}')`);
             }
 
             return {
@@ -285,7 +297,7 @@ export class List extends QueryableSecurable {
     /**
      * Returns the collection of changes from the change log that have occurred within the list, based on the specified query.
      */
-    public getChanges(query: Types.ChangeQuery): Promise<any> {
+    public getChanges(query: ChangeQuery): Promise<any> {
 
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
 
@@ -296,26 +308,45 @@ export class List extends QueryableSecurable {
 
     /**
      * Returns a collection of items from the list based on the specified query.
+     * 
+     * @param CamlQuery The Query schema of Collaborative Application Markup 
+     * Language (CAML) is used in various ways within the context of Microsoft SharePoint Foundation 
+     * to define queries against list data.
+     * see:
+     * 
+     * https://msdn.microsoft.com/en-us/library/office/ms467521.aspx
+     *      
+     * @param expands A URI with a $expand System Query Option indicates that Entries associated with
+     * the Entry or Collection of Entries identified by the Resource Path 
+     * section of the URI must be represented inline (i.e. eagerly loaded). 
+     * see:
+     * 
+     * https://msdn.microsoft.com/en-us/library/office/fp142385.aspx
+     * 
+     * http://www.odata.org/documentation/odata-version-2-0/uri-conventions/#ExpandSystemQueryOption
      */
-    public getItemsByCAMLQuery(query: Types.CamlQuery): Promise<any> {
+    public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) });
 
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "getitems");
+
+        q = q.expand.apply(q, expands);
+
         return q.post({ body: postBody });
     }
 
     /**
      * See: https://msdn.microsoft.com/en-us/library/office/dn292554.aspx
      */
-    public getListItemChangesSinceToken(query: Types.ChangeLogitemQuery): Promise<string> {
+    public getListItemChangesSinceToken(query: ChangeLogitemQuery): Promise<string> {
         let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) });
 
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "getlistitemchangessincetoken");
         // note we are using a custom parser to return text as the response is an xml doc
-        return q.post({ body: postBody }, (r) => r.text());
+        return q.post({ body: postBody }, { parse(r) { return r.text(); } });
     }
 
     /**
@@ -323,26 +354,48 @@ export class List extends QueryableSecurable {
      */
     public recycle(): Promise<string> {
         this.append("recycle");
-        return this.post();
+        return this.post().then(data => {
+            if (data.hasOwnProperty("Recycle")) {
+                return data.Recycle;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
      * Renders list data based on the view xml provided
      */
-    public renderListData(viewXml: string): Promise<string> {
+    public renderListData(viewXml: string): Promise<RenderListData> {
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "renderlistdata(@viewXml)");
         q.query.add("@viewXml", "'" + viewXml + "'");
-        return q.post();
+        return q.post().then(data => {
+            // data will be a string, so we parse it again
+            data = JSON.parse(data);
+            if (data.hasOwnProperty("RenderListData")) {
+                return data.RenderListData;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
-     * Renders list form data based on parameters provided
+     * Gets the field values and field schema attributes for a list item.
      */
-    public renderListFormData(itemId: number, formId: string, mode: Types.ControlMode): Promise<string> {
+    public renderListFormData(itemId: number, formId: string, mode: ControlMode): Promise<ListFormData> {
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "renderlistformdata(itemid=" + itemId + ", formid='" + formId + "', mode=" + mode + ")");
-        return q.post();
+        return q.post().then(data => {
+            // data will be a string, so we parse it again
+            data = JSON.parse(data);
+            if (data.hasOwnProperty("ListData")) {
+                return data.ListData;
+            } else {
+                return data;
+            }
+        });
     }
 
     /**
@@ -351,7 +404,13 @@ export class List extends QueryableSecurable {
     public reserveListItemId(): Promise<number> {
         // don't change "this" instance of the List, make a new one
         let q = new List(this, "reservelistitemid");
-        return q.post();
+        return q.post().then(data => {
+            if (data.hasOwnProperty("ReserveListItemId")) {
+                return data.ReserveListItemId;
+            } else {
+                return data;
+            }
+        });
     }
 }
 

@@ -1,16 +1,28 @@
 "use strict";
 
 import * as CoreUtil from "../../../utils/util";
-import { Util } from "../../../sharepoint/util";
-import { ObjectHandlerBase } from "./ObjectHandlerBase";
-import { IFile } from "../schema/ifile";
-import { IWebPart } from "../schema/iwebpart";
-import { IHiddenView } from "../schema/ihiddenview";
+import { Util } from "../util";
+import { ObjectHandlerBase } from "./objecthandlerbase";
+import { IFile } from "../schema/IFile";
+import { IWebPart } from "../schema/IWebPart";
+import { IHiddenView } from "../schema/IHiddenView";
 
+/**
+ * Describes the Files Object Handler
+ */
 export class ObjectFiles extends ObjectHandlerBase {
+    /**
+     * Creates a new instance of the ObjectFiles class
+     */
     constructor() {
         super("Files");
     }
+
+    /**
+     * Provisioning Files
+     * 
+     * @param objects The files to provisiion
+     */
     public ProvisionObjects(objects: Array<IFile>) {
         super.scope_started();
         return new Promise((resolve, reject) => {

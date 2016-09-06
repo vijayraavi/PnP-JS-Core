@@ -1,6 +1,6 @@
 "use strict";
 
-import { Queryable, QueryableInstance } from "./Queryable";
+import { Queryable, QueryableInstance } from "./queryable";
 
 
 /**
@@ -120,9 +120,9 @@ export interface SearchQuery {
      */
     RefinementFilters?: string[];
 
-     /**
-      * The set of refiners to return in a search result.
-      */
+    /**
+     * The set of refiners to return in a search result.
+     */
     Refiners?: string[];
 
     /**
@@ -237,50 +237,46 @@ export class Search extends QueryableInstance {
      * @param baseUrl The url for the search context
      * @param query The SearchQuery object to execute
      */
-    constructor(baseUrl: string | Queryable, query: SearchQuery) {
-        super(baseUrl, "postquery");
-
-        this.searchQuery = query;
+    constructor(baseUrl: string | Queryable, path = "_api/search/postquery") {
+        super(baseUrl, path);
     }
-
-    private searchQuery: SearchQuery = null;
 
     /**
      * .......
      * @returns Promise
      */
-    public execute(): Promise<SearchResult> {
+    public execute(query: SearchQuery): Promise<SearchResult> {
 
         let formattedBody: any;
-        formattedBody = this.searchQuery;
+        formattedBody = query;
 
         if (formattedBody.SelectProperties) {
-            formattedBody.SelectProperties = {results: this.searchQuery.SelectProperties};
+            formattedBody.SelectProperties = { results: query.SelectProperties };
         }
 
         if (formattedBody.RefinementFilters) {
-            formattedBody.RefinementFilters = {results: this.searchQuery.RefinementFilters};
+            formattedBody.RefinementFilters = { results: query.RefinementFilters };
         }
 
         if (formattedBody.Refiners) {
-            formattedBody.Refiners = {results: this.searchQuery.Refiners};
+            formattedBody.Refiners = { results: query.Refiners };
         }
 
         if (formattedBody.SortList) {
-            formattedBody.SortList = {results: this.searchQuery.SortList};
+            formattedBody.SortList = { results: query.SortList };
         }
 
         if (formattedBody.HithighlightedProperties) {
-            formattedBody.HithighlightedProperties = {results: this.searchQuery.HithighlightedProperties};
+            formattedBody.HithighlightedProperties = { results: query.HithighlightedProperties };
         }
 
         if (formattedBody.ReorderingRules) {
-            formattedBody.ReorderingRules = {results: this.searchQuery.ReorderingRules};
+            formattedBody.ReorderingRules = { results: query.ReorderingRules };
         }
 
         // TODO: Properties & ReorderingRules
 
-        let postBody = JSON.stringify({request: formattedBody});
+        let postBody = JSON.stringify({ request: formattedBody });
         return this.post({ body: postBody }).then((data) => {
             return new SearchResults(data);
         });
@@ -293,19 +289,6 @@ export class Search extends QueryableInstance {
  */
 export class SearchResults {
 
-    /**
-     * Creates a new instance of the SearchResult class
-     * 
-     */
-    constructor( response: any) {
-        this.PrimarySearchResults = this.formatSearchResults(response.PrimaryQueryResult.RelevantResults.Table.Rows);
-        this.RawSearchResults = response;
-        this.ElapsedTime = response.ElapsedTime;
-        this.RowCount = response.PrimaryQueryResult.RelevantResults.RowCount;
-        this.TotalRows = response.PrimaryQueryResult.RelevantResults.TotalRows;
-        this.TotalRowsIncludingDuplicates = response.PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates;
-    }
-
     public PrimarySearchResults: Object;
     public RawSearchResults: Object;
     public RowCount: Number;
@@ -314,19 +297,33 @@ export class SearchResults {
     public ElapsedTime: Number;
 
     /**
+     * Creates a new instance of the SearchResult class
+     * 
+     */
+    constructor(rawResponse: any) {
+        let response = rawResponse.postquery ? rawResponse.postquery : rawResponse;
+        this.PrimarySearchResults = this.formatSearchResults(response.PrimaryQueryResult.RelevantResults.Table.Rows);
+        this.RawSearchResults = response;
+        this.ElapsedTime = response.ElapsedTime;
+        this.RowCount = response.PrimaryQueryResult.RelevantResults.RowCount;
+        this.TotalRows = response.PrimaryQueryResult.RelevantResults.TotalRows;
+        this.TotalRowsIncludingDuplicates = response.PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates;
+    }
+
+    /**
      * Formats a search results array
      * 
      * @param rawResults The array to process 
      */
-    protected formatSearchResults(rawResults: Array<any>): SearchResult[] {
+    protected formatSearchResults(rawResults: Array<any> | any): SearchResult[] {
+        let results = new Array<SearchResult>(),
+            tempResults = rawResults.results ? rawResults.results : rawResults;
 
-        let results = new  Array<SearchResult>();
-
-        for (let i of rawResults) {
+        for (let i of tempResults) {
             results.push(new SearchResult(i.Cells));
         }
-        return results;
 
+        return results;
     }
 
 }
@@ -340,8 +337,8 @@ export class SearchResult {
      * Creates a new instance of the SearchResult class
      * 
      */
-    constructor( item: Array<any>) {
-
+    constructor(rawItem: Array<any> | any) {
+        let item = rawItem.results ? rawItem.results : rawItem;
         for (let i of item) {
             this[i.Key] = i.Value;
         }
@@ -388,16 +385,16 @@ export interface ReorderingRule {
      */
     Boost: Number;
 
-     /**
-     * The rank boosting
-     */
+    /**
+    * The rank boosting
+    */
     MatchType: ReorderingRuleMatchType;
 }
 
 /**
  * defines the ReorderingRuleMatchType  enum
  */
-export enum ReorderingRuleMatchType  {
+export enum ReorderingRuleMatchType {
     ResultContainsKeyword = 0,
     TitleContainsKeyword = 1,
     TitleMatchesKeyword = 2,
@@ -425,5 +422,5 @@ export enum QueryPropertyValueType {
     Int32TYpe = 2,
     BooleanType = 3,
     StringArrayType = 4,
-    UnSupportedType	= 5
+    UnSupportedType = 5
 }

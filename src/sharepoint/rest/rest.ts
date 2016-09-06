@@ -6,6 +6,7 @@ import { Web } from "./webs";
 import { Util } from "../../utils/util";
 import { Queryable } from "./queryable";
 import { UserProfileQuery } from "./userprofiles";
+import { ODataBatch } from "./odata";
 
 /**
  * Root of the SharePoint REST module
@@ -27,7 +28,7 @@ export class Rest {
             finalQuery = query;
         }
 
-        return new Search("_api/search", finalQuery).execute();
+        return new Search("").execute(finalQuery);
     }
 
     /**
@@ -35,7 +36,7 @@ export class Rest {
      *
      */
     public get site(): Site {
-        return new Site("_api", "site");
+        return new Site("");
     }
 
     /**
@@ -43,7 +44,7 @@ export class Rest {
      *
      */
     public get web(): Web {
-        return new Web("_api", "web");
+        return new Web("");
     }
 
     /**
@@ -51,7 +52,15 @@ export class Rest {
      *
      */
     public get profiles(): UserProfileQuery {
-        return new UserProfileQuery("_api");
+        return new UserProfileQuery("");
+    }
+
+    /**
+     * Creates a new batch object for use with the Queryable.addToBatch method
+     * 
+     */
+    public createBatch(): ODataBatch {
+        return new ODataBatch();
     }
 
     /**
@@ -61,7 +70,7 @@ export class Rest {
      * @param hostWebUrl The absolute url of the host web
      */
     public crossDomainSite(addInWebUrl: string, hostWebUrl: string): Site {
-        return this._cdImpl<Site>(Site, addInWebUrl, hostWebUrl, "site");
+        return this._cdImpl(Site, addInWebUrl, hostWebUrl, "site");
     }
 
     /**
@@ -71,7 +80,7 @@ export class Rest {
      * @param hostWebUrl The absolute url of the host web
      */
     public crossDomainWeb(addInWebUrl: string, hostWebUrl: string): Web {
-        return this._cdImpl<Web>(Web, addInWebUrl, hostWebUrl, "web");
+        return this._cdImpl(Web, addInWebUrl, hostWebUrl, "web");
     }
 
     /**
@@ -82,7 +91,11 @@ export class Rest {
      * @param hostWebUrl The absolute url of the host web
      * @param urlPart String part to append to the url "site" | "web"
      */
-    private _cdImpl<T extends Queryable>(factory: { new (s: string): T }, addInWebUrl: string, hostWebUrl: string, urlPart: string): T {
+    private _cdImpl<T extends Queryable>(
+        factory: { new (s: string, p: string): T },
+        addInWebUrl: string,
+        hostWebUrl: string,
+        urlPart: string): T {
 
         if (!Util.isUrlAbsolute(addInWebUrl)) {
             throw "The addInWebUrl parameter must be an absolute url.";
@@ -92,9 +105,9 @@ export class Rest {
             throw "The hostWebUrl parameter must be an absolute url.";
         }
 
-        let url = Util.combinePaths(addInWebUrl, "_api/SP.AppContextSite(@target)", urlPart);
+        let url = Util.combinePaths(addInWebUrl, "_api/SP.AppContextSite(@target)");
 
-        let instance = new factory(url);
+        let instance = new factory(url, urlPart);
         instance.query.add("@target", "'" + encodeURIComponent(hostWebUrl) + "'");
         return instance;
     }

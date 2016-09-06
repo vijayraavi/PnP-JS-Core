@@ -1,3 +1,5 @@
+"use strict";
+
 export interface IField {
     ShowInDisplayForm: boolean;
     ShowInEditForm: boolean;

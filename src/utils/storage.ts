@@ -1,6 +1,6 @@
 "use strict";
 
-import { Util } from "./Util";
+import { Util } from "./util";
 
 /**
  * A wrapper class to provide a consistent interface to browser based storage
@@ -182,16 +182,6 @@ export interface PnPClientStore {
 export class PnPClientStorage {
 
     /**
-     * Creates a new instance of the PnPClientStorage class
-     *
-     * @constructor
-     */
-    constructor() {
-        this.local = typeof localStorage !== "undefined" ? new PnPClientStorageWrapper(localStorage) : null;
-        this.session = typeof sessionStorage !== "undefined" ? new PnPClientStorageWrapper(sessionStorage) : null;
-    }
-
-    /**
      * Provides access to the local storage of the browser
      */
     public local: PnPClientStore;
@@ -200,4 +190,14 @@ export class PnPClientStorage {
      * Provides access to the session storage of the browser
      */
     public session: PnPClientStore;
+
+    /**
+     * Creates a new instance of the PnPClientStorage class
+     *
+     * @constructor
+     */
+    constructor() {
+        this.local = typeof localStorage !== "undefined" ? new PnPClientStorageWrapper(localStorage) : null;
+        this.session = typeof sessionStorage !== "undefined" ? new PnPClientStorageWrapper(sessionStorage) : null;
+    }
 }

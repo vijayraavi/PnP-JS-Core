@@ -1,4 +1,6 @@
 .npmignore
+.github
+.bithoundrc
 bower.json
 gulpfile.js
 jsconfig.json
@@ -14,3 +16,4 @@ typings/
 tests/
 buildtasks/
 build/
+docs/

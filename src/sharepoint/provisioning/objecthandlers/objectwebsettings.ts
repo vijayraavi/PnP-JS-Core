@@ -1,12 +1,24 @@
 "use strict";
 
-import { ObjectHandlerBase } from "./ObjectHandlerBase";
-import { IWebSettings } from "../schema/iwebsettings";
+import { ObjectHandlerBase } from "./objecthandlerbase";
+import { IWebSettings } from "../schema/IWebSettings";
 
+/**
+ * Describes the Web Settings Object Handler
+ */
 export class ObjectWebSettings extends ObjectHandlerBase {
+    /**
+     * Creates a new instance of the ObjectWebSettings class
+     */
     constructor() {
         super("WebSettings");
     }
+
+    /**
+     * Provision Web Settings
+     * 
+     * @param object The Web Settings to provision
+     */
     public ProvisionObjects(object: IWebSettings) {
         super.scope_started();
         return new Promise((resolve, reject) => {

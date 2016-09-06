@@ -1,5 +1,7 @@
-import { IWebPart } from "./iwebpart";
-import { IHiddenView } from "./ihiddenview";
+"use strict";
+
+import { IWebPart } from "./IWebPart";
+import { IHiddenView } from "./IHiddenView";
 
 export interface IFile {
     Overwrite: boolean;

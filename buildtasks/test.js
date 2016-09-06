@@ -20,7 +20,7 @@ var gulp = require("gulp"),
 //* TEST
 //******************************************************************************
 
-gulp.task("build-tests", function() {
+gulp.task("build-tests", ["clean"], function() {
     var src = global.TSWorkspace.Tests.slice(0);
     src.push(global.TSTypings.Main);
 
@@ -31,6 +31,6 @@ gulp.task("build-tests", function() {
 
 gulp.task("test", ["build", "build-tests", "istanbul:hook"], function() {
     return gulp.src(global.TSCompiledOutput.JSTestFiles)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot' }))
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
         .pipe(istanbul.writeReports());
 });

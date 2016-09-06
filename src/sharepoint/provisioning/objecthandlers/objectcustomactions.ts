@@ -1,12 +1,24 @@
 "use strict";
 
-import { ObjectHandlerBase } from "./ObjectHandlerBase";
-import { ICustomAction } from "../schema/icustomaction";
+import { ObjectHandlerBase } from "./objecthandlerbase";
+import { ICustomAction } from "../schema/ICustomAction";
 
+/**
+ * Describes the Custom Actions Object Handler
+ */
 export class ObjectCustomActions extends ObjectHandlerBase {
+    /**
+     * Creates a new instance of the ObjectCustomActions class
+     */
     constructor() {
         super("CustomActions");
     }
+
+    /**
+     * Provisioning Custom Actions
+     * 
+     * @param customactions The Custom Actions to provision
+     */
     public ProvisionObjects(customactions: Array<ICustomAction>) {
         super.scope_started();
         return new Promise((resolve, reject) => {

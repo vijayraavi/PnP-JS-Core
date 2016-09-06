@@ -1,18 +1,22 @@
 "use strict";
 
-import { Queryable, QueryableInstance, QueryableCollection } from "./Queryable";
-import { QueryableSecurable } from "./QueryableSecurable";
+import { Queryable, QueryableCollection } from "./queryable";
+import { QueryableSecurable } from "./queryablesecurable";
 import { Lists } from "./lists";
+import { Fields } from "./fields";
 import { Navigation } from "./navigation";
-import { SiteUsers } from "./siteUsers";
-import { ContentTypes } from "./contentTypes";
+import { SiteGroups } from "./sitegroups";
+import { ContentTypes } from "./contenttypes";
 import { Folders, Folder } from "./folders";
+import { RoleDefinitions } from "./roles";
 import { File } from "./files";
 import { TypedHash } from "../../collections/collections";
 import { Util } from "../../utils/util";
 import * as Types from "./types";
-import { Locale } from "../../types/locale";
 import { List } from "./lists";
+import { SiteUsers, SiteUser } from "./siteusers";
+import { UserCustomActions } from "./usercustomactions";
+import { extractOdataId } from "./odata";
 
 
 export class Webs extends QueryableCollection {
@@ -36,7 +40,7 @@ export class Webs extends QueryableCollection {
         url: string,
         description = "",
         template = "STS",
-        language = Locale.EnglishUnitedStates,
+        language = 1033,
         inheritPermissions = true,
         additionalSettings: TypedHash<string | number | boolean> = {}): Promise<WebAddResult> {
 
@@ -60,7 +64,7 @@ export class Webs extends QueryableCollection {
         return q.post({ body: postBody }).then((data) => {
             return {
                 data: data,
-                web: new Web(this, props.Url),
+                web: new Web(extractOdataId(data), ""),
             };
         });
     }
@@ -73,14 +77,7 @@ export class Webs extends QueryableCollection {
  */
 export class Web extends QueryableSecurable {
 
-    constructor(baseUrl: string | Queryable, path?: string) {
-
-        let urlStr = baseUrl as string;
-        if (urlStr.indexOf("_api") < 0) {
-            // try and handle the case where someone created a new web/site and didn't append _api
-            baseUrl = Util.combinePaths(urlStr, "_api");
-        }
-
+    constructor(baseUrl: string | Queryable, path = "_api/web") {
         super(baseUrl, path);
     }
 
@@ -105,6 +102,22 @@ export class Web extends QueryableSecurable {
     }
 
     /**
+     * Gets the fields in this web
+     *
+     */
+    public get fields(): Fields {
+        return new Fields(this);
+    }
+
+    /**
+     * Gets the available fields in this web
+     *
+     */
+    public get availablefields(): Fields {
+        return new Fields(this, "availablefields");
+    }
+
+    /**
      * Get the navigation options in this web
      *
      */
@@ -121,11 +134,35 @@ export class Web extends QueryableSecurable {
     }
 
     /**
+     * Gets the site groups
+     *
+     */
+    public get siteGroups(): SiteGroups {
+        return new SiteGroups(this);
+    }
+
+    /**
      * Get the folders in this web
      *
      */
     public get folders(): Folders {
         return new Folders(this);
+    }
+
+    /**
+     * Get all custom actions on a site
+     * 
+     */
+    public get userCustomActions(): UserCustomActions {
+        return new UserCustomActions(this);
+    }
+
+    /**
+     * Gets the collection of RoleDefinition resources.
+     * 
+     */
+    public get roleDefinitions(): RoleDefinitions {
+        return new RoleDefinitions(this);
     }
 
     /**
@@ -249,21 +286,22 @@ export class Web extends QueryableSecurable {
      * @param language The LCID of the site templates to get.
      * @param true to include language-neutral site templates; otherwise false
      */
-    public availableWebTemplates(language = Locale.EnglishUnitedStates, includeCrossLanugage = true): QueryableCollection {
+    public availableWebTemplates(language = 1033, includeCrossLanugage = true): QueryableCollection {
         return new QueryableCollection(this, `getavailablewebtemplates(lcid=${language}, doincludecrosslanguage=${includeCrossLanugage})`);
     }
 
     /**
      * Returns the list gallery on the site.
      *
-     * @param type The gallery type
+     * @param type The gallery type - WebTemplateCatalog = 111, WebPartCatalog = 113 ListTemplateCatalog = 114,
+     * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
     /* tslint:disable member-access */
     public getCatalog(type: number): Promise<List> {
         let q = new Web(this, `getcatalog(${type})`);
         q.select("Id");
         return q.get().then((data) => {
-            return new List(data["odata.id"]);
+            return new List(extractOdataId(data));
         });
     }
     /* tslint:enable */
@@ -293,9 +331,8 @@ export class Web extends QueryableSecurable {
      *
      * @param id The ID of the user.
      */
-    public getUserById(id: number): QueryableInstance {
-        // TODO:: should return a User
-        return new QueryableInstance(this, `getUserById(${id})`);
+    public getUserById(id: number): SiteUser {
+        return new SiteUser(this, `getUserById(${id})`);
     }
 
     /**

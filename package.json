@@ -1,36 +1,39 @@
 {
   "name": "sp-pnp-js",
-  "version": "0.0.10",
+  "version": "1.0.4",
   "description": "A reusable JavaScript library targeting SharePoint client-side development.",
   "main": "./lib/pnp.js",
   "typings": "./lib/pnp",
   "dependencies": {
-    "es6-promise": "~3.1.2",
-    "whatwg-fetch": "^0.11.0"
+    "es6-promise": "^3.0.0"
   },
   "devDependencies": {
     "browser-sync": "^2.11.1",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "del": "^2.2.1",
     "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.1",
-    "gulp-header": "^1.7.1",
-    "gulp-istanbul": "^0.10.3",
-    "gulp-jsdoc3": "^0.2.0",
-    "gulp-mocha": "^2.2.0",
-    "gulp-print": "^2.0.1",
-    "gulp-replace": "~0.5.4",
+    "gulp-debug": "^2.1.2",
+    "gulp-header": "^1.8.8",
+    "gulp-istanbul": "^1.0.0",
+    "gulp-mocha": "^3.0.1",
+    "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-spsave": "^1.0.6",
-    "gulp-tslint": "^4.3.2",
+    "gulp-spsave": "^2.0.0",
+    "gulp-tslint": "^6.0.2",
+    "gulp-typedoc": "^2.0.0",
     "gulp-typescript": "^2.11.0",
     "gulp-uglify": "^1.5.3",
+    "handlebars": "^4.0.5",
     "merge2": "^1.0.2",
-    "mocha": "*",
+    "mocha": "^3.0.2",
     "node-fetch": "^1.4.1",
     "run-sequence": "^1.1.5",
-    "tslint": "^3.4.0",
+    "tslint": "^3.14.0",
+    "typedoc": "^0.4.4",
     "typescript": "^1.7.5",
+    "typings": "^1.0.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
@@ -54,5 +57,9 @@
   "bugs": {
     "url": "https://github.com/OfficeDev/PnP-JS-Core/issues"
   },
-  "homepage": "https://github.com/OfficeDev/PnP-JS-Core"
+  "homepage": "https://github.com/OfficeDev/PnP-JS-Core",
+  "browser": {
+    "./build/src/net/nodefetchclient.js": "./build/src/net/nodefetchclientbrowser.js",
+    "./lib/net/nodefetchclient.js": "./lib/net/nodefetchclientbrowser.js"
+  }
 }

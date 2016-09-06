@@ -1,3 +1,5 @@
+"use strict";
+
 export interface INavigationNode {
     Title: string;
     Url: string;

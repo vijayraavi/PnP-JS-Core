@@ -1,3 +1,8 @@
+"use strict";
+
+/**
+ * Describes a ProvisioningStep 
+ */
 export class ProvisioningStep {
     private name: string;
     private index: number;
@@ -5,6 +10,11 @@ export class ProvisioningStep {
     private parameters: any;
     private handler: any;
 
+    /**
+     * Executes the ProvisioningStep function
+     * 
+     * @param dependentPromise The promise the ProvisioningStep is dependent on
+     */
     public execute(dependentPromise?) {
         let _handler = new this.handler();
         if (!dependentPromise) {
@@ -17,6 +27,9 @@ export class ProvisioningStep {
         });
     }
 
+    /**
+     * Creates a new instance of the ProvisioningStep class
+     */
     constructor(name: string, index: number, objects: any, parameters: any, handler: any) {
         this.name = name;
         this.index = index;

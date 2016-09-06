@@ -11,7 +11,7 @@ var tsc = require("gulp-typescript");
 //******************************************************************************
 
 global.TSTypings = {
-    "Main": 'typings/main.d.ts'
+    "Main": 'typings/index.d.ts'
 };
 
 global.TSCompiledOutput = {
@@ -22,7 +22,7 @@ global.TSCompiledOutput = {
         '!build/**/*.test.js'
     ],
     "JSTestFiles": [
-        'build/**/*.test.js'
+        'build/**/*.test.js',
     ],
 };
 
@@ -57,8 +57,11 @@ global.pkg = require("./package.json");
 global.banner = [
     "/**",
     " * <%= pkg.name %> v<%= pkg.version %> - <%= pkg.description %>",
-    " * Copyright (c) 2016 <%= pkg.author.name %>",
-    " * <%= pkg.license %>",
+    " * <%= pkg.license %> (https://github.com/OfficeDev/PnP-JS-Core/blob/master/LICENSE)",
+    " * Copyright (c) 2016 Microsoft",
+    " * docs: http://officedev.github.io/PnP-JS-Core",
+    " * source: <%=pkg.homepage %>",
+    " * bugs: <%=pkg.bugs.url %>",
     " */", ""
 ].join("\n");
 
@@ -66,7 +69,7 @@ global.banner = [
 try {
     global.settings = require("./settings.js");
 } catch (e) {
-    global.settings = {username: "", password: "", siteUrl: "", folder: ""};
+    global.settings = { username: "", password: "", siteUrl: "", folder: "" };
 }
 
 //******************************************************************************
@@ -86,3 +89,4 @@ require("./buildtasks/package.js");
 require("./buildtasks/serve.js");
 require("./buildtasks/sync.js");
 require("./buildtasks/test.js");
+require("./buildtasks/docs.js");
