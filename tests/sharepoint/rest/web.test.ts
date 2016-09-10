@@ -89,6 +89,13 @@ describe("Web", () => {
         });
     });
 
+    describe("getList", () => {
+        it("should return _api/web/getList('/sites/dev/lists/customlist')", () => {
+            expect(web.getList("/sites/dev/lists/customlist").toUrl())
+                .to.eq("_api/web/getList('/sites/dev/lists/customlist')");
+        });
+    });
+
     describe("availableWebTemplates", () => {
         it("should return _api/web/getavailablewebtemplates(lcid=1033, doincludecrosslanguage=true)", () => {
             expect(web.availableWebTemplates(1033, true).toUrl())
