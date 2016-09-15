@@ -361,7 +361,7 @@ export class QueryableCollection extends Queryable {
      * Orders based on the supplied fields ascending
      * 
      * @param orderby The name of the field to sort on
-     * @param ascending If true DESC is appended, otherwise ASC (default)
+     * @param ascending If false DESC is appended, otherwise ASC (default)
      */
     public orderBy(orderBy: string, ascending = true): QueryableCollection {
         let keys = this._query.getKeys();
