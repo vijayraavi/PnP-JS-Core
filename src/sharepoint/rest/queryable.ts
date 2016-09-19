@@ -361,12 +361,12 @@ export class QueryableCollection extends Queryable {
      * Orders based on the supplied fields ascending
      * 
      * @param orderby The name of the field to sort on
-     * @param ascending If true ASC is appended, otherwise DESC (default)
+     * @param ascending If false DESC is appended, otherwise ASC (default)
      */
-    public orderBy(orderBy: string, ascending = false): QueryableCollection {
+    public orderBy(orderBy: string, ascending = true): QueryableCollection {
         let keys = this._query.getKeys();
         let query = [];
-        let asc = ascending ? " asc" : "";
+        let asc = ascending ? " asc" : " desc";
         for (let i = 0; i < keys.length; i++) {
             if (keys[i] === "$orderby") {
                 query.push(this._query.get("$orderby"));
