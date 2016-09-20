@@ -279,6 +279,7 @@ export class ObjectLists extends ObjectHandlerBase {
             let properties = [];
             Object.keys(field).forEach(prop => {
                 let value = field[prop];
+                properties.push(`${prop}="${value}"`);
                 if (prop === "List") {
                     let targetList = lists.filter(v => {
                         return v.get_title() === value;
@@ -288,7 +289,6 @@ export class ObjectLists extends ObjectHandlerBase {
                     } else {
                         return null;
                     }
-                    properties.push(`${prop}="${value}"`);
                 }
             });
             fieldXml = `<Field ${properties.join(" ")}>`;
