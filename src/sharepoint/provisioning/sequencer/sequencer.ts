@@ -19,11 +19,11 @@ export class Sequencer {
 
         this.functions.forEach((sequenceFunction, functionNr) => {
 
-            promiseSequence = promiseSequence.then(function () { // Chain function call onto the sequence
+            promiseSequence = promiseSequence.then(() => { // Chain function call onto the sequence
 
                 return sequenceFunction.call(this.scope, this.parameter);
 
-            }).then(function (result) { // Resolve for each function call
+            }).then((result) => { // Resolve for each function call
 
                 if (progressFunction) {
                     progressFunction.call(this, functionNr, this.functions);
