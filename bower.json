@@ -33,6 +33,7 @@
         "server-root/",
         "src/",
         "tests/",
+        "typings.json",
         "buildtasks/",
         "typings.json/",
         "docs/",
