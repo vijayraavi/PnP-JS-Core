@@ -35,7 +35,8 @@
         "tests/",
         "buildtasks/",
         "typings.json/",
-        "docs/"
+        "docs/",
+        "typedoctheme/"
     ],
     "repository": {
         "type": "git",
