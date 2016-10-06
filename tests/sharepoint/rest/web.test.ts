@@ -92,7 +92,7 @@ describe("Web", () => {
     describe("getList", () => {
         it("should return _api/web/getList('/sites/dev/lists/customlist')", () => {
             expect(web.getList("/sites/dev/lists/customlist").toUrl())
-                .to.eq("_api/web/getList('/sites/dev/lists/customlist')");
+                .to.match(toMatchEndRegex("_api/web/getList('/sites/dev/lists/customlist')"));
         });
     });
 
@@ -209,7 +209,7 @@ describe("Web", () => {
 
         describe("delete", () => {
             it("should create and then delete a new sub-web", function () {
-                this.timeout(30000);
+                this.timeout(40000);
                 return expect(pnp.sp.web.webs.add("Better be deleted!", "web-delete-test").then(result => {
                     return result.web.delete();
                 })).to.eventually.be.fulfilled;

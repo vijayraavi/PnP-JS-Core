@@ -10,7 +10,7 @@ import { ObjectCustomActions } from "./objecthandlers/objectcustomactions";
 import { ObjectFiles } from "./objecthandlers/objectfiles";
 import { ObjectLists } from "./objecthandlers/objectlists";
 import { Util } from "./util";
-import { Logger } from "../../utils/logging";
+import { Logger, LogLevel } from "../../utils/logging";
 import { SiteSchema } from "./schema/ISiteSchema";
 import { HttpClient } from "../../net/httpclient";
 
@@ -58,7 +58,7 @@ export class Provisioning {
                     reject(response.statusText);
                 }
             }, (error) => {
-                Logger.write("Provisioning: The provided template is invalid", Logger.LogLevel.Error);
+                Logger.write("Provisioning: The provided template is invalid", LogLevel.Error);
             });
         });
     }
@@ -83,7 +83,7 @@ export class Provisioning {
 
             let promises = [];
             promises.push(new Promise((res) => {
-                Logger.write("Provisioning: Code execution scope started", Logger.LogLevel.Info);
+                Logger.write("Provisioning: Code execution scope started", LogLevel.Info);
                 res();
             }));
             let index = 1;
@@ -94,10 +94,10 @@ export class Provisioning {
             };
 
             Promise.all(promises).then((value) => {
-                Logger.write("Provisioning: Code execution scope ended", Logger.LogLevel.Info);
+                Logger.write("Provisioning: Code execution scope ended", LogLevel.Info);
                 resolve(value);
             }, (error) => {
-                Logger.write("Provisioning: Code execution scope ended" + JSON.stringify(error), Logger.LogLevel.Error);
+                Logger.write("Provisioning: Code execution scope ended" + JSON.stringify(error), LogLevel.Error);
                 reject(error);
             });
         });

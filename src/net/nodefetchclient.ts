@@ -6,7 +6,7 @@ let nodeFetch = require("node-fetch");
 let u: any = require("url");
 import { HttpClientImpl } from "./httpclient";
 import { Util } from "../utils/util";
-import { Logger } from "../utils/logging";
+import { Logger, LogLevel } from "../utils/logging";
 
 export interface AuthToken {
     token_type: string;
@@ -120,7 +120,7 @@ export class NodeFetchClient implements HttpClientImpl {
 
             Logger.log({
                 data: json,
-                level: Logger.LogLevel.Error,
+                level: LogLevel.Error,
                 message: "Auth URL Endpoint could not be determined from data. Data logged.",
             });
             throw new Error("Auth URL Endpoint could not be determined from data. Data logged.");

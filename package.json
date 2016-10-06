@@ -38,8 +38,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "test": "gulp test",
-    "postinstall": "typings install"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
