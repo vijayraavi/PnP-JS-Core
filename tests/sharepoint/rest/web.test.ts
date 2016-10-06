@@ -92,7 +92,7 @@ describe("Web", () => {
     describe("getList", () => {
         it("should return _api/web/getList('/sites/dev/lists/customlist')", () => {
             expect(web.getList("/sites/dev/lists/customlist").toUrl())
-                .to.eq("_api/web/getList('/sites/dev/lists/customlist')");
+                .to.match(toMatchEndRegex("_api/web/getList('/sites/dev/lists/customlist')"));
         });
     });
 
