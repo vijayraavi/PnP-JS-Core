@@ -14,6 +14,10 @@ export {
 } from "./files";
 
 export {
+    FolderAddResult
+} from "./folders";
+
+export {
     ItemAddResult,
     ItemUpdateResult,
     PagedItemCollection
