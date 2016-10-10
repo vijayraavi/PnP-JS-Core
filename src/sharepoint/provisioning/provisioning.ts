@@ -51,7 +51,7 @@ export class Provisioning {
         return new Promise((resolve, reject) => {
             this.httpClient.get(url).then((response) => {
                 if (response.ok) {
-                    response.json<SiteSchema>().then((template) => {
+                    response.json().then((template: SiteSchema) => {
                         this.start(template, Object.keys(template)).then(resolve, reject);
                     });
                 } else {

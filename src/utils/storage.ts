@@ -37,7 +37,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
         let o = this.store.getItem(key);
 
         if (o == null) {
-            return o;
+            return null;
         }
 
         let persistable = JSON.parse(o);
