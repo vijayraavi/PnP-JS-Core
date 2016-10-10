@@ -15,7 +15,7 @@ export class Sequencer {
      */
     public execute(progressFunction?: (s: Sequencer, index: number, functions: any[]) => void): Promise<void> {
 
-        let promiseSequence = Promise.resolve<void>(); // empty promise to chain on
+        let promiseSequence = Promise.resolve(); // empty promise to chain on
 
         this.functions.forEach((sequenceFunction, functionNr) => {
 

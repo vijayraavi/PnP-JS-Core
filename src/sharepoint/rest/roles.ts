@@ -177,7 +177,7 @@ export class RoleDefinition extends QueryableInstance {
     /* tslint:disable no-string-literal */
     public update(properties: TypedHash<string | number | boolean | BasePermissions>): Promise<RoleDefinitionUpdateResult> {
 
-        if (typeof properties.hasOwnProperty("BasePermissions")) {
+        if (typeof properties.hasOwnProperty("BasePermissions") !== "undefined") {
             properties["BasePermissions"] = Util.extend({ __metadata: { type: "SP.BasePermissions" } }, properties["BasePermissions"]);
         }
 

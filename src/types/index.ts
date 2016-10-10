@@ -1,4 +1,4 @@
-export * from "../sharepoint/rest";
+export * from "../sharepoint/rest/index";
 export { FetchOptions, HttpClient } from "../net/httpclient";
 export { IConfigurationProvider } from "../configuration/configuration";
 export { NodeClientData, LibraryConfiguration } from "../configuration/pnplibconfig";

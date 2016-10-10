@@ -35,7 +35,7 @@
         "tests/",
         "typings.json",
         "buildtasks/",
-        "typings.json/",
+        "typings.json",
         "docs/",
         "typedoctheme/"
     ],

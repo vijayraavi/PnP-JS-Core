@@ -9,7 +9,7 @@ import { NodeFetchClient } from "./nodefetchclient";
 
 export interface FetchOptions {
     method?: string;
-    headers?: HeaderInit | { [index: string]: string };
+    headers?: HeadersInit | { [index: string]: string };
     body?: BodyInit;
     mode?: string | RequestMode;
     credentials?: string | RequestCredentials;

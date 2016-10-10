@@ -217,7 +217,7 @@ export class AzureInsightsListener implements LogListener {
      * @param azureInsightsInstrumentationKey The instrumentation key created when the Azure Insights instance was created
      */
     constructor(private azureInsightsInstrumentationKey: string) {
-        let appInsights = window["appInsights"] || function (config) {
+        let appInsights = window["appInsights"] || function (config: any) {
             function r(config) {
                 t[config] = function () {
                     let i = arguments;
