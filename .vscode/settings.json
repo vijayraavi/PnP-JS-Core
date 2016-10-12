@@ -7,10 +7,5 @@
         "build/": true,
         "node_modules/": true,
         "coverage": true
-    },
-<<<<<<< HEAD
-    "typescript.tsdk": "./node_modules/typescript/lib"
-=======
-    "typescript.tsdk": "node_modules/typescript/lib"
->>>>>>> upstream/master
+    }
 }
