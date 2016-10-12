@@ -2,7 +2,7 @@
 
 import { QueryableConstructor } from "./queryable";
 import { Util } from "../../utils/util";
-import { Logger } from "../../utils/logging";
+import { Logger, LogLevel } from "../../utils/logging";
 import { HttpClient } from "../../net/httpclient";
 import { RuntimeConfig } from "../../configuration/pnplibconfig";
 import { TypedHash } from "../../collections/collections";
@@ -16,7 +16,7 @@ export function extractOdataId(candidate: any): string {
     } else {
         Logger.log({
             data: candidate,
-            level: Logger.LogLevel.Error,
+            level: LogLevel.Error,
             message: "Could not extract odata id in object, you may be using nometadata. Object data logged to logger.",
         });
         throw new Error("Could not extract odata id in object, you may be using nometadata. Object data logged to logger.");
@@ -102,7 +102,7 @@ function getEntityUrl(entity: any): string {
     } else {
         // we are likely dealing with nometadata, so don't error but we won't be able to
         // chain off these objects (write something to log?)
-        Logger.write("No uri information found in ODataEntity parsing, chaining will fail for this object.", Logger.LogLevel.Warning);
+        Logger.write("No uri information found in ODataEntity parsing, chaining will fail for this object.", LogLevel.Warning);
         return "";
     }
 }
