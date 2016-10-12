@@ -230,6 +230,14 @@ export class Queryable {
         return this.postImpl(postOptions, parser);
     }
 
+    protected patch(patchOptions: FetchOptions = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
+        return this.patchImpl(patchOptions, parser);
+    }
+
+    protected delete(deleteOptions: FetchOptions = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
+        return this.deleteImpl(deleteOptions, parser);
+    }
+
     /**
      * Gets a parent for this isntance as specified
      *
@@ -317,6 +325,70 @@ export class Queryable {
             });
         } else {
             return this._batch.add(this.toUrlAndQuery(), "POST", postOptions, parser);
+        }
+    }
+
+    private patchImpl<U>(patchOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
+
+        if (this._batch === null) {
+
+            // we are not part of a batch, so proceed as normal
+            let client = new HttpClient();
+
+            return client.patch(this.toUrlAndQuery(), patchOptions).then(function (response) {
+
+                // 200 = OK (delete)
+                // 201 = Created (create)
+                // 204 = No Content (update)
+                if (!response.ok) {
+                    throw "Error making POST request: " + response.statusText;
+                }
+
+                if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
+                    || response.status === 204) {
+
+                    // in these cases the server has returned no content, so we create an empty object
+                    // this was done because the fetch browser methods throw exceptions with no content
+                    return new Promise<any>((resolve, reject) => { resolve({}); });
+                }
+
+                // pipe our parsed content
+                return parser.parse(response);
+            });
+        } else {
+            return this._batch.add(this.toUrlAndQuery(), "PATCH", patchOptions, parser);
+        }
+    }
+
+    private deleteImpl<U>(deleteOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
+
+        if (this._batch === null) {
+
+            // we are not part of a batch, so proceed as normal
+            let client = new HttpClient();
+
+            return client.delete(this.toUrlAndQuery(), deleteOptions).then(function (response) {
+
+                // 200 = OK (delete)
+                // 201 = Created (create)
+                // 204 = No Content (update)
+                if (!response.ok) {
+                    throw "Error making POST request: " + response.statusText;
+                }
+
+                if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
+                    || response.status === 204) {
+
+                    // in these cases the server has returned no content, so we create an empty object
+                    // this was done because the fetch browser methods throw exceptions with no content
+                    return new Promise<any>((resolve, reject) => { resolve({}); });
+                }
+
+                // pipe our parsed content
+                return parser.parse(response);
+            });
+        } else {
+            return this._batch.add(this.toUrlAndQuery(), "DELETE", deleteOptions, parser);
         }
     }
 }

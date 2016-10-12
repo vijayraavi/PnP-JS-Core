@@ -201,6 +201,37 @@ require(["pnp"], function (pnp) {
     //pnp.sp.search("Title").then(show);
 
 
+    /* Webhook subscription creation */    
+    // var notificationUrl = "{ notification url }";
+    // var today = new Date();
+    // var expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
+    // pnp.sp.web.lists.getByTitle("Documents").createSubscriptions(notificationUrl, expirationDate, 'custom').then(function (data) {
+    //     // Show new subscription information
+    //     show(data);
+    //     // Check all subscriptions of the current list
+    //     pnp.sp.web.lists.getByTitle("Documents").getSubscriptions().then(show);
+    // });
+
+    /* Show webhook subscriptions of a list/library */
+    // pnp.sp.web.lists.getByTitle("Documents").getSubscriptions().then(show);
+
+    /* Update a webhook subscription from a list or library */
+    // var subscriptionId = "f5478417-aeee-4e28-9e3a-e3c7343741d1";
+    // var today = new Date();
+    // var expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
+    // pnp.sp.web.lists.getByTitle("Documents").getSubscriptions(subscriptionId).then(show);
+    // pnp.sp.web.lists.getByTitle("Documents").updateSubscriptions(subscriptionId, expirationDate).then(function () {
+    //     pnp.sp.web.lists.getByTitle("Documents").getSubscriptions(subscriptionId).then(show);
+    // });
+
+    /* Delete a webhook subscription */
+    // var subscriptionId = "f5478417-aeee-4e28-9e3a-e3c7343741d1";
+    // pnp.sp.web.lists.getByTitle("Documents").getSubscriptions().then(show);
+    // pnp.sp.web.lists.getByTitle("Documents").deleteSubscriptions(subscriptionId).then(function () {
+    //     pnp.sp.web.lists.getByTitle("Documents").getSubscriptions().then(show);
+    // });
+
+
     function syntaxHighlight(json) {
         json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {

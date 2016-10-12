@@ -34,3 +34,9 @@ gulp.task("test", ["build", "build-tests", "istanbul:hook"], function() {
         .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
         .pipe(istanbul.writeReports());
 });
+
+gulp.task("subscriptions-test", ["build", "build-tests", "istanbul:hook"], function() {
+    return gulp.src('./build/tests/sharepoint/rest/subscriptions.test.js')
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
+        .pipe(istanbul.writeReports());
+});
