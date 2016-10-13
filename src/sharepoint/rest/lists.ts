@@ -5,6 +5,7 @@ import { Views, View } from "./views";
 import { ContentTypes } from "./contenttypes";
 import { Fields } from "./fields";
 import { Forms } from "./forms";
+import { Subscriptions } from "./subscriptions";
 import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 import { QueryableSecurable } from "./queryablesecurable";
 import { Util } from "../../utils/util";
@@ -238,6 +239,14 @@ export class List extends QueryableSecurable {
     }
 
     /**
+     * Gets the webhook subscriptions of this list
+     *
+     */
+    public get subscriptions(): Subscriptions {
+        return new Subscriptions(this);
+    }
+
+    /**
      * Gets a view by view guid id
      *
      */
@@ -292,54 +301,6 @@ export class List extends QueryableSecurable {
                 "X-HTTP-Method": "DELETE",
             },
         });
-    }
-
-    /**
-     * Returns all the webhook subscriptions for the list
-     *
-     */
-    public getSubscriptions(subscriptionId?: string): Promise<any> {
-        let subEndPoint = subscriptionId ? `subscriptions('${subscriptionId}')` : "subscriptions";
-        let q = new List(this, subEndPoint);
-        return q.get();
-    }
-
-    /**
-     * Create a new webhook subscription for the list
-     *
-     */
-    public createSubscriptions(notificationUrl: string, expirationDate: string, clientState?: string): Promise<any> {
-        let postBody = JSON.stringify({
-            "resource": this.toUrl(),
-            "notificationUrl": notificationUrl,
-            "expirationDateTime": expirationDate,
-            "clientState": clientState || "pnp-js-core-subscription",
-        });
-
-        let q = new List(this, "subscriptions");
-        return q.post({ body: postBody, headers: { "Content-Type": "application/json" } });
-    }
-
-    /**
-     * Update a webhook subscription for the list
-     *
-     */
-    public updateSubscriptions(subscriptionId: string, expirationDate: string): Promise<any> {
-        let postBody = JSON.stringify({
-            "expirationDateTime": expirationDate,
-        });
-
-        let q = new List(this, `subscriptions('${subscriptionId}')`);
-        return q.patch({ body: postBody, headers: { "Content-Type": "application/json" } });
-    }
-
-    /**
-     * Delete a webhook subscription for the list
-     *
-     */
-    public deleteSubscriptions(subscriptionId: string): Promise<any> {
-        let q = new List(this, `subscriptions('${subscriptionId}')`);
-        return q.delete();
     }
 
     /**

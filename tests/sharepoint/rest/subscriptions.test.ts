@@ -29,8 +29,7 @@ describe("Lists", () => {
 
         describe("getSubscriptions", () => {
             it("Should return the subscriptions of the current list", () => {
-                // we are expecting that the OOTB list exists 
-                let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").getSubscriptions());
+                let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.get());
                 return expectVal.to.eventually.be.fulfilled;
             });
         });
@@ -39,20 +38,34 @@ describe("Lists", () => {
             it("Should be able to create a new webhook subscription in the current list", () => {
                 let today = new Date();
                 let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
-                let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").createSubscriptions(testSettings.notificationUrl, expirationDate));
-                return expectVal.to.eventually.be.fulfilled;
+
+                let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.create(testSettings.notificationUrl, expirationDate));
+                return expectVal.to.eventually.have.property("notificationUrl");
+            });
+        });
+
+        describe("getSubscriptionsById", () => {
+            it("Should return the subscription by its ID of the current list", () => {
+                pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then((data) => {
+                    if (data !== null) {
+                        if (data.length > 0) {
+                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(data[0].id));
+                            return expectVal.to.eventually.have.property("id", data[0].id);
+                        }
+                    }
+                });
             });
         });
 
         describe("updateSubscription", () => {
             it("Should be able to update an existing webhook subscription in the current list", () => {
-                pnp.sp.web.lists.getByTitle("Documents").getSubscriptions().then((data) => {
+                pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then((data) => {
                     if (data !== null) {
                         if (data.length > 0) {
                             let today = new Date();
                             let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
-                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").updateSubscriptions(data[0].id, expirationDate));
-                            return expectVal.to.eventually.be.fulfilled;
+                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.update(data[0].id, expirationDate));
+                            return expectVal.to.eventually.have.property("notificationUrl");
                         }
                     }
                 });
@@ -61,10 +74,10 @@ describe("Lists", () => {
 
         describe("deleteSubscription", () => {
             it("Should be able to delete an existing webhook subscription in the current list", () => {
-                pnp.sp.web.lists.getByTitle("Documents").getSubscriptions().then((data) => {
+                pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then((data) => {
                     if (data !== null) {
                         if (data.length > 0) {
-                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").deleteSubscriptions(data[0].id));
+                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.remove(data[0].id));
                             return expectVal.to.eventually.be.fulfilled;
                         }
                     }
