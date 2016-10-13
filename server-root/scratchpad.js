@@ -202,6 +202,7 @@ require(["pnp"], function (pnp) {
 
 
     /* Webhook subscription creation */
+    // var notificationUrl = "https://functionsf9516c96.azurewebsites.net/api/WebhookValidator";
     // var notificationUrl = "{ notification url }";
     // var today = new Date();
     // var expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
@@ -216,11 +217,11 @@ require(["pnp"], function (pnp) {
     //pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then(show);
 
     /* Show webhook subscription by ID */
-    // var subscriptionId = "67ddfab8-c53e-4483-8a89-03ef1d8ad2db";
+    // var subscriptionId = "820965d1-f02b-483e-8b82-c3628aa459c0";
     // pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(subscriptionId).then(show);
 
     /* Update a webhook subscription from a list or library */
-    // var subscriptionId = "67ddfab8-c53e-4483-8a89-03ef1d8ad2db";
+    // var subscriptionId = "820965d1-f02b-483e-8b82-c3628aa459c0";
     // var today = new Date();
     // var expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
     // pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(subscriptionId).then(show);
@@ -229,7 +230,7 @@ require(["pnp"], function (pnp) {
     // });
 
     /* Delete a webhook subscription */
-    // var subscriptionId = "67ddfab8-c53e-4483-8a89-03ef1d8ad2db";
+    // var subscriptionId = "820965d1-f02b-483e-8b82-c3628aa459c0";
     // pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then(show);
     // pnp.sp.web.lists.getByTitle("Documents").subscriptions.remove(subscriptionId).then(function () {
     //     pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then(show);

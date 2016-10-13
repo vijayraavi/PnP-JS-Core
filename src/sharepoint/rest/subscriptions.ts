@@ -21,7 +21,7 @@ export class Subscriptions extends QueryableCollection {
      * Returns all the webhook subscriptions or the specified webhook subscription
      *
      */
-    public getById(subscriptionId: string): Promise<any> {
+    public getById(subscriptionId: string): Promise<Subscription> {
         let q = this;
         q.concat(`('${subscriptionId}')`);
         return q.get();
@@ -31,7 +31,7 @@ export class Subscriptions extends QueryableCollection {
      * Create a new webhook subscription
      *
      */
-    public create(notificationUrl: string, expirationDate: string, clientState?: string): Promise<any> {
+    public create(notificationUrl: string, expirationDate: string, clientState?: string): Promise<Subscription> {
         let postBody = JSON.stringify({
             "resource": this.toUrl(),
             "notificationUrl": notificationUrl,
@@ -59,7 +59,7 @@ export class Subscriptions extends QueryableCollection {
      * Remove a webhook subscription
      *
      */
-    public remove(subscriptionId: string): Promise<any> {
+    public remove(subscriptionId: string): Promise<void> {
         let q = this;
         q.concat(`('${subscriptionId}')`);
         return q.delete();
