@@ -202,7 +202,6 @@ require(["pnp"], function (pnp) {
 
 
     /* Webhook subscription creation */
-    // var notificationUrl = "https://functionsf9516c96.azurewebsites.net/api/WebhookValidator";
     // var notificationUrl = "{ notification url }";
     // var today = new Date();
     // var expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
