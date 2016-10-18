@@ -21,48 +21,29 @@ export class Subscriptions extends QueryableCollection {
      * Returns all the webhook subscriptions or the specified webhook subscription
      *
      */
-    public getById(subscriptionId: string): Promise<Subscription> {
-        let q = this;
-        q.concat(`('${subscriptionId}')`);
-        return q.get();
+    public getById(subscriptionId: string): Subscription {
+        let subscription = new Subscription(this);
+        subscription.concat(`('${subscriptionId}')`);
+        return subscription;
     }
 
     /**
      * Create a new webhook subscription
      *
      */
-    public create(notificationUrl: string, expirationDate: string, clientState?: string): Promise<Subscription> {
+    public add(notificationUrl: string, expirationDate: string, clientState?: string): Promise<SubscriptionAddResult> {
+
         let postBody = JSON.stringify({
             "resource": this.toUrl(),
             "notificationUrl": notificationUrl,
             "expirationDateTime": expirationDate,
             "clientState": clientState || "pnp-js-core-subscription",
         });
-        return this.post({ body: postBody, headers: { "Content-Type": "application/json" } });
-    }
 
-    /**
-     * Update a webhook subscription
-     *
-     */
-    public update(subscriptionId: string, expirationDate: string): Promise<Subscription> {
-        let postBody = JSON.stringify({
-            "expirationDateTime": expirationDate,
+        return this.post({ body: postBody, headers: { "Content-Type": "application/json" } }).then(result => {
+
+            return { data: result, subscription: this.getById(result.id) };
         });
-
-        let q = this;
-        q.concat(`('${subscriptionId}')`);
-        return q.patch({ body: postBody, headers: { "Content-Type": "application/json" } });
-    }
-
-    /**
-     * Remove a webhook subscription
-     *
-     */
-    public remove(subscriptionId: string): Promise<void> {
-        let q = this;
-        q.concat(`('${subscriptionId}')`);
-        return q.delete();
     }
 }
 
@@ -80,4 +61,37 @@ export class Subscription extends QueryableInstance {
     constructor(baseUrl: string | Queryable, path?: string) {
         super(baseUrl, path);
     }
+
+    /**
+     * Update a webhook subscription
+     *
+     */
+    public update(expirationDate: string): Promise<SubscriptionUpdateResult> {
+
+        let postBody = JSON.stringify({
+            "expirationDateTime": expirationDate,
+        });
+
+        return this.patch({ body: postBody, headers: { "Content-Type": "application/json" } }).then(data => {
+            return { data: data, subscription: this }
+        });
+    }
+
+    /**
+     * Remove a webhook subscription
+     *
+     */
+    public delete(): Promise<void> {
+        return super.delete();
+    }
+}
+
+export interface SubscriptionAddResult {
+    subscription: Subscription;
+    data: any;
+}
+
+export interface SubscriptionUpdateResult {
+    subscription: Subscription;
+    data: any;
 }

@@ -39,7 +39,7 @@ describe("Lists", () => {
                 let today = new Date();
                 let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
 
-                let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.create(testSettings.notificationUrl, expirationDate));
+                let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.add(testSettings.notificationUrl, expirationDate));
                 return expectVal.to.eventually.have.property("notificationUrl");
             });
         });
@@ -64,7 +64,7 @@ describe("Lists", () => {
                         if (data.length > 0) {
                             let today = new Date();
                             let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
-                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.update(data[0].id, expirationDate));
+                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(data[0].id).update(expirationDate));
                             return expectVal.to.eventually.have.property("notificationUrl");
                         }
                     }
@@ -77,7 +77,7 @@ describe("Lists", () => {
                 pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then((data) => {
                     if (data !== null) {
                         if (data.length > 0) {
-                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.remove(data[0].id));
+                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(data[0].id).delete());
                             return expectVal.to.eventually.be.fulfilled;
                         }
                     }
