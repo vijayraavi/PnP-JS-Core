@@ -16,7 +16,7 @@ Please use [http://aka.ms/OfficeDevPnP](http://aka.ms/OfficeDevPnP) for getting 
 
 Add the npm package to your project
 
-    npm install sp-pnp-js --save-dev
+    npm install sp-pnp-js --save
 
 **Bower**
 
