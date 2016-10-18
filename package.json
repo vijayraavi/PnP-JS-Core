@@ -44,7 +44,8 @@
     "typescript": "^2.0.3",
     "typings": "^1.4.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "^6.0.0"
   },
   "scripts": {
     "test": "gulp test"
