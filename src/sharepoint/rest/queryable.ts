@@ -71,7 +71,7 @@ export class Queryable {
      * Blocks a batch call from occuring, MUST be cleared with clearBatchDependency before a request will execute
      */
     protected addBatchDependency() {
-        if (this._batch !== null) {
+        if (this.hasBatch) {
             this._batch.incrementBatchDep();
         }
     }
@@ -80,7 +80,7 @@ export class Queryable {
      * Clears a batch request dependency
      */
     protected clearBatchDependency() {
-        if (this._batch !== null) {
+        if (this.hasBatch) {
             this._batch.decrementBatchDep();
         }
     }
@@ -278,7 +278,7 @@ export class Queryable {
             parser = new CachingParserWrapper(parser, options);
         }
 
-        if (this._batch === null) {
+        if (!this.hasBatch) {
 
             // we are not part of a batch, so proceed as normal
             let client = new HttpClient();
@@ -292,13 +292,13 @@ export class Queryable {
             });
         } else {
 
-            return this._batch.add(this.toUrlAndQuery(), "GET", {}, parser);
+            return this._batch.add(this.toUrlAndQuery(), "GET", getOptions, parser);
         }
     }
 
     private postImpl<U>(postOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
 
-        if (this._batch === null) {
+        if (!this.hasBatch) {
 
             // we are not part of a batch, so proceed as normal
             let client = new HttpClient();
@@ -309,7 +309,11 @@ export class Queryable {
                 // 201 = Created (create)
                 // 204 = No Content (update)
                 if (!response.ok) {
-                    throw "Error making POST request: " + response.statusText;
+
+                    return response.json().then(d => {
+                        console.log(JSON.stringify(d));
+                        throw "Error making POST request: " + response.statusText;
+                    });
                 }
 
                 if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
