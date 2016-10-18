@@ -301,7 +301,11 @@ export class Queryable {
                 // 201 = Created (create)
                 // 204 = No Content (update)
                 if (!response.ok) {
-                    throw "Error making POST request: " + response.statusText;
+
+                    return response.json().then(d => {
+                        console.log(JSON.stringify(d));
+                        throw "Error making POST request: " + response.statusText;
+                    });
                 }
 
                 if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
