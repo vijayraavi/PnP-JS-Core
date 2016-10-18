@@ -69,6 +69,11 @@ export {
     UserProps
 } from "./siteusers";
 
+export {
+    SubscriptionAddResult,
+    SubscriptionUpdateResult
+} from "./subscriptions";
+
 export * from "./types";
 
 export {

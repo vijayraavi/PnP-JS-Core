@@ -131,6 +131,16 @@ export class HttpClient {
         return this.fetch(url, opts);
     }
 
+    public patch(url: string, options: FetchOptions = {}): Promise<Response> {
+        let opts = Util.extend(options, { method: "PATCH" });
+        return this.fetch(url, opts);
+    }
+
+    public delete(url: string, options: FetchOptions = {}): Promise<Response> {
+        let opts = Util.extend(options, { method: "DELETE" });
+        return this.fetch(url, opts);
+    }
+
     protected getFetchImpl(): HttpClientImpl {
         if (RuntimeConfig.useSPRequestExecutor) {
             return new SPRequestExecutorClient();
