@@ -61,7 +61,9 @@
   "keywords": [
     "sharepoint",
     "office365",
-    "tools"
+    "tools",
+    "spfx",
+    "sharepoint framework"
   ],
   "bugs": {
     "url": "https://github.com/OfficeDev/PnP-JS-Core/issues"

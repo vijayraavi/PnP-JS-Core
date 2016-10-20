@@ -1,13 +1,12 @@
 "use strict";
 
 import { Util } from "../../utils/util";
+import { Logger, LogLevel } from "../../utils/logging";
 import { Dictionary } from "../../collections/collections";
 import { FetchOptions, HttpClient } from "../../net/httpclient";
 import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
 import { ICachingOptions, CachingParserWrapper, CachingOptions } from "./caching";
 import { RuntimeConfig } from "../../configuration/pnplibconfig";
-
-declare var _spPageContextInfo: any;
 
 export interface QueryableConstructor<T> {
     new (baseUrl: string | Queryable, path?: string): T;
@@ -162,11 +161,12 @@ export class Queryable {
      * 
      * let b = pnp.sp.createBatch(); 
      * pnp.sp.web.inBatch(b).get().then(...);
+     * b.execute().then(...)
      * ```
      */
     public inBatch(batch: ODataBatch): this {
+
         if (this._batch !== null) {
-            // TODO: what do we want to do?
             throw new Error("This query is already part of a batch.");
         }
 
@@ -189,7 +189,7 @@ export class Queryable {
     }
 
     /**
-     * Gets the currentl url, made server relative or absolute based on the availability of the _spPageContextInfo object
+     * Gets the currentl url, made absolute based on the availability of the _spPageContextInfo object
      *
      */
     public toUrl(): string {
@@ -282,14 +282,10 @@ export class Queryable {
 
             // we are not part of a batch, so proceed as normal
             let client = new HttpClient();
-            return client.get(this.toUrlAndQuery(), getOptions).then(function (response) {
-
-                if (!response.ok) {
-                    throw "Error making GET request: " + response.statusText;
-                }
-
-                return parser.parse(response);
+            return client.get(this.toUrlAndQuery(), getOptions).then((response) => {
+                return this.processHttpClientResponse(response, parser);
             });
+
         } else {
 
             return this._batch.add(this.toUrlAndQuery(), "GET", getOptions, parser);
@@ -302,31 +298,10 @@ export class Queryable {
 
             // we are not part of a batch, so proceed as normal
             let client = new HttpClient();
-
-            return client.post(this.toUrlAndQuery(), postOptions).then(function (response) {
-
-                // 200 = OK (delete)
-                // 201 = Created (create)
-                // 204 = No Content (update)
-                if (!response.ok) {
-
-                    return response.json().then(d => {
-                        console.log(JSON.stringify(d));
-                        throw "Error making POST request: " + response.statusText;
-                    });
-                }
-
-                if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
-                    || response.status === 204) {
-
-                    // in these cases the server has returned no content, so we create an empty object
-                    // this was done because the fetch browser methods throw exceptions with no content
-                    return new Promise<any>((resolve, reject) => { resolve({}); });
-                }
-
-                // pipe our parsed content
-                return parser.parse(response);
+            return client.post(this.toUrlAndQuery(), postOptions).then((response) => {
+                return this.processHttpClientResponse(response, parser);
             });
+
         } else {
             return this._batch.add(this.toUrlAndQuery(), "POST", postOptions, parser);
         }
@@ -334,31 +309,14 @@ export class Queryable {
 
     private patchImpl<U>(patchOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
 
-        if (this._batch === null) {
+        if (!this.hasBatch) {
 
             // we are not part of a batch, so proceed as normal
             let client = new HttpClient();
-
-            return client.patch(this.toUrlAndQuery(), patchOptions).then(function (response) {
-
-                // 200 = OK (delete)
-                // 201 = Created (create)
-                // 204 = No Content (update)
-                if (!response.ok) {
-                    throw "Error making POST request: " + response.statusText;
-                }
-
-                if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
-                    || response.status === 204) {
-
-                    // in these cases the server has returned no content, so we create an empty object
-                    // this was done because the fetch browser methods throw exceptions with no content
-                    return new Promise<any>((resolve, reject) => { resolve({}); });
-                }
-
-                // pipe our parsed content
-                return parser.parse(response);
+            return client.patch(this.toUrlAndQuery(), patchOptions).then((response) => {
+                return this.processHttpClientResponse(response, parser);
             });
+
         } else {
             return this._batch.add(this.toUrlAndQuery(), "PATCH", patchOptions, parser);
         }
@@ -366,34 +324,47 @@ export class Queryable {
 
     private deleteImpl<U>(deleteOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
 
-        if (this._batch === null) {
+        if (!this.hasBatch) {
 
             // we are not part of a batch, so proceed as normal
             let client = new HttpClient();
-
-            return client.delete(this.toUrlAndQuery(), deleteOptions).then(function (response) {
-
-                // 200 = OK (delete)
-                // 201 = Created (create)
-                // 204 = No Content (update)
-                if (!response.ok) {
-                    throw "Error making POST request: " + response.statusText;
-                }
-
-                if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
-                    || response.status === 204) {
-
-                    // in these cases the server has returned no content, so we create an empty object
-                    // this was done because the fetch browser methods throw exceptions with no content
-                    return new Promise<any>((resolve, reject) => { resolve({}); });
-                }
-
-                // pipe our parsed content
-                return parser.parse(response);
+            return client.delete(this.toUrlAndQuery(), deleteOptions).then((response) => {
+                return this.processHttpClientResponse(response, parser);
             });
+
         } else {
             return this._batch.add(this.toUrlAndQuery(), "DELETE", deleteOptions, parser);
         }
+    }
+
+    private processHttpClientResponse<U>(response: Response, parser: ODataParser<any, U>): Promise<U> {
+
+        // 200 = OK (get, delete)
+        // 201 = Created (create)
+        // 204 = No Content (update)
+        if (!response.ok) {
+
+            response.text().then(text => {
+                Logger.log({
+                    data: response,
+                    message: text,
+                    level: LogLevel.Error
+                });
+
+                throw `Error making HttpClient request in queryable: ${response.statusText}`;
+            });
+        }
+
+        if ((response.headers.has("Content-Length") && parseFloat(response.headers.get("Content-Length")) === 0)
+            || response.status === 204) {
+
+            // in these cases the server has returned no content, so we create an empty object
+            // this was done because the fetch browser methods throw exceptions with no content
+            return new Promise<any>((resolve, reject) => { resolve({}); });
+        }
+
+        // pipe our parsed content
+        return parser.parse(response);
     }
 }
 
