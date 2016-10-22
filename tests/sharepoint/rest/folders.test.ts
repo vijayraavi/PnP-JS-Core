@@ -61,22 +61,10 @@ describe("Folder", () => {
         });
     });
 
-    describe("itemCount", () => {
-        it("Should return _api/web/folders/getByName('Marshawn Lynch')/itemCount", () => {
-            expect(folder.itemCount.toUrl()).to.match(toMatchEndRegex("_api/web/folders/getByName('Marshawn Lynch')/itemCount"));
-        });
-    });
-
     describe("listItemAllFields", () => {
         it("Should return _api/web/folders/getByName('Marshawn Lynch')/listItemAllFields", () => {
             expect(folder.listItemAllFields.toUrl())
                 .to.match(toMatchEndRegex("_api/web/folders/getByName('Marshawn Lynch')/listItemAllFields"));
-        });
-    });
-
-    describe("name", () => {
-        it("Should return _api/web/folders/getByName('Marshawn Lynch')/name", () => {
-            expect(folder.name.toUrl()).to.match(toMatchEndRegex("_api/web/folders/getByName('Marshawn Lynch')/name"));
         });
     });
 
@@ -103,12 +91,6 @@ describe("Folder", () => {
         it("Should return _api/web/folders/getByName('Marshawn Lynch')/uniqueContentTypeOrder", () => {
             expect(folder.uniqueContentTypeOrder.toUrl())
                 .to.match(toMatchEndRegex("_api/web/folders/getByName('Marshawn Lynch')/uniqueContentTypeOrder"));
-        });
-    });
-
-    describe("welcomePage", () => {
-        it("Should return _api/web/folders/getByName('Marshawn Lynch')/welcomePage", () => {
-            expect(folder.welcomePage.toUrl()).to.match(toMatchEndRegex("_api/web/folders/getByName('Marshawn Lynch')/welcomePage"));
         });
     });
 });

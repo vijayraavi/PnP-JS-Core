@@ -26,7 +26,7 @@ before(function (done: MochaDone) {
         });
 
         // comment this out to keep older subsites
-        cleanUpAllSubsites();
+        // cleanUpAllSubsites();
 
         // create the web in which we will test
         let d = new Date();
