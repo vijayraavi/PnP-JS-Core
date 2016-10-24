@@ -379,7 +379,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param filter The string representing the filter query
      */
-    public filter(filter: string): QueryableCollection {
+    public filter(filter: string): this {
         this._query.add("$filter", filter);
         return this;
     }
@@ -389,7 +389,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param selects One or more fields to return
      */
-    public select(...selects: string[]): QueryableCollection {
+    public select(...selects: string[]): this {
         this._query.add("$select", selects.join(","));
         return this;
     }
@@ -399,7 +399,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param expands The Fields for which to expand the values
      */
-    public expand(...expands: string[]): QueryableCollection {
+    public expand(...expands: string[]): this {
         this._query.add("$expand", expands.join(","));
         return this;
     }
@@ -410,7 +410,7 @@ export class QueryableCollection extends Queryable {
      * @param orderby The name of the field to sort on
      * @param ascending If false DESC is appended, otherwise ASC (default)
      */
-    public orderBy(orderBy: string, ascending = true): QueryableCollection {
+    public orderBy(orderBy: string, ascending = true): this {
         let keys = this._query.getKeys();
         let query = [];
         let asc = ascending ? " asc" : " desc";
@@ -432,7 +432,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param skip The number of items to skip
      */
-    public skip(skip: number): QueryableCollection {
+    public skip(skip: number): this {
         this._query.add("$skip", skip.toString());
         return this;
     }
@@ -442,7 +442,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param top The query row limit
      */
-    public top(top: number): QueryableCollection {
+    public top(top: number): this {
         this._query.add("$top", top.toString());
         return this;
     }
@@ -460,7 +460,7 @@ export class QueryableInstance extends Queryable {
      * 
      * @param selects One or more fields to return
      */
-    public select(...selects: string[]): QueryableInstance {
+    public select(...selects: string[]): this {
         this._query.add("$select", selects.join(","));
         return this;
     }
@@ -470,7 +470,7 @@ export class QueryableInstance extends Queryable {
      * 
      * @param expands The Fields for which to expand the values
      */
-    public expand(...expands: string[]): QueryableInstance {
+    public expand(...expands: string[]): this {
         this._query.add("$expand", expands.join(","));
         return this;
     }

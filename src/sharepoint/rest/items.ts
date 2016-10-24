@@ -40,7 +40,7 @@ export class Items extends QueryableCollection {
      * 
      * @param skip The starting id where the page should start, use with top to specify pages
      */
-    public skip(skip: number): QueryableCollection {
+    public skip(skip: number): this {
         this._query.add("$skiptoken", encodeURIComponent(`Paged=TRUE&p_ID=${skip}`));
         return this;
     }
@@ -81,12 +81,6 @@ export class Items extends QueryableCollection {
 
             return promise;
         });
-    }
-}
-
-class PagedItemCollectionParser extends ODataParserBase<any, PagedItemCollection<any>> {
-    public parse(r: Response): Promise<PagedItemCollection<any>> {
-        return PagedItemCollection.fromResponse(r);
     }
 }
 
@@ -272,36 +266,13 @@ export interface ItemUpdateResult {
  */
 export class PagedItemCollection<T> {
 
-    /**
-     * Contains the results of the query
-     */
-    public results: T;
-
-    /**
-     * The url to the next set of results
-     */
-    private nextUrl: string;
+    constructor(private nextUrl: string, public results: T) { }
 
     /**
      * If true there are more results available in the set, otherwise there are not
      */
     public get hasNext(): boolean {
         return typeof this.nextUrl === "string" && this.nextUrl.length > 0;
-    }
-
-    /**
-     * Creats a new instance of the PagedItemCollection class from the response
-     * 
-     * @param r Response instance from which this collection will be created
-     * 
-     */
-    public static fromResponse(r: Response): Promise<PagedItemCollection<any>> {
-        return r.json().then(d => {
-            let col = new PagedItemCollection();
-            col.nextUrl = d["odata.nextLink"];
-            col.results = d.value;
-            return col;
-        });
     }
 
     /**
@@ -317,3 +288,14 @@ export class PagedItemCollection<T> {
         return new Promise<any>(r => r(null));
     }
 }
+
+class PagedItemCollectionParser extends ODataParserBase<any, PagedItemCollection<any>> {
+    public parse(r: Response): Promise<PagedItemCollection<any>> {
+
+        return r.json().then(json => {
+            let nextUrl = json.hasOwnProperty("d") && json.d.hasOwnProperty("__next") ? json.d.__next : json["odata.nextLink"];
+            return new PagedItemCollection(nextUrl, this.parseODataJSON(json));
+        });
+    }
+}
+
