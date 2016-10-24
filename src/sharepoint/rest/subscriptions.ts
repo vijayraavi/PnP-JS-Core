@@ -73,7 +73,7 @@ export class Subscription extends QueryableInstance {
         });
 
         return this.patch({ body: postBody, headers: { "Content-Type": "application/json" } }).then(data => {
-            return { data: data, subscription: this }
+            return { data: data, subscription: this };
         });
     }
 

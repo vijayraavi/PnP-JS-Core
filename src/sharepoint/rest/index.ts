@@ -10,7 +10,11 @@ export {
     FileAddResult,
     WebPartsPersonalizationScope,
     MoveOperations,
-    TemplateFileType
+    TemplateFileType,
+    TextFileParser,
+    BlobFileParser,
+    BufferFileParser,
+    ChunkedFileUploadProgressData
 } from "./files";
 
 export {
