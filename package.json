@@ -52,7 +52,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/OfficeDev/PnP-JS-Core"
+    "url": "git://github.com/SharePoint/PnP-JS-Core"
   },
   "author": {
     "name": "Microsoft and other contributors"
@@ -66,9 +66,9 @@
     "sharepoint framework"
   ],
   "bugs": {
-    "url": "https://github.com/OfficeDev/PnP-JS-Core/issues"
+    "url": "https://github.com/SharePoint/PnP-JS-Core/issues"
   },
-  "homepage": "https://github.com/OfficeDev/PnP-JS-Core",
+  "homepage": "https://github.com/SharePoint/PnP-JS-Core",
   "browser": {
     "./build/src/net/nodefetchclient.js": "./build/src/net/nodefetchclientbrowser.js",
     "./lib/net/nodefetchclient.js": "./lib/net/nodefetchclientbrowser.js"
