@@ -30,19 +30,21 @@ export interface ODataParser<T, U> {
 export abstract class ODataParserBase<T, U> implements ODataParser<T, U> {
 
     public parse(r: Response): Promise<U> {
-        return r.json().then(json => {
-            let result = json;
-            if (json.hasOwnProperty("d")) {
-                if (json.d.hasOwnProperty("results")) {
-                    result = json.d.results;
-                } else {
-                    result = json.d;
-                }
-            } else if (json.hasOwnProperty("value")) {
-                result = json.value;
+        return r.json().then(json => this.parseODataJSON(json));
+    }
+
+    protected parseODataJSON<U>(json: any): U {
+        let result = json;
+        if (json.hasOwnProperty("d")) {
+            if (json.d.hasOwnProperty("results")) {
+                result = json.d.results;
+            } else {
+                result = json.d;
             }
-            return result;
-        });
+        } else if (json.hasOwnProperty("value")) {
+            result = json.value;
+        }
+        return result;
     }
 }
 

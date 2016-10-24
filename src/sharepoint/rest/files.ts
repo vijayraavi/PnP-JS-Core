@@ -326,7 +326,7 @@ export class File extends QueryableInstance {
         chunkSize = 10485760): Promise<File> {
 
         if (typeof progress === "undefined") {
-            progress = (data) => { };
+            progress = (data) => null;
         }
 
         let self = this;
