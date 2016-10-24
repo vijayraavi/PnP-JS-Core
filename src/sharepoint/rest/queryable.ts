@@ -347,8 +347,8 @@ export class Queryable {
             response.text().then(text => {
                 Logger.log({
                     data: response,
+                    level: LogLevel.Error,
                     message: text,
-                    level: LogLevel.Error
                 });
 
                 throw `Error making HttpClient request in queryable: ${response.statusText}`;
