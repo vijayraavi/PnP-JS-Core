@@ -25,6 +25,25 @@ export class ContentTypes extends QueryableCollection {
         ct.concat(`('${id}')`);
         return ct;
     }
+
+    /**
+     * Adds an existing contenttype to a list
+     * 
+     * @param contentTypeId in the following format, for example: 0x010102
+     */
+    public addAvailableContentType(contentTypeId: string): Promise<ContentTypeAddResult> {
+
+        let postBody: string = JSON.stringify({
+            "contentTypeId": contentTypeId,
+        });
+
+        return new ContentTypes(this, `addAvailableContentType`).postAs<any, { Id: string }>({ body: postBody }).then((data) => {
+            return {
+                data: data,
+                field: this.getById(data.Id),
+            };
+        });
+    }
 }
 
 /**
@@ -69,4 +88,8 @@ export class ContentType extends QueryableInstance {
     public get workflowAssociations(): Queryable {
         return new Queryable(this, "workflowAssociations");
     }
+}
+
+export interface ContentTypeAddResult {
+    data: any;
 }
