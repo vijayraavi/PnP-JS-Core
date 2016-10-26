@@ -1,6 +1,7 @@
 "use strict";
 
 import { Search, SearchQuery, SearchResult } from "./search";
+import { SearchSuggest, SearchSuggestQuery } from "./searchsuggest";
 import { Site } from "./site";
 import { Web } from "./webs";
 import { Util } from "../../utils/util";
@@ -12,6 +13,24 @@ import { ODataBatch } from "./odata";
  * Root of the SharePoint REST module
  */
 export class Rest {
+
+    /**
+     * Executes a search against this web context
+     *
+     * @param query The SearchQuery definition
+     */
+    public searchSuggest(query: string | SearchSuggestQuery): Promise<any> {
+
+        let finalQuery: SearchSuggestQuery;
+
+        if (typeof query === "string") {
+            finalQuery = { querytext: query };
+        } else {
+            finalQuery = query;
+        }
+
+        return new SearchSuggest("").execute(finalQuery);
+    }
 
     /**
      * Executes a search against this web context
