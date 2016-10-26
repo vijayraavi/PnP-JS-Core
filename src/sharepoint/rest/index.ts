@@ -61,6 +61,12 @@ export {
 } from "./search";
 
 export {
+    SearchSuggestQuery,
+    SearchSuggestResult,
+    PersonalResultSuggestion
+} from "./searchsuggest";
+
+export {
     Site
 } from "./site";
 
