@@ -1,6 +1,7 @@
 "use strict";
 
 import { Queryable, QueryableInstance } from "./queryable";
+import { Util } from "../../utils/util";
 
 
 /**
@@ -123,7 +124,7 @@ export interface SearchQuery {
     /**
      * The set of refiners to return in a search result.
      */
-    Refiners?: string[];
+    Refiners?: string;
 
     /**
      * The additional query terms to append to the query.
@@ -258,10 +259,6 @@ export class Search extends QueryableInstance {
             formattedBody.RefinementFilters = { results: query.RefinementFilters };
         }
 
-        if (formattedBody.Refiners) {
-            formattedBody.Refiners = { results: query.Refiners };
-        }
-
         if (formattedBody.SortList) {
             formattedBody.SortList = { results: query.SortList };
         }
@@ -276,7 +273,11 @@ export class Search extends QueryableInstance {
 
         // TODO: Properties & ReorderingRules
 
-        let postBody = JSON.stringify({ request: formattedBody });
+        let postBody = JSON.stringify({
+            request: Util.extend({
+                "__metadata": { "type": "Microsoft.Office.Server.Search.REST.SearchRequest" },
+            }, formattedBody),
+        });
 
         return this.post({ body: postBody }).then((data) => new SearchResults(data));
     }
