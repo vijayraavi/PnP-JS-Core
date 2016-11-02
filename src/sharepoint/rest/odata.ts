@@ -131,7 +131,7 @@ export class ODataBatch {
     private _batchDepCount: number;
     private _requests: ODataBatchRequestInfo[];
 
-    constructor(private _batchId = Util.getGUID()) {
+    constructor(private baseUrl: string, private _batchId = Util.getGUID()) {
         this._requests = [];
         this._batchDepCount = 0;
     }
@@ -289,7 +289,8 @@ export class ODataBatch {
         };
 
         let client = new HttpClient();
-        return client.post(Util.makeUrlAbsolute("/_api/$batch"), batchOptions)
+        let requestUrl = Util.makeUrlAbsolute(Util.combinePaths(this.baseUrl, "/_api/$batch"));
+        return client.post(requestUrl, batchOptions)
             .then(r => r.text())
             .then(this._parseResponse)
             .then(responses => {

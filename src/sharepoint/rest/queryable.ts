@@ -125,15 +125,17 @@ export class Queryable {
             // being created from just a string.
 
             let urlStr = baseUrl as string;
-            if (urlStr.lastIndexOf("/") < 0) {
+            if (Util.isUrlAbsolute(urlStr) || urlStr.lastIndexOf("/") < 0) {
                 this._parentUrl = urlStr;
                 this._url = Util.combinePaths(urlStr, path);
             } else if (urlStr.lastIndexOf("/") > urlStr.lastIndexOf("(")) {
+                // .../items(19)/fields
                 let index = urlStr.lastIndexOf("/");
                 this._parentUrl = urlStr.slice(0, index);
                 path = Util.combinePaths(urlStr.slice(index), path);
                 this._url = Util.combinePaths(this._parentUrl, path);
             } else {
+                // .../items(19)
                 let index = urlStr.lastIndexOf("(");
                 this._parentUrl = urlStr.slice(0, index);
                 this._url = Util.combinePaths(urlStr, path);
@@ -141,10 +143,6 @@ export class Queryable {
         } else {
             let q = baseUrl as Queryable;
             this._parentUrl = q._url;
-            // only copy batch if we don't already have one
-            if (!this.hasBatch && q.hasBatch) {
-                this._batch = q._batch;
-            }
             let target = q._query.get("@target");
             if (target !== null) {
                 this._query.add("@target", target);

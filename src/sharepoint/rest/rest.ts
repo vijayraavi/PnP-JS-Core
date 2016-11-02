@@ -79,7 +79,7 @@ export class Rest {
      * 
      */
     public createBatch(): ODataBatch {
-        return new ODataBatch();
+        return this.web.createBatch();
     }
 
     /**
