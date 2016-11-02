@@ -60,7 +60,7 @@ export class Items extends QueryableCollection {
      */
     public add(properties: TypedHash<string | number | boolean> = {}): Promise<ItemAddResult> {
 
-        this.addBatchDependency();
+        let removeDependency = this.addBatchDependency();
 
         let parentList = this.getParent(QueryableInstance);
 
@@ -77,7 +77,7 @@ export class Items extends QueryableCollection {
                 };
             });
 
-            this.clearBatchDependency();
+            removeDependency();
 
             return promise;
         });
@@ -171,7 +171,7 @@ export class Item extends QueryableSecurable {
      */
     public update(properties: TypedHash<string | number | boolean>, eTag = "*"): Promise<ItemUpdateResult> {
 
-        this.addBatchDependency();
+        let removeDependency = this.addBatchDependency();
 
         let parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
 
@@ -194,7 +194,7 @@ export class Item extends QueryableSecurable {
                 };
             });
 
-            this.clearBatchDependency();
+            removeDependency();
 
             return promise;
         });

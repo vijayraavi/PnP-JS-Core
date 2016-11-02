@@ -128,12 +128,12 @@ export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataPars
  */
 export class ODataBatch {
 
-    private _batchDepCount: number;
+    private _batchDependencies: Promise<void>;
     private _requests: ODataBatchRequestInfo[];
 
     constructor(private baseUrl: string, private _batchId = Util.getGUID()) {
         this._requests = [];
-        this._batchDepCount = 0;
+        this._batchDependencies = Promise.resolve();
     }
 
     /**
@@ -165,12 +165,16 @@ export class ODataBatch {
         return p;
     }
 
-    public incrementBatchDep() {
-        this._batchDepCount++;
-    }
+    public addBatchDependency(): () => void {
 
-    public decrementBatchDep() {
-        this._batchDepCount--;
+        let resolver: () => void;
+        let promise = new Promise<void>((resolve) => {
+            resolver = resolve;
+        });
+
+        this._batchDependencies = this._batchDependencies.then(() => promise);
+
+        return resolver;
     }
 
     /**
@@ -179,21 +183,15 @@ export class ODataBatch {
      * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
     public execute(): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            if (this._batchDepCount > 0) {
-                setTimeout(() => this.execute(), 100);
-            } else {
-                this.executeImpl().then(() => resolve()).catch(reject);
-            }
-        });
+        return this._batchDependencies.then(() => this.executeImpl());
     }
 
-    private executeImpl(): Promise<any[]> {
+    private executeImpl(): Promise<void> {
 
         // if we don't have any requests, don't bother sending anything
         // this could be due to caching further upstream, or just an empty batch 
         if (this._requests.length < 1) {
-            return new Promise<any[]>(r => r());
+            return Promise.resolve();
         }
 
         // build all the requests, send them, pipe results in order to parsers
@@ -299,7 +297,7 @@ export class ODataBatch {
                     throw new Error("Could not properly parse responses to match requests in batch.");
                 }
 
-                let resolutions: Promise<any>[] = [];
+                let chain = Promise.resolve();
 
                 for (let i = 0; i < responses.length; i++) {
                     let request = this._requests[i];
@@ -309,10 +307,10 @@ export class ODataBatch {
                         request.reject(new Error(response.statusText));
                     }
 
-                    resolutions.push(request.parser.parse(response).then(request.resolve).catch(request.reject));
+                    chain = chain.then(_ => request.parser.parse(response).then(request.resolve).catch(request.reject));
                 }
 
-                return Promise.all(resolutions);
+                return chain;
             });
     }
 
