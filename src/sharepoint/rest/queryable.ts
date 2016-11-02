@@ -67,21 +67,14 @@ export class Queryable {
     }
 
     /**
-     * Blocks a batch call from occuring, MUST be cleared with clearBatchDependency before a request will execute
+     * Blocks a batch call from occuring, MUST be cleared by calling the returned function
      */
-    protected addBatchDependency() {
+    protected addBatchDependency(): () => void {
         if (this.hasBatch) {
-            this._batch.incrementBatchDep();
+            return this._batch.addBatchDependency();
         }
-    }
 
-    /**
-     * Clears a batch request dependency
-     */
-    protected clearBatchDependency() {
-        if (this.hasBatch) {
-            this._batch.decrementBatchDep();
-        }
+        return () => null;
     }
 
     /**
@@ -237,7 +230,7 @@ export class Queryable {
     }
 
     /**
-     * Gets a parent for this isntance as specified
+     * Gets a parent for this instance as specified
      *
      * @param factory The contructor for the class to create
      */
