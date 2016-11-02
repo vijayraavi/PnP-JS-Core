@@ -169,9 +169,7 @@ export interface SearchQuery {
     /**
      * Properties to be used to configure the search query
      */
-    Properties?: ISearchProperty[];
-
-    // TODO: ReorderingRules
+    Properties?: SearchProperty[];
 
     /**
      *  A Boolean value that specifies whether to return personal favorites with the search results.
@@ -249,7 +247,7 @@ export class Search extends QueryableInstance {
      * .......
      * @returns Promise
      */
-    public execute(query: SearchQuery): Promise<SearchResult> {
+    public execute(query: SearchQuery): Promise<SearchResults> {
 
         let formattedBody: any;
         formattedBody = query;
@@ -277,8 +275,6 @@ export class Search extends QueryableInstance {
         if (formattedBody.Properties) {
             formattedBody.Properties = { results: query.Properties };
         }
-
-        // TODO: ReorderingRules
 
         let postBody = JSON.stringify({
             request: Util.extend({
@@ -370,17 +366,17 @@ export interface Sort {
 /**
  * Defines one search property
  */
-export interface ISearchProperty {
+export interface SearchProperty {
     Name: string;
-    Value: ISearchPropertyValue;
+    Value: SearchPropertyValue;
 }
 
 /**
  * Defines one search property value
  */
-export interface ISearchPropertyValue {
+export interface SearchPropertyValue {
     StrVal: string;
-    QueryPropertyValueTypeIndex: number;
+    QueryPropertyValueTypeIndex: QueryPropertyValueType;
 }
 
 /**
@@ -426,13 +422,6 @@ export enum ReorderingRuleMatchType {
     FileExtensionMatches = 6,
     ResultHasTag = 7,
     ManualCondition = 8
-}
-
-/**
- * Defines how search results are sorted.
- */
-export interface QueryProperty {
-    // TODO: define this interface
 }
 
 /**
