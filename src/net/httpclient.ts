@@ -50,7 +50,7 @@ export class HttpClient {
         }
 
         if (!headers.has("X-ClientService-ClientTag")) {
-            headers.append("X-ClientService-ClientTag", "PnPCoreJS:1.0.5");
+            headers.append("X-ClientService-ClientTag", "PnPCoreJS:1.0.6");
         }
 
         opts = Util.extend(opts, { headers: headers });
