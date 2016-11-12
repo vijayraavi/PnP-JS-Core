@@ -14,6 +14,7 @@ export {
     TextFileParser,
     BlobFileParser,
     BufferFileParser,
+    JSONFileParser,
     ChunkedFileUploadProgressData
 } from "./files";
 

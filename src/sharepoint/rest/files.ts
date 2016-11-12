@@ -296,6 +296,14 @@ export class File extends QueryableInstance {
     }
 
     /**
+     * Gets the contents of a file as an ArrayBuffer, works in Node.js
+     */
+    public getJSON(): Promise<any> {
+
+        return new File(this, "$value").get(new JSONFileParser(), { headers: { "binaryStringResponseBody": "true" } });
+    }
+
+    /**
      * Sets the content of a file, for large files use setContentChunked
      * 
      * @param content The file content
@@ -431,6 +439,13 @@ export class BlobFileParser implements ODataParser<any, Blob> {
 
     public parse(r: Response): Promise<Blob> {
         return r.blob();
+    }
+}
+
+export class JSONFileParser implements ODataParser<any, any> {
+
+    public parse(r: Response): Promise<any> {
+        return r.json();
     }
 }
 
