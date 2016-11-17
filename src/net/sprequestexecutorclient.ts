@@ -48,9 +48,9 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             };
 
             if (options.body) {
-                Util.extend(requestOptions, { body: options.body });
+                requestOptions = Util.extend(requestOptions, { body: options.body });
             } else {
-                Util.extend(requestOptions, { binaryStringRequestBody: true });
+                requestOptions = Util.extend(requestOptions, { binaryStringRequestBody: true });
             }
             executor.executeAsync(requestOptions);
         });
@@ -67,7 +67,10 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             }
         }
 
-        return new Response(<any>spResponse.body, {
+        // issue #256, Cannot have an empty string body when creating a Response with status 204
+        var body = spResponse.statusCode === 204 ? null : spResponse.body;
+
+        return new Response(body, {
             headers: responseHeaders,
             status: spResponse.statusCode,
             statusText: spResponse.statusText,

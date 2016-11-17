@@ -67,21 +67,14 @@ export class Queryable {
     }
 
     /**
-     * Blocks a batch call from occuring, MUST be cleared with clearBatchDependency before a request will execute
+     * Blocks a batch call from occuring, MUST be cleared by calling the returned function
      */
-    protected addBatchDependency() {
+    protected addBatchDependency(): () => void {
         if (this.hasBatch) {
-            this._batch.incrementBatchDep();
+            return this._batch.addBatchDependency();
         }
-    }
 
-    /**
-     * Clears a batch request dependency
-     */
-    protected clearBatchDependency() {
-        if (this.hasBatch) {
-            this._batch.decrementBatchDep();
-        }
+        return () => null;
     }
 
     /**
@@ -125,15 +118,17 @@ export class Queryable {
             // being created from just a string.
 
             let urlStr = baseUrl as string;
-            if (urlStr.lastIndexOf("/") < 0) {
+            if (Util.isUrlAbsolute(urlStr) || urlStr.lastIndexOf("/") < 0) {
                 this._parentUrl = urlStr;
                 this._url = Util.combinePaths(urlStr, path);
             } else if (urlStr.lastIndexOf("/") > urlStr.lastIndexOf("(")) {
+                // .../items(19)/fields
                 let index = urlStr.lastIndexOf("/");
                 this._parentUrl = urlStr.slice(0, index);
                 path = Util.combinePaths(urlStr.slice(index), path);
                 this._url = Util.combinePaths(this._parentUrl, path);
             } else {
+                // .../items(19)
                 let index = urlStr.lastIndexOf("(");
                 this._parentUrl = urlStr.slice(0, index);
                 this._url = Util.combinePaths(urlStr, path);
@@ -141,10 +136,6 @@ export class Queryable {
         } else {
             let q = baseUrl as Queryable;
             this._parentUrl = q._url;
-            // only copy batch if we don't already have one
-            if (!this.hasBatch && q.hasBatch) {
-                this._batch = q._batch;
-            }
             let target = q._query.get("@target");
             if (target !== null) {
                 this._query.add("@target", target);
@@ -239,7 +230,7 @@ export class Queryable {
     }
 
     /**
-     * Gets a parent for this isntance as specified
+     * Gets a parent for this instance as specified
      *
      * @param factory The contructor for the class to create
      */
@@ -347,8 +338,8 @@ export class Queryable {
             response.text().then(text => {
                 Logger.log({
                     data: response,
+                    level: LogLevel.Error,
                     message: text,
-                    level: LogLevel.Error
                 });
 
                 throw `Error making HttpClient request in queryable: ${response.statusText}`;
@@ -379,7 +370,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param filter The string representing the filter query
      */
-    public filter(filter: string): QueryableCollection {
+    public filter(filter: string): this {
         this._query.add("$filter", filter);
         return this;
     }
@@ -389,7 +380,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param selects One or more fields to return
      */
-    public select(...selects: string[]): QueryableCollection {
+    public select(...selects: string[]): this {
         this._query.add("$select", selects.join(","));
         return this;
     }
@@ -399,7 +390,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param expands The Fields for which to expand the values
      */
-    public expand(...expands: string[]): QueryableCollection {
+    public expand(...expands: string[]): this {
         this._query.add("$expand", expands.join(","));
         return this;
     }
@@ -410,7 +401,7 @@ export class QueryableCollection extends Queryable {
      * @param orderby The name of the field to sort on
      * @param ascending If false DESC is appended, otherwise ASC (default)
      */
-    public orderBy(orderBy: string, ascending = true): QueryableCollection {
+    public orderBy(orderBy: string, ascending = true): this {
         let keys = this._query.getKeys();
         let query = [];
         let asc = ascending ? " asc" : " desc";
@@ -432,7 +423,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param skip The number of items to skip
      */
-    public skip(skip: number): QueryableCollection {
+    public skip(skip: number): this {
         this._query.add("$skip", skip.toString());
         return this;
     }
@@ -442,7 +433,7 @@ export class QueryableCollection extends Queryable {
      * 
      * @param top The query row limit
      */
-    public top(top: number): QueryableCollection {
+    public top(top: number): this {
         this._query.add("$top", top.toString());
         return this;
     }
@@ -460,7 +451,7 @@ export class QueryableInstance extends Queryable {
      * 
      * @param selects One or more fields to return
      */
-    public select(...selects: string[]): QueryableInstance {
+    public select(...selects: string[]): this {
         this._query.add("$select", selects.join(","));
         return this;
     }
@@ -470,7 +461,7 @@ export class QueryableInstance extends Queryable {
      * 
      * @param expands The Fields for which to expand the values
      */
-    public expand(...expands: string[]): QueryableInstance {
+    public expand(...expands: string[]): this {
         this._query.add("$expand", expands.join(","));
         return this;
     }

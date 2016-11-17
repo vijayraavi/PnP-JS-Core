@@ -29,6 +29,25 @@ export class ContentTypes extends QueryableCollection {
     }
 
     /**
+     * Adds an existing contenttype to a content type collection
+     * 
+     * @param contentTypeId in the following format, for example: 0x010102
+     */
+    public addAvailableContentType(contentTypeId: string): Promise<ContentTypeAddResult> {
+
+        let postBody: string = JSON.stringify({
+            "contentTypeId": contentTypeId,
+        });
+
+        return new ContentTypes(this, `addAvailableContentType`).postAs<any, { id: string }>({ body: postBody }).then((data) => {
+            return {
+                contentType: this.getById(data.id),
+                data: data,
+            };
+        });
+    }
+
+    /**
      * Adds a new content type to the collection
      * 
      * @param id The desired content type id for the new content type (also determines the parent content type)

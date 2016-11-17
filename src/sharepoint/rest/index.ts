@@ -10,7 +10,12 @@ export {
     FileAddResult,
     WebPartsPersonalizationScope,
     MoveOperations,
-    TemplateFileType
+    TemplateFileType,
+    TextFileParser,
+    BlobFileParser,
+    BufferFileParser,
+    JSONFileParser,
+    ChunkedFileUploadProgressData
 } from "./files";
 
 export {
@@ -47,14 +52,25 @@ export {
 } from "./roles"
 
 export {
+    Search,
+    SearchProperty,
+    SearchPropertyValue,
     SearchQuery,
     SearchResult,
+    SearchResults,
     Sort,
     SortDirection,
     ReorderingRule,
     ReorderingRuleMatchType,
     QueryPropertyValueType
 } from "./search";
+
+export {
+    SearchSuggest,
+    SearchSuggestQuery,
+    SearchSuggestResult,
+    PersonalResultSuggestion
+} from "./searchsuggest";
 
 export {
     Site
