@@ -53,12 +53,6 @@ describe("File", () => {
             expect(file.versions.toUrl()).to.match(toMatchEndRegex("_api/web/files/getByName('Thomas Rawls')/versions"));
         });
     });
-
-    describe("value", () => {
-        it("Should return _api/web/files/getByName('Thomas Rawls')/$value", () => {
-            expect(file.value.toUrl()).to.match(toMatchEndRegex("_api/web/files/getByName('Thomas Rawls')/$value"));
-        });
-    });
 });
 
 describe("Versions", () => {
@@ -97,5 +91,5 @@ describe("Version", () => {
 
     it("Should be an object", () => {
         expect(version).to.be.a("object");
-    });    
+    });
 });

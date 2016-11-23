@@ -8,6 +8,7 @@ import { TypedHash } from "../../collections/collections";
 import { Util } from "../../utils/util";
 import * as Types from "./types";
 import { ODataParserBase } from "./odata";
+import { AttachmentFiles } from "./attachmentfiles";
 
 /**
  * Describes a collection of Item objects
@@ -103,8 +104,8 @@ export class Item extends QueryableSecurable {
      * Gets the set of attachments for this item
      *
      */
-    public get attachmentFiles(): QueryableCollection {
-        return new QueryableCollection(this, "AttachmentFiles");
+    public get attachmentFiles(): AttachmentFiles {
+        return new AttachmentFiles(this);
     }
 
     /**

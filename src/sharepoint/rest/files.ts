@@ -2,7 +2,7 @@
 
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 import { Item } from "./items";
-import { ODataParser } from "./odata";
+import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "./odata";
 import { Util } from "../../utils/util";
 
 export interface ChunkedFileUploadProgressData {
@@ -296,6 +296,14 @@ export class File extends QueryableInstance {
     }
 
     /**
+     * Gets the contents of a file as an ArrayBuffer, works in Node.js
+     */
+    public getJSON(): Promise<any> {
+
+        return new File(this, "$value").get(new JSONFileParser(), { headers: { "binaryStringResponseBody": "true" } });
+    }
+
+    /**
      * Sets the content of a file, for large files use setContentChunked
      * 
      * @param content The file content
@@ -417,32 +425,6 @@ export class File extends QueryableInstance {
                     file: new File(response.ServerRelativeUrl),
                 };
             });
-    }
-}
-
-export class TextFileParser implements ODataParser<any, string> {
-
-    public parse(r: Response): Promise<string> {
-        return r.text();
-    }
-}
-
-export class BlobFileParser implements ODataParser<any, Blob> {
-
-    public parse(r: Response): Promise<Blob> {
-        return r.blob();
-    }
-}
-
-export class BufferFileParser implements ODataParser<any, ArrayBuffer> {
-
-    public parse(r: any): Promise<ArrayBuffer> {
-
-        if (Util.isFunction(r.arrayBuffer)) {
-            return r.arrayBuffer();
-        }
-
-        return r.buffer();
     }
 }
 

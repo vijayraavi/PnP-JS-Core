@@ -1,6 +1,10 @@
 export * from "./caching";
 
 export {
+    AttachmentFileAddResult
+} from "./attachmentfiles"
+
+export {
     FieldAddResult,
     FieldUpdateResult
 } from "./fields";
@@ -11,9 +15,6 @@ export {
     WebPartsPersonalizationScope,
     MoveOperations,
     TemplateFileType,
-    TextFileParser,
-    BlobFileParser,
-    BufferFileParser,
     ChunkedFileUploadProgressData
 } from "./files";
 
@@ -41,7 +42,11 @@ export {
     ODataRaw,
     ODataValue,
     ODataEntity,
-    ODataEntityArray
+    ODataEntityArray,
+    TextFileParser,
+    BlobFileParser,
+    BufferFileParser,
+    JSONFileParser
 } from "./odata";
 
 export {
