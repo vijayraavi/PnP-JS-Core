@@ -16,7 +16,9 @@ export class UserCustomActions extends QueryableCollection {
      * @param id The GUID ID of the user custom action to get.
      */
     public getById(id: string): UserCustomAction {
-        return new UserCustomAction(this, `(${id})`);
+        let uca = new UserCustomAction(this);
+        uca.concat(`('${id}')`);
+        return uca;
     }
 
     /**
