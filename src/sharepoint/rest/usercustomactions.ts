@@ -73,6 +73,14 @@ export class UserCustomAction extends QueryableInstance {
             };
         });
     }
+                
+     /**
+     * Remove a custom action
+     *
+     */
+    public delete(): Promise<void> {
+        return super.delete();
+    }
 }
 
 export interface UserCustomActionAddResult {
