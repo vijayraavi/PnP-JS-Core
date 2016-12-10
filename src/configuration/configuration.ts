@@ -1,5 +1,3 @@
-"use strict";
-
 import * as Collections from "../collections/collections";
 import * as providers from "./providers/providers";
 

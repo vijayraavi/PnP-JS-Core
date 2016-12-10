@@ -1,9 +1,7 @@
-"use strict";
-
 import { Dictionary } from "../collections/collections";
 import { HttpClient } from "./httpclient";
 import { Util } from "../utils/util";
-import { ODataDefaultParser } from "../sharepoint/rest/odata";
+import { ODataDefaultParser } from "../sharepoint/odata";
 
 export class CachedDigest {
     public expiration: Date;

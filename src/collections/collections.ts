@@ -1,7 +1,3 @@
-"use strict";
-
-import { Util } from "../utils/util";
-
 /**
  * Interface defining an object with a known property type
  */
@@ -68,18 +64,16 @@ export class Dictionary<T> {
      */
     /* tslint:disable no-string-literal */
     public merge(source: TypedHash<T> | Dictionary<T>): void {
-        if (Util.isFunction(source["getKeys"])) {
+        if ("getKeys" in source) {
             let sourceAsDictionary = source as Dictionary<T>;
-            let keys = sourceAsDictionary.getKeys();
-            let l = keys.length;
-            for (let i = 0; i < l; i++) {
-                this.add(keys[i], sourceAsDictionary.get(keys[i]));
-            }
+            sourceAsDictionary.getKeys().map(key => {
+                this.add(key, sourceAsDictionary.get(key));
+            });
         } else {
             let sourceAsHash = source as TypedHash<T>;
             for (let key in sourceAsHash) {
                 if (sourceAsHash.hasOwnProperty(key)) {
-                    this.add(key, source[key]);
+                    this.add(key, sourceAsHash[key]);
                 }
             }
         }
@@ -94,7 +88,6 @@ export class Dictionary<T> {
     public remove(key: string): T {
         let index = this.keys.indexOf(key);
         if (index < 0) {
-            // could throw an exception here
             return null;
         }
         let val = this.values[index];

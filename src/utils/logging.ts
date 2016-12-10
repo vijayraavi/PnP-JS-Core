@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * A set of logging levels
  * 
@@ -73,9 +71,7 @@ export class Logger {
      * @param listeners One or more listeners to subscribe to this log
      */
     public static subscribe(...listeners: LogListener[]): void {
-        for (let i = 0; i < listeners.length; i++) {
-            Logger.instance.subscribe(listeners[i]);
-        }
+        listeners.map(listener => Logger.instance.subscribe(listener));
     }
 
     /**
@@ -149,9 +145,7 @@ class LoggerImpl {
             return;
         }
 
-        for (let i = 0; i < this.subscribers.length; i++) {
-            this.subscribers[i].log(entry);
-        }
+        this.subscribers.map(subscriber => subscriber.log(entry));
     }
 
     public measure<T>(name: string, f: () => T): T {
@@ -202,68 +196,6 @@ export class ConsoleListener implements LogListener {
         return "Message: " + entry.message + ". Data: " + JSON.stringify(entry.data);
     }
 }
-
-/* tslint:disable */
-/**
- * Implementation of ILogListener which logs to Azure Insights
- * 
- */
-export class AzureInsightsListener implements LogListener {
-
-    /** 
-     * Creats a new instance of the AzureInsightsListener class
-     * 
-     * @constructor
-     * @param azureInsightsInstrumentationKey The instrumentation key created when the Azure Insights instance was created
-     */
-    constructor(private azureInsightsInstrumentationKey: string) {
-        let appInsights = window["appInsights"] || function (config: any) {
-            function r(config) {
-                t[config] = function () {
-                    let i = arguments;
-                    t.queue.push(function () { t[config].apply(t, i) });
-                }
-            }
-            let t: any = { config: config }, u = document, e: any = window, o = "script", s: any = u.createElement(o), i, f;
-            for (s.src = config.url || "//az416426.vo.msecnd.net/scripts/a/ai.0.js", u.getElementsByTagName(o)[0].parentNode.appendChild(s), t.cookie = u.cookie, t.queue = [], i = ["Event", "Exception", "Metric", "PageView", "Trace"]; i.length;) {
-                r("track" + i.pop());
-            }
-            return r("setAuthenticatedUserContext"), r("clearAuthenticatedUserContext"), config.disableExceptionTracking || (i = "onerror", r("_" + i), f = e[i], e[i] = function (config, r, u, e, o) {
-                let s = f && f(config, r, u, e, o);
-                return s !== !0 && t["_" + i](config, r, u, e, o), s
-            }), t
-        } ({
-            instrumentationKey: this.azureInsightsInstrumentationKey
-        });
-
-        window["appInsights"] = appInsights;
-    }
-
-    /**
-     * Any associated data that a given logging listener may choose to log or ignore
-     * 
-     * @param entry The information to be logged 
-     */
-    public log(entry: LogEntry): void {
-        let ai: any = window["appInsights"];
-        let msg = this.format(entry);
-        if (entry.level === LogLevel.Error) {
-            ai.trackException(msg);
-        } else {
-            ai.trackEvent(msg);
-        }
-    }
-
-    /**
-     * Formats the message
-     * 
-     * @param entry The information to format into a string
-     */
-    private format(entry: LogEntry): string {
-        return "Message: " + entry.message + ". Data: " + JSON.stringify(entry.data);
-    }
-}
-/* tslint:enable */
 
 /**
  * Implementation of ILogListener which logs to the supplied function
