@@ -82,7 +82,22 @@ export class HttpClient {
 
         let retry = (ctx): void => {
 
-            this._impl.fetch(url, options).then((response) => ctx.resolve(response)).catch((response) => {
+            this._impl.fetch(url, options).then((response) => {
+                if (!response.ok) {
+                    // fetch succeeded but response.ok == false, 
+                    // so we need to reject the promise and 
+                    // return json to get correct error message for the client
+                    response.json().then((json) => {
+                        let result = json;
+                        if (json.hasOwnProperty("odata.error")) {
+                            result = json["odata.error"];
+                        }
+                        ctx.reject(result);
+                    });
+                } else {
+                    ctx.resolve(response);
+                }
+            }).catch((response) => {
 
                 // grab our current delay
                 let delay = ctx.delay;
