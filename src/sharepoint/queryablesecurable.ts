@@ -54,7 +54,7 @@ export class QueryableSecurable extends QueryableInstance {
     }
 
     /**
-     * Breaks the security inheritance at this level optinally copying permissions and clearing subscopes
+     * Removes the local role assignments so that it re-inherit role assignments from the parent object.
      * 
      */
     public resetRoleInheritance(): Promise<any> {
