@@ -388,7 +388,7 @@ export class File extends QueryableInstance {
      * @returns The size of the total uploaded data in bytes. 
      */
     private startUpload(uploadId: string, fragment: ArrayBuffer | Blob): Promise<number> {
-        return new File(this, `startUpload(uploadId=guid'${uploadId}')`).postAs<any, string>({ body: fragment }).then(n => parseFloat(n));
+        return new File(this, `startUpload(uploadId=guid'${uploadId}')`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
     }
 
     /**
@@ -403,7 +403,7 @@ export class File extends QueryableInstance {
      * @returns The size of the total uploaded data in bytes. 
      */
     private continueUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<number> {
-        return new File(this, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).postAs<any, string>({ body: fragment }).then(n => parseFloat(n));
+        return new File(this, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
     }
 
     /**
@@ -418,7 +418,7 @@ export class File extends QueryableInstance {
      */
     private finishUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<FileAddResult> {
         return new File(this, `finishUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
-            .postAs<any, { ServerRelativeUrl: string }>({ body: fragment }).then((response) => {
+            .postAs<{ ServerRelativeUrl: string }>({ body: fragment }).then((response) => {
                 return {
                     data: response,
                     file: new File(response.ServerRelativeUrl),

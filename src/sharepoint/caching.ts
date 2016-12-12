@@ -28,13 +28,13 @@ export class CachingOptions implements ICachingOptions {
     }
 }
 
-export class CachingParserWrapper<T, U> implements ODataParser<T, U> {
+export class CachingParserWrapper<T> implements ODataParser<T> {
 
     constructor(
-        private _parser: ODataParser<T, U>,
+        private _parser: ODataParser<T>,
         private _cacheOptions: CachingOptions) { }
 
-    public parse(response: Response): Promise<U> {
+    public parse(response: Response): Promise<T> {
 
         // add this to the cache based on the options
         return this._parser.parse(response).then(data => {

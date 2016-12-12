@@ -194,25 +194,21 @@ export class Util {
      * @param noOverwrite If true existing properties on the target are not overwritten from the source
      *
      */
-    public static extend<T extends TypedHash<any>, S extends TypedHash<any>>(target: T, source: S, noOverwrite = false): T & S {
+    public static extend(target: any, source: TypedHash<any>, noOverwrite = false): any {
 
-        if (source === null) {
-            return <any>target;
+        if (source === null || typeof source === "undefined") {
+            return target;
         }
 
-        let result = <T & S>{};
-        Object.getOwnPropertyNames(target).reduce((res, name) => {
-            res[name] = target[name];
-            return res;
-        }, result);
-
         // ensure we don't overwrite things we don't want overwritten
-        let check: (o: any, i: string) => Boolean = noOverwrite ? (o, i) => !o.hasOwnProperty(i) : () => true;
+        let check: (o: any, i: string) => Boolean = noOverwrite ? (o, i) => !(i in o) : () => true;
 
-        return Object.getOwnPropertyNames(source).filter(name => check(result, name)).reduce((res, name) => {
-            res[name] = source[name];
-            return res;
-        }, result);
+        return Object.getOwnPropertyNames(source)
+            .filter((v: string) => check(target, v))
+            .reduce((t: any, v: string) => {
+                t[v] = source[v];
+                return t;
+            }, target);
     }
 
     /**

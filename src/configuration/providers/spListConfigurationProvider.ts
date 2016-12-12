@@ -43,7 +43,7 @@ export default class SPListConfigurationProvider implements IConfigurationProvid
     public getConfiguration(): Promise<TypedHash<string>> {
 
         return this.web.lists.getByTitle(this.listTitle).items.select("Title", "Value")
-            .getAs<any, { Title: string, Value: string }[]>().then((data) => {
+            .getAs<{ Title: string, Value: string }[]>().then((data) => {
                 return data.reduce((configuration, item) => {
 
                     return Object.defineProperty(configuration, item.Title, {

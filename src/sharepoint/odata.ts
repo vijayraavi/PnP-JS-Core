@@ -17,11 +17,11 @@ export function extractOdataId(candidate: any): string {
     }
 }
 
-export interface ODataParser<T, U> {
+export interface ODataParser<U> {
     parse(r: Response): Promise<U>;
 }
 
-export abstract class ODataParserBase<T, U> implements ODataParser<T, U> {
+export abstract class ODataParserBase<U> implements ODataParser<U> {
 
     public parse(r: Response): Promise<U> {
         return r.json().then(json => this.parseODataJSON(json));
@@ -42,22 +42,22 @@ export abstract class ODataParserBase<T, U> implements ODataParser<T, U> {
     }
 }
 
-export class ODataDefaultParser extends ODataParserBase<any, any> {
+export class ODataDefaultParser extends ODataParserBase<any> {
 }
 
-export class ODataRawParserImpl implements ODataParser<any, any> {
+export class ODataRawParserImpl implements ODataParser<any> {
     public parse(r: Response): Promise<any> {
         return r.json();
     }
 }
 
-class ODataValueParserImpl<T> extends ODataParserBase<any, T> {
+class ODataValueParserImpl<T> extends ODataParserBase<T> {
     public parse(r: Response): Promise<T> {
         return super.parse(r).then(d => d as T);
     }
 }
 
-class ODataEntityParserImpl<T> extends ODataParserBase<T, T> {
+class ODataEntityParserImpl<T> extends ODataParserBase<T> {
 
     constructor(protected factory: QueryableConstructor<T>) {
         super();
@@ -65,13 +65,13 @@ class ODataEntityParserImpl<T> extends ODataParserBase<T, T> {
 
     public parse(r: Response): Promise<T> {
         return super.parse(r).then(d => {
-            let o = new this.factory(getEntityUrl(d), null);
+            let o = <T>new this.factory(getEntityUrl(d), null);
             return Util.extend(o, d);
         });
     }
 }
 
-class ODataEntityArrayParserImpl<T> extends ODataParserBase<T, T[]> {
+class ODataEntityArrayParserImpl<T> extends ODataParserBase<T[]> {
 
     constructor(protected factory: QueryableConstructor<T>) {
         super();
@@ -80,7 +80,7 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T, T[]> {
     public parse(r: Response): Promise<T[]> {
         return super.parse(r).then((d: any[]) => {
             return d.map(v => {
-                let o = new this.factory(getEntityUrl(v), null);
+                let o = <T>new this.factory(getEntityUrl(v), null);
                 return Util.extend(o, v);
             });
         });
@@ -89,12 +89,12 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T, T[]> {
 
 function getEntityUrl(entity: any): string {
 
-    if (entity.hasOwnProperty("__metadata")) {
-        // we are dealing with verbose, which has an absolute uri
-        return entity.__metadata.uri;
-    } else if (entity.hasOwnProperty("odata.editLink")) {
+    if (entity.hasOwnProperty("odata.editLink")) {
         // we are dealign with minimal metadata (default)
         return Util.combinePaths("_api", entity["odata.editLink"]);
+    } else if (entity.hasOwnProperty("__metadata")) {
+        // we are dealing with verbose, which has an absolute uri
+        return entity.__metadata.uri;
     } else {
         // we are likely dealing with nometadata, so don't error but we won't be able to
         // chain off these objects
@@ -105,16 +105,16 @@ function getEntityUrl(entity: any): string {
 
 export let ODataRaw = new ODataRawParserImpl();
 
-export function ODataValue<T>(): ODataParser<any, T> {
+export function ODataValue<T>(): ODataParser<T> {
     return new ODataValueParserImpl<T>();
 }
 
-export function ODataEntity<T>(factory: QueryableConstructor<T>): ODataParser<T, T> {
+export function ODataEntity<T>(factory: QueryableConstructor<T>): ODataParser<T> {
     return new ODataEntityParserImpl(factory);
 }
 
-export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataParser<T, T[]> {
-    return new ODataEntityArrayParserImpl<T>(factory);
+export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataParser<T[]> {
+    return new ODataEntityArrayParserImpl(factory);
 }
 
 /**
@@ -138,18 +138,18 @@ export class ODataBatch {
      * @param options Any options to include in the request
      * @param parser The parser that will hadle the results of the request
      */
-    public add<U>(url: string, method: string, options: any, parser: ODataParser<any, U>): Promise<U> {
+    public add<T>(url: string, method: string, options: any, parser: ODataParser<T>): Promise<T> {
 
         let info = {
             method: method.toUpperCase(),
             options: options,
             parser: parser,
             reject: <(reason?: any) => void>null,
-            resolve: <(value?: U | PromiseLike<U>) => void>null,
+            resolve: <(value?: T | PromiseLike<T>) => void>null,
             url: url,
         };
 
-        let p = new Promise<U>((resolve, reject) => {
+        let p = new Promise<T>((resolve, reject) => {
             info.resolve = resolve;
             info.reject = reject;
         });
@@ -369,33 +369,33 @@ interface ODataBatchRequestInfo {
     url: string;
     method: string;
     options: any;
-    parser: ODataParser<any, any>;
+    parser: ODataParser<any>;
     resolve: (d: any) => void;
     reject: (error: any) => void;
 }
 
-export class TextFileParser implements ODataParser<any, string> {
+export class TextFileParser implements ODataParser<string> {
 
     public parse(r: Response): Promise<string> {
         return r.text();
     }
 }
 
-export class BlobFileParser implements ODataParser<any, Blob> {
+export class BlobFileParser implements ODataParser<Blob> {
 
     public parse(r: Response): Promise<Blob> {
         return r.blob();
     }
 }
 
-export class JSONFileParser implements ODataParser<any, any> {
+export class JSONFileParser implements ODataParser<any> {
 
     public parse(r: Response): Promise<any> {
         return r.json();
     }
 }
 
-export class BufferFileParser implements ODataParser<any, ArrayBuffer> {
+export class BufferFileParser implements ODataParser<ArrayBuffer> {
 
     public parse(r: any): Promise<ArrayBuffer> {
 

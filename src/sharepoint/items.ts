@@ -63,13 +63,13 @@ export class Items extends QueryableCollection {
 
         let parentList = this.getParent(QueryableInstance);
 
-        return parentList.select("ListItemEntityTypeFullName").getAs<any, { ListItemEntityTypeFullName: string }>().then((d) => {
+        return parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
 
             let postBody = JSON.stringify(Util.extend({
                 "__metadata": { "type": d.ListItemEntityTypeFullName },
             }, properties));
 
-            let promise = this.postAs<any, { Id: number }>({ body: postBody }).then((data) => {
+            let promise = this.postAs<{ Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
@@ -174,7 +174,7 @@ export class Item extends QueryableSecurable {
 
         let parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
 
-        return parentList.select("ListItemEntityTypeFullName").getAs<any, { ListItemEntityTypeFullName: string }>().then((d) => {
+        return parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
 
             let postBody = JSON.stringify(Util.extend({
                 "__metadata": { "type": d.ListItemEntityTypeFullName },
@@ -288,7 +288,7 @@ export class PagedItemCollection<T> {
     }
 }
 
-class PagedItemCollectionParser extends ODataParserBase<any, PagedItemCollection<any>> {
+class PagedItemCollectionParser extends ODataParserBase<PagedItemCollection<any>> {
     public parse(r: Response): Promise<PagedItemCollection<any>> {
 
         return r.json().then(json => {

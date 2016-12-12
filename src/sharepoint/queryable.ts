@@ -203,27 +203,27 @@ export class Queryable {
      * Executes the currently built request
      *
      */
-    public get(parser: ODataParser<any, any> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<any> {
+    public get(parser: ODataParser<any> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<any> {
         return this.getImpl(getOptions, parser);
     }
 
-    public getAs<T, U>(parser: ODataParser<T, U> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<U> {
+    public getAs<T>(parser: ODataParser<T> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<T> {
         return this.getImpl(getOptions, parser);
     }
 
-    protected post(postOptions: FetchOptions = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
+    protected post(postOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
         return this.postImpl(postOptions, parser);
     }
 
-    protected postAs<T, U>(postOptions: FetchOptions = {}, parser: ODataParser<T, U> = new ODataDefaultParser()): Promise<U> {
+    protected postAs<T>(postOptions: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
         return this.postImpl(postOptions, parser);
     }
 
-    protected patch(patchOptions: FetchOptions = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
+    protected patch(patchOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
         return this.patchImpl(patchOptions, parser);
     }
 
-    protected delete(deleteOptions: FetchOptions = {}, parser: ODataParser<any, any> = new ODataDefaultParser()): Promise<any> {
+    protected delete(deleteOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
         return this.deleteImpl(deleteOptions, parser);
     }
 
@@ -245,7 +245,7 @@ export class Queryable {
         return parent;
     }
 
-    private getImpl<U>(getOptions: FetchOptions = {}, parser: ODataParser<any, U>): Promise<U> {
+    private getImpl<T>(getOptions: FetchOptions = {}, parser: ODataParser<T>): Promise<T> {
 
         if (this._useCaching) {
             let options = new CachingOptions(this.toUrlAndQuery().toLowerCase());
@@ -281,7 +281,7 @@ export class Queryable {
         }
     }
 
-    private postImpl<U>(postOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
+    private postImpl<T>(postOptions: FetchOptions, parser: ODataParser<T>): Promise<T> {
 
         if (!this.hasBatch) {
 
@@ -296,7 +296,7 @@ export class Queryable {
         }
     }
 
-    private patchImpl<U>(patchOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
+    private patchImpl<T>(patchOptions: FetchOptions, parser: ODataParser<T>): Promise<T> {
 
         if (!this.hasBatch) {
 
@@ -311,7 +311,7 @@ export class Queryable {
         }
     }
 
-    private deleteImpl<U>(deleteOptions: FetchOptions, parser: ODataParser<any, U>): Promise<U> {
+    private deleteImpl<T>(deleteOptions: FetchOptions, parser: ODataParser<T>): Promise<T> {
 
         if (!this.hasBatch) {
 
@@ -326,9 +326,9 @@ export class Queryable {
         }
     }
 
-    private processHttpClientResponse<U>(response: Response, parser: ODataParser<any, U>): Promise<U> {
+    private processHttpClientResponse<T>(response: Response, parser: ODataParser<T>): Promise<T> {
 
-        return new Promise<U>((resolve, reject) => {
+        return new Promise<T>((resolve, reject) => {
 
             // 200 = OK (get, delete)
             // 201 = Created (create)
@@ -340,7 +340,7 @@ export class Queryable {
 
                     // in these cases the server has returned no content, so we create an empty object
                     // this was done because the fetch browser methods throw exceptions with no content
-                    resolve(<U>{});
+                    resolve(<T>{});
                 }
 
                 // pipe our parsed content

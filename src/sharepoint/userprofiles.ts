@@ -239,7 +239,7 @@ class ProfileLoader extends Queryable {
      */
     public get ownerUserProfile(): Promise<Types.UserProfile> {
         let q = this.getParent(ProfileLoader, this.parentUrl, "_api/sp.userprofiles.profileloader.getowneruserprofile");
-        return q.postAs<any, Types.UserProfile>();
+        return q.postAs<Types.UserProfile>();
     }
 
     /**
@@ -248,7 +248,7 @@ class ProfileLoader extends Queryable {
      */
     public get userProfile(): Promise<Types.UserProfile> {
         let q = new ProfileLoader(this, "getuserprofile");
-        return q.postAs<any, Types.UserProfile>();
+        return q.postAs<Types.UserProfile>();
     }
 
     /**

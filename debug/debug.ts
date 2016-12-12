@@ -32,8 +32,8 @@ Logger.activeLogLevel = LogLevel.Verbose;
 // import { Example } from "./example";
 // Example();
 
-import { batch } from "./batch";
-batch();
+import { getAs } from "./getAs";
+getAs();
 
 // you can also set break points inside the src folder to examine how things are working
 // within the library while debugging!

@@ -71,7 +71,7 @@ export class Fields extends QueryableCollection {
 
         let q: Fields = new Fields(this, "createfieldasxml");
 
-        return q.postAs<any, { Id: string }>({ body: postBody }).then((data) => {
+        return q.postAs<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),
@@ -93,7 +93,7 @@ export class Fields extends QueryableCollection {
             "Title": title,
         }, properties));
 
-        return this.postAs<any, { Id: string }>({ body: postBody }).then((data) => {
+        return this.postAs<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),

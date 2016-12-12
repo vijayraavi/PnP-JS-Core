@@ -37,7 +37,7 @@ export class ContentTypes extends QueryableCollection {
             "contentTypeId": contentTypeId,
         });
 
-        return new ContentTypes(this, `addAvailableContentType`).postAs<any, { id: string }>({ body: postBody }).then((data) => {
+        return new ContentTypes(this, `addAvailableContentType`).postAs<{ id: string }>({ body: postBody }).then((data) => {
             return {
                 contentType: this.getById(data.id),
                 data: data,

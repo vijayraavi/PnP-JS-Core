@@ -1,6 +1,6 @@
 // use of relative paths to the modules
 import pnp from "../src/pnp";
-import { Logger, LogLevel, ConsoleListener } from "../src/utils/logging";
+import { Logger, LogLevel } from "../src/utils/logging";
 
 export function Example() {
 
