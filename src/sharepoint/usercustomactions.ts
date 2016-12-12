@@ -3,10 +3,10 @@ import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 
 export class UserCustomActions extends QueryableCollection {
+    
     constructor(baseUrl: string | Queryable, path = "usercustomactions") {
         super(baseUrl, path);
     }
-
 
     /**
      * Returns the custom action with the specified identifier.
