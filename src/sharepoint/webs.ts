@@ -227,11 +227,7 @@ export class Web extends QueryableSecurable {
      *
      */
     public delete(): Promise<void> {
-        return this.post({
-            headers: {
-                "X-HTTP-Method": "DELETE",
-            },
-        });
+        return super.delete();
     }
 
     /**

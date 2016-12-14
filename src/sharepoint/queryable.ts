@@ -340,7 +340,7 @@ export class Queryable {
 
                     // in these cases the server has returned no content, so we create an empty object
                     // this was done because the fetch browser methods throw exceptions with no content
-                    resolve(<T>{});
+                    return resolve(<T>{});
                 }
 
                 // pipe our parsed content
@@ -349,7 +349,7 @@ export class Queryable {
             } else {
 
                 // and reject with the below message.
-                reject(new ProcessHttpClientResponseException(response));
+                return reject(new ProcessHttpClientResponseException(response));
             }
         });
     }
