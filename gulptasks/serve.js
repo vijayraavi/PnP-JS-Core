@@ -30,6 +30,6 @@ gulp.task("serve", (done) => {
             throw new gutil.PluginError("serve", err);
         }
 
-        gutil.log("Files will be served at:", gutil.colors.bgBlue.white("https://localhost:8080/assets/pnp.js"));
+        gutil.log("Files will be served from:", gutil.colors.bgBlue.white("https://localhost:8080/assets/pnp.js"));
     });
 });

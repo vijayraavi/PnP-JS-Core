@@ -23,11 +23,18 @@ gulp.task("_istanbul:hook", ["build:testing"], () => {
 
 gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
 
-    let path = './testing/tests/{path}.test.js';
+    // when using single, grab only that test.js file - otherwise use the entire test.js glob
+    let path = yargs.single ? './testing/tests/{path}.test.js'.replace('{path}', yargs.single) : config.testing.testingTestsDestGlob;
 
+    // determine if we show the full coverage table
+    let reports = yargs["coverage-details"] ? ['text', 'text-summary'] : ['text-summary'];
+
+    // easiest way for tests to have settings available
     global.settings = config.settings;
 
-    return gulp.src(yargs.single ? path.replace('{path}', yargs.single) : config.testing.testingTestsDestGlob)
+        return gulp.src(path)
         .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
-        .pipe(istanbul.writeReports());
+        .pipe(istanbul.writeReports({
+            reporters: reports
+        }));
 });
