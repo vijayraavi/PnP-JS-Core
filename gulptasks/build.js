@@ -7,7 +7,6 @@
 
 var gulp = require("gulp"),
     tsc = require("gulp-typescript"),
-    debug = require('gulp-debug'),
     config = require('./@configuration.js'),
     merge = require("merge2"),
     sourcemaps = require('gulp-sourcemaps'),
