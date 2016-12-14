@@ -29,13 +29,8 @@ Logger.activeLogLevel = LogLevel.Verbose;
 // add your debugging imports here and prior to submitting a PR git checkout debug/debug.ts
 // will allow you to keep all your debugging files locally
 // comment out the example
-// import { Example } from "./example";
-// Example();
-
-
-import { deleteweb } from "./deleteweb";
-deleteweb();
-
+import { Example } from "./example";
+Example();
 
 // you can also set break points inside the src folder to examine how things are working
 // within the library while debugging!
