@@ -66,7 +66,7 @@ export class Logger {
     }
 
     /**
-     * Adds an ILogListener instance to the set of subscribed listeners
+     * Adds ILogListener instances to the set of subscribed listeners
      * 
      * @param listeners One or more listeners to subscribe to this log
      */
@@ -96,6 +96,16 @@ export class Logger {
      */
     public static write(message: string, level: LogLevel = LogLevel.Verbose) {
         Logger.instance.log({ level: level, message: message });
+    }
+
+    /**
+     * Writes the supplied string to the subscribed listeners
+     * 
+     * @param json The json object to stringify and write
+     * @param level [Optional] if supplied will be used as the level of the entry (Default: LogLevel.Verbose)
+     */
+    public static writeJSON(json: any, level: LogLevel = LogLevel.Verbose) {
+        Logger.instance.log({ level: level, message: JSON.stringify(json) });
     }
 
     /**

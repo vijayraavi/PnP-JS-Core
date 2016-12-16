@@ -3,7 +3,7 @@ import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 
 export class UserCustomActions extends QueryableCollection {
-    
+
     constructor(baseUrl: string | Queryable, path = "usercustomactions") {
         super(baseUrl, path);
     }
@@ -71,11 +71,11 @@ export class UserCustomAction extends QueryableInstance {
             };
         });
     }
-                
-     /**
-     * Remove a custom action
-     *
-     */
+
+    /**
+    * Remove a custom action
+    *
+    */
     public delete(): Promise<void> {
         return super.delete();
     }

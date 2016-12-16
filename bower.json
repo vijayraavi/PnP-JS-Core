@@ -36,8 +36,6 @@
         "typings.json",
         "gulptasks/",
         "typings.json",
-        "docs/",
-        "typedoctheme/",
         "debug/"
     ],
     "repository": {

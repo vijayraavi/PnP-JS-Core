@@ -27,8 +27,6 @@ export class HttpClient {
 
     public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 
-        let self = this;
-
         let opts = Util.extend(options, { cache: "no-cache", credentials: "same-origin" }, true);
 
         let headers = new Headers();
@@ -62,14 +60,14 @@ export class HttpClient {
                 }
                 let webUrl = url.substr(0, index);
                 return this._digestCache.getDigest(webUrl)
-                    .then(function (digest) {
+                    .then((digest) => {
                         headers.append("X-RequestDigest", digest);
-                        return self.fetchRaw(url, opts);
+                        return this.fetchRaw(url, opts);
                     });
             }
         }
 
-        return self.fetchRaw(url, opts);
+        return this.fetchRaw(url, opts);
     }
 
     public fetchRaw(url: string, options: FetchOptions = {}): Promise<Response> {

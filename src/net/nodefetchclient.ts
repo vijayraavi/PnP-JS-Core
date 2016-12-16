@@ -25,7 +25,7 @@ export class NodeFetchClient implements HttpClientImpl {
 
     constructor(public siteUrl: string, private _clientId: string, private _clientSecret: string, private _realm = "") {
 
-        // here we "cheat" and set the globals for fetch things when this client is instantiated
+        // here we set the globals for fetch things when this client is instantiated
         global.Headers = nodeFetch.Headers;
         global.Request = nodeFetch.Request;
         global.Response = nodeFetch.Response;
