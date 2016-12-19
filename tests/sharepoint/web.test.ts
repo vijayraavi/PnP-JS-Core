@@ -113,6 +113,12 @@ describe("Web", () => {
         });
     });
 
+    describe("currentUser", () => {
+        it("should return _api/web/currentuser", () => {
+            expect(web.currentUser.toUrl()).to.match(toMatchEndRegex("_api/web/currentuser"));
+        });
+    });
+
     if (testSettings.enableWebTests) {
 
         describe("webs", () => {
@@ -172,7 +178,7 @@ describe("Web", () => {
 
         describe("getFolderByServerRelativeUrl", () => {
             it("should get a folder by the server relative url", function () {
-                return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<any, { ServerRelativeUrl: string }>().then(w => {
+                return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<{ ServerRelativeUrl: string }>().then(w => {
                     let url = Util.combinePaths(w.ServerRelativeUrl, "SitePages");
                     return pnp.sp.web.getFolderByServerRelativeUrl(url);
                 })).to.eventually.be.fulfilled;
@@ -181,7 +187,7 @@ describe("Web", () => {
 
         describe("getFileByServerRelativeUrl", () => {
             it("should get a file by the server relative url", function () {
-                return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<any, { ServerRelativeUrl: string }>().then(w => {
+                return expect(pnp.sp.web.select("ServerRelativeUrl").getAs<{ ServerRelativeUrl: string }>().then(w => {
                     let url = Util.combinePaths(w.ServerRelativeUrl, "SitePages", "Home.aspx");
                     return pnp.sp.web.getFileByServerRelativeUrl(url);
                 })).to.eventually.be.fulfilled;
@@ -190,12 +196,12 @@ describe("Web", () => {
 
         describe("update", () => {
             it("should update the title of the web", function () {
-                return expect(pnp.sp.web.select("Title").getAs<any, { Title: string }>().then(w => {
+                return expect(pnp.sp.web.select("Title").getAs<{ Title: string }>().then(w => {
 
                     let newTitle = w.Title + " updated";
                     pnp.sp.web.update({ Title: newTitle }).then(() => {
 
-                        pnp.sp.web.select("Title").getAs<any, { Title: string }>().then(w2 => {
+                        pnp.sp.web.select("Title").getAs<{ Title: string }>().then(w2 => {
                             if (w2.Title !== newTitle) {
                                 throw new Error("Update web failed");
                             }
@@ -243,7 +249,7 @@ describe("Web", () => {
 
         describe("availableWebTemplates", () => {
             it("should check for all the available web templates", function () {
-                return expect(pnp.sp.web.availableWebTemplates().getAs<any, any[]>()).to.eventually.be.not.empty;
+                return expect(pnp.sp.web.availableWebTemplates().getAs<any[]>()).to.eventually.be.not.empty;
             });
         });
 
@@ -274,6 +280,12 @@ describe("Web", () => {
         describe("mapToIcon", () => {
             it("should map an icon url by filename", function () {
                 return expect(pnp.sp.web.mapToIcon("test.docx")).to.eventually.be.fulfilled;
+            });
+        });
+
+        describe("currentUser", () => {
+            it("should return _api/web/currentuser", () => {
+                return expect(pnp.sp.web.currentUser.get()).to.eventually.be.fulfilled;
             });
         });
     }

@@ -12,7 +12,7 @@ import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
 import * as Types from "./types";
 import { List } from "./lists";
-import { SiteUsers, SiteUser } from "./siteusers";
+import { SiteUsers, SiteUser, CurrentUser } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId, ODataBatch } from "./odata";
 
@@ -137,6 +137,13 @@ export class Web extends QueryableSecurable {
      */
     public get siteGroups(): SiteGroups {
         return new SiteGroups(this);
+    }
+
+    /**
+     * Gets the current user
+     */
+    public get currentUser(): CurrentUser {
+        return new CurrentUser(this);
     }
 
     /**

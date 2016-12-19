@@ -177,3 +177,13 @@ export class SiteUser extends QueryableInstance {
         });
     }
 }
+
+/**
+ * Represents the current user
+ */
+export class CurrentUser extends QueryableInstance {
+
+    constructor(baseUrl: string | Queryable, path = "currentuser") {
+        super(baseUrl, path);
+    }
+}

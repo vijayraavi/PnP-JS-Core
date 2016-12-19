@@ -57,7 +57,7 @@ describe("Lists", () => {
         describe("getById", () => {
             it("Should get a list by id with the expected title", function () {
                 this.timeout(15000);
-                return expect(pnp.sp.web.lists.getByTitle("Documents").select("ID").getAs<any, { Id: string }>().then((list) => {
+                return expect(pnp.sp.web.lists.getByTitle("Documents").select("ID").getAs<{ Id: string }>().then((list) => {
                     return pnp.sp.web.lists.getById(list.Id).select("Title").get();
                 })).to.eventually.have.property("Title", "Documents");
             });
