@@ -49,7 +49,7 @@ export class AttachmentFiles extends QueryableCollection {
 }
 
 /**
- * Descrines a single attachment file instance
+ * Describes a single attachment file instance
  *
  */
 export class AttachmentFile extends QueryableInstance {
@@ -77,7 +77,7 @@ export class AttachmentFile extends QueryableInstance {
      * 
      */
     public getBlob(): Promise<Blob> {
-        
+
         return new AttachmentFile(this, "$value").get(new BlobFileParser());
     }
 

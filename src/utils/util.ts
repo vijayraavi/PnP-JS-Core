@@ -201,7 +201,7 @@ export class Util {
 
         let result = <T & S>{};
         for (let id in target) {
-            result[id] = target[id];
+            (<any>result)[id] = target[id];
         }
 
         // ensure we don't overwrite things we don't want overwritten
@@ -209,7 +209,7 @@ export class Util {
 
         for (let id in source) {
             if (check(result, id)) {
-                result[id] = source[id];
+                (<any>result)[id] = source[id];
             }
         }
 
