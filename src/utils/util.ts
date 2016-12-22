@@ -212,20 +212,6 @@ export class Util {
     }
 
     /**
-     * Applies one or more mixins to the supplied target
-     *
-     * @param derivedCtor The classto which we will apply the mixins
-     * @param baseCtors One or more mixin classes to apply
-     */
-    public static applyMixins(derivedCtor: any, ...baseCtors: any[]) {
-        baseCtors.forEach(baseCtor => {
-            Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-                derivedCtor.prototype[name] = baseCtor.prototype[name];
-            });
-        });
-    }
-
-    /**
      * Determines if a given url is absolute
      *
      * @param url The url to check to see if it is absolute
