@@ -1,6 +1,5 @@
-"use strict";
-
 declare var global: any;
+import { TypedHash } from "../collections/collections";
 
 export class Util {
 
@@ -117,13 +116,12 @@ export class Util {
      * @param paths 0 to n path parts to combine
      */
     public static combinePaths(...paths: string[]): string {
-        let parts = [];
-        for (let i = 0; i < paths.length; i++) {
-            if (typeof paths[i] !== "undefined" && paths[i] !== null) {
-                parts.push(paths[i].replace(/^[\\|\/]/, "").replace(/[\\|\/]$/, ""));
-            }
-        }
-        return parts.join("/").replace(/\\/, "/");
+
+        return paths
+            .filter(path => typeof path !== "undefined" && path !== null)
+            .map(path => path.replace(/^[\\|\/]/, "").replace(/[\\|\/]$/, ""))
+            .join("/")
+            .replace(/\\/g, "/");
     }
 
     /**
@@ -132,12 +130,12 @@ export class Util {
      * @param chars The length of the random string to generate
      */
     public static getRandomString(chars: number): string {
-        let text = "";
+        let text = new Array(chars);
         let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         for (let i = 0; i < chars; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
+            text[i] = possible.charAt(Math.floor(Math.random() * possible.length));
         }
-        return text;
+        return text.join("");
     }
 
     /**
@@ -196,26 +194,22 @@ export class Util {
      * @param noOverwrite If true existing properties on the target are not overwritten from the source
      *
      */
-    /* tslint:disable:forin */
-    public static extend<T, S>(target: T, source: S, noOverwrite = false): T & S {
+    public static extend(target: any, source: TypedHash<any>, noOverwrite = false): any {
 
-        let result = <T & S>{};
-        for (let id in target) {
-            (<any>result)[id] = target[id];
+        if (source === null || typeof source === "undefined") {
+            return target;
         }
 
         // ensure we don't overwrite things we don't want overwritten
-        let check: (o, i) => Boolean = noOverwrite ? (o, i) => !o.hasOwnProperty(i) : (o, i) => true;
+        let check: (o: any, i: string) => Boolean = noOverwrite ? (o, i) => !(i in o) : () => true;
 
-        for (let id in source) {
-            if (check(result, id)) {
-                (<any>result)[id] = source[id];
-            }
-        }
-
-        return result;
+        return Object.getOwnPropertyNames(source)
+            .filter((v: string) => check(target, v))
+            .reduce((t: any, v: string) => {
+                t[v] = source[v];
+                return t;
+            }, target);
     }
-    /* tslint:enable */
 
     /**
      * Applies one or more mixins to the supplied target
