@@ -73,7 +73,7 @@ export class UserCustomAction extends QueryableInstance {
             };
         });
     }
-                
+
      /**
      * Remove a custom action
      *
