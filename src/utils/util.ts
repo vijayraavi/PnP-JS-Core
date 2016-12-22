@@ -210,7 +210,6 @@ export class Util {
                 return t;
             }, target);
     }
-    /* tslint:enable */
 
     /**
      * Applies one or more mixins to the supplied target
