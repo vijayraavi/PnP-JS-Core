@@ -170,32 +170,32 @@ export class Item extends QueryableSecurable {
      */
     public update(properties: TypedHash<any>, eTag = "*"): Promise<ItemUpdateResult> {
 
-        let removeDependency = this.addBatchDependency();
+        return new Promise<ItemUpdateResult>((resolve, reject) => {
 
-        let parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
+            let removeDependency = this.addBatchDependency();
 
-        return parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
+            let parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
 
-            let postBody = JSON.stringify(Util.extend({
-                "__metadata": { "type": d.ListItemEntityTypeFullName },
-            }, properties));
+            parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
 
-            let promise = this.post({
-                body: postBody,
-                headers: {
-                    "IF-Match": eTag,
-                    "X-HTTP-Method": "MERGE",
-                },
-            }).then((data) => {
-                return {
-                    data: data,
-                    item: this,
-                };
-            });
+                let postBody = JSON.stringify(Util.extend({
+                    "__metadata": { "type": d.ListItemEntityTypeFullName },
+                }, properties));
 
-            removeDependency();
-
-            return promise;
+                this.post({
+                    body: postBody,
+                    headers: {
+                        "IF-Match": eTag,
+                        "X-HTTP-Method": "MERGE",
+                    },
+                }).then((data) => {
+                    removeDependency();
+                    resolve({
+                        data: data,
+                        item: this,
+                    });
+                });
+            }).catch(e => reject(e));
         });
     }
 
