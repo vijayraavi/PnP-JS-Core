@@ -1,6 +1,6 @@
 declare var global: any;
 import * as chai from "chai";
-import * as mocha from "mocha";
+import "mocha";
 import pnp from "../src/pnp";
 import { Util } from "../src/utils/util";
 import { Web } from "../src/sharepoint/webs";
@@ -68,10 +68,10 @@ after(() => {
 // this can be used to clean up lots of test sub webs :)
 export function cleanUpAllSubsites() {
     pnp.sp.site.rootWeb.webs.select("Title").get().then((w) => {
-        w.forEach(element => {
+        w.forEach((element: any) => {
             let web = new Web(element["odata.id"], "");
             web.webs.select("Title").get().then((sw: any[]) => {
-                return Promise.all(sw.map((value, index, arr) => {
+                return Promise.all(sw.map((value) => {
                         let web2 = new Web(value["odata.id"], "");
                         return web2.delete();
                     }));

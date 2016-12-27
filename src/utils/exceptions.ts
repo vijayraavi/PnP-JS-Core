@@ -32,11 +32,11 @@ export class ProcessHttpClientResponseException extends Exception {
 
     constructor(private response: Response) {
         super("ProcessHttpClientResponseException", `Error making HttpClient request in queryable: [${response.status}] ${response.statusText}`);
-        this.Log();
+        super.Log();
     }
 
     protected getLogEntry(): Promise<LogEntry> {
-        return Promise.resolve(<LogEntry>{ data: this.response, level: LogLevel.Error, message: this.message });
+        return this.response.json().then(json => <LogEntry>{ data: json, level: LogLevel.Error, message: this.message });
     }
 }
 
@@ -44,7 +44,7 @@ export class NoCacheAvailableException extends Exception {
 
     constructor(msg = "Cannot create a caching configuration provider since cache is not available.") {
         super("NoCacheAvailableException", msg);
-        this.Log();
+        super.Log();
     }
 }
 
@@ -52,7 +52,7 @@ export class APIUrlException extends Exception {
 
     constructor(msg = "Unable to determine API url.") {
         super("APIUrlException", msg);
-        this.Log();
+        super.Log();
     }
 }
 
@@ -60,7 +60,7 @@ export class AuthUrlException extends Exception {
 
     constructor(protected data: any, msg = "Auth URL Endpoint could not be determined from data. Data logged.") {
         super("APIUrlException", msg);
-        this.Log();
+        super.Log();
     }
 
     protected getLogEntry(): Promise<LogEntry> {
@@ -85,7 +85,7 @@ export class SPRequestExecutorUndefinedException extends Exception {
             "Load the SP.RequestExecutor.js library (/_layouts/15/SP.RequestExecutor.js) before loading the PnP JS Core library.",
         ].join(" ");
         super("SPRequestExecutorUndefinedException", msg);
-        this.Log();
+        super.Log();
     }
 }
 
@@ -101,7 +101,7 @@ export class NotSupportedInBatchException extends Exception {
 
     constructor(operation = "This operation") {
         super("NotSupportedInBatchException", `${operation} is not supported as part of a batch.`);
-        this.Log();
+        super.Log();
     }
 }
 
@@ -109,7 +109,7 @@ export class ODataIdException extends Exception {
 
     constructor(protected data: any, msg = "Could not extract odata id in object, you may be using nometadata. Object data logged to logger.") {
         super("ODataIdException", msg);
-        this.Log();
+        super.Log();
     }
 
     protected getLogEntry(): Promise<LogEntry> {
@@ -122,7 +122,7 @@ export class BatchParseException extends Exception {
 
     constructor(msg: string) {
         super("BatchParseException", msg);
-        this.Log();
+        super.Log();
     }
 }
 
@@ -130,7 +130,7 @@ export class AlreadyInBatchException extends Exception {
 
     constructor(msg = "This query is already part of a batch.") {
         super("AlreadyInBatchException", msg);
-        this.Log();
+        super.Log();
     }
 }
 
@@ -138,7 +138,7 @@ export class FunctionExpectedException extends Exception {
 
     constructor(msg = "This query is already part of a batch.") {
         super("FunctionExpectedException", msg);
-        this.Log();
+        super.Log();
     }
 }
 
@@ -146,6 +146,6 @@ export class UrlException extends Exception {
 
     constructor(msg: string) {
         super("UrlException", msg);
-        this.Log();
+        super.Log();
     }
 }
