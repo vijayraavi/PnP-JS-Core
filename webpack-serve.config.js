@@ -22,7 +22,10 @@ module.exports = {
     ],
     module: {
         loaders: [
-            { test: /\.ts$/, loader: 'babel-loader?presets[]=es2015!ts-loader' },
+            {
+                test: /\.ts$/,
+                loader: 'babel-loader?presets[]=es2015!ts-loader'
+            }
         ]
     }
 };
