@@ -29,6 +29,9 @@ export class NodeFetchClient implements HttpClientImpl {
         global.Headers = nodeFetch.Headers;
         global.Request = nodeFetch.Request;
         global.Response = nodeFetch.Response;
+        global._spPageContextInfo = {
+            webAbsoluteUrl: siteUrl,
+        };
     }
 
     public fetch(url: string, options: any): Promise<Response> {
