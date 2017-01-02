@@ -348,8 +348,10 @@ export class Queryable {
 
             } else {
 
-                // and reject with the below message.
-                return reject(new ProcessHttpClientResponseException(response));
+                // and reject
+                response.json().then(json => {
+                    return reject(new ProcessHttpClientResponseException(response.status, response.statusText, json));
+                });
             }
         });
     }

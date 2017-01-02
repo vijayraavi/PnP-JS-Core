@@ -10,10 +10,10 @@ function defaultLog(error: Error) {
  */
 export class ProcessHttpClientResponseException extends Error {
 
-    constructor(response: Response) {
-        super(`Error making HttpClient request in queryable: [${response.status}] ${response.statusText}`);
+    constructor(public readonly status: number, public readonly statusText: string, public readonly data: any) {
+        super(`Error making HttpClient request in queryable: [${status}] ${statusText}`);
         this.name = "ProcessHttpClientResponseException";
-        response.json().then(json => Logger.log({ data: json, level: LogLevel.Error, message: this.message }));
+        Logger.log({ data: this.data, level: LogLevel.Error, message: this.message });
     }
 }
 
