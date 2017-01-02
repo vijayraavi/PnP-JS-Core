@@ -188,7 +188,7 @@ export class Item extends QueryableSecurable {
                         "IF-Match": eTag,
                         "X-HTTP-Method": "MERGE",
                     },
-                }).then((data) => {
+                }, new ItemUpdatedParser()).then((data) => {
                     removeDependency();
                     resolve({
                         data: data,
@@ -257,7 +257,11 @@ export interface ItemAddResult {
 
 export interface ItemUpdateResult {
     item: Item;
-    data: any;
+    data: ItemUpdateResultData;
+}
+
+export interface ItemUpdateResultData {
+    "odata.etag": string;
 }
 
 /**
@@ -291,9 +295,28 @@ export class PagedItemCollection<T> {
 class PagedItemCollectionParser extends ODataParserBase<PagedItemCollection<any>> {
     public parse(r: Response): Promise<PagedItemCollection<any>> {
 
-        return r.json().then(json => {
-            let nextUrl = json.hasOwnProperty("d") && json.d.hasOwnProperty("__next") ? json.d.__next : json["odata.nextLink"];
-            return new PagedItemCollection(nextUrl, this.parseODataJSON(json));
+        return new Promise<PagedItemCollection<any>>((resolve, reject) => {
+
+            if (this.handleError(r, reject)) {
+                r.json().then(json => {
+                    let nextUrl = json.hasOwnProperty("d") && json.d.hasOwnProperty("__next") ? json.d.__next : json["odata.nextLink"];
+                    resolve(new PagedItemCollection(nextUrl, this.parseODataJSON(json)));
+                });
+            }
+        });
+    }
+}
+
+class ItemUpdatedParser extends ODataParserBase<ItemUpdateResultData> {
+    public parse(r: Response): Promise<ItemUpdateResultData> {
+
+        return new Promise<ItemUpdateResultData>((resolve, reject) => {
+
+            if (this.handleError(r, reject)) {
+                resolve({
+                    "odata.etag": r.headers.get("etag"),
+                });
+            }
         });
     }
 }
