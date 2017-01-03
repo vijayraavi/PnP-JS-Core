@@ -23,6 +23,7 @@ export {
 } from "./folders";
 
 export {
+    Item,
     ItemAddResult,
     ItemUpdateResult,
     ItemUpdateResultData,
@@ -30,6 +31,7 @@ export {
 } from "./items";
 
 export {
+    List,
     ListAddResult,
     ListUpdateResult,
     ListEnsureResult
