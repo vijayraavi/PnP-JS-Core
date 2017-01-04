@@ -27,7 +27,7 @@ export interface LibraryConfiguration {
     /**
      * Defines a factory method used to create fetch clients
      */
-    fetchClientFactory: () => HttpClientImpl;
+    fetchClientFactory?: () => HttpClientImpl;
 }
 
 export class RuntimeConfigImpl {
