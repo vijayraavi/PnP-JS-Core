@@ -154,5 +154,5 @@ interface RetryContext {
 };
 
 export interface HttpClientImpl {
-    fetch(url: string, options: any): Promise<Response>;
+    fetch(url: string, options: FetchOptions): Promise<Response>;
 }
