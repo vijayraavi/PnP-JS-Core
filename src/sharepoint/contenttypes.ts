@@ -146,21 +146,8 @@ export class FieldLinks extends QueryableCollection {
      */
     public getById(id: string) {
         let fl = new FieldLink(this);
-        fl.concat(`(${id})`);
+        fl.concat(`('${id}')`);
         return fl;
-    }
-
-    /**
-     * Reorders the fields in the content type (limited functionality in REST)
-     * 
-     * @param internalFieldNames string array of internal field names in the order they should appear in the content type
-     */
-    public reorder(internalFieldNames: string[]): Promise<any> {
-
-        let reorder = new FieldLinks(this, "reorder");
-        return reorder.post({
-            body: JSON.stringify({ internalNames: internalFieldNames }),
-        });
     }
 }
 
@@ -176,12 +163,5 @@ export class FieldLink extends QueryableInstance {
     */
     constructor(baseUrl: string | Queryable, path?: string) {
         super(baseUrl, path);
-    }
-
-    /**
-     * Delets this FieldLink instance
-     */
-    public delete(): Promise<any> {
-        return this.delete();
     }
 }
