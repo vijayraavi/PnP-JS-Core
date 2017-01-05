@@ -88,8 +88,7 @@ export {
 } from "./sitegroups";
 
 export {
-    UserUpdateResult,
-    UserProps
+    UserUpdateResult
 } from "./siteusers";
 
 export {
