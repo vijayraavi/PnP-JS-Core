@@ -146,7 +146,7 @@ export class FieldLinks extends QueryableCollection {
      */
     public getById(id: string) {
         let fl = new FieldLink(this);
-        fl.concat(`('${id}')`);
+        fl.concat(`(guid'${id}')`);
         return fl;
     }
 }
