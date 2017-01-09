@@ -1,6 +1,7 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 import { QueryableSecurable } from "./queryablesecurable";
 import { Folder } from "./folders";
+import { File } from "./files";
 import { ContentType } from "./contenttypes";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
@@ -159,7 +160,15 @@ export class Item extends QueryableSecurable {
      *
      */
     public get folder(): Folder {
-        return new Folder(this, "Folder");
+        return new Folder(this, "folder");
+    }
+
+    /**
+     * Gets the folder associated with this list item (if this item represents a folder)
+     *
+     */
+    public get file(): File {
+        return new File(this, "file");
     }
 
     /**
