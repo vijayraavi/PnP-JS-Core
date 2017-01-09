@@ -135,7 +135,7 @@ export class FieldLinks extends QueryableCollection {
      * 
      * @param baseUrl The url or Queryable which forms the parent of this content type instance
      */
-    constructor(baseUrl: string | Queryable, path: string = "fieldlinks") {
+    constructor(baseUrl: string | Queryable, path = "fieldlinks") {
         super(baseUrl, path);
     }
 
