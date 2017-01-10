@@ -37,14 +37,14 @@ export class Features extends QueryableCollection {
         let adder = new Features(this, "add");
         return adder.post({
             body: JSON.stringify({
+                featdefScope: 0,
                 featureId: id,
                 force: force,
-                featdefScope: 0
-            })
+            }),
         }).then(data => {
             return {
                 data: data,
-                feature: this.getById(id)
+                feature: this.getById(id),
             };
         });
     }
@@ -61,8 +61,8 @@ export class Features extends QueryableCollection {
         return remover.post({
             body: JSON.stringify({
                 featureId: id,
-                force: force
-            })
+                force: force,
+            }),
         });
     }
 }
