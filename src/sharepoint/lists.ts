@@ -40,7 +40,7 @@ export class Lists extends QueryableCollection {
     /**
      * Gets a list from the collection by guid id
      *
-     * @param title The Id of the list
+     * @param id The Id of the list (GUID)
      */
     public getById(id: string): List {
         let list = new List(this);
@@ -57,7 +57,6 @@ export class Lists extends QueryableCollection {
      * @param enableContentTypes If true content types will be allowed and enabled, otherwise they will be disallowed and not enabled
      * @param additionalSettings Will be passed as part of the list creation body
      */
-    /*tslint:disable max-line-length */
     public add(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ListAddResult> {
 
         let postBody = JSON.stringify(Util.extend({
@@ -73,7 +72,6 @@ export class Lists extends QueryableCollection {
             return { data: data, list: this.getByTitle(title) };
         });
     }
-    /*tslint:enable */
 
     /**
      * Ensures that the specified list exists in the collection (note: settings are not updated if the list exists,

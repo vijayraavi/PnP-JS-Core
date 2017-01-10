@@ -19,6 +19,10 @@ export {
 } from "./files";
 
 export {
+    FeatureAddResult
+} from "./features";
+
+export {
     FolderAddResult
 } from "./folders";
 
