@@ -63,7 +63,7 @@ export class Webs extends QueryableCollection {
         return q.post({ body: postBody }).then((data) => {
             return {
                 data: data,
-                web: new Web(extractOdataId(data), ""),
+                web: new Web(extractOdataId(data).replace(/_api\/web\/?/i, "")),
             };
         });
     }
