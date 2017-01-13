@@ -19,6 +19,10 @@ export {
 } from "./files";
 
 export {
+    FeatureAddResult
+} from "./features";
+
+export {
     FolderAddResult
 } from "./folders";
 
@@ -29,6 +33,13 @@ export {
     ItemUpdateResultData,
     PagedItemCollection
 } from "./items";
+
+export {
+    NavigationNodeAddResult,
+    NavigationNodeUpdateResult,
+    NavigationNodes,
+    NavigationNode
+} from "./navigation";
 
 export {
     List,

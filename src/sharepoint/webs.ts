@@ -15,6 +15,7 @@ import { List } from "./lists";
 import { SiteUsers, SiteUser, CurrentUser } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId, ODataBatch } from "./odata";
+import { Features } from "./features";
 
 
 export class Webs extends QueryableCollection {
@@ -62,7 +63,7 @@ export class Webs extends QueryableCollection {
         return q.post({ body: postBody }).then((data) => {
             return {
                 data: data,
-                web: new Web(extractOdataId(data), ""),
+                web: new Web(extractOdataId(data).replace(/_api\/web\/?/i, "")),
             };
         });
     }
@@ -105,6 +106,14 @@ export class Web extends QueryableSecurable {
      */
     public get fields(): Fields {
         return new Fields(this);
+    }
+
+    /**
+     * Gets the active features for this web
+     * 
+     */
+    public get features(): Features {
+        return new Features(this);
     }
 
     /**

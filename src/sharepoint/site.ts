@@ -3,6 +3,7 @@ import { Web } from "./webs";
 import { UserCustomActions } from "./usercustomactions";
 import { ContextInfo, DocumentLibraryInformation } from "./types";
 import { ODataBatch } from "./odata";
+import { Features } from "./features";
 
 /**
  * Describes a site collection
@@ -25,6 +26,14 @@ export class Site extends QueryableInstance {
      */
     public get rootWeb(): Web {
         return new Web(this, "rootweb");
+    }
+
+    /**
+     * Gets the active features for this site
+     * 
+     */
+    public get features(): Features {
+        return new Features(this);
     }
 
     /**
