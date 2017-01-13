@@ -5,7 +5,7 @@ import { APIUrlException } from "../utils/exceptions";
 
 export interface FetchOptions {
     method?: string;
-    headers?: HeadersInit | { [index: string]: string };
+    headers?: string[][] | { [key: string]: string };
     body?: BodyInit;
     mode?: string | RequestMode;
     credentials?: string | RequestCredentials;
