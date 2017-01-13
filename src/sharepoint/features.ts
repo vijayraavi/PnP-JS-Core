@@ -89,7 +89,7 @@ export class Feature extends QueryableInstance {
 
         let idGet = new Feature(this).select("DefinitionId");
 
-        return idGet.get().then(feature => {
+        return idGet.getAs<{ DefinitionId: string }>().then(feature => {
 
             let promise = this.getParent(Features, this.parentUrl, "").remove(feature.DefinitionId, force);
 

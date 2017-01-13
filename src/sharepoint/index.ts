@@ -35,6 +35,13 @@ export {
 } from "./items";
 
 export {
+    NavigationNodeAddResult,
+    NavigationNodeUpdateResult,
+    NavigationNodes,
+    NavigationNode
+} from "./navigation";
+
+export {
     List,
     ListAddResult,
     ListUpdateResult,
