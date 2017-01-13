@@ -6,8 +6,6 @@
 
 The Patterns and Practices JavaScript Core Library was created to help developers by simplifying common operations within SharePoint and the SharePoint Framework. Currently it contains a fluent API for working with the full SharePoint REST API as well as utility and helper functions. This takes the guess work out of creating REST requests, letting developers focus on the what and less on the how.
 
-![pnp in action](http://i.imgur.com/TGT3Xs2.gif)
-
 Please use [http://aka.ms/OfficeDevPnP](http://aka.ms/OfficeDevPnP) for getting latest information around the whole *Office 365 Developer Patterns and Practices program*.
 
 ### Get Started
@@ -44,6 +42,8 @@ We have an active [Gitter](https://gitter.im/OfficeDev/PnP-JS-Core) community de
 
 ### Authors
 This project's contributors include Microsoft and [community contributors](AUTHORS). Work is done as as open source community project.
+
+![pnp in action](http://i.imgur.com/TGT3Xs2.gif)
 
 ### Code of Conduct
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
