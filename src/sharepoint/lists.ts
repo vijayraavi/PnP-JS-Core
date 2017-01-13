@@ -422,6 +422,15 @@ export class List extends QueryableSecurable {
             }
         });
     }
+
+    /**
+     * Returns the ListItemEntityTypeFullName for this list, used when adding/updating list items
+     * 
+     */
+    public getListItemEntityTypeFullName(): Promise<string> {
+
+        return this.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
+    }
 }
 
 export interface ListAddResult {
