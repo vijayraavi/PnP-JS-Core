@@ -73,8 +73,7 @@ export class Items extends QueryableCollection {
                     item: this.getById(data.Id),
                 };
             });
-
-        }
+        };
 
         if (!listItemEntityTypeFullName) {
 
