@@ -8,6 +8,7 @@ import { Util } from "../utils/util";
 import * as Types from "./types";
 import { ODataParserBase } from "./odata";
 import { AttachmentFiles } from "./attachmentfiles";
+import { List } from "./lists";
 
 /**
  * Describes a collection of Item objects
@@ -58,29 +59,41 @@ export class Items extends QueryableCollection {
      *
      * @param properties The new items's properties
      */
-    public add(properties: TypedHash<any> = {}): Promise<ItemAddResult> {
+    public add(properties: TypedHash<any> = {}, listItemEntityTypeFullName: string = null): Promise<ItemAddResult> {
 
-        let removeDependency = this.addBatchDependency();
-
-        let parentList = this.getParent(QueryableInstance);
-
-        return parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
+        let doAdd = (listItemEntityType: string): Promise<ItemAddResult> => {
 
             let postBody = JSON.stringify(Util.extend({
-                "__metadata": { "type": d.ListItemEntityTypeFullName },
+                "__metadata": { "type": listItemEntityType },
             }, properties));
 
-            let promise = this.postAs<{ Id: number }>({ body: postBody }).then((data) => {
+            return this.postAs<{ Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
                 };
             });
+        };
 
-            removeDependency();
+        if (!listItemEntityTypeFullName) {
 
-            return promise;
-        });
+            let parentList = this.getParent(List);
+
+            let removeDependency = this.addBatchDependency();
+
+            return parentList.getListItemEntityTypeFullName().then(n => {
+
+                let promise = doAdd(n);
+
+                removeDependency();
+
+                return promise;
+            });
+
+        } else {
+
+            return doAdd(listItemEntityTypeFullName);
+        }
     }
 }
 
