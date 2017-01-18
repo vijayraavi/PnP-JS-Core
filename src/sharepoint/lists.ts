@@ -428,8 +428,8 @@ export class List extends QueryableSecurable {
      * 
      */
     public getListItemEntityTypeFullName(): Promise<string> {
-        let q = this.select("ListItemEntityTypeFullName");
-        return q.getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
+        let q = new QueryableInstance(this);
+        return q.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
     }
 }
 
