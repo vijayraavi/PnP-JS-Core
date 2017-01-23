@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sharepoint/items.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sharepoint/items.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+const queryable_1 = require("./queryable");
+const queryablesecurable_1 = require("./queryablesecurable");
+const folders_1 = require("./folders");
+const files_1 = require("./files");
+const contenttypes_1 = require("./contenttypes");
+const util_1 = require("../utils/util");
+const odata_1 = require("./odata");
+const attachmentfiles_1 = require("./attachmentfiles");
+const lists_1 = require("./lists");
+/**
+ * Describes a collection of Item objects
+ *
+ */
+class Items extends queryable_1.QueryableCollection {
+    /**
+     * Creates a new instance of the Items class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     */
+    constructor(baseUrl, path = "items") {
+        super(baseUrl, path);
+    }
+    /**
+     * Gets an Item by id
+     *
+     * @param id The integer id of the item to retrieve
+     */
+    getById(id) {
+        let i = new Item(this);
+        i.concat(`(${id})`);
+        return i;
+    }
+    /**
+     * Skips the specified number of items (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#sectionSection6)
+     *
+     * @param skip The starting id where the page should start, use with top to specify pages
+     */
+    skip(skip) {
+        this._query.add("$skiptoken", encodeURIComponent(`Paged=TRUE&amp;p_ID=${skip}`));
+        return this;
+    }
+    /**
+     * Gets a collection designed to aid in paging through data
+     *
+     */
+    getPaged() {
+        return this.getAs(new PagedItemCollectionParser());
+    }
+    /**
+     * Adds a new item to the collection
+     *
+     * @param properties The new items's properties
+     */
+    add(properties = {}, listItemEntityTypeFullName = null) {
+        let doAdd = (listItemEntityType) => {
+            let postBody = JSON.stringify(util_1.Util.extend({
+                "__metadata": { "type": listItemEntityType },
+            }, properties));
+            return this.postAs({ body: postBody }).then((data) => {
+                return {
+                    data: data,
+                    item: this.getById(data.Id),
+                };
+            });
+        };
+        if (!listItemEntityTypeFullName) {
+            let parentList = this.getParent(lists_1.List);
+            let removeDependency = this.addBatchDependency();
+            return parentList.getListItemEntityTypeFullName().then(n => {
+                let promise = doAdd(n);
+                removeDependency();
+                return promise;
+            });
+        }
+        else {
+            return doAdd(listItemEntityTypeFullName);
+        }
+    }
+}
+exports.Items = Items;
+/**
+ * Descrines a single Item instance
+ *
+ */
+class Item extends queryablesecurable_1.QueryableSecurable {
+    /**
+     * Creates a new instance of the Items class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     */
+    constructor(baseUrl, path) {
+        super(baseUrl, path);
+    }
+    /**
+     * Gets the set of attachments for this item
+     *
+     */
+    get attachmentFiles() {
+        return new attachmentfiles_1.AttachmentFiles(this);
+    }
+    /**
+     * Gets the content type for this item
+     *
+     */
+    get contentType() {
+        return new contenttypes_1.ContentType(this, "ContentType");
+    }
+    /**
+     * Gets the effective base permissions for the item
+     *
+     */
+    get effectiveBasePermissions() {
+        return new queryable_1.Queryable(this, "EffectiveBasePermissions");
+    }
+    /**
+     * Gets the effective base permissions for the item in a UI context
+     *
+     */
+    get effectiveBasePermissionsForUI() {
+        return new queryable_1.Queryable(this, "EffectiveBasePermissionsForUI");
+    }
+    /**
+     * Gets the field values for this list item in their HTML representation
+     *
+     */
+    get fieldValuesAsHTML() {
+        return new queryable_1.QueryableInstance(this, "FieldValuesAsHTML");
+    }
+    /**
+     * Gets the field values for this list item in their text representation
+     *
+     */
+    get fieldValuesAsText() {
+        return new queryable_1.QueryableInstance(this, "FieldValuesAsText");
+    }
+    /**
+     * Gets the field values for this list item for use in editing controls
+     *
+     */
+    get fieldValuesForEdit() {
+        return new queryable_1.QueryableInstance(this, "FieldValuesForEdit");
+    }
+    /**
+     * Gets the folder associated with this list item (if this item represents a folder)
+     *
+     */
+    get folder() {
+        return new folders_1.Folder(this, "folder");
+    }
+    /**
+     * Gets the folder associated with this list item (if this item represents a folder)
+     *
+     */
+    get file() {
+        return new files_1.File(this, "file");
+    }
+    /**
+     * Updates this list intance with the supplied properties
+     *
+     * @param properties A plain object hash of values to update for the list
+     * @param eTag Value used in the IF-Match header, by default "*"
+     */
+    update(properties, eTag = "*") {
+        return new Promise((resolve, reject) => {
+            let removeDependency = this.addBatchDependency();
+            let parentList = this.getParent(queryable_1.QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
+            parentList.select("ListItemEntityTypeFullName").getAs().then((d) => {
+                let postBody = JSON.stringify(util_1.Util.extend({
+                    "__metadata": { "type": d.ListItemEntityTypeFullName },
+                }, properties));
+                this.post({
+                    body: postBody,
+                    headers: {
+                        "IF-Match": eTag,
+                        "X-HTTP-Method": "MERGE",
+                    },
+                }, new ItemUpdatedParser()).then((data) => {
+                    removeDependency();
+                    resolve({
+                        data: data,
+                        item: this,
+                    });
+                });
+            }).catch(e => reject(e));
+        });
+    }
+    /**
+     * Delete this item
+     *
+     * @param eTag Value used in the IF-Match header, by default "*"
+     */
+    delete(eTag = "*") {
+        return this.post({
+            headers: {
+                "IF-Match": eTag,
+                "X-HTTP-Method": "DELETE",
+            },
+        });
+    }
+    /**
+     * Moves the list item to the Recycle Bin and returns the identifier of the new Recycle Bin item.
+     */
+    recycle() {
+        let i = new Item(this, "recycle");
+        return i.post();
+    }
+    /**
+     * Gets a string representation of the full URL to the WOPI frame.
+     * If there is no associated WOPI application, or no associated action, an empty string is returned.
+     *
+     * @param action Display mode: 0: view, 1: edit, 2: mobileView, 3: interactivePreview
+     */
+    getWopiFrameUrl(action = 0) {
+        let i = new Item(this, "getWOPIFrameUrl(@action)");
+        i._query.add("@action", action);
+        return i.post().then((data) => {
+            return data.GetWOPIFrameUrl;
+        });
+    }
+    /**
+     * Validates and sets the values of the specified collection of fields for the list item.
+     *
+     * @param formValues The fields to change and their new values.
+     * @param newDocumentUpdate true if the list item is a document being updated after upload; otherwise false.
+     */
+    /* tslint:disable max-line-length */
+    validateUpdateListItem(formValues, newDocumentUpdate = false) {
+        let postBody = JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate });
+        let item = new Item(this, "validateupdatelistitem");
+        return item.post({ body: postBody });
+    }
+}
+exports.Item = Item;
+/**
+ * Provides paging functionality for list items
+ */
+class PagedItemCollection {
+    constructor(nextUrl, results) {
+        this.nextUrl = nextUrl;
+        this.results = results;
+    }
+    /**
+     * If true there are more results available in the set, otherwise there are not
+     */
+    get hasNext() {
+        return typeof this.nextUrl === "string" &amp;&amp; this.nextUrl.length > 0;
+    }
+    /**
+     * Gets the next set of results, or resolves to null if no results are available
+     */
+    getNext() {
+        if (this.hasNext) {
+            let items = new Items(this.nextUrl, null);
+            return items.getPaged();
+        }
+        return new Promise(r => r(null));
+    }
+}
+exports.PagedItemCollection = PagedItemCollection;
+class PagedItemCollectionParser extends odata_1.ODataParserBase {
+    parse(r) {
+        return new Promise((resolve, reject) => {
+            if (this.handleError(r, reject)) {
+                r.json().then(json => {
+                    let nextUrl = json.hasOwnProperty("d") &amp;&amp; json.d.hasOwnProperty("__next") ? json.d.__next : json["odata.nextLink"];
+                    resolve(new PagedItemCollection(nextUrl, this.parseODataJSON(json)));
+                });
+            }
+        });
+    }
+}
+class ItemUpdatedParser extends odata_1.ODataParserBase {
+    parse(r) {
+        return new Promise((resolve, reject) => {
+            if (this.handleError(r, reject)) {
+                resolve({
+                    "odata.etag": r.headers.get("etag"),
+                });
+            }
+        });
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:46 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

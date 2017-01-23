@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/logging.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/logging.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+/**
+ * A set of logging levels
+ *
+ */
+var LogLevel;
+(function (LogLevel) {
+    LogLevel[LogLevel["Verbose"] = 0] = "Verbose";
+    LogLevel[LogLevel["Info"] = 1] = "Info";
+    LogLevel[LogLevel["Warning"] = 2] = "Warning";
+    LogLevel[LogLevel["Error"] = 3] = "Error";
+    LogLevel[LogLevel["Off"] = 99] = "Off";
+})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
+/**
+ * Class used to subscribe ILogListener and log messages throughout an application
+ *
+ */
+class Logger {
+    static get activeLogLevel() {
+        return Logger.instance.activeLogLevel;
+    }
+    static set activeLogLevel(value) {
+        Logger.instance.activeLogLevel = value;
+    }
+    static get instance() {
+        if (typeof Logger._instance === "undefined" || Logger._instance === null) {
+            Logger._instance = new LoggerImpl();
+        }
+        return Logger._instance;
+    }
+    /**
+     * Adds ILogListener instances to the set of subscribed listeners
+     *
+     * @param listeners One or more listeners to subscribe to this log
+     */
+    static subscribe(...listeners) {
+        listeners.map(listener => Logger.instance.subscribe(listener));
+    }
+    /**
+     * Clears the subscribers collection, returning the collection before modifiction
+     */
+    static clearSubscribers() {
+        return Logger.instance.clearSubscribers();
+    }
+    /**
+     * Gets the current subscriber count
+     */
+    static get count() {
+        return Logger.instance.count;
+    }
+    /**
+     * Writes the supplied string to the subscribed listeners
+     *
+     * @param message The message to write
+     * @param level [Optional] if supplied will be used as the level of the entry (Default: LogLevel.Verbose)
+     */
+    static write(message, level = LogLevel.Verbose) {
+        Logger.instance.log({ level: level, message: message });
+    }
+    /**
+     * Writes the supplied string to the subscribed listeners
+     *
+     * @param json The json object to stringify and write
+     * @param level [Optional] if supplied will be used as the level of the entry (Default: LogLevel.Verbose)
+     */
+    static writeJSON(json, level = LogLevel.Verbose) {
+        Logger.instance.log({ level: level, message: JSON.stringify(json) });
+    }
+    /**
+     * Logs the supplied entry to the subscribed listeners
+     *
+     * @param entry The message to log
+     */
+    static log(entry) {
+        Logger.instance.log(entry);
+    }
+    /**
+     * Logs performance tracking data for the the execution duration of the supplied function using console.profile
+     *
+     * @param name The name of this profile boundary
+     * @param f The function to execute and track within this performance boundary
+     */
+    static measure(name, f) {
+        return Logger.instance.measure(name, f);
+    }
+}
+exports.Logger = Logger;
+class LoggerImpl {
+    constructor(activeLogLevel = LogLevel.Warning, subscribers = []) {
+        this.activeLogLevel = activeLogLevel;
+        this.subscribers = subscribers;
+    }
+    subscribe(listener) {
+        this.subscribers.push(listener);
+    }
+    clearSubscribers() {
+        let s = this.subscribers.slice(0);
+        this.subscribers.length = 0;
+        return s;
+    }
+    get count() {
+        return this.subscribers.length;
+    }
+    write(message, level = LogLevel.Verbose) {
+        this.log({ level: level, message: message });
+    }
+    log(entry) {
+        if (typeof entry === "undefined" || entry.level &lt; this.activeLogLevel) {
+            return;
+        }
+        this.subscribers.map(subscriber => subscriber.log(entry));
+    }
+    measure(name, f) {
+        console.profile(name);
+        try {
+            return f();
+        }
+        finally {
+            console.profileEnd();
+        }
+    }
+}
+/**
+ * Implementation of ILogListener which logs to the browser console
+ *
+ */
+class ConsoleListener {
+    /**
+     * Any associated data that a given logging listener may choose to log or ignore
+     *
+     * @param entry The information to be logged
+     */
+    log(entry) {
+        let msg = this.format(entry);
+        switch (entry.level) {
+            case LogLevel.Verbose:
+            case LogLevel.Info:
+                console.log(msg);
+                break;
+            case LogLevel.Warning:
+                console.warn(msg);
+                break;
+            case LogLevel.Error:
+                console.error(msg);
+                break;
+        }
+    }
+    /**
+     * Formats the message
+     *
+     * @param entry The information to format into a string
+     */
+    format(entry) {
+        return "Message: " + entry.message + ". Data: " + JSON.stringify(entry.data);
+    }
+}
+exports.ConsoleListener = ConsoleListener;
+/**
+ * Implementation of ILogListener which logs to the supplied function
+ *
+ */
+class FunctionListener {
+    /**
+     * Creates a new instance of the FunctionListener class
+     *
+     * @constructor
+     * @param  method The method to which any logging data will be passed
+     */
+    constructor(method) {
+        this.method = method;
+    }
+    /**
+     * Any associated data that a given logging listener may choose to log or ignore
+     *
+     * @param entry The information to be logged
+     */
+    log(entry) {
+        this.method(entry);
+    }
+}
+exports.FunctionListener = FunctionListener;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:46 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

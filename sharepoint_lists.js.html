@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sharepoint/lists.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sharepoint/lists.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+const items_1 = require("./items");
+const views_1 = require("./views");
+const contenttypes_1 = require("./contenttypes");
+const fields_1 = require("./fields");
+const forms_1 = require("./forms");
+const subscriptions_1 = require("./subscriptions");
+const queryable_1 = require("./queryable");
+const queryablesecurable_1 = require("./queryablesecurable");
+const util_1 = require("../utils/util");
+const usercustomactions_1 = require("./usercustomactions");
+const odata_1 = require("./odata");
+const exceptions_1 = require("../utils/exceptions");
+/**
+ * Describes a collection of List objects
+ *
+ */
+class Lists extends queryable_1.QueryableCollection {
+    /**
+     * Creates a new instance of the Lists class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     */
+    constructor(baseUrl, path = "lists") {
+        super(baseUrl, path);
+    }
+    /**
+     * Gets a list from the collection by title
+     *
+     * @param title The title of the list
+     */
+    getByTitle(title) {
+        return new List(this, `getByTitle('${title}')`);
+    }
+    /**
+     * Gets a list from the collection by guid id
+     *
+     * @param id The Id of the list (GUID)
+     */
+    getById(id) {
+        let list = new List(this);
+        list.concat(`('${id}')`);
+        return list;
+    }
+    /**
+     * Adds a new list to the collection
+     *
+     * @param title The new list's title
+     * @param description The new list's description
+     * @param template The list template value
+     * @param enableContentTypes If true content types will be allowed and enabled, otherwise they will be disallowed and not enabled
+     * @param additionalSettings Will be passed as part of the list creation body
+     */
+    add(title, description = "", template = 100, enableContentTypes = false, additionalSettings = {}) {
+        let postBody = JSON.stringify(util_1.Util.extend({
+            "__metadata": { "type": "SP.List" },
+            "AllowContentTypes": enableContentTypes,
+            "BaseTemplate": template,
+            "ContentTypesEnabled": enableContentTypes,
+            "Description": description,
+            "Title": title,
+        }, additionalSettings));
+        return this.post({ body: postBody }).then((data) => {
+            return { data: data, list: this.getByTitle(title) };
+        });
+    }
+    /**
+     * Ensures that the specified list exists in the collection (note: this method not supported for batching)
+     *
+     * @param title The new list's title
+     * @param description The new list's description
+     * @param template The list template value
+     * @param enableContentTypes If true content types will be allowed and enabled, otherwise they will be disallowed and not enabled
+     * @param additionalSettings Will be passed as part of the list creation body or used to update an existing list
+     */
+    ensure(title, description = "", template = 100, enableContentTypes = false, additionalSettings = {}) {
+        if (this.hasBatch) {
+            throw new exceptions_1.NotSupportedInBatchException("The ensure list method");
+        }
+        return new Promise((resolve, reject) => {
+            let list = this.getByTitle(title);
+            list.get().then(_ => {
+                list.update(additionalSettings).then(d => {
+                    resolve({ created: false, data: d, list: list });
+                }).catch(e => reject(e));
+            }).catch(() => {
+                this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => {
+                    resolve({ created: true, data: r.data, list: this.getByTitle(title) });
+                });
+            }).catch((e) => reject(e));
+        });
+    }
+    /**
+     * Gets a list that is the default asset location for images or other files, which the users upload to their wiki pages.
+     */
+    ensureSiteAssetsLibrary() {
+        let q = new Lists(this, "ensuresiteassetslibrary");
+        return q.post().then((json) => {
+            return new List(odata_1.extractOdataId(json));
+        });
+    }
+    /**
+     * Gets a list that is the default location for wiki pages.
+     */
+    ensureSitePagesLibrary() {
+        let q = new Lists(this, "ensuresitepageslibrary");
+        return q.post().then((json) => {
+            return new List(odata_1.extractOdataId(json));
+        });
+    }
+}
+exports.Lists = Lists;
+/**
+ * Describes a single List instance
+ *
+ */
+class List extends queryablesecurable_1.QueryableSecurable {
+    /**
+     * Creates a new instance of the Lists class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param path Optional, if supplied will be appended to the supplied baseUrl
+     */
+    constructor(baseUrl, path) {
+        super(baseUrl, path);
+    }
+    /**
+     * Gets the content types in this list
+     *
+     */
+    get contentTypes() {
+        return new contenttypes_1.ContentTypes(this);
+    }
+    /**
+     * Gets the items in this list
+     *
+     */
+    get items() {
+        return new items_1.Items(this);
+    }
+    /**
+     * Gets the views in this list
+     *
+     */
+    get views() {
+        return new views_1.Views(this);
+    }
+    /**
+     * Gets the fields in this list
+     *
+     */
+    get fields() {
+        return new fields_1.Fields(this);
+    }
+    /**
+     * Gets the forms in this list
+     *
+     */
+    get forms() {
+        return new forms_1.Forms(this);
+    }
+    /**
+     * Gets the default view of this list
+     *
+     */
+    get defaultView() {
+        return new queryable_1.QueryableInstance(this, "DefaultView");
+    }
+    /**
+     * Get all custom actions on a site collection
+     *
+     */
+    get userCustomActions() {
+        return new usercustomactions_1.UserCustomActions(this);
+    }
+    /**
+     * Gets the effective base permissions of this list
+     *
+     */
+    get effectiveBasePermissions() {
+        return new queryable_1.Queryable(this, "EffectiveBasePermissions");
+    }
+    /**
+     * Gets the event receivers attached to this list
+     *
+     */
+    get eventReceivers() {
+        return new queryable_1.QueryableCollection(this, "EventReceivers");
+    }
+    /**
+     * Gets the related fields of this list
+     *
+     */
+    get relatedFields() {
+        return new queryable_1.Queryable(this, "getRelatedFields");
+    }
+    /**
+     * Gets the IRM settings for this list
+     *
+     */
+    get informationRightsManagementSettings() {
+        return new queryable_1.Queryable(this, "InformationRightsManagementSettings");
+    }
+    /**
+     * Gets the webhook subscriptions of this list
+     *
+     */
+    get subscriptions() {
+        return new subscriptions_1.Subscriptions(this);
+    }
+    /**
+     * Gets a view by view guid id
+     *
+     */
+    getView(viewId) {
+        return new views_1.View(this, `getView('${viewId}')`);
+    }
+    /**
+     * Updates this list intance with the supplied properties
+     *
+     * @param properties A plain object hash of values to update for the list
+     * @param eTag Value used in the IF-Match header, by default "*"
+     */
+    /* tslint:disable no-string-literal */
+    update(properties, eTag = "*") {
+        let postBody = JSON.stringify(util_1.Util.extend({
+            "__metadata": { "type": "SP.List" },
+        }, properties));
+        return this.post({
+            body: postBody,
+            headers: {
+                "IF-Match": eTag,
+                "X-HTTP-Method": "MERGE",
+            },
+        }).then((data) => {
+            let retList = this;
+            if (properties.hasOwnProperty("Title")) {
+                retList = this.getParent(List, this.parentUrl, `getByTitle('${properties["Title"]}')`);
+            }
+            return {
+                data: data,
+                list: retList,
+            };
+        });
+    }
+    /* tslint:enable */
+    /**
+     * Delete this list
+     *
+     * @param eTag Value used in the IF-Match header, by default "*"
+     */
+    delete(eTag = "*") {
+        return this.post({
+            headers: {
+                "IF-Match": eTag,
+                "X-HTTP-Method": "DELETE",
+            },
+        });
+    }
+    /**
+     * Returns the collection of changes from the change log that have occurred within the list, based on the specified query.
+     */
+    getChanges(query) {
+        let postBody = JSON.stringify({ "query": util_1.Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
+        // don't change "this" instance of the List, make a new one
+        let q = new List(this, "getchanges");
+        return q.post({ body: postBody });
+    }
+    /**
+     * Returns a collection of items from the list based on the specified query.
+     *
+     * @param CamlQuery The Query schema of Collaborative Application Markup
+     * Language (CAML) is used in various ways within the context of Microsoft SharePoint Foundation
+     * to define queries against list data.
+     * see:
+     *
+     * https://msdn.microsoft.com/en-us/library/office/ms467521.aspx
+     *
+     * @param expands A URI with a $expand System Query Option indicates that Entries associated with
+     * the Entry or Collection of Entries identified by the Resource Path
+     * section of the URI must be represented inline (i.e. eagerly loaded).
+     * see:
+     *
+     * https://msdn.microsoft.com/en-us/library/office/fp142385.aspx
+     *
+     * http://www.odata.org/documentation/odata-version-2-0/uri-conventions/#ExpandSystemQueryOption
+     */
+    getItemsByCAMLQuery(query, ...expands) {
+        let postBody = JSON.stringify({ "query": util_1.Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) });
+        // don't change "this" instance of the List, make a new one
+        let q = new List(this, "getitems");
+        q = q.expand.apply(q, expands);
+        return q.post({ body: postBody });
+    }
+    /**
+     * See: https://msdn.microsoft.com/en-us/library/office/dn292554.aspx
+     */
+    getListItemChangesSinceToken(query) {
+        let postBody = JSON.stringify({ "query": util_1.Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) });
+        // don't change "this" instance of the List, make a new one
+        let q = new List(this, "getlistitemchangessincetoken");
+        // note we are using a custom parser to return text as the response is an xml doc
+        return q.post({ body: postBody }, { parse(r) { return r.text(); } });
+    }
+    /**
+     * Moves the list to the Recycle Bin and returns the identifier of the new Recycle Bin item.
+     */
+    recycle() {
+        this.append("recycle");
+        return this.post().then(data => {
+            if (data.hasOwnProperty("Recycle")) {
+                return data.Recycle;
+            }
+            else {
+                return data;
+            }
+        });
+    }
+    /**
+     * Renders list data based on the view xml provided
+     */
+    renderListData(viewXml) {
+        // don't change "this" instance of the List, make a new one
+        let q = new List(this, "renderlistdata(@viewXml)");
+        q.query.add("@viewXml", "'" + viewXml + "'");
+        return q.post().then(data => {
+            // data will be a string, so we parse it again
+            data = JSON.parse(data);
+            if (data.hasOwnProperty("RenderListData")) {
+                return data.RenderListData;
+            }
+            else {
+                return data;
+            }
+        });
+    }
+    /**
+     * Gets the field values and field schema attributes for a list item.
+     */
+    renderListFormData(itemId, formId, mode) {
+        // don't change "this" instance of the List, make a new one
+        let q = new List(this, "renderlistformdata(itemid=" + itemId + ", formid='" + formId + "', mode=" + mode + ")");
+        return q.post().then(data => {
+            // data will be a string, so we parse it again
+            data = JSON.parse(data);
+            if (data.hasOwnProperty("ListData")) {
+                return data.ListData;
+            }
+            else {
+                return data;
+            }
+        });
+    }
+    /**
+     * Reserves a list item ID for idempotent list item creation.
+     */
+    reserveListItemId() {
+        // don't change "this" instance of the List, make a new one
+        let q = new List(this, "reservelistitemid");
+        return q.post().then(data => {
+            if (data.hasOwnProperty("ReserveListItemId")) {
+                return data.ReserveListItemId;
+            }
+            else {
+                return data;
+            }
+        });
+    }
+    /**
+     * Returns the ListItemEntityTypeFullName for this list, used when adding/updating list items
+     *
+     */
+    getListItemEntityTypeFullName() {
+        let q = new queryable_1.QueryableInstance(this);
+        return q.select("ListItemEntityTypeFullName").getAs().then(o => o.ListItemEntityTypeFullName);
+    }
+}
+exports.List = List;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:46 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

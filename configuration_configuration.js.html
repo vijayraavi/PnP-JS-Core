@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: configuration/configuration.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,52 +17,106 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: configuration/configuration.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p><img src="https://camo.githubusercontent.com/a732087ed949b0f2f84f5f02b8c79f1a9dd96f65/687474703a2f2f692e696d6775722e636f6d2f6c3031686876452e706e67" alt="Office 365 Developer Patterns and Practices"></p>
-<h1>JavaScript Core Library</h1><p><a href="https://badge.fury.io/js/sp-pnp-js"><img src="https://badge.fury.io/js/sp-pnp-js.svg" alt="npm version"></a> <a href="https://gitter.im/OfficeDev/PnP-JS-Core?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/OfficeDev/PnP-JS-Core.svg" alt="Join the chat at https://gitter.im/OfficeDev/PnP-JS-Core"></a> <a href="https://www.npmjs.com/package/sp-pnp-js"><img src="https://img.shields.io/npm/dm/sp-pnp-js.svg" alt="Downloads"></a> <a href="https://www.bithound.io/github/SharePoint/PnP-JS-Core"><img src="https://www.bithound.io/github/SharePoint/PnP-JS-Core/badges/score.svg" alt="bitHound Overall Score"></a></p>
-<p>The Patterns and Practices JavaScript Core Library was created to help developers by simplifying common operations within SharePoint and the SharePoint Framework. Currently it contains a fluent API for working with the full SharePoint REST API as well as utility and helper functions. This takes the guess work out of creating REST requests, letting developers focus on the what and less on the how.</p>
-<p>Please use <a href="http://aka.ms/OfficeDevPnP">http://aka.ms/OfficeDevPnP</a> for getting latest information around the whole <em>Office 365 Developer Patterns and Practices program</em>.</p>
-<h3>Get Started</h3><p><strong>NPM</strong></p>
-<p>Add the npm package to your project</p>
-<pre class="prettyprint source"><code>npm install sp-pnp-js --save</code></pre><p><strong>Bower</strong></p>
-<p>Add the package from bower</p>
-<pre class="prettyprint source"><code>bower install sp-pnp-js</code></pre><h3>Wiki</h3><p>Please see <a href="https://github.com/SharePoint/PnP-JS-Core/wiki">the wiki</a> for detailed guides on getting started both using and contributing to the library.</p>
-<h3>API Documentation</h3><p>Explore the <a href="https://sharepoint.github.io/PnP-JS-Core/">API documentation</a>.</p>
-<p>These pages are generated from the source comments as part of each release. We are always looking for help making these resources better. To make updates, edit the comments in the source and submit a PR against the dev branch. We will merge it there and refresh the pages as part of each release. Updates made directly to the gh-pages branch will be overwritten.</p>
-<h3>Samples Add-In</h3><p>Checkout a <a href="https://github.com/OfficeDev/PnP/tree/dev/Samples/SharePoint.pnp-js-core">SharePoint hosted Add-In containing samples</a> on using the library from both a SharePoint hosted add-in as well as a script editor web part. This will allow you to execute the samples as well as intract with the API.</p>
-<h3>Get Help</h3><p>We have an active <a href="https://gitter.im/OfficeDev/PnP-JS-Core">Gitter</a> community dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please <a href="https://github.com/OfficeDev/PnP-JS-Core/issues">report it</a>.</p>
-<h3>Authors</h3><p>This project's contributors include Microsoft and <a href="AUTHORS">community contributors</a>. Work is done as as open source community project.</p>
-<p><img src="http://i.imgur.com/TGT3Xs2.gif" alt="pnp in action"></p>
-<h3>Code of Conduct</h3><p>This project has adopted the <a href="https://opensource.microsoft.com/codeofconduct/">Microsoft Open Source Code of Conduct</a>. For more information see the <a href="https://opensource.microsoft.com/codeofconduct/faq/">Code of Conduct FAQ</a> or contact <a href="mailto:opencode@microsoft.com">opencode@microsoft.com</a> with any additional questions or comments.</p>
-<h3>&quot;Sharing is Caring&quot;</h3><h3>Disclaimer</h3><p><strong>THIS CODE IS PROVIDED <em>AS IS</em> WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.</strong></p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+const collections_1 = require("../collections/collections");
+/**
+ * Class used to manage the current application settings
+ *
+ */
+class Settings {
+    /**
+     * Creates a new instance of the settings class
+     *
+     * @constructor
+     */
+    constructor() {
+        this._settings = new collections_1.Dictionary();
+    }
+    /**
+     * Adds a new single setting, or overwrites a previous setting with the same key
+     *
+     * @param {string} key The key used to store this setting
+     * @param {string} value The setting value to store
+     */
+    add(key, value) {
+        this._settings.add(key, value);
+    }
+    /**
+     * Adds a JSON value to the collection as a string, you must use getJSON to rehydrate the object when read
+     *
+     * @param {string} key The key used to store this setting
+     * @param {any} value The setting value to store
+     */
+    addJSON(key, value) {
+        this._settings.add(key, JSON.stringify(value));
+    }
+    /**
+     * Applies the supplied hash to the setting collection overwriting any existing value, or created new values
+     *
+     * @param {TypedHash&lt;any>} hash The set of values to add
+     */
+    apply(hash) {
+        return new Promise((resolve, reject) => {
+            try {
+                this._settings.merge(hash);
+                resolve();
+            }
+            catch (e) {
+                reject(e);
+            }
+        });
+    }
+    /**
+     * Loads configuration settings into the collection from the supplied provider and returns a Promise
+     *
+     * @param {IConfigurationProvider} provider The provider from which we will load the settings
+     */
+    load(provider) {
+        return new Promise((resolve, reject) => {
+            provider.getConfiguration().then((value) => {
+                this._settings.merge(value);
+                resolve();
+            }).catch((reason) => {
+                reject(reason);
+            });
+        });
+    }
+    /**
+     * Gets a value from the configuration
+     *
+     * @param {string} key The key whose value we want to return. Returns null if the key does not exist
+     * @return {string} string value from the configuration
+     */
+    get(key) {
+        return this._settings.get(key);
+    }
+    /**
+     * Gets a JSON value, rehydrating the stored string to the original object
+     *
+     * @param {string} key The key whose value we want to return. Returns null if the key does not exist
+     * @return {any} object from the configuration
+     */
+    getJSON(key) {
+        let o = this.get(key);
+        if (typeof o === "undefined" || o === null) {
+            return o;
+        }
+        return JSON.parse(o);
+    }
+}
+exports.Settings = Settings;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 
@@ -76,7 +130,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:47 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:46 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

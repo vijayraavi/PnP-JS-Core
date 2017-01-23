@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: net/nodefetchclient.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,52 +17,132 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: net/nodefetchclient.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p><img src="https://camo.githubusercontent.com/a732087ed949b0f2f84f5f02b8c79f1a9dd96f65/687474703a2f2f692e696d6775722e636f6d2f6c3031686876452e706e67" alt="Office 365 Developer Patterns and Practices"></p>
-<h1>JavaScript Core Library</h1><p><a href="https://badge.fury.io/js/sp-pnp-js"><img src="https://badge.fury.io/js/sp-pnp-js.svg" alt="npm version"></a> <a href="https://gitter.im/OfficeDev/PnP-JS-Core?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/OfficeDev/PnP-JS-Core.svg" alt="Join the chat at https://gitter.im/OfficeDev/PnP-JS-Core"></a> <a href="https://www.npmjs.com/package/sp-pnp-js"><img src="https://img.shields.io/npm/dm/sp-pnp-js.svg" alt="Downloads"></a> <a href="https://www.bithound.io/github/SharePoint/PnP-JS-Core"><img src="https://www.bithound.io/github/SharePoint/PnP-JS-Core/badges/score.svg" alt="bitHound Overall Score"></a></p>
-<p>The Patterns and Practices JavaScript Core Library was created to help developers by simplifying common operations within SharePoint and the SharePoint Framework. Currently it contains a fluent API for working with the full SharePoint REST API as well as utility and helper functions. This takes the guess work out of creating REST requests, letting developers focus on the what and less on the how.</p>
-<p>Please use <a href="http://aka.ms/OfficeDevPnP">http://aka.ms/OfficeDevPnP</a> for getting latest information around the whole <em>Office 365 Developer Patterns and Practices program</em>.</p>
-<h3>Get Started</h3><p><strong>NPM</strong></p>
-<p>Add the npm package to your project</p>
-<pre class="prettyprint source"><code>npm install sp-pnp-js --save</code></pre><p><strong>Bower</strong></p>
-<p>Add the package from bower</p>
-<pre class="prettyprint source"><code>bower install sp-pnp-js</code></pre><h3>Wiki</h3><p>Please see <a href="https://github.com/SharePoint/PnP-JS-Core/wiki">the wiki</a> for detailed guides on getting started both using and contributing to the library.</p>
-<h3>API Documentation</h3><p>Explore the <a href="https://sharepoint.github.io/PnP-JS-Core/">API documentation</a>.</p>
-<p>These pages are generated from the source comments as part of each release. We are always looking for help making these resources better. To make updates, edit the comments in the source and submit a PR against the dev branch. We will merge it there and refresh the pages as part of each release. Updates made directly to the gh-pages branch will be overwritten.</p>
-<h3>Samples Add-In</h3><p>Checkout a <a href="https://github.com/OfficeDev/PnP/tree/dev/Samples/SharePoint.pnp-js-core">SharePoint hosted Add-In containing samples</a> on using the library from both a SharePoint hosted add-in as well as a script editor web part. This will allow you to execute the samples as well as intract with the API.</p>
-<h3>Get Help</h3><p>We have an active <a href="https://gitter.im/OfficeDev/PnP-JS-Core">Gitter</a> community dedicated to this library, please join the conversation to ask questions. If you find an issue with the library, please <a href="https://github.com/OfficeDev/PnP-JS-Core/issues">report it</a>.</p>
-<h3>Authors</h3><p>This project's contributors include Microsoft and <a href="AUTHORS">community contributors</a>. Work is done as as open source community project.</p>
-<p><img src="http://i.imgur.com/TGT3Xs2.gif" alt="pnp in action"></p>
-<h3>Code of Conduct</h3><p>This project has adopted the <a href="https://opensource.microsoft.com/codeofconduct/">Microsoft Open Source Code of Conduct</a>. For more information see the <a href="https://opensource.microsoft.com/codeofconduct/faq/">Code of Conduct FAQ</a> or contact <a href="mailto:opencode@microsoft.com">opencode@microsoft.com</a> with any additional questions or comments.</p>
-<h3>&quot;Sharing is Caring&quot;</h3><h3>Disclaimer</h3><p><strong>THIS CODE IS PROVIDED <em>AS IS</em> WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.</strong></p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+let nodeFetch = require("node-fetch");
+let u = require("url");
+const util_1 = require("../utils/util");
+const exceptions_1 = require("../utils/exceptions");
+/**
+ * Fetch client for use within nodejs, requires you register a client id and secret with app only permissions
+ */
+class NodeFetchClient {
+    constructor(siteUrl, _clientId, _clientSecret, _realm = "") {
+        this.siteUrl = siteUrl;
+        this._clientId = _clientId;
+        this._clientSecret = _clientSecret;
+        this._realm = _realm;
+        this.token = null;
+        // here we set the globals for fetch things when this client is instantiated
+        global.Headers = nodeFetch.Headers;
+        global.Request = nodeFetch.Request;
+        global.Response = nodeFetch.Response;
+        global._spPageContextInfo = {
+            webAbsoluteUrl: siteUrl,
+        };
+    }
+    fetch(url, options) {
+        if (!util_1.Util.isUrlAbsolute(url)) {
+            url = util_1.Util.combinePaths(this.siteUrl, url);
+        }
+        return this.getAddInOnlyAccessToken().then(token => {
+            options.headers.set("Authorization", `Bearer ${token.access_token}`);
+            return nodeFetch(url, options);
+        });
+    }
+    /**
+     * Gets an add-in only authentication token based on the supplied site url, client id and secret
+     */
+    getAddInOnlyAccessToken() {
+        return new Promise((resolve, reject) => {
+            if (this.token !== null &amp;&amp; new Date() &lt; this.toDate(this.token.expires_on)) {
+                resolve(this.token);
+            }
+            else {
+                this.getRealm().then((realm) => {
+                    let resource = this.getFormattedPrincipal(NodeFetchClient.SharePointServicePrincipal, u.parse(this.siteUrl).hostname, realm);
+                    let formattedClientId = this.getFormattedPrincipal(this._clientId, "", realm);
+                    this.getAuthUrl(realm).then((authUrl) => {
+                        let body = [];
+                        body.push("grant_type=client_credentials");
+                        body.push(`client_id=${formattedClientId}`);
+                        body.push(`client_secret=${encodeURIComponent(this._clientSecret)}`);
+                        body.push(`resource=${resource}`);
+                        nodeFetch(authUrl, {
+                            body: body.join("&amp;"),
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                            },
+                            method: "POST",
+                        }).then((r) => r.json()).then((tok) => {
+                            this.token = tok;
+                            resolve(this.token);
+                        });
+                    });
+                }).catch(e => reject(e));
+            }
+        });
+    }
+    getRealm() {
+        return new Promise(resolve => {
+            if (this._realm.length > 0) {
+                resolve(this._realm);
+            }
+            let url = util_1.Util.combinePaths(this.siteUrl, "vti_bin/client.svc");
+            nodeFetch(url, {
+                "method": "POST",
+                "headers": {
+                    "Authorization": "Bearer ",
+                },
+            }).then((r) => {
+                let data = r.headers.get("www-authenticate");
+                let index = data.indexOf("Bearer realm=\"");
+                this._realm = data.substring(index + 14, index + 50);
+                resolve(this._realm);
+            });
+        });
+    }
+    getAuthUrl(realm) {
+        let url = `https://accounts.accesscontrol.windows.net/metadata/json/1?realm=${realm}`;
+        return nodeFetch(url).then((r) => r.json()).then((json) => {
+            let eps = json.endpoints.filter(ep => ep.protocol === "OAuth2");
+            if (eps.length > 0) {
+                return eps[0].location;
+            }
+            throw new exceptions_1.AuthUrlException(json);
+        });
+    }
+    getFormattedPrincipal(principalName, hostName, realm) {
+        let resource = principalName;
+        if (hostName !== null &amp;&amp; hostName !== "") {
+            resource += "/" + hostName;
+        }
+        resource += "@" + realm;
+        return resource;
+    }
+    toDate(epoch) {
+        let tmp = parseInt(epoch, 10);
+        if (tmp &lt; 10000000000) {
+            tmp *= 1000;
+        }
+        let d = new Date();
+        d.setTime(tmp);
+        return d;
+    }
+}
+NodeFetchClient.SharePointServicePrincipal = "00000003-0000-0ff1-ce00-000000000000";
+exports.NodeFetchClient = NodeFetchClient;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 
@@ -76,7 +156,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:47 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:46 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
