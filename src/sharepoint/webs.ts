@@ -323,7 +323,6 @@ export class Web extends QueryableSecurable {
      * @param type The gallery type - WebTemplateCatalog = 111, WebPartCatalog = 113 ListTemplateCatalog = 114,
      * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
-    /* tslint:disable member-access */
     public getCatalog(type: number): Promise<List> {
         let q = new Web(this, `getcatalog(${type})`);
         q.select("Id");
@@ -331,7 +330,6 @@ export class Web extends QueryableSecurable {
             return new List(extractOdataId(data));
         });
     }
-    /* tslint:enable */
 
     /**
      * Returns the collection of changes from the change log that have occurred within the list, based on the specified query.
