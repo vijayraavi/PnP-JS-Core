@@ -1,7 +1,7 @@
 declare var global: any;
 import { TypedHash } from "../collections/collections";
 import { deprecated } from "./decorators";
-import { APIUrlException, SPFxApplicationNotFoundException } from "./exceptions";
+import { SPFxApplicationNotFoundException } from "./exceptions";
 
 export class Util {
 
