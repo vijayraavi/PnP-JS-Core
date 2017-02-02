@@ -128,3 +128,12 @@ export class UrlException extends Error {
         defaultLog(this);
     }
 }
+
+export class SPFxApplicationNotFoundException extends Error {
+
+    constructor(msg = "Could not locate SPFx application, this code may not be executing within SPFx.") {
+        super(msg);
+        this.name = "SPFxApplicationNotFoundException";
+        defaultLog(this);
+    }
+}

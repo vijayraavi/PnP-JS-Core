@@ -101,7 +101,7 @@ export class AttachmentFile extends QueryableInstance {
      * @param content The value to set for the file contents
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<AttachmentFile> {
-        
+
         let setter = new AttachmentFile(this, "$value");
 
         return setter.post({

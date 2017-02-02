@@ -1,6 +1,5 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 import { Files } from "./files";
-import { Item } from "./items";
 
 /**
  * Describes a collection of Folder objects
