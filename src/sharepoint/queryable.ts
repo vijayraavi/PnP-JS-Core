@@ -261,13 +261,14 @@ export class Queryable {
      */
     private requestImpl<T>(verb: string, options: FetchOptions = {}, parser: ODataParser<T>): Promise<T> {
 
-        let dependencyRemover = this.hasBatch ? this.addBatchDependency() : () => {};
-
         return new Promise<T>((resolve) => {
+
+            let dependencyRemover = this.hasBatch ? this.addBatchDependency() : () => { return; };
 
             this.preRequest().then((context: RequestContext) => {
 
                 if (verb === "GET" && this._useCaching) {
+
                     let cacheOptions = new CachingOptions(context.requestAbsoluteUrl.toLowerCase());
                     if (typeof this._cachingOptions !== "undefined") {
                         cacheOptions = Util.extend(cacheOptions, this._cachingOptions);
@@ -275,7 +276,7 @@ export class Queryable {
 
                     // we may not have a valid store, i.e. on node
                     if (cacheOptions.store !== null) {
-                        // check if we have the data in cache and if so return a resolved promise
+                        // check if we have the data in cache and if so resolve the promise and return
                         let data = cacheOptions.store.get(cacheOptions.key);
                         if (data !== null) {
                             dependencyRemover();
@@ -298,6 +299,7 @@ export class Queryable {
 
                 } else {
 
+                    // we are in a batch, so add to batch, remove dependency, and resolve with the batch's promise
                     let p = this._batch.add(context.requestAbsoluteUrl, verb, options, parser);
                     dependencyRemover();
                     resolve(p);
