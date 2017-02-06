@@ -1,4 +1,4 @@
-![Office 365 Developer Patterns and Practices](https://camo.githubusercontent.com/a732087ed949b0f2f84f5f02b8c79f1a9dd96f65/687474703a2f2f692e696d6775722e636f6d2f6c3031686876452e706e67)
+![Office 365 Developer Patterns and Practices](https://camo.githubusercontent.com/4baf8b7950f766729043b7521bcf030b63c19212/68747470733a2f2f6465762e6f66666963652e636f6d2f4d656469612f44656661756c742f506e502f7370706e702e706e67)
 
 # JavaScript Core Library
 
