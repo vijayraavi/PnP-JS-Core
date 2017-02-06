@@ -1,7 +1,6 @@
 declare var global: any;
 import { TypedHash } from "../collections/collections";
 import { deprecated } from "./decorators";
-import { SPFxApplicationNotFoundException } from "./exceptions";
 
 export class Util {
 
@@ -253,7 +252,7 @@ export class Util {
      */
     public static toAbsoluteUrl(candidateUrl: string): Promise<string> {
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
 
             if (Util.isUrlAbsolute(candidateUrl)) {
                 // if we are already absolute, then just return the url
@@ -270,7 +269,6 @@ export class Util {
                 }
             }
 
-            // operating in workbench or modern pages
             // does window.location exist and have _layouts in it?
             if (typeof global.location !== "undefined") {
                 let index = global.location.toString().toLowerCase().indexOf("/_layouts/");
@@ -280,46 +278,10 @@ export class Util {
                 }
             }
 
-            if (this.isSPFxApplication()) {
-
-                return this.getSPFxApplication().then((a: any) => {
-
-                    resolve(Util.combinePaths(a.shell.pageContext.web.absoluteUrl, candidateUrl));
-
-                }).catch(e => { reject(e); });
-            }
+            // TODO:: this needs to then rely on being passed in per PG
+            // so we need an init in SPFx method? or how to do that.
 
             return resolve(candidateUrl);
-        });
-    }
-
-    /**
-     * Determines if the library is executing within an SPFx application
-     */
-    public static isSPFxApplication(): boolean {
-
-        return typeof global.moduleLoaderPromise !== "undefined";
-    }
-
-    /**
-     * If the library is operating in the context of an SPFx webpart or modern page gets the application data
-     * 
-     */
-    public static getSPFxApplication(): Promise<any> {
-
-        return new Promise<any>((resolve, reject) => {
-
-            if (Util.isSPFxApplication()) {
-
-                global.moduleLoaderPromise.then((a: any) => {
-
-                    resolve(a);
-                });
-
-            } else {
-
-                reject(new SPFxApplicationNotFoundException());
-            }
         });
     }
 }
