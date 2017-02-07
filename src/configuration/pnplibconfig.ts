@@ -37,7 +37,7 @@ export interface LibraryConfiguration {
     /**
      * Used to supply the current context from an SPFx webpart to the library
      */
-    spFXContext?: any;
+    spfxContext?: any;
 }
 
 export class RuntimeConfigImpl {
@@ -48,7 +48,7 @@ export class RuntimeConfigImpl {
     private _globalCacheDisable: boolean;
     private _fetchClientFactory: () => HttpClientImpl;
     private _baseUrl: string;
-    private _spFXContext: any;
+    private _spfxContext: any;
 
     constructor() {
         // these are our default values for the library
@@ -58,7 +58,7 @@ export class RuntimeConfigImpl {
         this._globalCacheDisable = false;
         this._fetchClientFactory = () => new FetchClient();
         this._baseUrl = null;
-        this._spFXContext = null;
+        this._spfxContext = null;
     }
 
     public set(config: LibraryConfiguration): void {
@@ -88,7 +88,7 @@ export class RuntimeConfigImpl {
         }
 
         if (config.hasOwnProperty("spFXContext")) {
-            this._spFXContext = config.spFXContext;
+            this._spfxContext = config.spfxContext;
         }
     }
 
@@ -118,9 +118,9 @@ export class RuntimeConfigImpl {
 
             return this._baseUrl;
 
-        } else if (this._spFXContext !== null) {
+        } else if (this._spfxContext !== null) {
 
-            return this._spFXContext.pageContext.web.absoluteUrl;
+            return this._spfxContext.pageContext.web.absoluteUrl;
         }
 
         return null;
