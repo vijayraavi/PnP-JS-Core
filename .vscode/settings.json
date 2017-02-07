@@ -9,6 +9,5 @@
         "testing": true,
         "debugging": true
     },
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "vsicons.presets.angular": false
+    "typescript.tsdk": "node_modules/typescript/lib"
 }

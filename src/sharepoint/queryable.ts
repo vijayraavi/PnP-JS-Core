@@ -325,7 +325,7 @@ export class Queryable {
 
         return Util.toAbsoluteUrl(this.toUrlAndQuery()).then(url => {
 
-            // build our requst context
+            // build our request context
             let context: RequestContext<T> = {
                 batch: this._batch,
                 batchDependency: batchDep,
