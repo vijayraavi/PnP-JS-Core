@@ -28,6 +28,16 @@ export interface LibraryConfiguration {
      * Defines a factory method used to create fetch clients
      */
     fetchClientFactory?: () => HttpClientImpl;
+
+    /**
+     * The base url used for all requests
+     */
+    baseUrl?: string;
+
+    /**
+     * Used to supply the current context from an SPFx webpart to the library
+     */
+    spFXContext?: any;
 }
 
 export class RuntimeConfigImpl {
@@ -37,6 +47,8 @@ export class RuntimeConfigImpl {
     private _defaultCachingTimeoutSeconds: number;
     private _globalCacheDisable: boolean;
     private _fetchClientFactory: () => HttpClientImpl;
+    private _baseUrl: string;
+    private _spFXContext: any;
 
     constructor() {
         // these are our default values for the library
@@ -45,6 +57,8 @@ export class RuntimeConfigImpl {
         this._defaultCachingTimeoutSeconds = 30;
         this._globalCacheDisable = false;
         this._fetchClientFactory = () => new FetchClient();
+        this._baseUrl = null;
+        this._spFXContext = null;
     }
 
     public set(config: LibraryConfiguration): void {
@@ -68,6 +82,14 @@ export class RuntimeConfigImpl {
         if (config.hasOwnProperty("fetchClientFactory")) {
             this._fetchClientFactory = config.fetchClientFactory;
         }
+
+        if (config.hasOwnProperty("baseUrl")) {
+            this._baseUrl = config.baseUrl;
+        }
+
+        if (config.hasOwnProperty("spFXContext")) {
+            this._spFXContext = config.spFXContext;
+        }
     }
 
     public get headers(): TypedHash<string> {
@@ -88,6 +110,20 @@ export class RuntimeConfigImpl {
 
     public get fetchClientFactory(): () => HttpClientImpl {
         return this._fetchClientFactory;
+    }
+
+    public get baseUrl(): string {
+
+        if (this._baseUrl !== null) {
+
+            return this._baseUrl;
+
+        } else if (this._spFXContext !== null) {
+
+            return this._spFXContext.pageContext.web.absoluteUrl;
+        }
+
+        return null;
     }
 }
 

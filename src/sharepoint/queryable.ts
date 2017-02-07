@@ -11,9 +11,17 @@ export interface QueryableConstructor<T> {
     new (baseUrl: string | Queryable, path?: string): T;
 }
 
-interface RequestContext {
+interface RequestContext<T> {
+    batch: ODataBatch;
+    batchDependency: () => void;
+    cachingOptions: ICachingOptions;
     isBatched: boolean;
+    isCached: boolean;
     requestAbsoluteUrl: string;
+    verb: string;
+    options: FetchOptions;
+    parser: ODataParser<T>;
+    result?: T;
     requestId: string;
 }
 
@@ -261,17 +269,19 @@ export class Queryable {
      */
     private requestImpl<T>(verb: string, options: FetchOptions = {}, parser: ODataParser<T>): Promise<T> {
 
-        return new Promise<T>((resolve) => {
+        return new Promise<RequestContext<T>>((resolve) => {
 
             let dependencyRemover = this.hasBatch ? this.addBatchDependency() : () => { return; };
 
-            this.preRequest().then((context: RequestContext) => {
+            // pipe everything about the request into a context which is used for the remainder of the sequence
+            this.preRequest<T>(verb, options, parser, dependencyRemover).then((context: RequestContext<T>) => {
 
-                if (verb === "GET" && this._useCaching) {
+                // handle caching, if applicable
+                if (context.verb === "GET" && context.isCached) {
 
                     let cacheOptions = new CachingOptions(context.requestAbsoluteUrl.toLowerCase());
-                    if (typeof this._cachingOptions !== "undefined") {
-                        cacheOptions = Util.extend(cacheOptions, this._cachingOptions);
+                    if (typeof context.cachingOptions !== "undefined") {
+                        cacheOptions = Util.extend(cacheOptions, context.cachingOptions);
                     }
 
                     // we may not have a valid store, i.e. on node
@@ -279,63 +289,82 @@ export class Queryable {
                         // check if we have the data in cache and if so resolve the promise and return
                         let data = cacheOptions.store.get(cacheOptions.key);
                         if (data !== null) {
-                            dependencyRemover();
-                            return resolve(data);
+                            context.batchDependency();
+                            return resolve(Util.extend(context, { result: data }));
                         }
                     }
 
                     // if we don't then wrap the supplied parser in the caching parser wrapper
                     // and send things on their way
-                    parser = new CachingParserWrapper(parser, cacheOptions);
+                    context.parser = new CachingParserWrapper(context.parser, cacheOptions);
                 }
 
-                if (!this.hasBatch) {
+                // send or batch the request
+                if (context.isBatched) {
+
+                    // we are in a batch, so add to batch, remove dependency, and resolve with the batch's promise
+                    let p = context.batch.add(context.requestAbsoluteUrl, context.verb, context.options, context.parser);
+                    context.batchDependency();
+                    resolve(p.then(result => Util.extend(context, { result: result })));
+                } else {
 
                     // we are not part of a batch, so proceed as normal
                     let client = new HttpClient();
-
-                    let opts = Util.extend(options, { method: verb });
-                    client.fetch(context.requestAbsoluteUrl, opts).then(response => resolve(parser.parse(response)));
-
-                } else {
-
-                    // we are in a batch, so add to batch, remove dependency, and resolve with the batch's promise
-                    let p = this._batch.add(context.requestAbsoluteUrl, verb, options, parser);
-                    dependencyRemover();
-                    resolve(p);
+                    let opts = Util.extend(context.options, { method: context.verb });
+                    client.fetch(context.requestAbsoluteUrl, opts)
+                        .then(response => resolve(context.parser.parse(response).then(result => Util.extend(context, { result: result }))));
                 }
             });
-        });
+        }).then(context => this.postRequest(context));
     }
 
-    // .then(result => this.postRequest(result));
+    /**
+     * Executes before a request
+     */
+    private preRequest<T>(verb: string, options: FetchOptions, parser: ODataParser<any>, batchDep: () => void): Promise<RequestContext<T>> {
 
-    private preRequest(): Promise<RequestContext> {
+        return Util.toAbsoluteUrl(this.toUrlAndQuery()).then(url => {
 
-        return Util.toAbsoluteUrl(this.toUrl()).then(url => {
-
-            let requestContext = {
+            // build our requst context
+            let context: RequestContext<T> = {
+                batch: this._batch,
+                batchDependency: batchDep,
+                cachingOptions: this._cachingOptions,
                 isBatched: this.hasBatch,
+                isCached: this._useCaching,
+                options: options,
+                parser: parser,
                 requestAbsoluteUrl: url,
                 requestId: Util.getGUID(),
+                verb: verb,
             };
 
             Logger.log({
-                data: requestContext,
-                level: LogLevel.Verbose,
-                message: `Beginning request to ${requestContext.requestAbsoluteUrl}`,
+                data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
+                level: LogLevel.Info,
+                message: `[${context.requestId}] (${(new Date()).getTime()}) Beginning ${context.verb} request to ${context.requestAbsoluteUrl}`,
             });
 
-            return requestContext;
+            return context;
         });
     }
 
-    // private postRequest<T>(result: T): Promise<T> {
+    /**
+     * Executes after a request
+     */
+    private postRequest<T>(context: RequestContext<T>): Promise<T> {
 
-    //     // do we want to do logging or something here???
+        return new Promise<T>(resolve => {
 
-    //     return Promise.resolve(result);
-    // }
+            Logger.log({
+                data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
+                level: LogLevel.Info,
+                message: `[${context.requestId}] (${(new Date()).getTime()}) Completing ${context.verb} request to ${context.requestAbsoluteUrl}`,
+            });
+
+            resolve(context.result);
+        });
+    }
 }
 
 /**

@@ -1,6 +1,7 @@
 declare var global: any;
 import { TypedHash } from "../collections/collections";
 import { deprecated } from "./decorators";
+import { RuntimeConfig } from "../configuration/pnplibconfig";
 
 export class Util {
 
@@ -259,6 +260,11 @@ export class Util {
                 return resolve(candidateUrl);
             }
 
+            if (RuntimeConfig.baseUrl !== null) {
+                // base url specified either with baseUrl of spFXContext config property
+                return resolve(Util.combinePaths(RuntimeConfig.baseUrl, candidateUrl));
+            }
+
             if (typeof global._spPageContextInfo !== "undefined") {
 
                 // operating in classic pages
@@ -277,9 +283,6 @@ export class Util {
                     return resolve(Util.combinePaths(global.location.toString().substr(0, index), candidateUrl));
                 }
             }
-
-            // TODO:: this needs to then rely on being passed in per PG
-            // so we need an init in SPFx method? or how to do that.
 
             return resolve(candidateUrl);
         });

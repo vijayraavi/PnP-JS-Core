@@ -254,6 +254,9 @@ export class ODataBatch {
                     "Accept": "application/json;",
                 };
 
+                // this is the url of the individual request within the batch
+                let url = Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : Util.combinePaths(absoluteRequestUrl, reqInfo.url);
+
                 if (reqInfo.method !== "GET") {
 
                     let method = reqInfo.method;
@@ -263,12 +266,12 @@ export class ODataBatch {
                         delete reqInfo.options.headers["X-HTTP-Method"];
                     }
 
-                    batchBody.push(`${method} ${Util.combinePaths(absoluteRequestUrl, reqInfo.url)} HTTP/1.1\n`);
+                    batchBody.push(`${method} ${url} HTTP/1.1\n`);
 
                     headers = Util.extend(headers, { "Content-Type": "application/json;odata=verbose;charset=utf-8" });
 
                 } else {
-                    batchBody.push(`${reqInfo.method} ${Util.combinePaths(absoluteRequestUrl, reqInfo.url)} HTTP/1.1\n`);
+                    batchBody.push(`${reqInfo.method} ${url} HTTP/1.1\n`);
                 }
 
                 if (typeof RuntimeConfig.headers !== "undefined") {
