@@ -5,9 +5,24 @@ import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
 import { ICachingOptions, CachingParserWrapper, CachingOptions } from "./caching";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { AlreadyInBatchException } from "../utils/exceptions";
+import { Logger, LogLevel } from "../utils/logging";
 
 export interface QueryableConstructor<T> {
     new (baseUrl: string | Queryable, path?: string): T;
+}
+
+interface RequestContext<T> {
+    batch: ODataBatch;
+    batchDependency: () => void;
+    cachingOptions: ICachingOptions;
+    isBatched: boolean;
+    isCached: boolean;
+    requestAbsoluteUrl: string;
+    verb: string;
+    options: FetchOptions;
+    parser: ODataParser<T>;
+    result?: T;
+    requestId: string;
 }
 
 /**
@@ -182,7 +197,7 @@ export class Queryable {
      *
      */
     public toUrl(): string {
-        return Util.makeUrlAbsolute(this._url);
+        return this._url;
     }
 
     /**
@@ -190,41 +205,14 @@ export class Queryable {
      *
      */
     public toUrlAndQuery(): string {
+
         let url = this.toUrl();
+
         if (this._query.count() > 0) {
-            url += "?";
-            let keys = this._query.getKeys();
-            url += keys.map((key) => `${key}=${this._query.get(key)}`).join("&");
+            url += `?${this._query.getKeys().map(key => `${key}=${this._query.get(key)}`).join("&")}`;
         }
+
         return url;
-    }
-
-    /**
-     * Executes the currently built request
-     *
-     */
-    public get(parser: ODataParser<any> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<any> {
-        return this.getImpl(getOptions, parser);
-    }
-
-    public getAs<T>(parser: ODataParser<T> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<T> {
-        return this.getImpl(getOptions, parser);
-    }
-
-    protected post(postOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.postImpl(postOptions, parser);
-    }
-
-    protected postAs<T>(postOptions: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
-        return this.postImpl(postOptions, parser);
-    }
-
-    protected patch(patchOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.patchImpl(patchOptions, parser);
-    }
-
-    protected delete(deleteOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.deleteImpl(deleteOptions, parser);
     }
 
     /**
@@ -233,7 +221,7 @@ export class Queryable {
      * @param factory The contructor for the class to create
      */
     protected getParent<T extends Queryable>(
-        factory: { new (q: string | Queryable, path?: string): T },
+        factory: QueryableConstructor<T>,
         baseUrl: string | Queryable = this.parentUrl,
         path?: string): T {
 
@@ -245,77 +233,137 @@ export class Queryable {
         return parent;
     }
 
-    private getImpl<T>(getOptions: FetchOptions = {}, parser: ODataParser<T>): Promise<T> {
+    /**
+     * Executes the currently built request
+     *
+     * @param parser Allows you to specify a parser to handle the result
+     * @param getOptions The options used for this request
+     */
+    public get(parser: ODataParser<any> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<any> {
+        return this.requestImpl("GET", getOptions, parser);
+    }
 
-        if (this._useCaching) {
-            let options = new CachingOptions(this.toUrlAndQuery().toLowerCase());
-            if (typeof this._cachingOptions !== "undefined") {
-                options = Util.extend(options, this._cachingOptions);
-            }
+    public getAs<T>(parser: ODataParser<T> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<T> {
+        return this.requestImpl("GET", getOptions, parser);
+    }
 
-            // we may not have a valid store, i.e. on node
-            if (options.store !== null) {
-                // check if we have the data in cache and if so return a resolved promise
-                let data = options.store.get(options.key);
-                if (data !== null) {
-                    return new Promise(resolve => resolve(data));
+    protected post(postOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+        return this.requestImpl("POST", postOptions, parser);
+    }
+
+    protected postAs<T>(postOptions: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
+        return this.requestImpl("POST", postOptions, parser);
+    }
+
+    protected patch(patchOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+        return this.requestImpl("PATCH", patchOptions, parser);
+    }
+
+    protected delete(deleteOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+        return this.requestImpl("DELETE", deleteOptions, parser);
+    }
+
+    /**
+     * Sends the actual request
+     * 
+     */
+    private requestImpl<T>(verb: string, options: FetchOptions = {}, parser: ODataParser<T>): Promise<T> {
+
+        return new Promise<RequestContext<T>>((resolve) => {
+
+            let dependencyRemover = this.hasBatch ? this.addBatchDependency() : () => { return; };
+
+            // pipe everything about the request into a context which is used for the remainder of the sequence
+            this.preRequest<T>(verb, options, parser, dependencyRemover).then((context: RequestContext<T>) => {
+
+                // handle caching, if applicable
+                if (context.verb === "GET" && context.isCached) {
+
+                    let cacheOptions = new CachingOptions(context.requestAbsoluteUrl.toLowerCase());
+                    if (typeof context.cachingOptions !== "undefined") {
+                        cacheOptions = Util.extend(cacheOptions, context.cachingOptions);
+                    }
+
+                    // we may not have a valid store, i.e. on node
+                    if (cacheOptions.store !== null) {
+                        // check if we have the data in cache and if so resolve the promise and return
+                        let data = cacheOptions.store.get(cacheOptions.key);
+                        if (data !== null) {
+                            context.batchDependency();
+                            return resolve(Util.extend(context, { result: data }));
+                        }
+                    }
+
+                    // if we don't then wrap the supplied parser in the caching parser wrapper
+                    // and send things on their way
+                    context.parser = new CachingParserWrapper(context.parser, cacheOptions);
                 }
-            }
 
-            // if we don't then wrap the supplied parser in the caching parser wrapper
-            // and send things on their way
-            parser = new CachingParserWrapper(parser, options);
-        }
+                // send or batch the request
+                if (context.isBatched) {
 
-        if (!this.hasBatch) {
+                    // we are in a batch, so add to batch, remove dependency, and resolve with the batch's promise
+                    let p = context.batch.add(context.requestAbsoluteUrl, context.verb, context.options, context.parser);
+                    context.batchDependency();
+                    resolve(p.then(result => Util.extend(context, { result: result })));
+                } else {
 
-            // we are not part of a batch, so proceed as normal
-            let client = new HttpClient();
-            return client.get(this.toUrlAndQuery(), getOptions).then((response) => parser.parse(response));
-
-        } else {
-
-            return this._batch.add(this.toUrlAndQuery(), "GET", getOptions, parser);
-        }
+                    // we are not part of a batch, so proceed as normal
+                    let client = new HttpClient();
+                    let opts = Util.extend(context.options, { method: context.verb });
+                    client.fetch(context.requestAbsoluteUrl, opts)
+                        .then(response => resolve(context.parser.parse(response).then(result => Util.extend(context, { result: result }))));
+                }
+            });
+        }).then(context => this.postRequest(context));
     }
 
-    private postImpl<T>(postOptions: FetchOptions, parser: ODataParser<T>): Promise<T> {
+    /**
+     * Executes before a request
+     */
+    private preRequest<T>(verb: string, options: FetchOptions, parser: ODataParser<any>, batchDep: () => void): Promise<RequestContext<T>> {
 
-        if (!this.hasBatch) {
+        return Util.toAbsoluteUrl(this.toUrlAndQuery()).then(url => {
 
-            // we are not part of a batch, so proceed as normal
-            let client = new HttpClient();
-            return client.post(this.toUrlAndQuery(), postOptions).then((response) => parser.parse(response));
+            // build our requst context
+            let context: RequestContext<T> = {
+                batch: this._batch,
+                batchDependency: batchDep,
+                cachingOptions: this._cachingOptions,
+                isBatched: this.hasBatch,
+                isCached: this._useCaching,
+                options: options,
+                parser: parser,
+                requestAbsoluteUrl: url,
+                requestId: Util.getGUID(),
+                verb: verb,
+            };
 
-        } else {
-            return this._batch.add(this.toUrlAndQuery(), "POST", postOptions, parser);
-        }
+            Logger.log({
+                data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
+                level: LogLevel.Info,
+                message: `[${context.requestId}] (${(new Date()).getTime()}) Beginning ${context.verb} request to ${context.requestAbsoluteUrl}`,
+            });
+
+            return context;
+        });
     }
 
-    private patchImpl<T>(patchOptions: FetchOptions, parser: ODataParser<T>): Promise<T> {
+    /**
+     * Executes after a request
+     */
+    private postRequest<T>(context: RequestContext<T>): Promise<T> {
 
-        if (!this.hasBatch) {
+        return new Promise<T>(resolve => {
 
-            // we are not part of a batch, so proceed as normal
-            let client = new HttpClient();
-            return client.patch(this.toUrlAndQuery(), patchOptions).then((response) => parser.parse(response));
+            Logger.log({
+                data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
+                level: LogLevel.Info,
+                message: `[${context.requestId}] (${(new Date()).getTime()}) Completing ${context.verb} request to ${context.requestAbsoluteUrl}`,
+            });
 
-        } else {
-            return this._batch.add(this.toUrlAndQuery(), "PATCH", patchOptions, parser);
-        }
-    }
-
-    private deleteImpl<T>(deleteOptions: FetchOptions, parser: ODataParser<T>): Promise<T> {
-
-        if (!this.hasBatch) {
-
-            // we are not part of a batch, so proceed as normal
-            let client = new HttpClient();
-            return client.delete(this.toUrlAndQuery(), deleteOptions).then((response) => parser.parse(response));
-
-        } else {
-            return this._batch.add(this.toUrlAndQuery(), "DELETE", deleteOptions, parser);
-        }
+            resolve(context.result);
+        });
     }
 }
 

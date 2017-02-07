@@ -123,8 +123,8 @@ export class File extends QueryableInstance {
      * Gets a value that specifies the list item field values for the list item corresponding to the file.
      * 
      */
-    public get listItemAllFields(): QueryableInstance {
-        return new QueryableInstance(this, "listItemAllFields");
+    public get listItemAllFields(): QueryableCollection {
+        return new QueryableCollection(this, "listItemAllFields");
     }
 
     /**

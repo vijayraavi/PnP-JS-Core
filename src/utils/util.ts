@@ -1,5 +1,7 @@
 declare var global: any;
 import { TypedHash } from "../collections/collections";
+import { deprecated } from "./decorators";
+import { RuntimeConfig } from "../configuration/pnplibconfig";
 
 export class Util {
 
@@ -225,6 +227,7 @@ export class Util {
      * 
      * @param url The relative url to make absolute
      */
+    @deprecated("The Util.makeUrlAbsolute method is deprecated and will be removed from future releases. Use Util.toAbsoluteUrl instead")
     public static makeUrlAbsolute(url: string): string {
 
         if (Util.isUrlAbsolute(url)) {
@@ -240,5 +243,48 @@ export class Util {
         } else {
             return url;
         }
+    }
+
+    /**
+     * Ensures that a given url is absolute for the current web based on context
+     * 
+     * @param candidateUrl The url to make absolute
+     * 
+     */
+    public static toAbsoluteUrl(candidateUrl: string): Promise<string> {
+
+        return new Promise((resolve) => {
+
+            if (Util.isUrlAbsolute(candidateUrl)) {
+                // if we are already absolute, then just return the url
+                return resolve(candidateUrl);
+            }
+
+            if (RuntimeConfig.baseUrl !== null) {
+                // base url specified either with baseUrl of spFXContext config property
+                return resolve(Util.combinePaths(RuntimeConfig.baseUrl, candidateUrl));
+            }
+
+            if (typeof global._spPageContextInfo !== "undefined") {
+
+                // operating in classic pages
+                if (global._spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
+                    return resolve(Util.combinePaths(global._spPageContextInfo.webAbsoluteUrl, candidateUrl));
+                } else if (global._spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
+                    return resolve(Util.combinePaths(global._spPageContextInfo.webServerRelativeUrl, candidateUrl));
+                }
+            }
+
+            // does window.location exist and have _layouts in it?
+            if (typeof global.location !== "undefined") {
+                let index = global.location.toString().toLowerCase().indexOf("/_layouts/");
+                if (index > 0) {
+                    // we are likely in the workbench in /_layouts/
+                    return resolve(Util.combinePaths(global.location.toString().substr(0, index), candidateUrl));
+                }
+            }
+
+            return resolve(candidateUrl);
+        });
     }
 }
