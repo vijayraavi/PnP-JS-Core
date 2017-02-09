@@ -340,8 +340,6 @@ export class File extends QueryableInstance {
         let fileSize = file.size;
 
         let blockCount = parseInt((file.size / chunkSize).toString(), 10) + ((file.size % chunkSize === 0) ? 1 : 0);
-        console.log(`blockCount: ${blockCount}`);
-
         let uploadId = Util.getGUID();
 
         // start the chain with the first fragment

@@ -74,7 +74,7 @@ describe("Lists", () => {
 
         describe("ensure", () => {
             it("Should ensure a list with the expected title", function () {
-                this.timeout(20000);
+                this.timeout(25000);
                 return expect(pnp.sp.web.lists.ensure("pnp testing ensure").then(() => {
                     return pnp.sp.web.lists.getByTitle("pnp testing ensure").select("Title").get();
                 })).to.eventually.have.property("Title", "pnp testing ensure");

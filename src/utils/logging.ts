@@ -203,7 +203,7 @@ export class ConsoleListener implements LogListener {
      * @param entry The information to format into a string
      */
     private format(entry: LogEntry): string {
-        return "Message: " + entry.message + ". Data: " + JSON.stringify(entry.data);
+        return "Message: " + entry.message + " Data: " + JSON.stringify(entry.data);
     }
 }
 
