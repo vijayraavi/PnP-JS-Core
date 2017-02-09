@@ -103,13 +103,12 @@ export class Lists extends QueryableCollection {
                     resolve({ created: false, data: d, list: list });
                 }).catch(e => reject(e));
 
-            }).catch(() => {
+            }).catch(_ => {
 
                 this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => {
                     resolve({ created: true, data: r.data, list: this.getByTitle(title) });
-                });
-
-            }).catch((e) => reject(e));
+                }).catch((e) => reject(e));
+            });
         });
     }
 

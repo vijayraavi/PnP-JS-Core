@@ -18,21 +18,21 @@ export function extractOdataId(candidate: any): string {
     }
 }
 
-export interface ODataParser<U> {
-    parse(r: Response): Promise<U>;
+export interface ODataParser<T> {
+    parse(r: Response): Promise<T>;
 }
 
-export abstract class ODataParserBase<U> implements ODataParser<U> {
+export abstract class ODataParserBase<T> implements ODataParser<T> {
 
-    public parse(r: Response): Promise<U> {
+    public parse(r: Response): Promise<T> {
 
-        return new Promise<U>((resolve, reject) => {
+        return new Promise<T>((resolve, reject) => {
 
             if (this.handleError(r, reject)) {
                 if ((r.headers.has("Content-Length") && parseFloat(r.headers.get("Content-Length")) === 0) || r.status === 204) {
-                    resolve(<U>{});
+                    resolve(<T>{});
                 } else {
-                    r.json().then(json => resolve(this.parseODataJSON<U>(json)));
+                    r.json().then(json => resolve(this.parseODataJSON<T>(json)));
                 }
             }
         });
@@ -160,25 +160,29 @@ export class ODataBatch {
      */
     public add<T>(url: string, method: string, options: any, parser: ODataParser<T>): Promise<T> {
 
-        let info = {
-            method: method.toUpperCase(),
-            options: options,
-            parser: parser,
-            reject: <(reason?: any) => void>null,
-            resolve: <(value?: T | PromiseLike<T>) => void>null,
-            url: url,
-        };
+            let info = {
+                method: method.toUpperCase(),
+                options: options,
+                parser: parser,
+                reject: <(reason?: any) => void>null,
+                resolve: <(value?: T | PromiseLike<T>) => void>null,
+                url: url,
+            };
 
-        let p = new Promise<T>((resolve, reject) => {
-            info.resolve = resolve;
-            info.reject = reject;
-        });
+            let p = new Promise<T>((resolve, reject) => {
+                info.resolve = resolve;
+                info.reject = reject;
+            });
 
-        this._requests.push(info);
+            this._requests.push(info);
 
-        return p;
+            return p;
     }
 
+    /**
+     * Adds a dependency insuring that some set of actions will occur before a batch is processed.
+     * MUST be cleared using the returned resolve delegate to allow batches to run
+     */
     public addBatchDependency(): () => void {
 
         let resolver: () => void;
