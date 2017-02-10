@@ -186,6 +186,10 @@ class ODataBatch {
         this._requests.push(info);
         return p;
     }
+    /**
+     * Adds a dependency insuring that some set of actions will occur before a batch is processed.
+     * MUST be cleared using the returned resolve delegate to allow batches to run
+     */
     addBatchDependency() {
         let resolver;
         let promise = new Promise((resolve) => {
@@ -203,95 +207,106 @@ class ODataBatch {
         return this._batchDependencies.then(() => this.executeImpl());
     }
     executeImpl() {
+        logging_1.Logger.write(`Executing batch with ${this._requests.length} requests.`, logging_1.LogLevel.Info);
         // if we don't have any requests, don't bother sending anything
-        // this could be due to caching further upstream, or just an empty batch 
+        // this could be due to caching further upstream, or just an empty batch
         if (this._requests.length &lt; 1) {
+            logging_1.Logger.write(`Resolving empty batch.`, logging_1.LogLevel.Info);
             return Promise.resolve();
         }
-        // build all the requests, send them, pipe results in order to parsers
-        let batchBody = [];
-        let currentChangeSetId = "";
-        this._requests.map((reqInfo) => {
-            if (reqInfo.method === "GET") {
-                if (currentChangeSetId.length > 0) {
-                    // end an existing change set
-                    batchBody.push(`--changeset_${currentChangeSetId}--\n\n`);
-                    currentChangeSetId = "";
-                }
-                batchBody.push(`--batch_${this._batchId}\n`);
-            }
-            else {
-                if (currentChangeSetId.length &lt; 1) {
-                    // start new change set
-                    currentChangeSetId = util_1.Util.getGUID();
-                    batchBody.push(`--batch_${this._batchId}\n`);
-                    batchBody.push(`Content-Type: multipart/mixed; boundary="changeset_${currentChangeSetId}"\n\n`);
-                }
-                batchBody.push(`--changeset_${currentChangeSetId}\n`);
-            }
-            // common batch part prefix
-            batchBody.push(`Content-Type: application/http\n`);
-            batchBody.push(`Content-Transfer-Encoding: binary\n\n`);
-            let headers = {
-                "Accept": "application/json;",
-            };
-            if (reqInfo.method !== "GET") {
-                let method = reqInfo.method;
-                if (reqInfo.hasOwnProperty("options") &amp;&amp; reqInfo.options.hasOwnProperty("headers") &amp;&amp; typeof reqInfo.options.headers["X-HTTP-Method"] !== "undefined") {
-                    method = reqInfo.options.headers["X-HTTP-Method"];
-                    delete reqInfo.options.headers["X-HTTP-Method"];
-                }
-                batchBody.push(`${method} ${reqInfo.url} HTTP/1.1\n`);
-                headers = util_1.Util.extend(headers, { "Content-Type": "application/json;odata=verbose;charset=utf-8" });
-            }
-            else {
-                batchBody.push(`${reqInfo.method} ${reqInfo.url} HTTP/1.1\n`);
-            }
-            if (typeof pnplibconfig_1.RuntimeConfig.headers !== "undefined") {
-                headers = util_1.Util.extend(headers, pnplibconfig_1.RuntimeConfig.headers);
-            }
-            if (reqInfo.options &amp;&amp; reqInfo.options.headers) {
-                headers = util_1.Util.extend(headers, reqInfo.options.headers);
-            }
-            for (let name in headers) {
-                if (headers.hasOwnProperty(name)) {
-                    batchBody.push(`${name}: ${headers[name]}\n`);
-                }
-            }
-            batchBody.push("\n");
-            if (reqInfo.options.body) {
-                batchBody.push(`${reqInfo.options.body}\n\n`);
-            }
-        });
-        if (currentChangeSetId.length > 0) {
-            // Close the changeset
-            batchBody.push(`--changeset_${currentChangeSetId}--\n\n`);
-            currentChangeSetId = "";
-        }
-        batchBody.push(`--batch_${this._batchId}--\n`);
-        let batchHeaders = {
-            "Content-Type": `multipart/mixed; boundary=batch_${this._batchId}`,
-        };
-        let batchOptions = {
-            "body": batchBody.join(""),
-            "headers": batchHeaders,
-        };
+        // creating the client here allows the url to be populated for nodejs client as well as potentially
+        // any other hacks needed for other types of clients. Essentially allows the absoluteRequestUrl
+        // below to be correct
         let client = new httpclient_1.HttpClient();
-        let requestUrl = util_1.Util.makeUrlAbsolute(util_1.Util.combinePaths(this.baseUrl, "/_api/$batch"));
-        return client.post(requestUrl, batchOptions)
-            .then(r => r.text())
-            .then(this._parseResponse)
-            .then((responses) => {
-            if (responses.length !== this._requests.length) {
-                throw new exceptions_1.BatchParseException("Could not properly parse responses to match requests in batch.");
-            }
-            return responses.reduce((chain, response, index) => {
-                let request = this._requests[index];
-                if (!response.ok) {
-                    request.reject(new Error(response.statusText));
+        // due to timing we need to get the absolute url here so we can use it for all the individual requests
+        // and for sending the entire batch
+        return util_1.Util.toAbsoluteUrl(this.baseUrl).then(absoluteRequestUrl => {
+            // build all the requests, send them, pipe results in order to parsers
+            let batchBody = [];
+            let currentChangeSetId = "";
+            this._requests.map((reqInfo) => {
+                if (reqInfo.method === "GET") {
+                    if (currentChangeSetId.length > 0) {
+                        // end an existing change set
+                        batchBody.push(`--changeset_${currentChangeSetId}--\n\n`);
+                        currentChangeSetId = "";
+                    }
+                    batchBody.push(`--batch_${this._batchId}\n`);
                 }
-                return chain.then(_ => request.parser.parse(response).then(request.resolve).catch(request.reject));
-            }, Promise.resolve());
+                else {
+                    if (currentChangeSetId.length &lt; 1) {
+                        // start new change set
+                        currentChangeSetId = util_1.Util.getGUID();
+                        batchBody.push(`--batch_${this._batchId}\n`);
+                        batchBody.push(`Content-Type: multipart/mixed; boundary="changeset_${currentChangeSetId}"\n\n`);
+                    }
+                    batchBody.push(`--changeset_${currentChangeSetId}\n`);
+                }
+                // common batch part prefix
+                batchBody.push(`Content-Type: application/http\n`);
+                batchBody.push(`Content-Transfer-Encoding: binary\n\n`);
+                let headers = {
+                    "Accept": "application/json;",
+                };
+                // this is the url of the individual request within the batch
+                let url = util_1.Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : util_1.Util.combinePaths(absoluteRequestUrl, reqInfo.url);
+                logging_1.Logger.write(`Adding request ${reqInfo.method} ${url} to batch.`, logging_1.LogLevel.Verbose);
+                if (reqInfo.method !== "GET") {
+                    let method = reqInfo.method;
+                    if (reqInfo.hasOwnProperty("options") &amp;&amp; reqInfo.options.hasOwnProperty("headers") &amp;&amp; typeof reqInfo.options.headers["X-HTTP-Method"] !== "undefined") {
+                        method = reqInfo.options.headers["X-HTTP-Method"];
+                        delete reqInfo.options.headers["X-HTTP-Method"];
+                    }
+                    batchBody.push(`${method} ${url} HTTP/1.1\n`);
+                    headers = util_1.Util.extend(headers, { "Content-Type": "application/json;odata=verbose;charset=utf-8" });
+                }
+                else {
+                    batchBody.push(`${reqInfo.method} ${url} HTTP/1.1\n`);
+                }
+                if (typeof pnplibconfig_1.RuntimeConfig.headers !== "undefined") {
+                    headers = util_1.Util.extend(headers, pnplibconfig_1.RuntimeConfig.headers);
+                }
+                if (reqInfo.options &amp;&amp; reqInfo.options.headers) {
+                    headers = util_1.Util.extend(headers, reqInfo.options.headers);
+                }
+                for (let name in headers) {
+                    if (headers.hasOwnProperty(name)) {
+                        batchBody.push(`${name}: ${headers[name]}\n`);
+                    }
+                }
+                batchBody.push("\n");
+                if (reqInfo.options.body) {
+                    batchBody.push(`${reqInfo.options.body}\n\n`);
+                }
+            });
+            if (currentChangeSetId.length > 0) {
+                // Close the changeset
+                batchBody.push(`--changeset_${currentChangeSetId}--\n\n`);
+                currentChangeSetId = "";
+            }
+            batchBody.push(`--batch_${this._batchId}--\n`);
+            let batchHeaders = {
+                "Content-Type": `multipart/mixed; boundary=batch_${this._batchId}`,
+            };
+            let batchOptions = {
+                "body": batchBody.join(""),
+                "headers": batchHeaders,
+            };
+            logging_1.Logger.write("Sending batch request.", logging_1.LogLevel.Info);
+            return client.post(util_1.Util.combinePaths(absoluteRequestUrl, "/_api/$batch"), batchOptions)
+                .then(r => r.text())
+                .then(this._parseResponse)
+                .then((responses) => {
+                if (responses.length !== this._requests.length) {
+                    throw new exceptions_1.BatchParseException("Could not properly parse responses to match requests in batch.");
+                }
+                logging_1.Logger.write("Resolving batched requests.", logging_1.LogLevel.Info);
+                return responses.reduce((chain, response, index) => {
+                    let request = this._requests[index];
+                    logging_1.Logger.write(`Resolving request ${request.method} ${request.url}.`, logging_1.LogLevel.Verbose);
+                    return chain.then(_ => request.parser.parse(response).then(request.resolve).catch(request.reject));
+                }, Promise.resolve());
+            });
         });
     }
     /**
@@ -392,13 +407,13 @@ exports.BufferFileParser = BufferFileParser;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="LimitedWebPartManager.html">LimitedWebPartManager</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PipelineMethods.html">PipelineMethods</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li><li><a href="WebPart.html">WebPart</a></li><li><a href="WebPartDefinition.html">WebPartDefinition</a></li><li><a href="WebPartDefinitions.html">WebPartDefinitions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 23 2017 13:00:46 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Feb 10 2017 15:15:54 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

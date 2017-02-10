@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sharepoint/queryablerequest.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sharepoint/queryablerequest.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __decorate = (this &amp;&amp; this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c &lt; 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" &amp;&amp; typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c &lt; 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 &amp;&amp; r &amp;&amp; Object.defineProperty(target, key, r), r;
+};
+const caching_1 = require("./caching");
+const httpclient_1 = require("../net/httpclient");
+const logging_1 = require("../utils/logging");
+const util_1 = require("../utils/util");
+/**
+ * Processes a given context through the request pipeline
+ *
+ * @param context The request context we are processing
+ */
+function pipe(context) {
+    // this is the beginning of the extensible pipeline in future versions
+    let pipeline = [
+        PipelineMethods.logStart,
+        PipelineMethods.caching,
+        PipelineMethods.send,
+        PipelineMethods.logEnd,
+    ];
+    return pipeline.reduce((chain, next) => chain.then(c => next(c)), Promise.resolve(context))
+        .then(ctx => PipelineMethods.returnResult(ctx))
+        .catch((e) => {
+        logging_1.Logger.log({
+            data: e,
+            level: logging_1.LogLevel.Error,
+            message: `Error in request pipeline: ${e.message}`,
+        });
+        throw e;
+    });
+}
+exports.pipe = pipe;
+/**
+ * decorator factory applied to methods in the pipeline to control behavior
+ */
+function requestPipelineMethod(alwaysRun = false) {
+    return function (target, propertyKey, descriptor) {
+        let method = descriptor.value;
+        descriptor.value = function (...args) {
+            // if we have a result already in the pipeline, pass it along and don't call the tagged method
+            if (!alwaysRun &amp;&amp; args.length > 0 &amp;&amp; args[0].hasOwnProperty("hasResult") &amp;&amp; args[0].hasResult) {
+                logging_1.Logger.write(`[${args[0].requestId}] (${(new Date()).getTime()}) Skipping request pipeline method ${propertyKey}, existing result in pipeline.`, logging_1.LogLevel.Verbose);
+                return Promise.resolve(args[0]);
+            }
+            // apply the tagged method
+            logging_1.Logger.write(`[${args[0].requestId}] (${(new Date()).getTime()}) Calling request pipeline method ${propertyKey}.`, logging_1.LogLevel.Verbose);
+            return method.apply(target, args);
+        };
+    };
+}
+/**
+ * Contains the methods used within the request pipeline
+ */
+class PipelineMethods {
+    /**
+     * Logs the start of the request
+     */
+    static logStart(context) {
+        return new Promise(resolve => {
+            logging_1.Logger.log({
+                data: logging_1.Logger.activeLogLevel === logging_1.LogLevel.Info ? {} : context,
+                level: logging_1.LogLevel.Info,
+                message: `[${context.requestId}] (${(new Date()).getTime()}) Beginning ${context.verb} request to ${context.requestAbsoluteUrl}`,
+            });
+            resolve(context);
+        });
+    }
+    /**
+     * Handles caching of the request
+     */
+    static caching(context) {
+        return new Promise(resolve => {
+            // handle caching, if applicable
+            if (context.verb === "GET" &amp;&amp; context.isCached) {
+                logging_1.Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Caching is enabled for request, checking cache...`, logging_1.LogLevel.Info);
+                let cacheOptions = new caching_1.CachingOptions(context.requestAbsoluteUrl.toLowerCase());
+                if (typeof context.cachingOptions !== "undefined") {
+                    cacheOptions = util_1.Util.extend(cacheOptions, context.cachingOptions);
+                }
+                // we may not have a valid store, i.e. on node
+                if (cacheOptions.store !== null) {
+                    // check if we have the data in cache and if so resolve the promise and return
+                    let data = cacheOptions.store.get(cacheOptions.key);
+                    if (data !== null) {
+                        // ensure we clear any help batch dependency we are resolving from the cache
+                        logging_1.Logger.log({
+                            data: logging_1.Logger.activeLogLevel === logging_1.LogLevel.Info ? {} : data,
+                            level: logging_1.LogLevel.Info,
+                            message: `[${context.requestId}] (${(new Date()).getTime()}) Value returned from cache.`,
+                        });
+                        context.batchDependency();
+                        return PipelineMethods.setResult(context, data).then(ctx => resolve(ctx));
+                    }
+                }
+                logging_1.Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Value not found in cache.`, logging_1.LogLevel.Info);
+                // if we don't then wrap the supplied parser in the caching parser wrapper
+                // and send things on their way
+                context.parser = new caching_1.CachingParserWrapper(context.parser, cacheOptions);
+            }
+            return resolve(context);
+        });
+    }
+    /**
+     * Sends the request
+     */
+    static send(context) {
+        return new Promise((resolve, reject) => {
+            // send or batch the request
+            if (context.isBatched) {
+                // we are in a batch, so add to batch, remove dependency, and resolve with the batch's promise
+                let p = context.batch.add(context.requestAbsoluteUrl, context.verb, context.options, context.parser);
+                // we release the dependency here to ensure the batch does not execute until the request is added to the batch
+                context.batchDependency();
+                logging_1.Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Batching request.`, logging_1.LogLevel.Info);
+                resolve(p.then(result => PipelineMethods.setResult(context, result)));
+            }
+            else {
+                logging_1.Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Sending request.`, logging_1.LogLevel.Info);
+                // we are not part of a batch, so proceed as normal
+                let client = new httpclient_1.HttpClient();
+                let opts = util_1.Util.extend(context.options, { method: context.verb });
+                client.fetch(context.requestAbsoluteUrl, opts)
+                    .then(response => context.parser.parse(response))
+                    .then(result => PipelineMethods.setResult(context, result))
+                    .then(ctx => resolve(ctx))
+                    .catch(e => reject(e));
+            }
+        });
+    }
+    /**
+     * Logs the end of the request
+     */
+    static logEnd(context) {
+        return new Promise(resolve => {
+            logging_1.Logger.log({
+                data: logging_1.Logger.activeLogLevel === logging_1.LogLevel.Info ? {} : context,
+                level: logging_1.LogLevel.Info,
+                message: `[${context.requestId}] (${(new Date()).getTime()}) Completing ${context.verb} request to ${context.requestAbsoluteUrl}`,
+            });
+            resolve(context);
+        });
+    }
+    /**
+     * At the end of the pipeline resolves the request's result
+     */
+    static returnResult(context) {
+        logging_1.Logger.log({
+            data: context.result,
+            level: logging_1.LogLevel.Verbose,
+            message: `[${context.requestId}] (${(new Date()).getTime()}) Returning, see data property for value.`,
+        });
+        return Promise.resolve(context.result);
+    }
+    /**
+     * Sets the result on the context
+     */
+    static setResult(context, value) {
+        return new Promise((resolve) => {
+            context.result = value;
+            context.hasResult = true;
+            resolve(context);
+        });
+    }
+}
+__decorate([
+    requestPipelineMethod(true)
+], PipelineMethods, "logStart", null);
+__decorate([
+    requestPipelineMethod()
+], PipelineMethods, "caching", null);
+__decorate([
+    requestPipelineMethod()
+], PipelineMethods, "send", null);
+__decorate([
+    requestPipelineMethod(true)
+], PipelineMethods, "logEnd", null);
+__decorate([
+    requestPipelineMethod(true)
+], PipelineMethods, "returnResult", null);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="LimitedWebPartManager.html">LimitedWebPartManager</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PipelineMethods.html">PipelineMethods</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li><li><a href="WebPart.html">WebPart</a></li><li><a href="WebPartDefinition.html">WebPartDefinition</a></li><li><a href="WebPartDefinitions.html">WebPartDefinitions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Feb 10 2017 15:15:54 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

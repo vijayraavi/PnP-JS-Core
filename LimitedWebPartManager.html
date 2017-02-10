@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Form</title>
+    <title>JSDoc: Class: LimitedWebPartManager</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Form</h1>
+    <h1 class="page-title">Class: LimitedWebPartManager</h1>
 
     
 
@@ -28,9 +28,7 @@
 
 <header>
     
-        <h2>Form</h2>
-        
-            <div class="class-description">Describes a single of Form instance</div>
+        <h2>LimitedWebPartManager</h2>
         
     
 </header>
@@ -41,17 +39,15 @@
         
 
     
-    <h2>Constructor</h2>
-    
 
-    <h4 class="name" id="Form"><span class="type-signature"></span>new Form<span class="signature">(baseUrl)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="LimitedWebPartManager"><span class="type-signature"></span>new LimitedWebPartManager<span class="signature">(baseUrl, path)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Creates a new instance of the Form class
+    Creates a new instance of the LimitedWebPartManager class
 </div>
 
 
@@ -98,7 +94,25 @@
 
             
 
-            <td class="description last">The url or Queryable which is the parent of this form instance</td>
+            <td class="description last">The url or Queryable which forms the parent of this fields collection</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Optional, if supplied will be appended to the supplied baseUrl</td>
         </tr>
 
     
@@ -139,7 +153,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sharepoint_forms.js.html">sharepoint/forms.js</a>, <a href="sharepoint_forms.js.html#line32">line 32</a>
+        <a href="sharepoint_webparts.js.html">sharepoint/webparts.js</a>, <a href="sharepoint_webparts.js.html#line10">line 10</a>
     </li></ul></dd>
     
 
@@ -179,7 +193,329 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
 
+        
+            
+<h4 class="name" id="webparts"><span class="type-signature"></span>webparts<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Gets the set of web part definitions contained by this web part manager
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="sharepoint_webparts.js.html">sharepoint/webparts.js</a>, <a href="sharepoint_webparts.js.html#line17">line 17</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="export"><span class="type-signature"></span>export<span class="signature">(id)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Exports a webpart definition
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the GUID id of the definition to export</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="sharepoint_webparts.js.html">sharepoint/webparts.js</a>, <a href="sharepoint_webparts.js.html#line25">line 25</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="import"><span class="type-signature"></span>import<span class="signature">(xml)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Imports a webpart
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>xml</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">webpart definition which must be valid XML in the .dwp or .webpart format</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="sharepoint_webparts.js.html">sharepoint/webparts.js</a>, <a href="sharepoint_webparts.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     
