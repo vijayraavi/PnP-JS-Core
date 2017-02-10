@@ -38,7 +38,7 @@ export class Items extends QueryableCollection {
 
     /**
      * Skips the specified number of items (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#sectionSection6)
-     * 
+     *
      * @param skip The starting id where the page should start, use with top to specify pages
      */
     public skip(skip: number): this {
@@ -48,7 +48,7 @@ export class Items extends QueryableCollection {
 
     /**
      * Gets a collection designed to aid in paging through data
-     * 
+     *
      */
     public getPaged(): Promise<PagedItemCollection<any>> {
         return this.getAs(new PagedItemCollectionParser());
@@ -244,7 +244,7 @@ export class Item extends QueryableSecurable {
     }
 
     /**
-     * Gets a string representation of the full URL to the WOPI frame. 
+     * Gets a string representation of the full URL to the WOPI frame.
      * If there is no associated WOPI application, or no associated action, an empty string is returned.
      *
      * @param action Display mode: 0: view, 1: edit, 2: mobileView, 3: interactivePreview

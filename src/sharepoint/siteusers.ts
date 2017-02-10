@@ -80,9 +80,9 @@ export class SiteUsers extends QueryableCollection {
 
     /**
      * Add a user to a group
-     * 
+     *
      * @param loginName The login name of the user to add to the group
-     * 
+     *
      */
     public add(loginName: string): Promise<SiteUser> {
 

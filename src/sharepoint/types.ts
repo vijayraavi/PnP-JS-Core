@@ -247,7 +247,7 @@ export interface ChangeLogitemQuery {
 export enum ControlMode {
     Display = 1,
     Edit = 2,
-    New = 3
+    New = 3,
 }
 
 /**
@@ -310,12 +310,12 @@ export enum FieldTypes {
     ThreadIndex = 27,
     WorkflowStatus = 28,
     AllDayEvent = 29,
-    WorkflowEventType = 30
+    WorkflowEventType = 30,
 }
 
 export enum DateTimeFieldFormatType {
     DateOnly = 0,
-    DateTime = 1
+    DateTime = 1,
 }
 
 /**
@@ -349,7 +349,7 @@ export enum AddFieldOptions {
     /**
      * Specify to confirm that no other field has the same display name
      */
-    AddFieldCheckDisplayName = 32
+    AddFieldCheckDisplayName = 32,
 }
 
 export interface XmlSchemaFieldCreationInformation {
@@ -372,12 +372,12 @@ export enum CalendarType {
     KoreaJapanLunar = 14,
     ChineseLunar = 15,
     SakaEra = 16,
-    UmAlQura = 23
+    UmAlQura = 23,
 }
 
 export enum UrlFieldFormatType {
     Hyperlink = 0,
-    Image = 1
+    Image = 1,
 }
 
 export interface BasePermissions {
@@ -476,7 +476,7 @@ export enum PrincipalType {
     DistributionList = 2,
     SecurityGroup = 4,
     SharePointGroup = 8,
-    All = 15
+    All = 15,
 }
 
 export interface DocumentLibraryInformation {
@@ -519,7 +519,7 @@ export enum PageType {
     NewForm,
     NewFormDialog,
     SolutionForm,
-    PAGE_MAXITEMS
+    PAGE_MAXITEMS,
 }
 
 export interface ListFormData {
@@ -538,7 +538,7 @@ export interface ListFormData {
         Editor?: number,
         Created?: number,
         Modified?: number,
-        Attachments?: number
+        Attachments?: number,
     };
     WebAttributes?: {
         WebUrl?: string,
@@ -546,7 +546,7 @@ export interface ListFormData {
         AllowScriptableWebParts?: boolean,
         PermissionCustomizePages?: boolean,
         LCID?: number,
-        CurrentUserId?: number
+        CurrentUserId?: number,
     };
     ItemAttributes?: {
         Id?: number,
@@ -554,7 +554,7 @@ export interface ListFormData {
         ExternalListItem?: boolean,
         Url?: string,
         EffectiveBasePermissionsLow?: number,
-        EffectiveBasePermissionsHigh?: number
+        EffectiveBasePermissionsHigh?: number,
     };
     ListAttributes?: {
         Id?: string,
@@ -562,7 +562,7 @@ export interface ListFormData {
         Direction?: string,
         ListTemplateType?: number,
         DefaultItemOpen?: number,
-        EnableVersioning?: boolean
+        EnableVersioning?: boolean,
     };
     CSRCustomLayout?: boolean;
     PostBackRequired?: boolean;

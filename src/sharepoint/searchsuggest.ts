@@ -6,7 +6,7 @@ import { Queryable, QueryableInstance } from "./queryable";
 export interface SearchSuggestQuery {
 
     /**
-     * A string that contains the text for the search query. 
+     * A string that contains the text for the search query.
      */
     querytext: string;
 

@@ -89,8 +89,8 @@ export class Fields extends QueryableCollection {
     public add(title: string, fieldType: string, properties: TypedHash<string | number | boolean> = {}): Promise<FieldAddResult> {
 
         let postBody: string = JSON.stringify(Util.extend({
-            "__metadata": { "type": fieldType },
             "Title": title,
+            "__metadata": { "type": fieldType },
         }, properties));
 
         return this.postAs<{ Id: string }>({ body: postBody }).then((data) => {
@@ -286,7 +286,7 @@ export class Fields extends QueryableCollection {
     public addUrl(
         title: string,
         displayFormat: Types.UrlFieldFormatType = Types.UrlFieldFormatType.Hyperlink,
-        properties?: TypedHash<string | number | boolean>
+        properties?: TypedHash<string | number | boolean>,
     ): Promise<FieldAddResult> {
 
         let props: { DisplayFormat: Types.UrlFieldFormatType; FieldTypeKind: number } = {

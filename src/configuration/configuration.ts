@@ -2,7 +2,7 @@ import { TypedHash, Dictionary } from "../collections/collections";
 
 /**
  * Interface for configuration providers
- * 
+ *
  */
 export interface IConfigurationProvider {
 
@@ -12,20 +12,20 @@ export interface IConfigurationProvider {
     getConfiguration(): Promise<TypedHash<string>>;
 }
 
-/** 
+/**
  * Class used to manage the current application settings
- * 
+ *
  */
 export class Settings {
 
-    /** 
+    /**
      * The settings currently stored in this instance
      */
     private _settings: Dictionary<string>;
 
     /**
      * Creates a new instance of the settings class
-     * 
+     *
      * @constructor
      */
     constructor() {
@@ -34,7 +34,7 @@ export class Settings {
 
     /**
      * Adds a new single setting, or overwrites a previous setting with the same key
-     * 
+     *
      * @param {string} key The key used to store this setting
      * @param {string} value The setting value to store
      */
@@ -44,7 +44,7 @@ export class Settings {
 
     /**
      * Adds a JSON value to the collection as a string, you must use getJSON to rehydrate the object when read
-     * 
+     *
      * @param {string} key The key used to store this setting
      * @param {any} value The setting value to store
      */
@@ -54,7 +54,7 @@ export class Settings {
 
     /**
      * Applies the supplied hash to the setting collection overwriting any existing value, or created new values
-     * 
+     *
      * @param {TypedHash<any>} hash The set of values to add
      */
     public apply(hash: TypedHash<any>): Promise<void> {
@@ -70,7 +70,7 @@ export class Settings {
 
     /**
      * Loads configuration settings into the collection from the supplied provider and returns a Promise
-     * 
+     *
      * @param {IConfigurationProvider} provider The provider from which we will load the settings
      */
     public load(provider: IConfigurationProvider): Promise<void> {
@@ -84,9 +84,9 @@ export class Settings {
         });
     }
 
-    /** 
+    /**
      * Gets a value from the configuration
-     * 
+     *
      * @param {string} key The key whose value we want to return. Returns null if the key does not exist
      * @return {string} string value from the configuration
      */
@@ -96,7 +96,7 @@ export class Settings {
 
     /**
      * Gets a JSON value, rehydrating the stored string to the original object
-     * 
+     *
      * @param {string} key The key whose value we want to return. Returns null if the key does not exist
      * @return {any} object from the configuration
      */

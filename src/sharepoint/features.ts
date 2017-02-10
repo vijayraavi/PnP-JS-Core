@@ -51,7 +51,7 @@ export class Features extends QueryableCollection {
 
     /**
      * Removes (deactivates) a feature from the collection
-     * 
+     *
      * @param id The Id of the feature (GUID)
      * @param force If true the feature deactivation will be forced
      */
@@ -80,7 +80,7 @@ export class Feature extends QueryableInstance {
 
     /**
      * Removes (deactivates) a feature from the collection
-     * 
+     *
      * @param force If true the feature deactivation will be forced
      */
     public deactivate(force = false): Promise<any> {

@@ -14,7 +14,7 @@ export interface NavigationNodeUpdateResult {
 
 /**
  * Represents a collection of navigation nodes
- * 
+ *
  */
 export class NavigationNodes extends QueryableCollection {
 
@@ -24,7 +24,7 @@ export class NavigationNodes extends QueryableCollection {
 
     /**
      * Gets a navigation node by id
-     * 
+     *
      * @param id The id of the node
      */
     public getById(id: number): NavigationNode {
@@ -35,7 +35,7 @@ export class NavigationNodes extends QueryableCollection {
 
     /**
      * Adds a new node to the collection
-     * 
+     *
      * @param title Display name of the node
      * @param url The url of the node
      * @param visible If true the node is visible, otherwise it is hidden (default: true)
@@ -43,10 +43,10 @@ export class NavigationNodes extends QueryableCollection {
     public add(title: string, url: string, visible = true): Promise<NavigationNodeAddResult> {
 
         let postBody = JSON.stringify({
-            "__metadata": { "type": "SP.NavigationNode" },
             IsVisible: visible,
             Title: title,
             Url: url,
+            "__metadata": { "type": "SP.NavigationNode" },
         });
 
         let adder = new NavigationNodes(this);
@@ -60,7 +60,7 @@ export class NavigationNodes extends QueryableCollection {
 
     /**
      * Moves a node to be after another node in the navigation
-     * 
+     *
      * @param nodeId Id of the node to move
      * @param previousNodeId Id of the node after which we move the node specified by nodeId
      */
@@ -91,7 +91,7 @@ export class NavigationNode extends QueryableInstance {
 
     /**
      * Updates this node based on the supplied properties
-     * 
+     *
      * @param properties The hash of key/value pairs to update
      */
     public update(properties: TypedHash<boolean | string | number>): Promise<NavigationNodeUpdateResult> {
@@ -124,13 +124,13 @@ export class NavigationNode extends QueryableInstance {
 
 /**
  * Exposes the navigation components
- * 
+ *
  */
 export class Navigation extends Queryable {
 
     /**
      * Creates a new instance of the Lists class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
     constructor(baseUrl: string | Queryable, path = "navigation") {
@@ -139,7 +139,7 @@ export class Navigation extends Queryable {
 
     /**
      * Gets the quicklaunch navigation for the current context
-     * 
+     *
      */
     public get quicklaunch(): NavigationNodes {
         return new NavigationNodes(this, "quicklaunch");
@@ -147,7 +147,7 @@ export class Navigation extends Queryable {
 
     /**
      * Gets the top bar navigation navigation for the current context
-     * 
+     *
      */
     public get topNavigationBar(): NavigationNodes {
         return new NavigationNodes(this, "topnavigationbar");

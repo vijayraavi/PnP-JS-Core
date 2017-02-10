@@ -18,7 +18,7 @@ export class AttachmentFiles extends QueryableCollection {
 
     /**
      * Gets a Attachment File by filename
-     * 
+     *
      * @param name The name of the file, including extension.
      */
     public getByName(name: string): AttachmentFile {
@@ -63,7 +63,7 @@ export class AttachmentFile extends QueryableInstance {
 
     /**
      * Gets the contents of the file as text
-     * 
+     *
      */
     public getText(): Promise<string> {
 
@@ -72,7 +72,7 @@ export class AttachmentFile extends QueryableInstance {
 
     /**
      * Gets the contents of the file as a blob, does not work in Node.js
-     * 
+     *
      */
     public getBlob(): Promise<Blob> {
 
@@ -97,7 +97,7 @@ export class AttachmentFile extends QueryableInstance {
 
     /**
      * Sets the content of a file
-     * 
+     *
      * @param content The value to set for the file contents
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<AttachmentFile> {

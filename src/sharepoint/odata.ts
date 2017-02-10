@@ -152,7 +152,7 @@ export class ODataBatch {
 
     /**
      * Adds a request to a batch (not designed for public use)
-     * 
+     *
      * @param url The full url of the request
      * @param method The http method GET, POST, etc
      * @param options Any options to include in the request
@@ -197,7 +197,7 @@ export class ODataBatch {
 
     /**
      * Execute the current batch and resolve the associated promises
-     * 
+     *
      * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
     public execute(): Promise<void> {
@@ -209,7 +209,7 @@ export class ODataBatch {
         Logger.write(`Executing batch with ${this._requests.length} requests.`, LogLevel.Info);
 
         // if we don't have any requests, don't bother sending anything
-        // this could be due to caching further upstream, or just an empty batch 
+        // this could be due to caching further upstream, or just an empty batch
         if (this._requests.length < 1) {
             Logger.write(`Resolving empty batch.`, LogLevel.Info);
             return Promise.resolve();
@@ -349,7 +349,7 @@ export class ODataBatch {
 
     /**
      * Parses the response from a batch request into an array of Response instances
-     * 
+     *
      * @param body Text body of the response from the batch request
      */
     private _parseResponse(body: string): Promise<Response[]> {

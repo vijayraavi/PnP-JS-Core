@@ -7,13 +7,13 @@ import { Features } from "./features";
 
 /**
  * Describes a site collection
- * 
+ *
  */
 export class Site extends QueryableInstance {
 
     /**
      * Creates a new instance of the RoleAssignments class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
     constructor(baseUrl: string | Queryable, path = "_api/site") {
@@ -22,7 +22,7 @@ export class Site extends QueryableInstance {
 
     /**
      * Gets the root web of the site collection
-     * 
+     *
      */
     public get rootWeb(): Web {
         return new Web(this, "rootweb");
@@ -30,7 +30,7 @@ export class Site extends QueryableInstance {
 
     /**
      * Gets the active features for this site
-     * 
+     *
      */
     public get features(): Features {
         return new Features(this);
@@ -38,7 +38,7 @@ export class Site extends QueryableInstance {
 
     /**
      * Get all custom actions on a site collection
-     * 
+     *
      */
     public get userCustomActions(): UserCustomActions {
         return new UserCustomActions(this);
@@ -62,7 +62,7 @@ export class Site extends QueryableInstance {
 
     /**
      * Gets the document libraries on a site. Static method. (SharePoint Online only)
-     * 
+     *
      * @param absoluteWebUrl The absolute url of the web whose document libraries should be returned
      */
     public getDocumentLibraries(absoluteWebUrl: string): Promise<DocumentLibraryInformation[]> {
@@ -79,7 +79,7 @@ export class Site extends QueryableInstance {
 
     /**
      * Gets the site URL from a page URL.
-     * 
+     *
      * @param absolutePageUrl The absolute url of the page
      */
     public getWebUrlFromPageUrl(absolutePageUrl: string): Promise<string> {
@@ -96,7 +96,7 @@ export class Site extends QueryableInstance {
 
     /**
      * Creates a new batch for requests within the context of context this site
-     * 
+     *
      */
     public createBatch(): ODataBatch {
         return new ODataBatch(this.parentUrl);

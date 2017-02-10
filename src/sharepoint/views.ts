@@ -48,9 +48,9 @@ export class Views extends QueryableCollection {
     public add(title: string, personalView = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ViewAddResult> {
 
         let postBody = JSON.stringify(Util.extend({
-            "__metadata": { "type": "SP.View" },
-            "Title": title,
             "PersonalView": personalView,
+            "Title": title,
+            "__metadata": { "type": "SP.View" },
         }, additionalSettings));
 
         return this.postAs<{ Id: string }>({ body: postBody }).then((data) => {

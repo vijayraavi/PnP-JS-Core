@@ -75,7 +75,7 @@ export class Rest {
 
     /**
      * Creates a new batch object for use with the Queryable.addToBatch method
-     * 
+     *
      */
     public createBatch(): ODataBatch {
         return this.web.createBatch();

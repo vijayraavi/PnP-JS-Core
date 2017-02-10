@@ -2,13 +2,13 @@ import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 
 /**
  * Describes a collection of webhook subscriptions
- * 
+ *
  */
 export class Subscriptions extends QueryableCollection {
 
     /**
      * Creates a new instance of the Subscriptions class
-     * 
+     *
      * @param baseUrl - The url or Queryable which forms the parent of this webhook subscriptions collection
      */
     constructor(baseUrl: string | Queryable, path = "subscriptions") {
@@ -32,10 +32,10 @@ export class Subscriptions extends QueryableCollection {
     public add(notificationUrl: string, expirationDate: string, clientState?: string): Promise<SubscriptionAddResult> {
 
         let postBody = JSON.stringify({
-            "resource": this.toUrl(),
-            "notificationUrl": notificationUrl,
-            "expirationDateTime": expirationDate,
             "clientState": clientState || "pnp-js-core-subscription",
+            "expirationDateTime": expirationDate,
+            "notificationUrl": notificationUrl,
+            "resource": this.toUrl(),
         });
 
         return this.post({ body: postBody, headers: { "Content-Type": "application/json" } }).then(result => {
@@ -47,13 +47,13 @@ export class Subscriptions extends QueryableCollection {
 
 /**
  * Describes a single webhook subscription instance
- * 
+ *
  */
 export class Subscription extends QueryableInstance {
 
     /**
      * Creates a new instance of the Subscription class
-     * 
+     *
      * @param baseUrl - The url or Queryable which forms the parent of this webhook subscription instance
      */
     constructor(baseUrl: string | Queryable, path?: string) {
