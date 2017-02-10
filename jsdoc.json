@@ -9,8 +9,7 @@
     "source": {
         "include": [
             "./lib"
-        ],
-        "includePattern": "\\.js$"
+        ]
     },
     "plugins": [],
     "templates": {
