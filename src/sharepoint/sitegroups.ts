@@ -13,7 +13,7 @@ export enum PrincipalType {
     DistributionList = 2,
     SecurityGroup = 4,
     SharePointGroup = 8,
-    All = 15
+    All = 15,
 }
 
 /**

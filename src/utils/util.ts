@@ -166,8 +166,8 @@ export class Util {
         return typeof candidateFunction === "function";
     }
 
-    /** 
-     * @returns whether the provided parameter is a JavaScript Array or not. 
+    /**
+     * @returns whether the provided parameter is a JavaScript Array or not.
     */
     public static isArray(array: any): boolean {
 
@@ -224,7 +224,7 @@ export class Util {
 
     /**
      * Attempts to make the supplied relative url absolute based on the _spPageContextInfo object, if available
-     * 
+     *
      * @param url The relative url to make absolute
      */
     @deprecated("The Util.makeUrlAbsolute method is deprecated and will be removed from future releases. Use Util.toAbsoluteUrl instead")
@@ -247,9 +247,9 @@ export class Util {
 
     /**
      * Ensures that a given url is absolute for the current web based on context
-     * 
+     *
      * @param candidateUrl The url to make absolute
-     * 
+     *
      */
     public static toAbsoluteUrl(candidateUrl: string): Promise<string> {
 

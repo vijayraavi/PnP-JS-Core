@@ -73,5 +73,5 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             status: spResponse.statusCode,
             statusText: spResponse.statusText,
         });
-    };
+    }
 }

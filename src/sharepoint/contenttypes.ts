@@ -4,13 +4,13 @@ import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 
 /**
  * Describes a collection of content types
- * 
+ *
  */
 export class ContentTypes extends QueryableCollection {
 
     /**
      * Creates a new instance of the ContentTypes class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this content types collection
      */
     constructor(baseUrl: string | Queryable, path = "contenttypes") {
@@ -28,7 +28,7 @@ export class ContentTypes extends QueryableCollection {
 
     /**
      * Adds an existing contenttype to a content type collection
-     * 
+     *
      * @param contentTypeId in the following format, for example: 0x010102
      */
     public addAvailableContentType(contentTypeId: string): Promise<ContentTypeAddResult> {
@@ -47,13 +47,13 @@ export class ContentTypes extends QueryableCollection {
 
     /**
      * Adds a new content type to the collection
-     * 
+     *
      * @param id The desired content type id for the new content type (also determines the parent content type)
      * @param name The name of the content type
      * @param description The description of the content type
      * @param group The group in which to add the content type
      * @param additionalSettings Any additional settings to provide when creating the content type
-     * 
+     *
      */
     public add(
         id: string,
@@ -63,11 +63,11 @@ export class ContentTypes extends QueryableCollection {
         additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ContentTypeAddResult> {
 
         let postBody = JSON.stringify(Util.extend({
-            "__metadata": { "type": "SP.ContentType" },
+            "Description": description,
+            "Group": group,
             "Id": { "StringValue": id },
             "Name": name,
-            "Group": group,
-            "Description": description,
+            "__metadata": { "type": "SP.ContentType" },
         }, additionalSettings));
 
         return this.post({ body: postBody }).then((data) => {
@@ -78,13 +78,13 @@ export class ContentTypes extends QueryableCollection {
 
 /**
  * Describes a single ContentType instance
- * 
+ *
  */
 export class ContentType extends QueryableInstance {
 
     /**
      * Creates a new instance of the ContentType class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this content type instance
      */
     constructor(baseUrl: string | Queryable, path?: string) {
@@ -132,7 +132,7 @@ export class FieldLinks extends QueryableCollection {
 
     /**
      * Creates a new instance of the ContentType class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this content type instance
      */
     constructor(baseUrl: string | Queryable, path = "fieldlinks") {
@@ -141,7 +141,7 @@ export class FieldLinks extends QueryableCollection {
 
     /**
      * Gets a FieldLink by GUID id
-     * 
+     *
      * @param id The GUID id of the field link
      */
     public getById(id: string) {
@@ -158,7 +158,7 @@ export class FieldLink extends QueryableInstance {
 
     /**
      * Creates a new instance of the ContentType class
-    * 
+    *
     * @param baseUrl The url or Queryable which forms the parent of this content type instance
     */
     constructor(baseUrl: string | Queryable, path?: string) {

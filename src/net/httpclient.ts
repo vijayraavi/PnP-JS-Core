@@ -81,8 +81,8 @@ export class HttpClient {
                 // grab our current delay
                 let delay = ctx.delay;
 
-                // Check if request was throttled - http status code 429 
-                // Check is request failed due to server unavailable - http status code 503 
+                // Check if request was throttled - http status code 429
+                // Check is request failed due to server unavailable - http status code 503
                 if (response.status !== 429 && response.status !== 503) {
                     ctx.reject(response);
                 }

@@ -15,13 +15,13 @@ export interface ChunkedFileUploadProgressData {
 
 /**
  * Describes a collection of File objects
- * 
+ *
  */
 export class Files extends QueryableCollection {
 
     /**
      * Creates a new instance of the Files class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
     constructor(baseUrl: string | Queryable, path = "files") {
@@ -30,7 +30,7 @@ export class Files extends QueryableCollection {
 
     /**
      * Gets a File by filename
-     * 
+     *
      * @param name The name of the file, including extension.
      */
     public getByName(name: string): File {
@@ -41,11 +41,11 @@ export class Files extends QueryableCollection {
 
     /**
      * Uploads a file.
-     * 
+     *
      * @param url The folder-relative url of the file.
      * @param content The file contents blob.
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten? (default: true)
-     * @returns The new File and the raw response. 
+     * @returns The new File and the raw response.
      */
     public add(url: string, content: Blob, shouldOverWrite = true): Promise<FileAddResult> {
         return new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`)
@@ -61,13 +61,13 @@ export class Files extends QueryableCollection {
 
     /**
      * Uploads a file.
-     * 
+     *
      * @param url The folder-relative url of the file.
      * @param content The Blob file content to add
      * @param progress A callback function which can be used to track the progress of the upload
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten? (default: true)
      * @param chunkSize The size of each file slice, in bytes (default: 10485760)
-     * @returns The new File and the raw response. 
+     * @returns The new File and the raw response.
      */
     public addChunked(
         url: string,
@@ -86,7 +86,7 @@ export class Files extends QueryableCollection {
 
     /**
      * Adds a ghosted file to an existing list or document library.
-     * 
+     *
      * @param fileUrl The server-relative url where you want to save the file.
      * @param templateFileType The type of use to create the file.
      * @returns The template file that was added and the raw response.
@@ -105,13 +105,13 @@ export class Files extends QueryableCollection {
 
 /**
  * Describes a single File instance
- * 
+ *
  */
 export class File extends QueryableInstance {
 
     /**
      * Creates a new instance of the File class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      * @param path Optional, if supplied will be appended to the supplied baseUrl
      */
@@ -121,7 +121,7 @@ export class File extends QueryableInstance {
 
     /**
      * Gets a value that specifies the list item field values for the list item corresponding to the file.
-     * 
+     *
      */
     public get listItemAllFields(): QueryableCollection {
         return new QueryableCollection(this, "listItemAllFields");
@@ -129,7 +129,7 @@ export class File extends QueryableInstance {
 
     /**
      * Gets a collection of versions
-     * 
+     *
      */
     public get versions(): Versions {
         return new Versions(this);
@@ -138,7 +138,7 @@ export class File extends QueryableInstance {
     /**
      * Approves the file submitted for content approval with the specified comment.
      * Only documents in lists that are enabled for content approval can be approved.
-     * 
+     *
      * @param comment The comment for the approval.
      */
     public approve(comment: string): Promise<void> {
@@ -151,7 +151,7 @@ export class File extends QueryableInstance {
      * Use this in response to user action (as in a request to cancel an upload) or an error or exception.
      * Use the uploadId value that was passed to the StartUpload method that started the upload session.
      * This method is currently available only on Office 365.
-     * 
+     *
      * @param uploadId The unique identifier of the upload session.
      */
     public cancelUpload(uploadId: string): Promise<void> {
@@ -160,7 +160,7 @@ export class File extends QueryableInstance {
 
     /**
      * Checks the file in to a document library based on the check-in type.
-     * 
+     *
      * @param comment A comment for the check-in. Its length must be <= 1023.
      * @param checkinType The check-in type for the file.
      */
@@ -178,7 +178,7 @@ export class File extends QueryableInstance {
 
     /**
      * Copies the file to the destination url.
-     * 
+     *
      * @param url The absolute url or server relative url of the destination file path to copy to.
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten?
      */
@@ -188,7 +188,7 @@ export class File extends QueryableInstance {
 
     /**
      * Delete this file.
-     * 
+     *
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
@@ -203,7 +203,7 @@ export class File extends QueryableInstance {
     /**
      * Denies approval for a file that was submitted for content approval.
      * Only documents in lists that are enabled for content approval can be denied.
-     * 
+     *
      * @param comment The comment for the denial.
      */
     public deny(comment = ""): Promise<void> {
@@ -213,7 +213,7 @@ export class File extends QueryableInstance {
     /**
      * Specifies the control set used to access, modify, or add Web Parts associated with this Web Part Page and view.
      * An exception is thrown if the file is not an ASPX page.
-     * 
+     *
      * @param scope The WebPartsPersonalizationScope view on the Web Parts page.
      */
     public getLimitedWebPartManager(scope = WebPartsPersonalizationScope.Shared): LimitedWebPartManager {
@@ -222,7 +222,7 @@ export class File extends QueryableInstance {
 
     /**
      * Moves the file to the specified destination url.
-     * 
+     *
      * @param url The absolute url or server relative url of the destination file path to move to.
      * @param moveOperations The bitwise MoveOperations value for how to move the file.
      */
@@ -232,7 +232,7 @@ export class File extends QueryableInstance {
 
     /**
      * Submits the file for content approval with the specified comment.
-     * 
+     *
      * @param comment The comment for the published file. Its length must be <= 1023.
      */
     public publish(comment = ""): Promise<void> {
@@ -241,7 +241,7 @@ export class File extends QueryableInstance {
 
     /**
      * Moves the file to the Recycle Bin and returns the identifier of the new Recycle Bin item.
-     * 
+     *
      * @returns The GUID of the recycled file.
      */
     public recycle(): Promise<string> {
@@ -250,7 +250,7 @@ export class File extends QueryableInstance {
 
     /**
      * Reverts an existing checkout for the file.
-     * 
+     *
      */
     public undoCheckout(): Promise<void> {
         return new File(this, "undoCheckout").post();
@@ -258,7 +258,7 @@ export class File extends QueryableInstance {
 
     /**
      * Removes the file from content approval or unpublish a major version.
-     * 
+     *
      * @param comment The comment for the unpublish operation. Its length must be <= 1023.
      */
     public unpublish(comment = ""): Promise<void> {
@@ -270,7 +270,7 @@ export class File extends QueryableInstance {
 
     /**
      * Gets the contents of the file as text
-     * 
+     *
      */
     public getText(): Promise<string> {
 
@@ -279,7 +279,7 @@ export class File extends QueryableInstance {
 
     /**
      * Gets the contents of the file as a blob, does not work in Node.js
-     * 
+     *
      */
     public getBlob(): Promise<Blob> {
 
@@ -304,9 +304,9 @@ export class File extends QueryableInstance {
 
     /**
      * Sets the content of a file, for large files use setContentChunked
-     * 
+     *
      * @param content The file content
-     * 
+     *
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<File> {
 
@@ -322,7 +322,7 @@ export class File extends QueryableInstance {
 
     /**
      * Sets the contents of a file using a chunked upload approach
-     * 
+     *
      * @param file The file to upload
      * @param progress A callback function which can be used to track the progress of the upload
      * @param chunkSize The size of each file slice, in bytes (default: 10485760)
@@ -380,10 +380,10 @@ export class File extends QueryableInstance {
      * The StartUpload and ContinueUpload methods return the size of the running total of uploaded data in bytes,
      * so you can pass those return values to subsequent uses of ContinueUpload and FinishUpload.
      * This method is currently available only on Office 365.
-     * 
+     *
      * @param uploadId The unique identifier of the upload session.
      * @param fragment The file contents.
-     * @returns The size of the total uploaded data in bytes. 
+     * @returns The size of the total uploaded data in bytes.
      */
     private startUpload(uploadId: string, fragment: ArrayBuffer | Blob): Promise<number> {
         return new File(this, `startUpload(uploadId=guid'${uploadId}')`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
@@ -394,11 +394,11 @@ export class File extends QueryableInstance {
      * The current file content is not changed.
      * Use the uploadId value that was passed to the StartUpload method that started the upload session.
      * This method is currently available only on Office 365.
-     * 
+     *
      * @param uploadId The unique identifier of the upload session.
      * @param fileOffset The size of the offset into the file where the fragment starts.
      * @param fragment The file contents.
-     * @returns The size of the total uploaded data in bytes. 
+     * @returns The size of the total uploaded data in bytes.
      */
     private continueUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<number> {
         return new File(this, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
@@ -408,11 +408,11 @@ export class File extends QueryableInstance {
      * Uploads the last file fragment and commits the file. The current file content is changed when this method completes.
      * Use the uploadId value that was passed to the StartUpload method that started the upload session.
      * This method is currently available only on Office 365.
-     * 
+     *
      * @param uploadId The unique identifier of the upload session.
      * @param fileOffset The size of the offset into the file where the fragment starts.
      * @param fragment The file contents.
-     * @returns The newly uploaded file. 
+     * @returns The newly uploaded file.
      */
     private finishUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<FileAddResult> {
         return new File(this, `finishUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
@@ -427,13 +427,13 @@ export class File extends QueryableInstance {
 
 /**
  * Describes a collection of Version objects
- * 
+ *
  */
 export class Versions extends QueryableCollection {
 
     /**
      * Creates a new instance of the File class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
     constructor(baseUrl: string | Queryable, path = "versions") {
@@ -442,7 +442,7 @@ export class Versions extends QueryableCollection {
 
     /**
      * Gets a version by id
-     * 
+     *
      * @param versionId The id of the version to retrieve
      */
     public getById(versionId: number): Version {
@@ -453,7 +453,7 @@ export class Versions extends QueryableCollection {
 
     /**
      * Deletes all the file version objects in the collection.
-     * 
+     *
      */
     public deleteAll(): Promise<void> {
         return new Versions(this, "deleteAll").post();
@@ -461,7 +461,7 @@ export class Versions extends QueryableCollection {
 
     /**
      * Deletes the specified version of the file.
-     * 
+     *
      * @param versionId The ID of the file version to delete.
      */
     public deleteById(versionId: number): Promise<void> {
@@ -470,7 +470,7 @@ export class Versions extends QueryableCollection {
 
     /**
      * Deletes the file version object with the specified version label.
-     * 
+     *
      * @param label The version label of the file version to delete, for example: 1.2
      */
     public deleteByLabel(label: string): Promise<void> {
@@ -479,7 +479,7 @@ export class Versions extends QueryableCollection {
 
     /**
      * Creates a new file version from the file specified by the version label.
-     * 
+     *
      * @param label The version label of the file version to restore, for example: 1.2
      */
     public restoreByLabel(label: string): Promise<void> {
@@ -490,13 +490,13 @@ export class Versions extends QueryableCollection {
 
 /**
  * Describes a single Version instance
- * 
+ *
  */
 export class Version extends QueryableInstance {
 
     /**
      * Creates a new instance of the Version class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      * @param path Optional, if supplied will be appended to the supplied baseUrl
      */
@@ -506,7 +506,7 @@ export class Version extends QueryableInstance {
 
     /**
     * Delete a specific version of a file.
-    * 
+    *
     * @param eTag Value used in the IF-Match header, by default "*"
     */
     public delete(eTag = "*"): Promise<void> {
@@ -522,7 +522,7 @@ export class Version extends QueryableInstance {
 export enum CheckinType {
     Minor = 0,
     Major = 1,
-    Overwrite = 2
+    Overwrite = 2,
 }
 
 export interface FileAddResult {
@@ -532,16 +532,16 @@ export interface FileAddResult {
 
 export enum WebPartsPersonalizationScope {
     User = 0,
-    Shared = 1
+    Shared = 1,
 }
 
 export enum MoveOperations {
     Overwrite = 1,
-    AllowBrokenThickets = 8
+    AllowBrokenThickets = 8,
 }
 
 export enum TemplateFileType {
     StandardPage = 0,
     WikiPage = 1,
-    FormPage = 2
+    FormPage = 2,
 }

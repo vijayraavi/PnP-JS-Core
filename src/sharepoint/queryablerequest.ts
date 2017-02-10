@@ -24,7 +24,7 @@ export interface RequestContext<T> {
 
 /**
  * Processes a given context through the request pipeline
- * 
+ *
  * @param context The request context we are processing
  */
 export function pipe<T>(context: RequestContext<T>): Promise<T> {
@@ -194,7 +194,7 @@ class PipelineMethods {
     }
 
     /**
-     * At the end of the pipeline resolves the request's result 
+     * At the end of the pipeline resolves the request's result
      */
     @requestPipelineMethod(true)
     public static returnResult<T>(context: RequestContext<T>): Promise<T> {

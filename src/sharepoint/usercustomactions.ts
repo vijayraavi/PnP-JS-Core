@@ -21,9 +21,9 @@ export class UserCustomActions extends QueryableCollection {
 
     /**
      * Create a custom action
-     * 
+     *
      * @param creationInfo The information which defines the new custom action
-     * 
+     *
      */
     public add(properties: TypedHash<string | boolean | number>): Promise<UserCustomActionAddResult> {
 
@@ -39,7 +39,7 @@ export class UserCustomActions extends QueryableCollection {
 
     /**
      * Deletes all custom actions in the collection.
-     * 
+     *
      */
     public clear(): Promise<void> {
         let a = new UserCustomActions(this, "clear");

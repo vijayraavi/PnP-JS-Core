@@ -8,33 +8,33 @@ import { Util } from "../utils/util";
 export interface SearchQuery {
 
     /**
-     * A string that contains the text for the search query. 
+     * A string that contains the text for the search query.
      */
     Querytext: string;
 
     /**
-     * A string that contains the text that replaces the query text, as part of a query transform. 
+     * A string that contains the text that replaces the query text, as part of a query transform.
      */
     QueryTemplate?: string;
 
     /**
-     * A Boolean value that specifies whether the result tables that are returned for 
-     * the result block are mixed with the result tables that are returned for the original query. 
+     * A Boolean value that specifies whether the result tables that are returned for
+     * the result block are mixed with the result tables that are returned for the original query.
      */
     EnableInterleaving?: boolean;
 
     /**
-     * A Boolean value that specifies whether stemming is enabled. 
+     * A Boolean value that specifies whether stemming is enabled.
      */
     EnableStemming?: boolean;
 
     /**
-     * A Boolean value that specifies whether duplicate items are removed from the results. 
+     * A Boolean value that specifies whether duplicate items are removed from the results.
      */
     TrimDuplicates?: boolean;
 
     /**
-     * A Boolean value that specifies whether the exact terms in the search query are used to find matches, or if nicknames are used also. 
+     * A Boolean value that specifies whether the exact terms in the search query are used to find matches, or if nicknames are used also.
      */
     EnableNicknames?: boolean;
 
@@ -65,57 +65,57 @@ export interface SearchQuery {
     EnableQueryRules?: boolean;
 
     /**
-     * A Boolean value that specifies whether to sort search results. 
+     * A Boolean value that specifies whether to sort search results.
      */
     EnableSorting?: boolean;
 
     /**
-     * Specifies whether to return block rank log information in the BlockRankLog property of the interleaved result table. 
+     * Specifies whether to return block rank log information in the BlockRankLog property of the interleaved result table.
      * A block rank log contains the textual information on the block score and the documents that were de-duplicated.
      */
     GenerateBlockRankLog?: boolean;
 
     /**
-     * The result source ID to use for executing the search query.  
+     * The result source ID to use for executing the search query.
      */
     SourceId?: string;
 
     /**
-     * The ID of the ranking model to use for the query.  
+     * The ID of the ranking model to use for the query.
      */
     RankingModelId?: string;
 
     /**
-     * The first row that is included in the search results that are returned. 
+     * The first row that is included in the search results that are returned.
      * You use this parameter when you want to implement paging for search results.
      */
     StartRow?: number;
 
     /**
-     * The maximum number of rows overall that are returned in the search results. 
+     * The maximum number of rows overall that are returned in the search results.
      * Compared to RowsPerPage, RowLimit is the maximum number of rows returned overall.
      */
     RowLimit?: number;
 
     /**
-     * The maximum number of rows to return per page. 
+     * The maximum number of rows to return per page.
      * Compared to RowLimit, RowsPerPage refers to the maximum number of rows to return per page,
      * and is used primarily when you want to implement paging for search results.
      */
     RowsPerPage?: number;
 
     /**
-     * The managed properties to return in the search results.  
+     * The managed properties to return in the search results.
      */
     SelectProperties?: string[];
 
     /**
-     * The locale ID (LCID) for the query.  
+     * The locale ID (LCID) for the query.
      */
     Culture?: number;
 
     /**
-     * The set of refinement filters used when issuing a refinement query (FQL)  
+     * The set of refinement filters used when issuing a refinement query (FQL)
      */
     RefinementFilters?: string[];
 
@@ -135,7 +135,7 @@ export interface SearchQuery {
     SortList?: Sort[];
 
     /**
-     * The amount of time in milliseconds before the query request times out. 
+     * The amount of time in milliseconds before the query request times out.
      */
     Timeout?: number;
 
@@ -149,17 +149,17 @@ export interface SearchQuery {
      */
     ClientType?: string;
 
-    /** 
+    /**
      * The GUID for the user who submitted the search query.
      */
     PersonalizationData?: string;
 
-    /** 
+    /**
      * The URL for the search results page.
      */
     ResultsURL?: string;
 
-    /** 
+    /**
      * Custom tags that identify the query. You can specify multiple query tags
      */
     QueryTag?: string[];
@@ -180,9 +180,9 @@ export interface SearchQuery {
     QueryTemplatePropertiesUrl?: string;
 
     /**
-     * Special rules for reordering search results. 
-     * These rules can specify that documents matching certain conditions are ranked higher or lower in the results. 
-     * This property applies only when search results are sorted based on rank. 
+     * Special rules for reordering search results.
+     * These rules can specify that documents matching certain conditions are ranked higher or lower in the results.
+     * This property applies only when search results are sorted based on rank.
      */
     ReorderingRules?: ReorderingRule[];
 
@@ -197,8 +197,8 @@ export interface SearchQuery {
     EnableOrderingHitHighlightedProperty?: boolean;
 
     /**
-     * The managed properties that are used to determine how to collapse individual search results. 
-     * Results are collapsed into one or a specified number of results if they match any of the individual collapse specifications. 
+     * The managed properties that are used to determine how to collapse individual search results.
+     * Results are collapsed into one or a specified number of results if they match any of the individual collapse specifications.
      * In a collapse specification, results are collapsed if their properties match all individual properties in the collapse specification.
      */
     CollapseSpecification?: string;
@@ -227,13 +227,13 @@ export interface SearchQuery {
 
 /**
  * Describes the search API
- * 
+ *
  */
 export class Search extends QueryableInstance {
 
     /**
      * Creates a new instance of the Search class
-     * 
+     *
      * @param baseUrl The url for the search context
      * @param query The SearchQuery object to execute
      */
@@ -285,7 +285,7 @@ export class Search extends QueryableInstance {
 }
 
 /**
- * Describes the SearchResults class, which returns the formatted and raw version of the query response 
+ * Describes the SearchResults class, which returns the formatted and raw version of the query response
  */
 export class SearchResults {
 
@@ -298,7 +298,7 @@ export class SearchResults {
 
     /**
      * Creates a new instance of the SearchResult class
-     * 
+     *
      */
     constructor(rawResponse: any) {
         let response = rawResponse.postquery ? rawResponse.postquery : rawResponse;
@@ -312,8 +312,8 @@ export class SearchResults {
 
     /**
      * Formats a search results array
-     * 
-     * @param rawResults The array to process 
+     *
+     * @param rawResults The array to process
      */
     protected formatSearchResults(rawResults: Array<any> | any): SearchResult[] {
         let results = new Array<SearchResult>(),
@@ -329,13 +329,13 @@ export class SearchResults {
 }
 
 /**
- * Describes the SearchResult class 
+ * Describes the SearchResult class
  */
 export class SearchResult {
 
     /**
      * Creates a new instance of the SearchResult class
-     * 
+     *
      */
     constructor(rawItem: any) {
         let item = rawItem.results ? rawItem.results : rawItem;
@@ -389,7 +389,7 @@ export interface SearchPropertyValue {
 export enum SortDirection {
     Ascending = 0,
     Descending = 1,
-    FQLFormula = 2
+    FQLFormula = 2,
 }
 
 /**
@@ -425,7 +425,7 @@ export enum ReorderingRuleMatchType {
     ContentTypeIs = 5,
     FileExtensionMatches = 6,
     ResultHasTag = 7,
-    ManualCondition = 8
+    ManualCondition = 8,
 }
 
 /**
@@ -437,5 +437,5 @@ export enum QueryPropertyValueType {
     Int32TYpe = 2,
     BooleanType = 3,
     StringArrayType = 4,
-    UnSupportedType = 5
+    UnSupportedType = 5,
 }

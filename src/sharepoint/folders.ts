@@ -3,13 +3,13 @@ import { Files } from "./files";
 
 /**
  * Describes a collection of Folder objects
- * 
+ *
  */
 export class Folders extends QueryableCollection {
 
     /**
      * Creates a new instance of the Folders class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      */
     constructor(baseUrl: string | Queryable, path = "folders") {
@@ -18,7 +18,7 @@ export class Folders extends QueryableCollection {
 
     /**
      * Gets a folder by folder name
-     * 
+     *
      */
     public getByName(name: string): Folder {
         let f = new Folder(this);
@@ -28,7 +28,7 @@ export class Folders extends QueryableCollection {
 
     /**
      * Adds a new folder to the current folder (relative) or any folder (absolute)
-     * 
+     *
      * @param url The relative or absolute url where the new folder will be created. Urls starting with a forward slash are absolute.
      * @returns The new Folder and the raw response.
      */
@@ -44,7 +44,7 @@ export class Folders extends QueryableCollection {
 
 /**
  * Describes a single Folder instance
- * 
+ *
  */
 export class Folder extends QueryableInstance {
 
@@ -57,7 +57,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Creates a new instance of the Folder class
-     * 
+     *
      * @param baseUrl The url or Queryable which forms the parent of this fields collection
      * @param path Optional, if supplied will be appended to the supplied baseUrl
      */
@@ -67,7 +67,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Specifies the sequence in which content types are displayed.
-     * 
+     *
      */
     public get contentTypeOrder(): QueryableCollection {
         return new QueryableCollection(this, "contentTypeOrder");
@@ -75,7 +75,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Gets this folder's files
-     * 
+     *
      */
     public get files(): Files {
         return new Files(this);
@@ -83,7 +83,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Gets this folder's sub folders
-     * 
+     *
      */
     public get folders(): Folders {
         return new Folders(this);
@@ -91,7 +91,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Gets this folder's list item field values
-     * 
+     *
      */
     public get listItemAllFields(): QueryableCollection {
         return new QueryableCollection(this, "listItemAllFields");
@@ -99,7 +99,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Gets the parent folder, if available
-     * 
+     *
      */
     public get parentFolder(): Folder {
         return new Folder(this, "parentFolder");
@@ -107,7 +107,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Gets this folder's properties
-     * 
+     *
      */
     public get properties(): QueryableInstance {
         return new QueryableInstance(this, "properties");
@@ -115,7 +115,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Gets this folder's server relative url
-     * 
+     *
      */
     public get serverRelativeUrl(): Queryable {
         return new Queryable(this, "serverRelativeUrl");
@@ -123,7 +123,7 @@ export class Folder extends QueryableInstance {
 
     /**
      * Gets a value that specifies the content type order.
-     * 
+     *
      */
     public get uniqueContentTypeOrder(): QueryableCollection {
         return new QueryableCollection(this, "uniqueContentTypeOrder");
@@ -131,7 +131,7 @@ export class Folder extends QueryableInstance {
 
     /**
     * Delete this folder
-    * 
+    *
     * @param eTag Value used in the IF-Match header, by default "*"
     */
     public delete(eTag = "*"): Promise<void> {

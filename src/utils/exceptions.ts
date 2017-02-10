@@ -6,7 +6,7 @@ function defaultLog(error: Error) {
 
 /**
  * Represents an exception with an HttpClient request
- * 
+ *
  */
 export class ProcessHttpClientResponseException extends Error {
 

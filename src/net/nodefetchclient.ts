@@ -20,7 +20,7 @@ export interface AuthToken {
  */
 export class NodeFetchClient implements HttpClientImpl {
 
-    private static SharePointServicePrincipal: string = "00000003-0000-0ff1-ce00-000000000000";
+    private static SharePointServicePrincipal = "00000003-0000-0ff1-ce00-000000000000";
     private token: AuthToken = null;
 
     constructor(public siteUrl: string, private _clientId: string, private _clientSecret: string, private _realm = "") {
@@ -96,10 +96,10 @@ export class NodeFetchClient implements HttpClientImpl {
             let url = Util.combinePaths(this.siteUrl, "vti_bin/client.svc");
 
             nodeFetch(url, {
-                "method": "POST",
                 "headers": {
                     "Authorization": "Bearer ",
                 },
+                "method": "POST",
             }).then((r: Response) => {
 
                 let data: string = r.headers.get("www-authenticate");

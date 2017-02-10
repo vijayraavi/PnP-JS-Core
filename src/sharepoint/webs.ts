@@ -110,7 +110,7 @@ export class Web extends QueryableSecurable {
 
     /**
      * Gets the active features for this web
-     * 
+     *
      */
     public get features(): Features {
         return new Features(this);
@@ -165,7 +165,7 @@ export class Web extends QueryableSecurable {
 
     /**
      * Get all custom actions on a site
-     * 
+     *
      */
     public get userCustomActions(): UserCustomActions {
         return new UserCustomActions(this);
@@ -173,7 +173,7 @@ export class Web extends QueryableSecurable {
 
     /**
      * Gets the collection of RoleDefinition resources.
-     * 
+     *
      */
     public get roleDefinitions(): RoleDefinitions {
         return new RoleDefinitions(this);
@@ -181,7 +181,7 @@ export class Web extends QueryableSecurable {
 
     /**
      * Creates a new batch for requests within the context of context this web
-     * 
+     *
      */
     public createBatch(): ODataBatch {
         return new ODataBatch(this.parentUrl);

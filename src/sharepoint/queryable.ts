@@ -145,11 +145,11 @@ export class Queryable {
 
     /**
      * Adds this query to the supplied batch
-     * 
-     * @example 
+     *
+     * @example
      * ```
-     * 
-     * let b = pnp.sp.createBatch(); 
+     *
+     * let b = pnp.sp.createBatch();
      * pnp.sp.web.inBatch(b).get().then(...);
      * b.execute().then(...)
      * ```
@@ -167,7 +167,7 @@ export class Queryable {
 
     /**
      * Enables caching for this request
-     * 
+     *
      * @param options Defines the options used when caching this request
      */
     public usingCaching(options?: ICachingOptions): this {
@@ -282,7 +282,7 @@ export class QueryableCollection extends Queryable {
 
     /**
      * Filters the returned collection (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#bk_supported)
-     * 
+     *
      * @param filter The string representing the filter query
      */
     public filter(filter: string): this {
@@ -292,7 +292,7 @@ export class QueryableCollection extends Queryable {
 
     /**
      * Choose which fields to return
-     * 
+     *
      * @param selects One or more fields to return
      */
     public select(...selects: string[]): this {
@@ -302,7 +302,7 @@ export class QueryableCollection extends Queryable {
 
     /**
      * Expands fields such as lookups to get additional data
-     * 
+     *
      * @param expands The Fields for which to expand the values
      */
     public expand(...expands: string[]): this {
@@ -312,7 +312,7 @@ export class QueryableCollection extends Queryable {
 
     /**
      * Orders based on the supplied fields ascending
-     * 
+     *
      * @param orderby The name of the field to sort on
      * @param ascending If false DESC is appended, otherwise ASC (default)
      */
@@ -335,7 +335,7 @@ export class QueryableCollection extends Queryable {
 
     /**
      * Skips the specified number of items
-     * 
+     *
      * @param skip The number of items to skip
      */
     public skip(skip: number): this {
@@ -345,7 +345,7 @@ export class QueryableCollection extends Queryable {
 
     /**
      * Limits the query to only return the specified number of items
-     * 
+     *
      * @param top The query row limit
      */
     public top(top: number): this {
@@ -363,7 +363,7 @@ export class QueryableInstance extends Queryable {
 
     /**
      * Choose which fields to return
-     * 
+     *
      * @param selects One or more fields to return
      */
     public select(...selects: string[]): this {
@@ -373,7 +373,7 @@ export class QueryableInstance extends Queryable {
 
     /**
      * Expands fields such as lookups to get additional data
-     * 
+     *
      * @param expands The Fields for which to expand the values
      */
     public expand(...expands: string[]): this {

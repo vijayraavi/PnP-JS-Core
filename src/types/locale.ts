@@ -236,5 +236,5 @@ export enum Locale {
     Yiddish = 1085,
     Yoruba = 1130,
     Zulu = 1077,
-    HIDHumanInterfaceDevice = 1279
+    HIDHumanInterfaceDevice = 1279,
 }
