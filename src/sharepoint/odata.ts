@@ -160,23 +160,23 @@ export class ODataBatch {
      */
     public add<T>(url: string, method: string, options: any, parser: ODataParser<T>): Promise<T> {
 
-            let info = {
-                method: method.toUpperCase(),
-                options: options,
-                parser: parser,
-                reject: <(reason?: any) => void>null,
-                resolve: <(value?: T | PromiseLike<T>) => void>null,
-                url: url,
-            };
+        let info = {
+            method: method.toUpperCase(),
+            options: options,
+            parser: parser,
+            reject: <(reason?: any) => void>null,
+            resolve: <(value?: T | PromiseLike<T>) => void>null,
+            url: url,
+        };
 
-            let p = new Promise<T>((resolve, reject) => {
-                info.resolve = resolve;
-                info.reject = reject;
-            });
+        let p = new Promise<T>((resolve, reject) => {
+            info.resolve = resolve;
+            info.reject = reject;
+        });
 
-            this._requests.push(info);
+        this._requests.push(info);
 
-            return p;
+        return p;
     }
 
     /**
@@ -206,9 +206,12 @@ export class ODataBatch {
 
     private executeImpl(): Promise<void> {
 
+        Logger.write(`Executing batch with ${this._requests.length} requests.`, LogLevel.Info);
+
         // if we don't have any requests, don't bother sending anything
         // this could be due to caching further upstream, or just an empty batch 
         if (this._requests.length < 1) {
+            Logger.write(`Resolving empty batch.`, LogLevel.Info);
             return Promise.resolve();
         }
 
@@ -260,6 +263,8 @@ export class ODataBatch {
 
                 // this is the url of the individual request within the batch
                 let url = Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : Util.combinePaths(absoluteRequestUrl, reqInfo.url);
+
+                Logger.write(`Adding request ${reqInfo.method} ${url} to batch.`, LogLevel.Verbose);
 
                 if (reqInfo.method !== "GET") {
 
@@ -316,6 +321,8 @@ export class ODataBatch {
                 "headers": batchHeaders,
             };
 
+            Logger.write("Sending batch request.", LogLevel.Info);
+
             return client.post(Util.combinePaths(absoluteRequestUrl, "/_api/$batch"), batchOptions)
                 .then(r => r.text())
                 .then(this._parseResponse)
@@ -325,13 +332,13 @@ export class ODataBatch {
                         throw new BatchParseException("Could not properly parse responses to match requests in batch.");
                     }
 
+                    Logger.write("Resolving batched requests.", LogLevel.Info);
+
                     return responses.reduce((chain, response, index) => {
 
                         let request = this._requests[index];
 
-                        if (!response.ok) {
-                            request.reject(new Error(response.statusText));
-                        }
+                        Logger.write(`Resolving request ${request.method} ${request.url}.`, LogLevel.Verbose);
 
                         return chain.then(_ => request.parser.parse(response).then(request.resolve).catch(request.reject));
 
