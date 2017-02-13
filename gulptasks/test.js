@@ -21,6 +21,28 @@ gulp.task("_istanbul:hook", ["build:testing"], () => {
         .pipe(istanbul.hookRequire());
 });
 
+gulp.task("test:travis", ["clean", "build:testing", "_istanbul:hook"], () => {
+
+    console.log("PnPTesting_ClientId: " + global.PnPTesting_ClientId);
+    console.log("PnPTesting_ClientSecret: " + global.PnPTesting_ClientSecret);
+    console.log("PnPTesting_SiteUrl: " + global.PnPTesting_SiteUrl);
+    console.log("PnPTesting_NotificationUrl: " + global.PnPTesting_NotificationUrl);
+
+    global.settings = {
+        clientId: "",
+        clientSecret: "",
+        enableWebTests: false,
+        siteUrl: "",
+        notificationUrl: "{ notification url }",
+    };
+
+    return gulp.src(config.testing.testingTestsDestGlob)
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
+        .pipe(istanbul.writeReports({
+            reporters: "text-summary"
+        }));
+});
+
 gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
 
     // when using single, grab only that test.js file - otherwise use the entire test.js glob
@@ -32,7 +54,7 @@ gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
     // easiest way for tests to have settings available
     global.settings = config.settings;
 
-        return gulp.src(path)
+    return gulp.src(path)
         .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
         .pipe(istanbul.writeReports({
             reporters: reports
