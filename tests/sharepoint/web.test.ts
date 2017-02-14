@@ -4,6 +4,7 @@ import { expect } from "chai";
 import { Web } from "../../src/sharepoint/webs";
 import { Util } from "../../src/utils/util";
 import { toMatchEndRegex } from "../testutils";
+declare var global: any;
 
 describe("Webs", () => {
 
@@ -224,12 +225,11 @@ describe("Web", () => {
             it("should apply a theme to our web", function () {
                 // this takes a long time to process
                 this.timeout(60000);
-                return expect(pnp.sp.web.applyTheme(
-                    "/sites/dev/_catalogs/theme/15/palette011.spcolor",
-                    "/sites/dev/_catalogs/theme/15/fontscheme007.spfont",
-                    "",
-                    false
-                )).to.eventually.be.fulfilled;
+
+                let colorUrl = Util.combinePaths(global.settings.testing.siteUrl, "/_catalogs/theme/15/palette011.spcolor");
+                let fontUrl = Util.combinePaths(global.settings.testing.siteUrl, "/_catalogs/theme/15/fontscheme007.spfont");
+
+                return expect(pnp.sp.web.applyTheme(colorUrl, fontUrl, "", false)).to.eventually.be.fulfilled;
             });
         });
 

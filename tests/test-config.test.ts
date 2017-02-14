@@ -18,8 +18,6 @@ before(function (done: MochaDone) {
     // establish the connection to sharepoint
     if (testSettings.enableWebTests) {
 
-        console.log("PnPTesting_SiteUrl: " + testSettings.siteUrl);
-
         pnp.setup({
             fetchClientFactory: () => {
                 return new NodeFetchClient(testSettings.siteUrl, testSettings.clientId, testSettings.clientSecret);
@@ -50,6 +48,10 @@ before(function (done: MochaDone) {
                 }
             });
 
+            done();
+        }).catch(e => {
+
+            console.log("Error creating testing sub-site: " + JSON.stringify(e));
             done();
         });
     } else {

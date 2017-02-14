@@ -249,7 +249,8 @@ describe("List", () => {
         });
 
         describe("update", () => {
-            it("should create a new list, update the title, and then ensure it is set as expected", () => {
+            it("should create a new list, update the title, and then ensure it is set as expected", function () {
+                this.timeout(20000);
                 let newTitle = "I have a new title";
                 return expect(pnp.sp.web.lists.ensure("pnp testing list update").then(result => {
                     return result.list.update({
