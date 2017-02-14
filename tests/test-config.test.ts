@@ -18,6 +18,8 @@ before(function (done: MochaDone) {
     // establish the connection to sharepoint
     if (testSettings.enableWebTests) {
 
+        console.log("PnPTesting_SiteUrl: " + testSettings.siteUrl);
+
         pnp.setup({
             fetchClientFactory: () => {
                 return new NodeFetchClient(testSettings.siteUrl, testSettings.clientId, testSettings.clientSecret);

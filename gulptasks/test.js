@@ -23,6 +23,8 @@ gulp.task("_istanbul:hook", ["build:testing"], () => {
 
 gulp.task("test:travis", ["clean", "build:testing"], () => {
 
+    console.log("PnPTesting_SiteUrl: " + process.env.PnPTesting_SiteUrl);
+
     // we shim up the global settings here from the environment vars configured for travis
     global.settings = {
         testing: {
