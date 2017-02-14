@@ -37,6 +37,8 @@ describe("Lists", () => {
                 let today = new Date();
                 let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
 
+                console.log("testSettings.notificationUrl: " + testSettings.notificationUrl);
+
                 let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.add(testSettings.notificationUrl, expirationDate));
                 return expectVal.to.eventually.have.property("notificationUrl");
             });
