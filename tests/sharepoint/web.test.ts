@@ -123,7 +123,8 @@ describe("Web", () => {
     if (testSettings.enableWebTests) {
 
         describe("webs", () => {
-            it("should get the collection of all child webs", () => {
+            it("should get the collection of all child webs", function () {
+                this.timeout(15000);
                 return expect(pnp.sp.web.webs.get()).to.eventually.be.fulfilled;
             });
         });
@@ -226,7 +227,7 @@ describe("Web", () => {
                 // this takes a long time to process
                 this.timeout(60000);
 
-                let index = global.settings.testing.siteUrl.indexOf("/sites/");
+                let index = global.settings.testing.siteUrl.indexOf("/sites/") - 1;
                 let colorUrl = Util.combinePaths(global.settings.testing.siteUrl.substr(index), "/_catalogs/theme/15/palette011.spcolor");
                 let fontUrl = Util.combinePaths(global.settings.testing.siteUrl.substr(index), "/_catalogs/theme/15/fontscheme007.spfont");
 
