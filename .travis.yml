@@ -9,6 +9,7 @@ env:
   - PnPTesting_ClientSecret="ClientSecretValue"
   - PnPTesting_SiteUrl="SiteUrlValue"
   - PnPTesting_NotificationUrl="NotificationUrlValue"
+  - PnPTesting_EncryptionCheck="EncryptionCheckValue"
 
 before_script:
   - npm install -g gulp

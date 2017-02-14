@@ -27,6 +27,7 @@ gulp.task("test:travis", ["clean", "build:testing"], () => {
     // console.log("PnPTesting_ClientSecret: " + process.env.PnPTesting_ClientSecret);
     // console.log("PnPTesting_SiteUrl: " + process.env.PnPTesting_SiteUrl);
     // console.log("PnPTesting_NotificationUrl: " + process.env.PnPTesting_NotificationUrl);
+    console.log("PnPTesting_EncryptionCheck: " + process.env.PnPTesting_EncryptionCheck);
 
     // we shim up the global settings here from the environment vars configured for travis
     global.settings = {
