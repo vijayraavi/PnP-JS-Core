@@ -7,6 +7,19 @@ describe("Lists", () => {
 
     let lists: Lists;
 
+    before(function (done) {
+
+        this.timeout(20000);
+
+        let today = new Date();
+        let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
+        pnp.sp.web.lists.getByTitle("Documents").subscriptions.add(testSettings.notificationUrl, expirationDate).then(_ => {
+            done();
+        }).catch(_ => {
+            done();
+        });
+    });
+
     beforeEach(() => {
         lists = new Lists("_api/web");
     });
@@ -36,11 +49,8 @@ describe("Lists", () => {
             it("Should be able to create a new webhook subscription in the current list", () => {
                 let today = new Date();
                 let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
-
-                console.log("testSettings.notificationUrl: " + testSettings.notificationUrl);
-
                 let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.add(testSettings.notificationUrl, expirationDate));
-                return expectVal.to.eventually.have.property("notificationUrl");
+                return expectVal.to.eventually.have.property("subscription");
             });
         });
 
@@ -49,7 +59,7 @@ describe("Lists", () => {
                 pnp.sp.web.lists.getByTitle("Documents").subscriptions.get().then((data) => {
                     if (data !== null) {
                         if (data.length > 0) {
-                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(data[0].id));
+                            let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(data[0].id).get());
                             return expectVal.to.eventually.have.property("id", data[0].id);
                         }
                     }
@@ -65,7 +75,7 @@ describe("Lists", () => {
                             let today = new Date();
                             let expirationDate = new Date(today.setDate(today.getDate() + 90)).toISOString();
                             let expectVal = expect(pnp.sp.web.lists.getByTitle("Documents").subscriptions.getById(data[0].id).update(expirationDate));
-                            return expectVal.to.eventually.have.property("notificationUrl");
+                            return expectVal.to.eventually.have.property("subscription");
                         }
                     }
                 });
