@@ -23,12 +23,12 @@ gulp.task("_istanbul:hook", ["build:testing"], () => {
 
 gulp.task("test:travis", ["clean", "build:testing", "_istanbul:hook"], () => {
 
-    console.log("PnPTesting_ClientId: " + global.PnPTesting_ClientId);
-    console.log("PnPTesting_ClientSecret: " + global.PnPTesting_ClientSecret);
-    console.log("PnPTesting_SiteUrl: " + global.PnPTesting_SiteUrl);
-    console.log("PnPTesting_NotificationUrl: " + global.PnPTesting_NotificationUrl);
+    console.log("PnPTesting_ClientId: " + process.env.PnPTesting_ClientId);
+    console.log("PnPTesting_ClientSecret: " + process.env.PnPTesting_ClientSecret);
+    console.log("PnPTesting_SiteUrl: " + process.env.PnPTesting_SiteUrl);
+    console.log("PnPTesting_NotificationUrl: " + process.env.PnPTesting_NotificationUrl);
 
-    global.settings = {
+    global.settings.testing = {
         clientId: "",
         clientSecret: "",
         enableWebTests: false,
@@ -38,10 +38,6 @@ gulp.task("test:travis", ["clean", "build:testing", "_istanbul:hook"], () => {
 
     return gulp.src(config.testing.testingTestsDestGlob)
         .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }));
-
-        // .pipe(istanbul.writeReports({
-        //     reporters: "text-summary"
-        // }));
 });
 
 gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
