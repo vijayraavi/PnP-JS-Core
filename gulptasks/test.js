@@ -28,12 +28,14 @@ gulp.task("test:travis", ["clean", "build:testing", "_istanbul:hook"], () => {
     console.log("PnPTesting_SiteUrl: " + process.env.PnPTesting_SiteUrl);
     console.log("PnPTesting_NotificationUrl: " + process.env.PnPTesting_NotificationUrl);
 
-    global.settings.testing = {
-        clientId: "",
-        clientSecret: "",
-        enableWebTests: false,
-        siteUrl: "",
-        notificationUrl: "{ notification url }",
+    global.settings = {
+        testing: {
+            clientId: "",
+            clientSecret: "",
+            enableWebTests: false,
+            siteUrl: "",
+            notificationUrl: "{ notification url }",
+        }
     };
 
     return gulp.src(config.testing.testingTestsDestGlob)
