@@ -3,14 +3,6 @@ language: node_js
 node_js:
   - "6"
 
-env:
-  global:
-  - PnPTesting_ClientId="ClientIdValue"
-  - PnPTesting_ClientSecret="ClientSecretValue"
-  - PnPTesting_SiteUrl="SiteUrlValue"
-  - PnPTesting_NotificationUrl="NotificationUrlValue"
-  - PnPTesting_EncryptionCheck="EncryptionCheckValue"
-
 before_script:
   - npm install -g gulp
 
