@@ -226,8 +226,12 @@ describe("Web", () => {
                 // this takes a long time to process
                 this.timeout(60000);
 
-                let colorUrl = Util.combinePaths(global.settings.testing.siteUrl, "/_catalogs/theme/15/palette011.spcolor");
-                let fontUrl = Util.combinePaths(global.settings.testing.siteUrl, "/_catalogs/theme/15/fontscheme007.spfont");
+                let index = global.settings.testing.siteUrl.indexOf("/sites/");
+                let colorUrl = Util.combinePaths(global.settings.testing.siteUrl.substr(index), "/_catalogs/theme/15/palette011.spcolor");
+                let fontUrl = Util.combinePaths(global.settings.testing.siteUrl.substr(index), "/_catalogs/theme/15/fontscheme007.spfont");
+
+                console.log("colorUrl: " + colorUrl);
+                console.log("fontUrl: " + fontUrl);
 
                 return expect(pnp.sp.web.applyTheme(colorUrl, fontUrl, "", false)).to.eventually.be.fulfilled;
             });
