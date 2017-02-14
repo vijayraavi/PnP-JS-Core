@@ -23,20 +23,14 @@ gulp.task("_istanbul:hook", ["build:testing"], () => {
 
 gulp.task("test:travis", ["clean", "build:testing"], () => {
 
-    // console.log("PnPTesting_ClientId: " + process.env.PnPTesting_ClientId);
-    // console.log("PnPTesting_ClientSecret: " + process.env.PnPTesting_ClientSecret);
-    // console.log("PnPTesting_SiteUrl: " + process.env.PnPTesting_SiteUrl);
-    // console.log("PnPTesting_NotificationUrl: " + process.env.PnPTesting_NotificationUrl);
-    console.log("PnPTesting_EncryptionCheck: " + process.env.PnPTesting_EncryptionCheck);
-
     // we shim up the global settings here from the environment vars configured for travis
     global.settings = {
         testing: {
-            clientId: "",
-            clientSecret: "",
-            enableWebTests: false,
-            siteUrl: "",
-            notificationUrl: "{ notification url }",
+            clientId: process.env.PnPTesting_ClientId,
+            clientSecret: process.env.PnPTesting_ClientSecret,
+            enableWebTests: true,
+            siteUrl: process.env.PnPTesting_SiteUrl,
+            notificationUrl: process.env.PnPTesting_NotificationUrl,
         }
     };
 
