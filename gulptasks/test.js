@@ -37,10 +37,11 @@ gulp.task("test:travis", ["clean", "build:testing", "_istanbul:hook"], () => {
     };
 
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
-        .pipe(istanbul.writeReports({
-            reporters: "text-summary"
-        }));
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }));
+
+        // .pipe(istanbul.writeReports({
+        //     reporters: "text-summary"
+        // }));
 });
 
 gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
