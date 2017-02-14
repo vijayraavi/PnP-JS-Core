@@ -35,7 +35,7 @@ gulp.task("test:travis", ["clean", "build:testing"], () => {
     };
 
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }));
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 15000 }));
 });
 
 gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
