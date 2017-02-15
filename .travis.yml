@@ -7,5 +7,5 @@ before_script:
   - npm install -g gulp
 
 script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then gulp package; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gulp test:travis; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then gulp travis:pull-request; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gulp travis:push; fi'

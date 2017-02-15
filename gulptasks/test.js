@@ -21,23 +21,6 @@ gulp.task("_istanbul:hook", ["build:testing"], () => {
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task("test:travis", ["clean", "build:testing"], () => {
-
-    // we shim up the global settings here from the environment vars configured for travis
-    global.settings = {
-        testing: {
-            clientId: process.env.PnPTesting_ClientId,
-            clientSecret: process.env.PnPTesting_ClientSecret,
-            enableWebTests: true,
-            siteUrl: process.env.PnPTesting_SiteUrl,
-            notificationUrl: process.env.PnPTesting_NotificationUrl,
-        }
-    };
-
-    return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 15000 }));
-});
-
 gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
 
     // when using single, grab only that test.js file - otherwise use the entire test.js glob

@@ -46,7 +46,7 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
                 let data = {
                     responseBody: json,
                     responseHeaders: r.headers
-                }
+                };
 
                 reject(new ProcessHttpClientResponseException(r.status, r.statusText, data));
             });
