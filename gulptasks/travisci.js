@@ -18,18 +18,21 @@ gulp.task("travis:lint", function () {
 gulp.task("travis:webtest", ["build:testing"], () => {
 
     // we shim up the global settings here from the environment vars configured for travis
+
+    let webTests = process.env.PnPTesting_ClientId && process.env.PnPTesting_ClientSecret && process.env.PnPTesting_SiteUrl;
+
     global.settings = {
         testing: {
             clientId: process.env.PnPTesting_ClientId,
             clientSecret: process.env.PnPTesting_ClientSecret,
-            enableWebTests: true,
+            enableWebTests: webTests,
             siteUrl: process.env.PnPTesting_SiteUrl,
-            notificationUrl: process.env.PnPTesting_NotificationUrl,
+            notificationUrl: process.env.PnPTesting_NotificationUrl || null,
         }
     };
 
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 15000 }));
+        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 15000 }));
 });
 
 gulp.task("travis:test", ["build:testing"], () => {
@@ -42,7 +45,7 @@ gulp.task("travis:test", ["build:testing"], () => {
     };
 
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 15000 }));
+        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 15000 }));
 });
 
 // runs when someone executes a PR from a fork
