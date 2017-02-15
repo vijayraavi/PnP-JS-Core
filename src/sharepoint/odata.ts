@@ -45,7 +45,7 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
                 // include the headers as they contain diagnostic information
                 let data = {
                     responseBody: json,
-                    responseHeaders: r.headers
+                    responseHeaders: r.headers,
                 };
 
                 reject(new ProcessHttpClientResponseException(r.status, r.statusText, data));
