@@ -41,7 +41,14 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
     protected handleError(r: Response, reject: (reason?: any) => void): boolean {
         if (!r.ok) {
             r.json().then(json => {
-                reject(new ProcessHttpClientResponseException(r.status, r.statusText, json));
+
+                // include the headers as they contain diagnostic information
+                let data = {
+                    responseBody: json,
+                    responseHeaders: r.headers,
+                };
+
+                reject(new ProcessHttpClientResponseException(r.status, r.statusText, data));
             });
         }
         return r.ok;

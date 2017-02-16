@@ -55,8 +55,7 @@ describe("Lists", () => {
         });
 
         describe("getById", () => {
-            it("Should get a list by id with the expected title", function () {
-                this.timeout(15000);
+            it("Should get a list by id with the expected title", () => {
                 return expect(pnp.sp.web.lists.getByTitle("Documents").select("ID").getAs<{ Id: string }>().then((list) => {
                     return pnp.sp.web.lists.getById(list.Id).select("Title").get();
                 })).to.eventually.have.property("Title", "Documents");
@@ -64,8 +63,7 @@ describe("Lists", () => {
         });
 
         describe("add", () => {
-            it("Should add a list with the expected title", function () {
-                this.timeout(15000);
+            it("Should add a list with the expected title", () => {
                 return expect(pnp.sp.web.lists.add("pnp testing add").then(() => {
                     return pnp.sp.web.lists.getByTitle("pnp testing add").select("Title").get();
                 })).to.eventually.have.property("Title", "pnp testing add");
@@ -73,8 +71,7 @@ describe("Lists", () => {
         });
 
         describe("ensure", () => {
-            it("Should ensure a list with the expected title", function () {
-                this.timeout(25000);
+            it("Should ensure a list with the expected title", () => {
                 return expect(pnp.sp.web.lists.ensure("pnp testing ensure").then(() => {
                     return pnp.sp.web.lists.getByTitle("pnp testing ensure").select("Title").get();
                 })).to.eventually.have.property("Title", "pnp testing ensure");
@@ -82,13 +79,13 @@ describe("Lists", () => {
         });
 
         describe("ensureSiteAssetsLibrary", () => {
-            it("Should ensure that the site assets library exists", function () {
+            it("Should ensure that the site assets library exists", () => {
                 return expect(pnp.sp.web.lists.ensureSiteAssetsLibrary()).to.eventually.be.fulfilled;
             });
         });
 
         describe("ensureSitePagesLibrary", () => {
-            it("Should ensure that the site pages library exists", function () {
+            it("Should ensure that the site pages library exists", () => {
                 return expect(pnp.sp.web.lists.ensureSitePagesLibrary()).to.eventually.be.fulfilled;
             });
         });
@@ -310,8 +307,7 @@ describe("List", () => {
         });
 
         describe("renderListData", () => {
-            it("should return a set of data which can be used to render an html view of the list", function () {
-                this.timeout(20000);
+            it("should return a set of data which can be used to render an html view of the list", () => {
                 // create a list, add some items, render a view
                 return expect(pnp.sp.web.lists.ensure("pnp testing renderListData").then(result => {
                     return Promise.all([
@@ -329,8 +325,7 @@ describe("List", () => {
         });
 
         describe("renderListFormData", () => {
-            it("should return a set of data which can be used to render an html view of the list", function () {
-                this.timeout(20000);
+            it("should return a set of data which can be used to render an html view of the list", () => {
                 // create a list, add an item, get the form, render that form
                 return expect(pnp.sp.web.lists.ensure("pnp testing renderListFormData").then(result => {
                     return result.list.items.add({ Title: "Item 1" }).then(() => {
@@ -345,7 +340,7 @@ describe("List", () => {
         });
 
         describe("reserveListItemId", () => {
-            it("should return a number", function () {
+            it("should return a number", () => {
                 // create a list, reserve an item id
                 return expect(pnp.sp.web.lists.ensure("pnp testing reserveListItemId").then(result => {
                     return result.list.reserveListItemId();

@@ -49,6 +49,10 @@ before(function (done: MochaDone) {
             });
 
             done();
+        }).catch(e => {
+
+            console.log("Error creating testing sub-site: " + JSON.stringify(e));
+            done();
         });
     } else {
         done();

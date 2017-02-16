@@ -32,8 +32,8 @@ gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
     // easiest way for tests to have settings available
     global.settings = config.settings;
 
-        return gulp.src(path)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
+    return gulp.src(path)
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 30000 }))
         .pipe(istanbul.writeReports({
             reporters: reports
         }));

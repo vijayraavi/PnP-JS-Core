@@ -4,6 +4,7 @@ import { expect } from "chai";
 import { Web } from "../../src/sharepoint/webs";
 import { Util } from "../../src/utils/util";
 import { toMatchEndRegex } from "../testutils";
+declare var global: any;
 
 describe("Webs", () => {
 
@@ -12,7 +13,6 @@ describe("Webs", () => {
         describe("add", () => {
             it("should add a new child web", function () {
                 // allow 30 seconds for the web to be created
-                this.timeout(30000);
                 return expect(pnp.sp.web.webs.add("web.webs.add test", "websaddtest")).to.eventually.be.fulfilled;
             });
         });
@@ -122,7 +122,7 @@ describe("Web", () => {
     if (testSettings.enableWebTests) {
 
         describe("webs", () => {
-            it("should get the collection of all child webs", () => {
+            it("should get the collection of all child webs", function () {
                 return expect(pnp.sp.web.webs.get()).to.eventually.be.fulfilled;
             });
         });
@@ -165,7 +165,6 @@ describe("Web", () => {
 
         describe("userCustomActions", () => {
             it("should get the user custom actions for this web", function () {
-                this.timeout(7000);
                 return expect(pnp.sp.web.userCustomActions.get()).to.eventually.be.fulfilled;
             });
         });
@@ -224,12 +223,12 @@ describe("Web", () => {
             it("should apply a theme to our web", function () {
                 // this takes a long time to process
                 this.timeout(60000);
-                return expect(pnp.sp.web.applyTheme(
-                    "/sites/dev/_catalogs/theme/15/palette011.spcolor",
-                    "/sites/dev/_catalogs/theme/15/fontscheme007.spfont",
-                    "",
-                    false
-                )).to.eventually.be.fulfilled;
+
+                let index = global.settings.testing.siteUrl.indexOf("/sites/");
+                let colorUrl = "/" + Util.combinePaths(global.settings.testing.siteUrl.substr(index), "/_catalogs/theme/15/palette011.spcolor");
+                let fontUrl = "/" + Util.combinePaths(global.settings.testing.siteUrl.substr(index), "/_catalogs/theme/15/fontscheme007.spfont");
+
+                return expect(pnp.sp.web.applyTheme(colorUrl, fontUrl, "", false)).to.eventually.be.fulfilled;
             });
         });
 
