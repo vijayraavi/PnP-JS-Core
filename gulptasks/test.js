@@ -33,7 +33,7 @@ gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
     global.settings = config.settings;
 
     return gulp.src(path)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 10000 }))
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 30000 }))
         .pipe(istanbul.writeReports({
             reporters: reports
         }));

@@ -10,8 +10,6 @@ describe("Lists", () => {
 
     before(function (done) {
 
-        this.timeout(20000);
-
         // sometimes we have web tests enabled but no notificationUrl set
         webTestCheck = testSettings.notificationUrl !== null && testSettings.notificationUrl !== "";
 

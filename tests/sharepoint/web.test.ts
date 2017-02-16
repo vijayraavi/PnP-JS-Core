@@ -13,7 +13,6 @@ describe("Webs", () => {
         describe("add", () => {
             it("should add a new child web", function () {
                 // allow 30 seconds for the web to be created
-                this.timeout(30000);
                 return expect(pnp.sp.web.webs.add("web.webs.add test", "websaddtest")).to.eventually.be.fulfilled;
             });
         });
@@ -124,7 +123,6 @@ describe("Web", () => {
 
         describe("webs", () => {
             it("should get the collection of all child webs", function () {
-                this.timeout(15000);
                 return expect(pnp.sp.web.webs.get()).to.eventually.be.fulfilled;
             });
         });
@@ -167,7 +165,6 @@ describe("Web", () => {
 
         describe("userCustomActions", () => {
             it("should get the user custom actions for this web", function () {
-                this.timeout(7000);
                 return expect(pnp.sp.web.userCustomActions.get()).to.eventually.be.fulfilled;
             });
         });

@@ -32,7 +32,7 @@ gulp.task("travis:webtest", ["build:testing"], () => {
     };
 
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 15000 }));
+        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 45000 }));
 });
 
 gulp.task("travis:test", ["build:testing"], () => {
@@ -45,7 +45,7 @@ gulp.task("travis:test", ["build:testing"], () => {
     };
 
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 15000 }));
+        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 5000 }));
 });
 
 // runs when someone executes a PR from a fork
