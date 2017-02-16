@@ -11,7 +11,7 @@ describe("Util", () => {
                     this.num = 1;
                 }
                 public num: number;
-                public func(a: number)  {
+                public func(a: number) {
                     this.num += a;
                 }
             }
@@ -92,7 +92,7 @@ describe("Util", () => {
 
     describe("isFunction", () => {
         it("Should find that a function is a function", () => {
-            expect(Util.isFunction(function () { return; })).to.be.true;
+            expect(Util.isFunction(() => { return; })).to.be.true;
         });
 
         it("Should find that a non-function is not a function", () => {
