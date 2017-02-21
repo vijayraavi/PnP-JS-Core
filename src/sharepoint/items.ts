@@ -204,7 +204,7 @@ export class Item extends QueryableSecurable {
                     "__metadata": { "type": d.ListItemEntityTypeFullName },
                 }, properties));
 
-                this.post({
+                return this.post({
                     body: postBody,
                     headers: {
                         "IF-Match": eTag,
