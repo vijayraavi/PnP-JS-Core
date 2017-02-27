@@ -5,8 +5,7 @@
   "main": "./lib/pnp.js",
   "typings": "./lib/pnp",
   "dependencies": {
-    "@types/sharepoint": "^2013.0.31",
-    "@types/whatwg-fetch": "^0.0.33"
+    "@types/sharepoint": "^2013.0.31"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
@@ -35,7 +34,7 @@
     "node-fetch": "^1.4.1",
     "ts-loader": "^1.2.2",
     "tslint": "^4.4.2",
-    "typescript": "^2.1.0",
+    "typescript": "^2.2.1",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2",
     "yargs": "^6.0.0"

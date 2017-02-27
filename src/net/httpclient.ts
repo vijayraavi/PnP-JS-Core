@@ -6,10 +6,10 @@ import { APIUrlException } from "../utils/exceptions";
 export interface FetchOptions {
     method?: string;
     headers?: string[][] | { [key: string]: string };
-    body?: BodyInit;
-    mode?: string | RequestMode;
-    credentials?: string | RequestCredentials;
-    cache?: string | RequestCache;
+    body?: any;
+    mode?: "navigate" | "same-origin" | "no-cors" | "cors";
+    credentials?: "omit" | "same-origin" | "include";
+    cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
 }
 
 export class HttpClient {

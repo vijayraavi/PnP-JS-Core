@@ -7,8 +7,7 @@
         "sourceMap": true,
         "removeComments": false,
         "types": [
-            "sharepoint",
-            "whatwg-fetch"
+            "sharepoint"
         ],
         "noImplicitAny": true,
         "allowUnreachableCode": false,

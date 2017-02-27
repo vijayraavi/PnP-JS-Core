@@ -1,4 +1,4 @@
-import { HttpClientImpl, FetchOptions } from "./httpclient";
+import { HttpClientImpl } from "./httpclient";
 import { Util } from "../utils/util";
 import { SPRequestExecutorUndefinedException } from "../utils/exceptions";
 
@@ -9,7 +9,7 @@ export class SPRequestExecutorClient implements HttpClientImpl {
     /**
      * Fetches a URL using the SP.RequestExecutor library.
      */
-    public fetch(url: string, options: FetchOptions): Promise<Response> {
+    public fetch(url: string, options: any): Promise<Response> {
         if (typeof SP === "undefined" || typeof SP.RequestExecutor === "undefined") {
             throw new SPRequestExecutorUndefinedException();
         }
