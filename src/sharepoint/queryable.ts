@@ -70,7 +70,7 @@ export class Queryable {
      */
     protected addBatchDependency(): () => void {
         if (this.hasBatch) {
-            return this._batch.addBatchDependency();
+            return this._batch.addDependency();
         }
 
         return () => null;

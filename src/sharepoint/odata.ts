@@ -149,12 +149,12 @@ export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataPars
  */
 export class ODataBatch {
 
-    private _batchDependencies: Promise<void>;
+    private _dependencies: Promise<void>;
     private _requests: ODataBatchRequestInfo[];
 
     constructor(private baseUrl: string, private _batchId = Util.getGUID()) {
         this._requests = [];
-        this._batchDependencies = Promise.resolve();
+        this._dependencies = Promise.resolve();
     }
 
     /**
@@ -190,14 +190,14 @@ export class ODataBatch {
      * Adds a dependency insuring that some set of actions will occur before a batch is processed.
      * MUST be cleared using the returned resolve delegate to allow batches to run
      */
-    public addBatchDependency(): () => void {
+    public addDependency(): () => void {
 
         let resolver: () => void;
         const promise = new Promise<void>((resolve) => {
             resolver = resolve;
         });
 
-        this._batchDependencies = this._batchDependencies.then(() => promise);
+        this._dependencies = this._dependencies.then(() => promise);
 
         return resolver;
     }
@@ -208,7 +208,7 @@ export class ODataBatch {
      * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
     public execute(): Promise<void> {
-        return this._batchDependencies.then(() => this.executeImpl());
+        return this._dependencies.then(() => this.executeImpl());
     }
 
     private executeImpl(): Promise<void> {
