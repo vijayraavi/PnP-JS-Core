@@ -54,6 +54,8 @@ export class Items extends QueryableCollection {
         return this.getAs(new PagedItemCollectionParser());
     }
 
+    //
+
     /**
      * Adds a new item to the collection
      *
@@ -61,39 +63,39 @@ export class Items extends QueryableCollection {
      */
     public add(properties: TypedHash<any> = {}, listItemEntityTypeFullName: string = null): Promise<ItemAddResult> {
 
-        const doAdd = (listItemEntityType: string): Promise<ItemAddResult> => {
+        const removeDependency = this.addBatchDependency();
+
+        return this.ensureListItemEntityTypeName(listItemEntityTypeFullName).then(listItemEntityType => {
 
             const postBody = JSON.stringify(Util.extend({
                 "__metadata": { "type": listItemEntityType },
             }, properties));
 
-            return this.postAs<{ Id: number }>({ body: postBody }).then((data) => {
+            const promise = this.postAs<{ Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
                 };
             });
-        };
 
-        if (!listItemEntityTypeFullName) {
+            removeDependency();
 
-            const parentList = this.getParent(List);
+            return promise;
+        });
+    }
 
-            const removeDependency = this.addBatchDependency();
+    /**
+     * Ensures we have the proper list item entity type name, either from the value provided or from the list
+     *
+     * @param candidatelistItemEntityTypeFullName The potential type name
+     */
+    private ensureListItemEntityTypeName(candidatelistItemEntityTypeFullName: string): Promise<string> {
 
-            return parentList.getListItemEntityTypeFullName().then(n => {
-
-                const promise = doAdd(n);
-
-                removeDependency();
-
-                return promise;
-            });
-
-        } else {
-
-            return doAdd(listItemEntityTypeFullName);
+        if (candidatelistItemEntityTypeFullName) {
+            return Promise.resolve(candidatelistItemEntityTypeFullName);
         }
+
+        return this.getParent(List).getListItemEntityTypeFullName();
     }
 }
 
