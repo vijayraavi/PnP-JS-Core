@@ -23,7 +23,7 @@ export class Views extends QueryableCollection {
      * @param id The GUID id of the view
      */
     public getById(id: string): View {
-        let v = new View(this);
+        const v = new View(this);
         v.concat(`('${id}')`);
         return v;
     }
@@ -47,7 +47,7 @@ export class Views extends QueryableCollection {
     /*tslint:disable max-line-length */
     public add(title: string, personalView = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ViewAddResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "PersonalView": personalView,
             "Title": title,
             "__metadata": { "type": "SP.View" },
@@ -90,7 +90,7 @@ export class View extends QueryableInstance {
      */
     public update(properties: TypedHash<string | number | boolean>): Promise<ViewUpdateResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.View" },
         }, properties));
 
@@ -124,7 +124,7 @@ export class View extends QueryableInstance {
      *
      */
     public renderAsHtml(): Promise<string> {
-        let q = new Queryable(this, "renderashtml");
+        const q = new Queryable(this, "renderashtml");
         return q.get();
     }
 }
@@ -138,7 +138,7 @@ export class ViewFields extends QueryableCollection {
      * Gets a value that specifies the XML schema that represents the collection.
      */
     public getSchemaXml(): Promise<string> {
-        let q = new Queryable(this, "schemaxml");
+        const q = new Queryable(this, "schemaxml");
         return q.get();
     }
 
@@ -148,7 +148,7 @@ export class ViewFields extends QueryableCollection {
      * @param fieldTitleOrInternalName The case-sensitive internal name or display name of the field to add.
      */
     public add(fieldTitleOrInternalName: string): Promise<void> {
-        let q = new ViewFields(this, `addviewfield('${fieldTitleOrInternalName}')`);
+        const q = new ViewFields(this, `addviewfield('${fieldTitleOrInternalName}')`);
         return q.post();
     }
 
@@ -159,8 +159,8 @@ export class ViewFields extends QueryableCollection {
      * @param index The zero-based index of the new position for the field.
      */
     public move(fieldInternalName: string, index: number): Promise<void> {
-        let q = new ViewFields(this, "moveviewfieldto");
-        let postBody = JSON.stringify({ "field": fieldInternalName, "index": index });
+        const q = new ViewFields(this, "moveviewfieldto");
+        const postBody = JSON.stringify({ "field": fieldInternalName, "index": index });
         return q.post({ body: postBody });
     }
 
@@ -168,7 +168,7 @@ export class ViewFields extends QueryableCollection {
      * Removes all the fields from the collection.
      */
     public removeAll(): Promise<void> {
-        let q = new ViewFields(this, "removeallviewfields");
+        const q = new ViewFields(this, "removeallviewfields");
         return q.post();
     }
 
@@ -178,7 +178,7 @@ export class ViewFields extends QueryableCollection {
      * @param fieldInternalName The case-sensitive internal name of the field to remove from the view.
      */
     public remove(fieldInternalName: string): Promise<void> {
-        let q = new ViewFields(this, `removeviewfield('${fieldInternalName}')`);
+        const q = new ViewFields(this, `removeviewfield('${fieldInternalName}')`);
         return q.post();
     }
 }

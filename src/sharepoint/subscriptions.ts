@@ -20,7 +20,7 @@ export class Subscriptions extends QueryableCollection {
      *
      */
     public getById(subscriptionId: string): Subscription {
-        let subscription = new Subscription(this);
+        const subscription = new Subscription(this);
         subscription.concat(`('${subscriptionId}')`);
         return subscription;
     }
@@ -31,7 +31,7 @@ export class Subscriptions extends QueryableCollection {
      */
     public add(notificationUrl: string, expirationDate: string, clientState?: string): Promise<SubscriptionAddResult> {
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             "clientState": clientState || "pnp-js-core-subscription",
             "expirationDateTime": expirationDate,
             "notificationUrl": notificationUrl,
@@ -66,7 +66,7 @@ export class Subscription extends QueryableInstance {
      */
     public update(expirationDate: string): Promise<SubscriptionUpdateResult> {
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             "expirationDateTime": expirationDate,
         });
 

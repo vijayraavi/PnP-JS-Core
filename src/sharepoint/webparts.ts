@@ -27,7 +27,7 @@ export class LimitedWebPartManager extends Queryable {
      */
     public export(id: string): Promise<string> {
 
-        let exporter = new LimitedWebPartManager(this, "ExportWebPart");
+        const exporter = new LimitedWebPartManager(this, "ExportWebPart");
         return exporter.post({
             body: JSON.stringify({ webPartId: id }),
         });
@@ -40,7 +40,7 @@ export class LimitedWebPartManager extends Queryable {
      */
     public import(xml: string): Promise<any> {
 
-        let importer = new LimitedWebPartManager(this, "ImportWebPart");
+        const importer = new LimitedWebPartManager(this, "ImportWebPart");
         return importer.post({
             body: JSON.stringify({ webPartXml: xml }),
         });
@@ -94,7 +94,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public delete(): Promise<void> {
 
-        let deleter = new WebPartDefinition(this, "DeleteWebPart");
+        const deleter = new WebPartDefinition(this, "DeleteWebPart");
         return deleter.post();
     }
 }

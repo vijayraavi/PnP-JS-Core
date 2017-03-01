@@ -274,7 +274,7 @@ export class Search extends QueryableInstance {
             formattedBody.Properties = { results: query.Properties };
         }
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             request: Util.extend({
                 "__metadata": { "type": "Microsoft.Office.Server.Search.REST.SearchRequest" },
             }, formattedBody),
@@ -301,7 +301,7 @@ export class SearchResults {
      *
      */
     constructor(rawResponse: any) {
-        let response = rawResponse.postquery ? rawResponse.postquery : rawResponse;
+        const response = rawResponse.postquery ? rawResponse.postquery : rawResponse;
         this.PrimarySearchResults = this.formatSearchResults(response.PrimaryQueryResult.RelevantResults.Table.Rows);
         this.RawSearchResults = response;
         this.ElapsedTime = response.ElapsedTime;
@@ -316,10 +316,10 @@ export class SearchResults {
      * @param rawResults The array to process
      */
     protected formatSearchResults(rawResults: Array<any> | any): SearchResult[] {
-        let results = new Array<SearchResult>(),
+        const results = new Array<SearchResult>(),
             tempResults = rawResults.results ? rawResults.results : rawResults;
 
-        for (let i of tempResults) {
+        for (const i of tempResults) {
             results.push(new SearchResult(i.Cells));
         }
 
@@ -338,8 +338,8 @@ export class SearchResult {
      *
      */
     constructor(rawItem: any) {
-        let item = rawItem.results ? rawItem.results : rawItem;
-        for (let i of item) {
+        const item = rawItem.results ? rawItem.results : rawItem;
+        for (const i of item) {
             Object.defineProperty(this, i.Key,
                 {
                     configurable: false,

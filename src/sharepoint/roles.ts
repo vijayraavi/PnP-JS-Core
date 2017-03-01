@@ -27,7 +27,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public add(principalId: number, roleDefId: number): Promise<void> {
-        let a = new RoleAssignments(this, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`);
+        const a = new RoleAssignments(this, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`);
         return a.post();
     }
 
@@ -39,7 +39,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public remove(principalId: number, roleDefId: number): Promise<void> {
-        let a = new RoleAssignments(this, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`);
+        const a = new RoleAssignments(this, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`);
         return a.post();
     }
 
@@ -49,7 +49,7 @@ export class RoleAssignments extends QueryableCollection {
      * @param id The id of the role assignment
      */
     public getById(id: number) {
-        let ra = new RoleAssignment(this);
+        const ra = new RoleAssignment(this);
         ra.concat(`(${id})`);
         return ra;
     }
@@ -145,7 +145,7 @@ export class RoleDefinitions extends QueryableCollection {
      */
     public add(name: string, description: string, order: number, basePermissions: BasePermissions): Promise<RoleDefinitionAddResult> {
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             BasePermissions: Util.extend({ __metadata: { type: "SP.BasePermissions" } }, basePermissions),
             Description: description,
             Name: name,
@@ -179,7 +179,7 @@ export class RoleDefinition extends QueryableInstance {
             properties["BasePermissions"] = Util.extend({ __metadata: { type: "SP.BasePermissions" } }, properties["BasePermissions"]);
         }
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.RoleDefinition" },
         }, properties));
 
@@ -193,7 +193,7 @@ export class RoleDefinition extends QueryableInstance {
             let retDef: RoleDefinition = this;
 
             if (properties.hasOwnProperty("Name")) {
-                let parent = this.getParent(RoleDefinitions, this.parentUrl, "");
+                const parent = this.getParent(RoleDefinitions, this.parentUrl, "");
                 retDef = parent.getByName(<string>properties["Name"]);
             }
 

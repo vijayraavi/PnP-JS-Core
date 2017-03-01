@@ -21,7 +21,7 @@ export class ContentTypes extends QueryableCollection {
      * Gets a ContentType by content type id
      */
     public getById(id: string): ContentType {
-        let ct: ContentType = new ContentType(this);
+        const ct: ContentType = new ContentType(this);
         ct.concat(`('${id}')`);
         return ct;
     }
@@ -33,7 +33,7 @@ export class ContentTypes extends QueryableCollection {
      */
     public addAvailableContentType(contentTypeId: string): Promise<ContentTypeAddResult> {
 
-        let postBody: string = JSON.stringify({
+        const postBody: string = JSON.stringify({
             "contentTypeId": contentTypeId,
         });
 
@@ -62,7 +62,7 @@ export class ContentTypes extends QueryableCollection {
         group = "Custom Content Types",
         additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ContentTypeAddResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "Description": description,
             "Group": group,
             "Id": { "StringValue": id },
@@ -145,7 +145,7 @@ export class FieldLinks extends QueryableCollection {
      * @param id The GUID id of the field link
      */
     public getById(id: string) {
-        let fl = new FieldLink(this);
+        const fl = new FieldLink(this);
         fl.concat(`(guid'${id}')`);
         return fl;
     }

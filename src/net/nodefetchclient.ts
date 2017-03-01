@@ -1,7 +1,7 @@
 declare var global: any;
 declare var require: (path: string) => any;
-let nodeFetch = require("node-fetch");
-let u: any = require("url");
+const nodeFetch = require("node-fetch");
+const u: any = require("url");
 import { HttpClientImpl } from "./httpclient";
 import { Util } from "../utils/util";
 import { AuthUrlException } from "../utils/exceptions";
@@ -58,12 +58,12 @@ export class NodeFetchClient implements HttpClientImpl {
             } else {
                 this.getRealm().then((realm: string) => {
 
-                    let resource = this.getFormattedPrincipal(NodeFetchClient.SharePointServicePrincipal, u.parse(this.siteUrl).hostname, realm);
-                    let formattedClientId = this.getFormattedPrincipal(this._clientId, "", realm);
+                    const resource = this.getFormattedPrincipal(NodeFetchClient.SharePointServicePrincipal, u.parse(this.siteUrl).hostname, realm);
+                    const formattedClientId = this.getFormattedPrincipal(this._clientId, "", realm);
 
                     this.getAuthUrl(realm).then((authUrl: string) => {
 
-                        let body: string[] = [];
+                        const body: string[] = [];
                         body.push("grant_type=client_credentials");
                         body.push(`client_id=${formattedClientId}`);
                         body.push(`client_secret=${encodeURIComponent(this._clientSecret)}`);
@@ -93,7 +93,7 @@ export class NodeFetchClient implements HttpClientImpl {
                 resolve(this._realm);
             }
 
-            let url = Util.combinePaths(this.siteUrl, "vti_bin/client.svc");
+            const url = Util.combinePaths(this.siteUrl, "vti_bin/client.svc");
 
             nodeFetch(url, {
                 "headers": {
@@ -102,8 +102,8 @@ export class NodeFetchClient implements HttpClientImpl {
                 "method": "POST",
             }).then((r: Response) => {
 
-                let data: string = r.headers.get("www-authenticate");
-                let index = data.indexOf("Bearer realm=\"");
+                const data: string = r.headers.get("www-authenticate");
+                const index = data.indexOf("Bearer realm=\"");
                 this._realm = data.substring(index + 14, index + 50);
                 resolve(this._realm);
             });
@@ -112,11 +112,11 @@ export class NodeFetchClient implements HttpClientImpl {
 
     private getAuthUrl(realm: string): Promise<string> {
 
-        let url = `https://accounts.accesscontrol.windows.net/metadata/json/1?realm=${realm}`;
+        const url = `https://accounts.accesscontrol.windows.net/metadata/json/1?realm=${realm}`;
 
         return nodeFetch(url).then((r: Response) => r.json()).then((json: { endpoints: { protocol: string, location: string }[] }) => {
 
-            let eps = json.endpoints.filter(ep => ep.protocol === "OAuth2");
+            const eps = json.endpoints.filter(ep => ep.protocol === "OAuth2");
             if (eps.length > 0) {
                 return eps[0].location;
             }
@@ -139,7 +139,7 @@ export class NodeFetchClient implements HttpClientImpl {
         if (tmp < 10000000000) {
             tmp *= 1000;
         }
-        let d = new Date();
+        const d = new Date();
         d.setTime(tmp);
         return d;
     }

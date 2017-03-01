@@ -56,7 +56,7 @@ export class NodeFetchClientUnsupportedException extends Error {
 export class SPRequestExecutorUndefinedException extends Error {
 
     constructor() {
-        let msg = [
+        const msg = [
             "SP.RequestExecutor is undefined. ",
             "Load the SP.RequestExecutor.js library (/_layouts/15/SP.RequestExecutor.js) before loading the PnP JS Core library.",
         ].join(" ");

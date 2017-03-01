@@ -26,7 +26,7 @@ export class Util {
      */
     public static urlParamExists(name: string): boolean {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        let regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
         return regex.test(location.search);
     }
 
@@ -37,8 +37,8 @@ export class Util {
      */
     public static getUrlParamByName(name: string): string {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        let regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-        let results = regex.exec(location.search);
+        const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        const results = regex.exec(location.search);
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
@@ -48,8 +48,8 @@ export class Util {
      * @param name The name of the paramter for which we want the boolean value
      */
     public static getUrlParamBoolByName(name: string): boolean {
-        let p = this.getUrlParamByName(name);
-        let isFalse = (p === "" || /false|0/i.test(p));
+        const p = this.getUrlParamByName(name);
+        const isFalse = (p === "" || /false|0/i.test(p));
         return !isFalse;
     }
 
@@ -102,9 +102,9 @@ export class Util {
         if (avoidCache) {
             path += "?" + encodeURIComponent((new Date()).getTime().toString());
         }
-        let head = document.getElementsByTagName("head");
+        const head = document.getElementsByTagName("head");
         if (head.length > 0) {
-            let e = document.createElement("link");
+            const e = document.createElement("link");
             head[0].appendChild(e);
             e.setAttribute("type", "text/css");
             e.setAttribute("rel", "stylesheet");
@@ -132,8 +132,8 @@ export class Util {
      * @param chars The length of the random string to generate
      */
     public static getRandomString(chars: number): string {
-        let text = new Array(chars);
-        let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const text = new Array(chars);
+        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         for (let i = 0; i < chars; i++) {
             text[i] = possible.charAt(Math.floor(Math.random() * possible.length));
         }
@@ -148,8 +148,8 @@ export class Util {
     /* tslint:disable no-bitwise */
     public static getGUID(): string {
         let d = new Date().getTime();
-        let guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-            let r = (d + Math.random() * 16) % 16 | 0;
+        const guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+            const r = (d + Math.random() * 16) % 16 | 0;
             d = Math.floor(d / 16);
             return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
         });
@@ -203,7 +203,7 @@ export class Util {
         }
 
         // ensure we don't overwrite things we don't want overwritten
-        let check: (o: any, i: string) => Boolean = noOverwrite ? (o, i) => !(i in o) : () => true;
+        const check: (o: any, i: string) => Boolean = noOverwrite ? (o, i) => !(i in o) : () => true;
 
         return Object.getOwnPropertyNames(source)
             .filter((v: string) => check(target, v))
@@ -277,7 +277,7 @@ export class Util {
 
             // does window.location exist and have _layouts in it?
             if (typeof global.location !== "undefined") {
-                let index = global.location.toString().toLowerCase().indexOf("/_layouts/");
+                const index = global.location.toString().toLowerCase().indexOf("/_layouts/");
                 if (index > 0) {
                     // we are likely in the workbench in /_layouts/
                     return resolve(Util.combinePaths(global.location.toString().substr(0, index), candidateUrl));

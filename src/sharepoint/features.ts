@@ -21,7 +21,7 @@ export class Features extends QueryableCollection {
      * @param id The Id of the feature (GUID)
      */
     public getById(id: string): Feature {
-        let feature = new Feature(this);
+        const feature = new Feature(this);
         feature.concat(`('${id}')`);
         return feature;
     }
@@ -34,7 +34,7 @@ export class Features extends QueryableCollection {
      */
     public add(id: string, force = false): Promise<FeatureAddResult> {
 
-        let adder = new Features(this, "add");
+        const adder = new Features(this, "add");
         return adder.post({
             body: JSON.stringify({
                 featdefScope: 0,
@@ -57,7 +57,7 @@ export class Features extends QueryableCollection {
      */
     public remove(id: string, force = false): Promise<any> {
 
-        let remover = new Features(this, "remove");
+        const remover = new Features(this, "remove");
         return remover.post({
             body: JSON.stringify({
                 featureId: id,
@@ -85,13 +85,13 @@ export class Feature extends QueryableInstance {
      */
     public deactivate(force = false): Promise<any> {
 
-        let removeDependency = this.addBatchDependency();
+        const removeDependency = this.addBatchDependency();
 
-        let idGet = new Feature(this).select("DefinitionId");
+        const idGet = new Feature(this).select("DefinitionId");
 
         return idGet.getAs<{ DefinitionId: string }>().then(feature => {
 
-            let promise = this.getParent(Features, this.parentUrl, "").remove(feature.DefinitionId, force);
+            const promise = this.getParent(Features, this.parentUrl, "").remove(feature.DefinitionId, force);
 
             removeDependency();
 

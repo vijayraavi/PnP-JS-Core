@@ -22,7 +22,7 @@ export class AttachmentFiles extends QueryableCollection {
      * @param name The name of the file, including extension.
      */
     public getByName(name: string): AttachmentFile {
-        let f = new AttachmentFile(this);
+        const f = new AttachmentFile(this);
         f.concat(`('${name}')`);
         return f;
     }
@@ -102,7 +102,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<AttachmentFile> {
 
-        let setter = new AttachmentFile(this, "$value");
+        const setter = new AttachmentFile(this, "$value");
 
         return setter.post({
             body: content,

@@ -21,7 +21,7 @@ export class Forms extends QueryableCollection {
      * @param id The guid id of the item to retrieve
      */
     public getById(id: string): Form {
-        let i = new Form(this);
+        const i = new Form(this);
         i.concat(`('${id}')`);
         return i;
     }

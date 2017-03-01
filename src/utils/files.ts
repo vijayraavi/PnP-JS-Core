@@ -28,7 +28,7 @@ function readBlobAs<T>(blob: Blob, mode: "string" | "buffer"): Promise<T> {
 
         try {
 
-            let reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = (e: FileReaderEvent<T>) => {
                 resolve(e.target.result);
             };

@@ -30,7 +30,7 @@ export interface RequestContext<T> {
 export function pipe<T>(context: RequestContext<T>): Promise<T> {
 
     // this is the beginning of the extensible pipeline in future versions
-    let pipeline: Array<(c: void | RequestContext<T>) => Promise<RequestContext<T>>> = [
+    const pipeline: Array<(c: void | RequestContext<T>) => Promise<RequestContext<T>>> = [
         PipelineMethods.logStart,
         PipelineMethods.caching,
         PipelineMethods.send,
@@ -56,7 +56,7 @@ function requestPipelineMethod(alwaysRun = false) {
 
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 
-        let method = descriptor.value;
+        const method = descriptor.value;
 
         descriptor.value = function(...args: any[]) {
 
@@ -117,7 +117,7 @@ class PipelineMethods {
                 // we may not have a valid store, i.e. on node
                 if (cacheOptions.store !== null) {
                     // check if we have the data in cache and if so resolve the promise and return
-                    let data = cacheOptions.store.get(cacheOptions.key);
+                    const data = cacheOptions.store.get(cacheOptions.key);
                     if (data !== null) {
                         // ensure we clear any help batch dependency we are resolving from the cache
                         Logger.log({
@@ -152,7 +152,7 @@ class PipelineMethods {
             if (context.isBatched) {
 
                 // we are in a batch, so add to batch, remove dependency, and resolve with the batch's promise
-                let p = context.batch.add(context.requestAbsoluteUrl, context.verb, context.options, context.parser);
+                const p = context.batch.add(context.requestAbsoluteUrl, context.verb, context.options, context.parser);
 
                 // we release the dependency here to ensure the batch does not execute until the request is added to the batch
                 context.batchDependency();
@@ -164,8 +164,8 @@ class PipelineMethods {
                 Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Sending request.`, LogLevel.Info);
 
                 // we are not part of a batch, so proceed as normal
-                let client = new HttpClient();
-                let opts = Util.extend(context.options, { method: context.verb });
+                const client = new HttpClient();
+                const opts = Util.extend(context.options, { method: context.verb });
                 client.fetch(context.requestAbsoluteUrl, opts)
                     .then(response => context.parser.parse(response))
                     .then(result => PipelineMethods.setResult(context, result))

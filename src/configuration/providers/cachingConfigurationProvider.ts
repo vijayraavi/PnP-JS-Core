@@ -46,7 +46,7 @@ export default class CachingConfigurationProvider implements IConfigurationProvi
         }
 
         // Value is found in cache, return it directly
-        let cachedConfig = this.store.get(this.cacheKey);
+        const cachedConfig = this.store.get(this.cacheKey);
         if (cachedConfig) {
             return new Promise<TypedHash<string>>((resolve) => {
                 resolve(cachedConfig);
@@ -54,7 +54,7 @@ export default class CachingConfigurationProvider implements IConfigurationProvi
         }
 
         // Get and cache value from the wrapped provider
-        let providerPromise = this.wrappedProvider.getConfiguration();
+        const providerPromise = this.wrappedProvider.getConfiguration();
         providerPromise.then((providedConfig) => {
             this.store.put(this.cacheKey, providedConfig);
         });
@@ -62,7 +62,7 @@ export default class CachingConfigurationProvider implements IConfigurationProvi
     }
 
     private selectPnPCache(): storage.PnPClientStore {
-        let pnpCache = new storage.PnPClientStorage();
+        const pnpCache = new storage.PnPClientStorage();
         if ((pnpCache.local) && (pnpCache.local.enabled)) {
             return pnpCache.local;
         }

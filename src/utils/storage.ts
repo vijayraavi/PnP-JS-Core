@@ -32,13 +32,13 @@ export class PnPClientStorageWrapper implements PnPClientStore {
             return null;
         }
 
-        let o = this.store.getItem(key);
+        const o = this.store.getItem(key);
 
         if (o == null) {
             return null;
         }
 
-        let persistable = JSON.parse(o);
+        const persistable = JSON.parse(o);
 
         if (new Date(persistable.expiration) <= new Date()) {
 
@@ -89,7 +89,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
 
         return new Promise((resolve) => {
 
-            let o = this.get<T>(key);
+            const o = this.get<T>(key);
 
             if (o == null) {
                 getter().then((d) => {
@@ -106,7 +106,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
      * Used to determine if the wrapped storage is available currently
      */
     private test(): boolean {
-        let str = "test";
+        const str = "test";
         try {
             this.store.setItem(str, str);
             this.store.removeItem(str);

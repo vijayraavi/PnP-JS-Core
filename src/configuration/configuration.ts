@@ -101,7 +101,7 @@ export class Settings {
      * @return {any} object from the configuration
      */
     public getJSON(key: string): any {
-        let o = this.get(key);
+        const o = this.get(key);
         if (typeof o === "undefined" || o === null) {
             return o;
         }

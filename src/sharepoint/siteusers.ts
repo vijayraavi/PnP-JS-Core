@@ -51,7 +51,7 @@ export class SiteUsers extends QueryableCollection {
      * @param loginName The email address of the user
      */
     public getByLoginName(loginName: string): SiteUser {
-        let su = new SiteUser(this);
+        const su = new SiteUser(this);
         su.concat("(@v)");
         su.query.add("@v", encodeURIComponent(loginName));
         return su;
@@ -63,7 +63,7 @@ export class SiteUsers extends QueryableCollection {
      * @param id The id of the user
      */
     public removeById(id: number | Queryable): Promise<any> {
-        let o = new SiteUsers(this, `removeById(${id})`);
+        const o = new SiteUsers(this, `removeById(${id})`);
         return o.post();
     }
 
@@ -73,7 +73,7 @@ export class SiteUsers extends QueryableCollection {
      * @param loginName The login name of the user
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        let o = new SiteUsers(this, `removeByLoginName(@v)`);
+        const o = new SiteUsers(this, `removeByLoginName(@v)`);
         o.query.add("@v", encodeURIComponent(loginName));
         return o.post();
     }
@@ -85,9 +85,7 @@ export class SiteUsers extends QueryableCollection {
      *
      */
     public add(loginName: string): Promise<SiteUser> {
-
-        let postBody = JSON.stringify({ "__metadata": { "type": "SP.User" }, LoginName: loginName });
-
+        const postBody = JSON.stringify({ "__metadata": { "type": "SP.User" }, LoginName: loginName });
         return this.post({ body: postBody }).then(() => this.getByLoginName(loginName));
     }
 }
@@ -123,7 +121,7 @@ export class SiteUser extends QueryableInstance {
     */
     public update(properties: TypedHash<any>): Promise<UserUpdateResult> {
 
-        let postBody = Util.extend({ "__metadata": { "type": "SP.User" } }, properties);
+        const postBody = Util.extend({ "__metadata": { "type": "SP.User" } }, properties);
 
         return this.post({
             body: JSON.stringify(postBody),

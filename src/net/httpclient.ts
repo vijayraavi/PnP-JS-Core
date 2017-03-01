@@ -26,7 +26,7 @@ export class HttpClient {
 
         let opts = Util.extend(options, { cache: "no-cache", credentials: "same-origin" }, true);
 
-        let headers = new Headers();
+        const headers = new Headers();
 
         // first we add the global headers so they can be overwritten by any passed in locally to this call
         this.mergeHeaders(headers, RuntimeConfig.headers);
@@ -51,11 +51,11 @@ export class HttpClient {
 
         if (opts.method && opts.method.toUpperCase() !== "GET") {
             if (!headers.has("X-RequestDigest")) {
-                let index = url.indexOf("_api/");
+                const index = url.indexOf("_api/");
                 if (index < 0) {
                     throw new APIUrlException();
                 }
-                let webUrl = url.substr(0, index);
+                const webUrl = url.substr(0, index);
                 return this._digestCache.getDigest(webUrl)
                     .then((digest) => {
                         headers.append("X-RequestDigest", digest);
@@ -70,16 +70,16 @@ export class HttpClient {
     public fetchRaw(url: string, options: FetchOptions = {}): Promise<Response> {
 
         // here we need to normalize the headers
-        let rawHeaders = new Headers();
+        const rawHeaders = new Headers();
         this.mergeHeaders(rawHeaders, options.headers);
         options = Util.extend(options, { headers: rawHeaders });
 
-        let retry = (ctx: RetryContext): void => {
+        const retry = (ctx: RetryContext): void => {
 
             this._impl.fetch(url, options).then((response) => ctx.resolve(response)).catch((response) => {
 
                 // grab our current delay
-                let delay = ctx.delay;
+                const delay = ctx.delay;
 
                 // Check if request was throttled - http status code 429
                 // Check is request failed due to server unavailable - http status code 503
@@ -103,7 +103,7 @@ export class HttpClient {
 
         return new Promise((resolve, reject) => {
 
-            let retryContext: RetryContext = {
+            const retryContext: RetryContext = {
                 attempts: 0,
                 delay: 100,
                 reject: reject,
@@ -116,28 +116,28 @@ export class HttpClient {
     }
 
     public get(url: string, options: FetchOptions = {}): Promise<Response> {
-        let opts = Util.extend(options, { method: "GET" });
+        const opts = Util.extend(options, { method: "GET" });
         return this.fetch(url, opts);
     }
 
     public post(url: string, options: FetchOptions = {}): Promise<Response> {
-        let opts = Util.extend(options, { method: "POST" });
+        const opts = Util.extend(options, { method: "POST" });
         return this.fetch(url, opts);
     }
 
     public patch(url: string, options: FetchOptions = {}): Promise<Response> {
-        let opts = Util.extend(options, { method: "PATCH" });
+        const opts = Util.extend(options, { method: "PATCH" });
         return this.fetch(url, opts);
     }
 
     public delete(url: string, options: FetchOptions = {}): Promise<Response> {
-        let opts = Util.extend(options, { method: "DELETE" });
+        const opts = Util.extend(options, { method: "DELETE" });
         return this.fetch(url, opts);
     }
 
     private mergeHeaders(target: Headers, source: any): void {
         if (typeof source !== "undefined" && source !== null) {
-            let temp = <any>new Request("", { headers: source });
+            const temp = <any>new Request("", { headers: source });
             temp.headers.forEach((value: string, name: string) => {
                 target.append(name, value);
             });

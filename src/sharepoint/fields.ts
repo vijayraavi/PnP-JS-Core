@@ -42,7 +42,7 @@ export class Fields extends QueryableCollection {
      * @param title The Id of the list
      */
     public getById(id: string): Field {
-        let f: Field = new Field(this);
+        const f: Field = new Field(this);
         f.concat(`('${id}')`);
         return f;
     }
@@ -59,7 +59,7 @@ export class Fields extends QueryableCollection {
             info = xml as Types.XmlSchemaFieldCreationInformation;
         }
 
-        let postBody: string = JSON.stringify({
+        const postBody: string = JSON.stringify({
             "parameters":
             Util.extend({
                 "__metadata":
@@ -69,7 +69,7 @@ export class Fields extends QueryableCollection {
             }, info),
         });
 
-        let q: Fields = new Fields(this, "createfieldasxml");
+        const q: Fields = new Fields(this, "createfieldasxml");
 
         return q.postAs<{ Id: string }>({ body: postBody }).then((data) => {
             return {
@@ -88,7 +88,7 @@ export class Fields extends QueryableCollection {
      */
     public add(title: string, fieldType: string, properties: TypedHash<string | number | boolean> = {}): Promise<FieldAddResult> {
 
-        let postBody: string = JSON.stringify(Util.extend({
+        const postBody: string = JSON.stringify(Util.extend({
             "Title": title,
             "__metadata": { "type": fieldType },
         }, properties));
@@ -110,7 +110,7 @@ export class Fields extends QueryableCollection {
      */
     public addText(title: string, maxLength = 255, properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
-        let props: { FieldTypeKind: number, MaxLength: number } = {
+        const props: { FieldTypeKind: number, MaxLength: number } = {
             FieldTypeKind: 2,
             MaxLength: maxLength,
         };
@@ -134,7 +134,7 @@ export class Fields extends QueryableCollection {
         outputType: Types.FieldTypes = Types.FieldTypes.Text,
         properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
-        let props: {
+        const props: {
             DateFormat: Types.DateTimeFieldFormatType;
             FieldTypeKind: number;
             Formula: string;
@@ -164,7 +164,7 @@ export class Fields extends QueryableCollection {
         friendlyDisplayFormat = 0,
         properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
-        let props: {
+        const props: {
             DateTimeCalendarType: Types.CalendarType;
             DisplayFormat: Types.DateTimeFieldFormatType;
             FieldTypeKind: number;
@@ -259,7 +259,7 @@ export class Fields extends QueryableCollection {
         allowHyperlink = true,
         properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
-        let props: {
+        const props: {
             AllowHyperlink: boolean;
             AppendOnly: boolean;
             FieldTypeKind: number;
@@ -289,7 +289,7 @@ export class Fields extends QueryableCollection {
         properties?: TypedHash<string | number | boolean>,
     ): Promise<FieldAddResult> {
 
-        let props: { DisplayFormat: Types.UrlFieldFormatType; FieldTypeKind: number } = {
+        const props: { DisplayFormat: Types.UrlFieldFormatType; FieldTypeKind: number } = {
             DisplayFormat: displayFormat,
             FieldTypeKind: 11,
         };
@@ -321,7 +321,7 @@ export class Field extends QueryableInstance {
      */
     public update(properties: TypedHash<string | number | boolean>, fieldType = "SP.Field"): Promise<FieldUpdateResult> {
 
-        let postBody: string = JSON.stringify(Util.extend({
+        const postBody: string = JSON.stringify(Util.extend({
             "__metadata": { "type": fieldType },
         }, properties));
 
@@ -354,7 +354,7 @@ export class Field extends QueryableInstance {
      * Sets the value of the ShowInDisplayForm property for this field.
      */
     public setShowInDisplayForm(show: boolean): Promise<void> {
-        let q: Field = new Field(this, `setshowindisplayform(${show})`);
+        const q: Field = new Field(this, `setshowindisplayform(${show})`);
         return q.post();
     }
 
@@ -362,7 +362,7 @@ export class Field extends QueryableInstance {
      * Sets the value of the ShowInEditForm property for this field.
      */
     public setShowInEditForm(show: boolean): Promise<void> {
-        let q: Field = new Field(this, `setshowineditform(${show})`);
+        const q: Field = new Field(this, `setshowineditform(${show})`);
         return q.post();
     }
 
@@ -370,7 +370,7 @@ export class Field extends QueryableInstance {
      * Sets the value of the ShowInNewForm property for this field.
      */
     public setShowInNewForm(show: boolean): Promise<void> {
-        let q: Field = new Field(this, `setshowinnewform(${show})`);
+        const q: Field = new Field(this, `setshowinnewform(${show})`);
         return q.post();
     }
 }
