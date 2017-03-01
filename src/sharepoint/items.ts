@@ -31,7 +31,7 @@ export class Items extends QueryableCollection {
      * @param id The integer id of the item to retrieve
      */
     public getById(id: number): Item {
-        let i = new Item(this);
+        const i = new Item(this);
         i.concat(`(${id})`);
         return i;
     }
@@ -61,9 +61,9 @@ export class Items extends QueryableCollection {
      */
     public add(properties: TypedHash<any> = {}, listItemEntityTypeFullName: string = null): Promise<ItemAddResult> {
 
-        let doAdd = (listItemEntityType: string): Promise<ItemAddResult> => {
+        const doAdd = (listItemEntityType: string): Promise<ItemAddResult> => {
 
-            let postBody = JSON.stringify(Util.extend({
+            const postBody = JSON.stringify(Util.extend({
                 "__metadata": { "type": listItemEntityType },
             }, properties));
 
@@ -77,13 +77,13 @@ export class Items extends QueryableCollection {
 
         if (!listItemEntityTypeFullName) {
 
-            let parentList = this.getParent(List);
+            const parentList = this.getParent(List);
 
-            let removeDependency = this.addBatchDependency();
+            const removeDependency = this.addBatchDependency();
 
             return parentList.getListItemEntityTypeFullName().then(n => {
 
-                let promise = doAdd(n);
+                const promise = doAdd(n);
 
                 removeDependency();
 
@@ -194,13 +194,13 @@ export class Item extends QueryableSecurable {
 
         return new Promise<ItemUpdateResult>((resolve, reject) => {
 
-            let removeDependency = this.addBatchDependency();
+            const removeDependency = this.addBatchDependency();
 
-            let parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
+            const parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
 
             parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
 
-                let postBody = JSON.stringify(Util.extend({
+                const postBody = JSON.stringify(Util.extend({
                     "__metadata": { "type": d.ListItemEntityTypeFullName },
                 }, properties));
 
@@ -239,7 +239,7 @@ export class Item extends QueryableSecurable {
      * Moves the list item to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        let i = new Item(this, "recycle");
+        const i = new Item(this, "recycle");
         return i.post();
     }
 
@@ -250,7 +250,7 @@ export class Item extends QueryableSecurable {
      * @param action Display mode: 0: view, 1: edit, 2: mobileView, 3: interactivePreview
      */
     public getWopiFrameUrl(action = 0): Promise<string> {
-        let i = new Item(this, "getWOPIFrameUrl(@action)");
+        const i = new Item(this, "getWOPIFrameUrl(@action)");
         i._query.add("@action", <any>action);
         return i.post().then((data: { GetWOPIFrameUrl: string }) => {
             return data.GetWOPIFrameUrl;
@@ -265,8 +265,8 @@ export class Item extends QueryableSecurable {
      */
     /* tslint:disable max-line-length */
     public validateUpdateListItem(formValues: Types.ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<Types.ListItemFormUpdateValue[]> {
-        let postBody = JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate });
-        let item = new Item(this, "validateupdatelistitem");
+        const postBody = JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate });
+        const item = new Item(this, "validateupdatelistitem");
         return item.post({ body: postBody });
     }
     /* tslint:enable */
@@ -306,7 +306,7 @@ export class PagedItemCollection<T> {
     public getNext(): Promise<PagedItemCollection<any>> {
 
         if (this.hasNext) {
-            let items = new Items(this.nextUrl, null);
+            const items = new Items(this.nextUrl, null);
             return items.getPaged();
         }
 
@@ -321,7 +321,7 @@ class PagedItemCollectionParser extends ODataParserBase<PagedItemCollection<any>
 
             if (this.handleError(r, reject)) {
                 r.json().then(json => {
-                    let nextUrl = json.hasOwnProperty("d") && json.d.hasOwnProperty("__next") ? json.d.__next : json["odata.nextLink"];
+                    const nextUrl = json.hasOwnProperty("d") && json.d.hasOwnProperty("__next") ? json.d.__next : json["odata.nextLink"];
                     resolve(new PagedItemCollection(nextUrl, this.parseODataJSON(json)));
                 });
             }

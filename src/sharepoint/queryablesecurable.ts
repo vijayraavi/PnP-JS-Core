@@ -25,7 +25,7 @@ export class QueryableSecurable extends QueryableInstance {
      * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
      */
     public getUserEffectivePermissions(loginName: string): Queryable {
-        let perms = new Queryable(this, "getUserEffectivePermissions(@user)");
+        const perms = new Queryable(this, "getUserEffectivePermissions(@user)");
         perms.query.add("@user", "'" + encodeURIComponent(loginName) + "'");
         return perms;
     }
@@ -48,7 +48,7 @@ export class QueryableSecurable extends QueryableInstance {
             }
         }
 
-        let b = new Breaker(this, copyRoleAssignments, clearSubscopes);
+        const b = new Breaker(this, copyRoleAssignments, clearSubscopes);
         return b.break();
     }
 
@@ -68,7 +68,7 @@ export class QueryableSecurable extends QueryableInstance {
             }
         }
 
-        let r = new Resetter(this);
+        const r = new Resetter(this);
         return r.reset();
     }
 }

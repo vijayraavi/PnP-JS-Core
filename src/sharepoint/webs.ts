@@ -43,7 +43,7 @@ export class Webs extends QueryableCollection {
         inheritPermissions = true,
         additionalSettings: TypedHash<string | number | boolean> = {}): Promise<WebAddResult> {
 
-        let props = Util.extend({
+        const props = Util.extend({
             Description: description,
             Language: language,
             Title: title,
@@ -52,14 +52,14 @@ export class Webs extends QueryableCollection {
             WebTemplate: template,
         }, additionalSettings);
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             "parameters":
             Util.extend({
                 "__metadata": { "type": "SP.WebCreationInformation" },
             }, props),
         });
 
-        let q = new Webs(this, "add");
+        const q = new Webs(this, "add");
         return q.post({ body: postBody }).then((data) => {
             return {
                 data: data,
@@ -221,7 +221,7 @@ export class Web extends QueryableSecurable {
      */
     public update(properties: TypedHash<string | number | boolean>): Promise<WebUpdateResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.Web" },
         }, properties));
 
@@ -256,14 +256,14 @@ export class Web extends QueryableSecurable {
      */
     public applyTheme(colorPaletteUrl: string, fontSchemeUrl: string, backgroundImageUrl: string, shareGenerated: boolean): Promise<void> {
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             backgroundImageUrl: backgroundImageUrl,
             colorPaletteUrl: colorPaletteUrl,
             fontSchemeUrl: fontSchemeUrl,
             shareGenerated: shareGenerated,
         });
 
-        let q = new Web(this, "applytheme");
+        const q = new Web(this, "applytheme");
         return q.post({ body: postBody });
     }
 
@@ -273,7 +273,7 @@ export class Web extends QueryableSecurable {
      * @param template Name of the site definition or the name of the site template
      */
     public applyWebTemplate(template: string): Promise<void> {
-        let q = new Web(this, "applywebtemplate");
+        const q = new Web(this, "applywebtemplate");
         q.concat(`(@t)`);
         q.query.add("@t", template);
         return q.post();
@@ -285,7 +285,7 @@ export class Web extends QueryableSecurable {
      * @param perms The high and low permission range.
      */
     public doesUserHavePermissions(perms: Types.BasePermissions): Promise<boolean> {
-        let q = new Web(this, "doesuserhavepermissions");
+        const q = new Web(this, "doesuserhavepermissions");
         q.concat(`(@p)`);
         q.query.add("@p", JSON.stringify(perms));
         return q.get();
@@ -299,11 +299,11 @@ export class Web extends QueryableSecurable {
     public ensureUser(loginName: string): Promise<any> {
         // TODO:: this should resolve to a User
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             logonName: loginName,
         });
 
-        let q = new Web(this, "ensureuser");
+        const q = new Web(this, "ensureuser");
         return q.post({ body: postBody });
     }
 
@@ -324,7 +324,7 @@ export class Web extends QueryableSecurable {
      * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
     public getCatalog(type: number): Promise<List> {
-        let q = new Web(this, `getcatalog(${type})`);
+        const q = new Web(this, `getcatalog(${type})`);
         q.select("Id");
         return q.get().then((data) => {
             return new List(extractOdataId(data));
@@ -336,10 +336,10 @@ export class Web extends QueryableSecurable {
      */
     public getChanges(query: Types.ChangeQuery): Promise<any> {
 
-        let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
+        const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
 
         // don't change "this" instance, make a new one
-        let q = new Web(this, "getchanges");
+        const q = new Web(this, "getchanges");
         return q.post({ body: postBody });
     }
 
@@ -368,7 +368,7 @@ export class Web extends QueryableSecurable {
      * @param progId The ProgID of the application that was used to create the file, in the form OLEServerName.ObjectName
      */
     public mapToIcon(filename: string, size = 0, progId = ""): Promise<string> {
-        let q = new Web(this, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`);
+        const q = new Web(this, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`);
         return q.get();
     }
 }

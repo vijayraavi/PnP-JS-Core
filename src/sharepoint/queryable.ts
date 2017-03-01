@@ -116,26 +116,26 @@ export class Queryable {
             // we need to do some extra parsing to get the parent url correct if we are
             // being created from just a string.
 
-            let urlStr = baseUrl as string;
+            const urlStr = baseUrl as string;
             if (Util.isUrlAbsolute(urlStr) || urlStr.lastIndexOf("/") < 0) {
                 this._parentUrl = urlStr;
                 this._url = Util.combinePaths(urlStr, path);
             } else if (urlStr.lastIndexOf("/") > urlStr.lastIndexOf("(")) {
                 // .../items(19)/fields
-                let index = urlStr.lastIndexOf("/");
+                const index = urlStr.lastIndexOf("/");
                 this._parentUrl = urlStr.slice(0, index);
                 path = Util.combinePaths(urlStr.slice(index), path);
                 this._url = Util.combinePaths(this._parentUrl, path);
             } else {
                 // .../items(19)
-                let index = urlStr.lastIndexOf("(");
+                const index = urlStr.lastIndexOf("(");
                 this._parentUrl = urlStr.slice(0, index);
                 this._url = Util.combinePaths(urlStr, path);
             }
         } else {
-            let q = baseUrl as Queryable;
+            const q = baseUrl as Queryable;
             this._parentUrl = q._url;
-            let target = q._query.get("@target");
+            const target = q._query.get("@target");
             if (target !== null) {
                 this._query.add("@target", target);
             }
@@ -211,8 +211,8 @@ export class Queryable {
         baseUrl: string | Queryable = this.parentUrl,
         path?: string): T {
 
-        let parent = new factory(baseUrl, path);
-        let target = this.query.get("@target");
+        const parent = new factory(baseUrl, path);
+        const target = this.query.get("@target");
         if (target !== null) {
             parent.query.add("@target", target);
         }
@@ -251,12 +251,12 @@ export class Queryable {
 
     private toRequestContext<T>(verb: string, options: FetchOptions = {}, parser: ODataParser<T>): Promise<RequestContext<T>> {
 
-        let dependencyDispose = this.hasBatch ? this.addBatchDependency() : () => { return; };
+        const dependencyDispose = this.hasBatch ? this.addBatchDependency() : () => { return; };
 
         return Util.toAbsoluteUrl(this.toUrlAndQuery()).then(url => {
 
             // build our request context
-            let context: RequestContext<T> = {
+            const context: RequestContext<T> = {
                 batch: this._batch,
                 batchDependency: dependencyDispose,
                 cachingOptions: this._cachingOptions,
@@ -317,9 +317,9 @@ export class QueryableCollection extends Queryable {
      * @param ascending If false DESC is appended, otherwise ASC (default)
      */
     public orderBy(orderBy: string, ascending = true): this {
-        let keys = this._query.getKeys();
-        let query: string[] = [];
-        let asc = ascending ? " asc" : " desc";
+        const keys = this._query.getKeys();
+        const query: string[] = [];
+        const asc = ascending ? " asc" : " desc";
         for (let i = 0; i < keys.length; i++) {
             if (keys[i] === "$orderby") {
                 query.push(this._query.get("$orderby"));

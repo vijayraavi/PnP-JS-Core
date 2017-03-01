@@ -17,7 +17,7 @@ export class UserProfileQuery extends QueryableInstance {
      * The URL of the edit profile page for the current user.
      */
     public get editProfileLink(): Promise<string> {
-        let q = new UserProfileQuery(this, "EditProfileLink");
+        const q = new UserProfileQuery(this, "EditProfileLink");
         return q.getAs(ODataValue<string>());
     }
 
@@ -25,7 +25,7 @@ export class UserProfileQuery extends QueryableInstance {
      * A Boolean value that indicates whether the current user's People I'm Following list is public.
      */
     public get isMyPeopleListPublic(): Promise<boolean> {
-        let q = new UserProfileQuery(this, "IsMyPeopleListPublic");
+        const q = new UserProfileQuery(this, "IsMyPeopleListPublic");
         return q.getAs(ODataValue<boolean>());
     }
 
@@ -35,7 +35,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user
      */
     public amIFollowedBy(loginName: string): Promise<boolean> {
-        let q = new UserProfileQuery(this, "amifollowedby(@v)");
+        const q = new UserProfileQuery(this, "amifollowedby(@v)");
         q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
         return q.get();
     }
@@ -46,7 +46,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user
      */
     public amIFollowing(loginName: string): Promise<boolean> {
-        let q = new UserProfileQuery(this, "amifollowing(@v)");
+        const q = new UserProfileQuery(this, "amifollowing(@v)");
         q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
         return q.get();
     }
@@ -57,7 +57,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param maxCount The maximum number of tags to get.
      */
     public getFollowedTags(maxCount = 20): Promise<string[]> {
-        let q = new UserProfileQuery(this, "getfollowedtags(" + maxCount + ")");
+        const q = new UserProfileQuery(this, "getfollowedtags(" + maxCount + ")");
         return q.get();
     }
 
@@ -67,7 +67,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public getFollowersFor(loginName: string): Promise<any[]> {
-        let q = new UserProfileQuery(this, "getfollowersfor(@v)");
+        const q = new UserProfileQuery(this, "getfollowersfor(@v)");
         q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
         return q.get();
     }
@@ -94,7 +94,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public getPeopleFollowedBy(loginName: string): Promise<any[]> {
-        let q = new UserProfileQuery(this, "getpeoplefollowedby(@v)");
+        const q = new UserProfileQuery(this, "getpeoplefollowedby(@v)");
         q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
         return q.get();
     }
@@ -105,7 +105,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public getPropertiesFor(loginName: string): Promise<any[]> {
-        let q = new UserProfileQuery(this, "getpropertiesfor(@v)");
+        const q = new UserProfileQuery(this, "getpropertiesfor(@v)");
         q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
         return q.get();
     }
@@ -115,7 +115,7 @@ export class UserProfileQuery extends QueryableInstance {
      *
      */
     public get trendingTags(): Promise<Types.HashTagCollection> {
-        let q = new UserProfileQuery(this, null);
+        const q = new UserProfileQuery(this, null);
         q.concat(".gettrendingtags");
         return q.get();
     }
@@ -127,7 +127,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param propertyName The case-sensitive name of the property to get.
      */
     public getUserProfilePropertyFor(loginName: string, propertyName: string): Promise<string> {
-        let q = new UserProfileQuery(this, `getuserprofilepropertyfor(accountname=@v, propertyname='${propertyName}')`);
+        const q = new UserProfileQuery(this, `getuserprofilepropertyfor(accountname=@v, propertyname='${propertyName}')`);
         q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
         return q.get();
     }
@@ -138,7 +138,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public hideSuggestion(loginName: string): Promise<void> {
-        let q = new UserProfileQuery(this, "hidesuggestion(@v)");
+        const q = new UserProfileQuery(this, "hidesuggestion(@v)");
         q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
         return q.post();
     }
@@ -150,7 +150,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param followee The account name of the user who might be followed.
      */
     public isFollowing(follower: string, followee: string): Promise<boolean> {
-        let q = new UserProfileQuery(this, null);
+        const q = new UserProfileQuery(this, null);
         q.concat(`.isfollowing(possiblefolloweraccountname=@v, possiblefolloweeaccountname=@y)`);
         q.query.add("@v", "'" + encodeURIComponent(follower) + "'");
         q.query.add("@y", "'" + encodeURIComponent(followee) + "'");
@@ -166,7 +166,7 @@ export class UserProfileQuery extends QueryableInstance {
 
         return new Promise<void>((resolve, reject) => {
             FileUtil.readBlobAsArrayBuffer(profilePicSource).then((buffer) => {
-                let request = new UserProfileQuery(this, "setmyprofilepicture");
+                const request = new UserProfileQuery(this, "setmyprofilepicture");
                 request.post({
                     body: String.fromCharCode.apply(null, new Uint16Array(buffer)),
                 }).then(_ => resolve());
@@ -229,8 +229,8 @@ class ProfileLoader extends Queryable {
      * @param emails The email addresses of the users to provision sites for
      */
     public createPersonalSiteEnqueueBulk(emails: string[]): Promise<void> {
-        let q = new ProfileLoader(this, "createpersonalsiteenqueuebulk");
-        let postBody = JSON.stringify({ "emailIDs": emails });
+        const q = new ProfileLoader(this, "createpersonalsiteenqueuebulk");
+        const postBody = JSON.stringify({ "emailIDs": emails });
         return q.post({
             body: postBody,
         });
@@ -241,7 +241,7 @@ class ProfileLoader extends Queryable {
      *
      */
     public get ownerUserProfile(): Promise<Types.UserProfile> {
-        let q = this.getParent(ProfileLoader, this.parentUrl, "_api/sp.userprofiles.profileloader.getowneruserprofile");
+        const q = this.getParent(ProfileLoader, this.parentUrl, "_api/sp.userprofiles.profileloader.getowneruserprofile");
         return q.postAs<Types.UserProfile>();
     }
 
@@ -250,7 +250,7 @@ class ProfileLoader extends Queryable {
      *
      */
     public get userProfile(): Promise<Types.UserProfile> {
-        let q = new ProfileLoader(this, "getuserprofile");
+        const q = new ProfileLoader(this, "getuserprofile");
         return q.postAs<Types.UserProfile>();
     }
 
@@ -260,7 +260,7 @@ class ProfileLoader extends Queryable {
      * @param interactiveRequest true if interactively (web) initiated request, or false if non-interactively (client) initiated request
      */
     public createPersonalSite(interactiveRequest = false): Promise<void> {
-        let q = new ProfileLoader(this, `getuserprofile/createpersonalsiteenque(${interactiveRequest})",`);
+        const q = new ProfileLoader(this, `getuserprofile/createpersonalsiteenque(${interactiveRequest})",`);
         return q.post();
     }
 
@@ -270,7 +270,7 @@ class ProfileLoader extends Queryable {
      * @param share true to make all social data public; false to make all social data private.
      */
     public shareAllSocialData(share: boolean): Promise<void> {
-        let q = new ProfileLoader(this, `getuserprofile/shareallsocialdata(${share})",`);
+        const q = new ProfileLoader(this, `getuserprofile/shareallsocialdata(${share})",`);
         return q.post();
     }
 }

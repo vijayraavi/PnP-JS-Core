@@ -4,7 +4,7 @@ export function deprecated(message: string) {
 
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 
-        let method = descriptor.value;
+        const method = descriptor.value;
 
         descriptor.value = function (this: any, ...args: any[]) {
             Logger.log({

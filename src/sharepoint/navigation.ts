@@ -28,7 +28,7 @@ export class NavigationNodes extends QueryableCollection {
      * @param id The id of the node
      */
     public getById(id: number): NavigationNode {
-        let node = new NavigationNode(this);
+        const node = new NavigationNode(this);
         node.concat(`(${id})`);
         return node;
     }
@@ -42,14 +42,14 @@ export class NavigationNodes extends QueryableCollection {
      */
     public add(title: string, url: string, visible = true): Promise<NavigationNodeAddResult> {
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             IsVisible: visible,
             Title: title,
             Url: url,
             "__metadata": { "type": "SP.NavigationNode" },
         });
 
-        let adder = new NavigationNodes(this);
+        const adder = new NavigationNodes(this);
         return adder.post({ body: postBody }).then((data) => {
             return {
                 data: data,
@@ -66,12 +66,12 @@ export class NavigationNodes extends QueryableCollection {
      */
     public moveAfter(nodeId: number, previousNodeId: number): Promise<void> {
 
-        let postBody = JSON.stringify({
+        const postBody = JSON.stringify({
             nodeId: nodeId,
             previousNodeId: previousNodeId,
         });
 
-        let mover = new NavigationNodes(this, "MoveAfter");
+        const mover = new NavigationNodes(this, "MoveAfter");
         return mover.post({ body: postBody });
     }
 }
@@ -96,7 +96,7 @@ export class NavigationNode extends QueryableInstance {
      */
     public update(properties: TypedHash<boolean | string | number>): Promise<NavigationNodeUpdateResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.NavigationNode" },
         }, properties));
 

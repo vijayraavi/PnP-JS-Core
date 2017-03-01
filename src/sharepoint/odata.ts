@@ -43,7 +43,7 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
             r.json().then(json => {
 
                 // include the headers as they contain diagnostic information
-                let data = {
+                const data = {
                     responseBody: json,
                     responseHeaders: r.headers,
                 };
@@ -92,7 +92,7 @@ class ODataEntityParserImpl<T> extends ODataParserBase<T> {
 
     public parse(r: Response): Promise<T> {
         return super.parse(r).then(d => {
-            let o = <T>new this.factory(getEntityUrl(d), null);
+            const o = <T>new this.factory(getEntityUrl(d), null);
             return Util.extend(o, d);
         });
     }
@@ -107,7 +107,7 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T[]> {
     public parse(r: Response): Promise<T[]> {
         return super.parse(r).then((d: any[]) => {
             return d.map(v => {
-                let o = <T>new this.factory(getEntityUrl(v), null);
+                const o = <T>new this.factory(getEntityUrl(v), null);
                 return Util.extend(o, v);
             });
         });
@@ -167,7 +167,7 @@ export class ODataBatch {
      */
     public add<T>(url: string, method: string, options: any, parser: ODataParser<T>): Promise<T> {
 
-        let info = {
+        const info = {
             method: method.toUpperCase(),
             options: options,
             parser: parser,
@@ -176,7 +176,7 @@ export class ODataBatch {
             url: url,
         };
 
-        let p = new Promise<T>((resolve, reject) => {
+        const p = new Promise<T>((resolve, reject) => {
             info.resolve = resolve;
             info.reject = reject;
         });
@@ -193,7 +193,7 @@ export class ODataBatch {
     public addBatchDependency(): () => void {
 
         let resolver: () => void;
-        let promise = new Promise<void>((resolve) => {
+        const promise = new Promise<void>((resolve) => {
             resolver = resolve;
         });
 
@@ -225,14 +225,14 @@ export class ODataBatch {
         // creating the client here allows the url to be populated for nodejs client as well as potentially
         // any other hacks needed for other types of clients. Essentially allows the absoluteRequestUrl
         // below to be correct
-        let client = new HttpClient();
+        const client = new HttpClient();
 
         // due to timing we need to get the absolute url here so we can use it for all the individual requests
         // and for sending the entire batch
         return Util.toAbsoluteUrl(this.baseUrl).then(absoluteRequestUrl => {
 
             // build all the requests, send them, pipe results in order to parsers
-            let batchBody: string[] = [];
+            const batchBody: string[] = [];
 
             let currentChangeSetId = "";
 
@@ -269,7 +269,7 @@ export class ODataBatch {
                 };
 
                 // this is the url of the individual request within the batch
-                let url = Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : Util.combinePaths(absoluteRequestUrl, reqInfo.url);
+                const url = Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : Util.combinePaths(absoluteRequestUrl, reqInfo.url);
 
                 Logger.write(`Adding request ${reqInfo.method} ${url} to batch.`, LogLevel.Verbose);
 
@@ -298,7 +298,7 @@ export class ODataBatch {
                     headers = Util.extend(headers, reqInfo.options.headers);
                 }
 
-                for (let name in headers) {
+                for (const name in headers) {
                     if (headers.hasOwnProperty(name)) {
                         batchBody.push(`${name}: ${headers[name]}\n`);
                     }
@@ -319,11 +319,11 @@ export class ODataBatch {
 
             batchBody.push(`--batch_${this._batchId}--\n`);
 
-            let batchHeaders: TypedHash<string> = {
+            const batchHeaders: TypedHash<string> = {
                 "Content-Type": `multipart/mixed; boundary=batch_${this._batchId}`,
             };
 
-            let batchOptions = {
+            const batchOptions = {
                 "body": batchBody.join(""),
                 "headers": batchHeaders,
             };
@@ -343,7 +343,7 @@ export class ODataBatch {
 
                     return responses.reduce((chain, response, index) => {
 
-                        let request = this._requests[index];
+                        const request = this._requests[index];
 
                         Logger.write(`Resolving request ${request.method} ${request.url}.`, LogLevel.Verbose);
 
@@ -361,16 +361,16 @@ export class ODataBatch {
      */
     private _parseResponse(body: string): Promise<Response[]> {
         return new Promise((resolve, reject) => {
-            let responses: Response[] = [];
-            let header = "--batchresponse_";
+            const responses: Response[] = [];
+            const header = "--batchresponse_";
             // Ex. "HTTP/1.1 500 Internal Server Error"
-            let statusRegExp = new RegExp("^HTTP/[0-9.]+ +([0-9]+) +(.*)", "i");
-            let lines = body.split("\n");
+            const statusRegExp = new RegExp("^HTTP/[0-9.]+ +([0-9]+) +(.*)", "i");
+            const lines = body.split("\n");
             let state = "batch";
             let status: number;
             let statusText: string;
             for (let i = 0; i < lines.length; ++i) {
-                let line = lines[i];
+                const line = lines[i];
                 switch (state) {
                     case "batch":
                         if (line.substr(0, header.length) === header) {
@@ -387,7 +387,7 @@ export class ODataBatch {
                         }
                         break;
                     case "status":
-                        let parts = statusRegExp.exec(line);
+                        const parts = statusRegExp.exec(line);
                         if (parts.length !== 3) {
                             throw new BatchParseException(`Invalid status, line ${i}`);
                         }

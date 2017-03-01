@@ -14,7 +14,7 @@ export class UserCustomActions extends QueryableCollection {
      * @param id The GUID ID of the user custom action to get.
      */
     public getById(id: string): UserCustomAction {
-        let uca = new UserCustomAction(this);
+        const uca = new UserCustomAction(this);
         uca.concat(`('${id}')`);
         return uca;
     }
@@ -27,7 +27,7 @@ export class UserCustomActions extends QueryableCollection {
      */
     public add(properties: TypedHash<string | boolean | number>): Promise<UserCustomActionAddResult> {
 
-        let postBody = JSON.stringify(Util.extend({ __metadata: { "type": "SP.UserCustomAction" } }, properties));
+        const postBody = JSON.stringify(Util.extend({ __metadata: { "type": "SP.UserCustomAction" } }, properties));
 
         return this.post({ body: postBody }).then((data) => {
             return {
@@ -42,7 +42,7 @@ export class UserCustomActions extends QueryableCollection {
      *
      */
     public clear(): Promise<void> {
-        let a = new UserCustomActions(this, "clear");
+        const a = new UserCustomActions(this, "clear");
         return a.post();
     }
 }
@@ -55,7 +55,7 @@ export class UserCustomAction extends QueryableInstance {
 
     public update(properties: TypedHash<string | boolean | number>): Promise<UserCustomActionUpdateResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.UserCustomAction" },
         }, properties));
 

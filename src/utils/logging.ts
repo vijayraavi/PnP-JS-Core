@@ -137,7 +137,7 @@ class LoggerImpl {
     }
 
     public clearSubscribers(): LogListener[] {
-        let s = this.subscribers.slice(0);
+        const s = this.subscribers.slice(0);
         this.subscribers.length = 0;
         return s;
     }
@@ -181,7 +181,7 @@ export class ConsoleListener implements LogListener {
      */
     public log(entry: LogEntry): void {
 
-        let msg = this.format(entry);
+        const msg = this.format(entry);
 
         switch (entry.level) {
             case LogLevel.Verbose:

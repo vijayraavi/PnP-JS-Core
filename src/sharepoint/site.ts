@@ -48,10 +48,10 @@ export class Site extends QueryableInstance {
      * Gets the context information for the site.
      */
     public getContextInfo(): Promise<ContextInfo> {
-        let q = new Site(this.parentUrl, "_api/contextinfo");
+        const q = new Site(this.parentUrl, "_api/contextinfo");
         return q.post().then(data => {
             if (data.hasOwnProperty("GetContextWebInformation")) {
-                let info = data.GetContextWebInformation;
+                const info = data.GetContextWebInformation;
                 info.SupportedSchemaVersions = info.SupportedSchemaVersions.results;
                 return info;
             } else {
@@ -66,7 +66,7 @@ export class Site extends QueryableInstance {
      * @param absoluteWebUrl The absolute url of the web whose document libraries should be returned
      */
     public getDocumentLibraries(absoluteWebUrl: string): Promise<DocumentLibraryInformation[]> {
-        let q = new Queryable("", "_api/sp.web.getdocumentlibraries(@v)");
+        const q = new Queryable("", "_api/sp.web.getdocumentlibraries(@v)");
         q.query.add("@v", "'" + absoluteWebUrl + "'");
         return q.get().then(data => {
             if (data.hasOwnProperty("GetDocumentLibraries")) {
@@ -83,7 +83,7 @@ export class Site extends QueryableInstance {
      * @param absolutePageUrl The absolute url of the page
      */
     public getWebUrlFromPageUrl(absolutePageUrl: string): Promise<string> {
-        let q = new Queryable("", "_api/sp.web.getweburlfrompageurl(@v)");
+        const q = new Queryable("", "_api/sp.web.getweburlfrompageurl(@v)");
         q.query.add("@v", "'" + absolutePageUrl + "'");
         return q.get().then(data => {
             if (data.hasOwnProperty("GetWebUrlFromPageUrl")) {

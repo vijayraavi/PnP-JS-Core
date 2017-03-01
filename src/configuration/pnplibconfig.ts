@@ -127,7 +127,7 @@ export class RuntimeConfigImpl {
     }
 }
 
-let _runtimeConfig = new RuntimeConfigImpl();
+const _runtimeConfig = new RuntimeConfigImpl();
 
 export let RuntimeConfig = _runtimeConfig;
 

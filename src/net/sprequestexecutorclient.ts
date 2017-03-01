@@ -14,9 +14,10 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             throw new SPRequestExecutorUndefinedException();
         }
 
-        let addinWebUrl = url.substring(0, url.indexOf("/_api")),
-            executor = new SP.RequestExecutor(addinWebUrl),
-            headers: { [key: string]: string; } = {},
+        const addinWebUrl = url.substring(0, url.indexOf("/_api")),
+            executor = new SP.RequestExecutor(addinWebUrl);
+
+        let headers: { [key: string]: string; } = {},
             iterator: IterableIterator<[string, string]>,
             temp: IteratorResult<[string, string]>;
 
@@ -58,15 +59,15 @@ export class SPRequestExecutorClient implements HttpClientImpl {
      * Converts a SharePoint REST API response to a fetch API response.
      */
     private convertToResponse = (spResponse: SP.ResponseInfo): Response => {
-        let responseHeaders = new Headers();
-        for (let h in spResponse.headers) {
+        const responseHeaders = new Headers();
+        for (const h in spResponse.headers) {
             if (spResponse.headers[h]) {
                 responseHeaders.append(h, spResponse.headers[h]);
             }
         }
 
         // issue #256, Cannot have an empty string body when creating a Response with status 204
-        let body = spResponse.statusCode === 204 ? null : spResponse.body;
+        const body = spResponse.statusCode === 204 ? null : spResponse.body;
 
         return new Response(body, {
             headers: responseHeaders,

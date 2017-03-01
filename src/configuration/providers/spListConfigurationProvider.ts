@@ -63,7 +63,7 @@ export default class SPListConfigurationProvider implements IConfigurationProvid
      * @return {CachingConfigurationProvider} Caching providers which wraps the current provider
      */
     public asCaching(): CachingConfigurationProvider {
-        let cacheKey = `splist_${this.web.toUrl()}+${this.listTitle}`;
+        const cacheKey = `splist_${this.web.toUrl()}+${this.listTitle}`;
         return new CachingConfigurationProvider(this, cacheKey);
     }
 }

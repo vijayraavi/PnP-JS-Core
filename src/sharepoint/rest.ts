@@ -123,9 +123,9 @@ export class Rest {
             throw new UrlException("The hostWebUrl parameter must be an absolute url.");
         }
 
-        let url = Util.combinePaths(addInWebUrl, "_api/SP.AppContextSite(@target)");
+        const url = Util.combinePaths(addInWebUrl, "_api/SP.AppContextSite(@target)");
 
-        let instance = new factory(url, urlPart);
+        const instance = new factory(url, urlPart);
         instance.query.add("@target", "'" + encodeURIComponent(hostWebUrl) + "'");
         return instance;
     }

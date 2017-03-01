@@ -43,7 +43,7 @@ export class Lists extends QueryableCollection {
      * @param id The Id of the list (GUID)
      */
     public getById(id: string): List {
-        let list = new List(this);
+        const list = new List(this);
         list.concat(`('${id}')`);
         return list;
     }
@@ -59,7 +59,7 @@ export class Lists extends QueryableCollection {
      */
     public add(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ListAddResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "AllowContentTypes": enableContentTypes,
             "BaseTemplate": template,
             "ContentTypesEnabled": enableContentTypes,
@@ -95,7 +95,7 @@ export class Lists extends QueryableCollection {
 
         return new Promise((resolve, reject) => {
 
-            let list: List = this.getByTitle(title);
+            const list: List = this.getByTitle(title);
 
             list.get().then(_ => {
 
@@ -116,7 +116,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default asset location for images or other files, which the users upload to their wiki pages.
      */
     public ensureSiteAssetsLibrary(): Promise<List> {
-        let q = new Lists(this, "ensuresiteassetslibrary");
+        const q = new Lists(this, "ensuresiteassetslibrary");
         return q.post().then((json) => {
             return new List(extractOdataId(json));
         });
@@ -126,7 +126,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default location for wiki pages.
      */
     public ensureSitePagesLibrary(): Promise<List> {
-        let q = new Lists(this, "ensuresitepageslibrary");
+        const q = new Lists(this, "ensuresitepageslibrary");
         return q.post().then((json) => {
             return new List(extractOdataId(json));
         });
@@ -263,7 +263,7 @@ export class List extends QueryableSecurable {
     /* tslint:disable no-string-literal */
     public update(properties: TypedHash<string | number | boolean>, eTag = "*"): Promise<ListUpdateResult> {
 
-        let postBody = JSON.stringify(Util.extend({
+        const postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.List" },
         }, properties));
 
@@ -308,10 +308,10 @@ export class List extends QueryableSecurable {
      */
     public getChanges(query: ChangeQuery): Promise<any> {
 
-        let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
+        const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
 
         // don't change "this" instance of the List, make a new one
-        let q = new List(this, "getchanges");
+        const q = new List(this, "getchanges");
         return q.post({ body: postBody });
     }
 
@@ -336,24 +336,21 @@ export class List extends QueryableSecurable {
      */
     public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
-        let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) });
+        const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) });
 
         // don't change "this" instance of the List, make a new one
-        let q = new List(this, "getitems");
-
-        q = q.expand.apply(q, expands);
-
-        return q.post({ body: postBody });
+        const q = new List(this, "getitems");
+        return q.expand.apply(q, expands).post({ body: postBody });
     }
 
     /**
      * See: https://msdn.microsoft.com/en-us/library/office/dn292554.aspx
      */
     public getListItemChangesSinceToken(query: ChangeLogitemQuery): Promise<string> {
-        let postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) });
+        const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) });
 
         // don't change "this" instance of the List, make a new one
-        let q = new List(this, "getlistitemchangessincetoken");
+        const q = new List(this, "getlistitemchangessincetoken");
         // note we are using a custom parser to return text as the response is an xml doc
         return q.post({ body: postBody }, { parse(r) { return r.text(); } });
     }
@@ -377,7 +374,7 @@ export class List extends QueryableSecurable {
      */
     public renderListData(viewXml: string): Promise<RenderListData> {
         // don't change "this" instance of the List, make a new one
-        let q = new List(this, "renderlistdata(@viewXml)");
+        const q = new List(this, "renderlistdata(@viewXml)");
         q.query.add("@viewXml", "'" + viewXml + "'");
         return q.post().then(data => {
             // data will be a string, so we parse it again
@@ -395,7 +392,7 @@ export class List extends QueryableSecurable {
      */
     public renderListFormData(itemId: number, formId: string, mode: ControlMode): Promise<ListFormData> {
         // don't change "this" instance of the List, make a new one
-        let q = new List(this, "renderlistformdata(itemid=" + itemId + ", formid='" + formId + "', mode=" + mode + ")");
+        const q = new List(this, "renderlistformdata(itemid=" + itemId + ", formid='" + formId + "', mode=" + mode + ")");
         return q.post().then(data => {
             // data will be a string, so we parse it again
             data = JSON.parse(data);
@@ -412,7 +409,7 @@ export class List extends QueryableSecurable {
      */
     public reserveListItemId(): Promise<number> {
         // don't change "this" instance of the List, make a new one
-        let q = new List(this, "reservelistitemid");
+        const q = new List(this, "reservelistitemid");
         return q.post().then(data => {
             if (data.hasOwnProperty("ReserveListItemId")) {
                 return data.ReserveListItemId;
@@ -427,7 +424,7 @@ export class List extends QueryableSecurable {
      *
      */
     public getListItemEntityTypeFullName(): Promise<string> {
-        let q = new QueryableInstance(this);
+        const q = new QueryableInstance(this);
         return q.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
     }
 }

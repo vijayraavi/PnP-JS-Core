@@ -56,7 +56,7 @@ export class SiteGroups extends QueryableCollection {
      * @param props The properties to be updated
      */
     public add(properties: TypedHash<any>): Promise<GroupAddResult> {
-        let postBody = JSON.stringify(Util.extend(
+        const postBody = JSON.stringify(Util.extend(
             { "__metadata": { "type": "SP.Group" } }, properties));
 
         return this.post({ body: postBody }).then((data) => {
@@ -82,7 +82,7 @@ export class SiteGroups extends QueryableCollection {
      * @param id The id of the group
      */
     public getById(id: number) {
-        let sg = new SiteGroup(this);
+        const sg = new SiteGroup(this);
         sg.concat(`(${id})`);
         return sg;
     }
@@ -93,7 +93,7 @@ export class SiteGroups extends QueryableCollection {
      * @param id The id of the group to remove
      */
     public removeById(id: number): Promise<void> {
-        let g = new SiteGroups(this, `removeById('${id}')`);
+        const g = new SiteGroups(this, `removeById('${id}')`);
         return g.post();
     }
 
@@ -103,7 +103,7 @@ export class SiteGroups extends QueryableCollection {
      * @param loginName The login name of the user
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        let g = new SiteGroups(this, `removeByLoginName('${loginName}')`);
+        const g = new SiteGroups(this, `removeByLoginName('${loginName}')`);
         return g.post();
     }
 }
@@ -139,7 +139,7 @@ export class SiteGroup extends QueryableInstance {
     /* tslint:disable no-string-literal */
     public update(properties: TypedHash<any>): Promise<GroupUpdateResult> {
 
-        let postBody = Util.extend({ "__metadata": { "type": "SP.Group" } }, properties);
+        const postBody = Util.extend({ "__metadata": { "type": "SP.Group" } }, properties);
 
         return this.post({
             body: JSON.stringify(postBody),

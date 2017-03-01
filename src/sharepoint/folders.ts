@@ -21,7 +21,7 @@ export class Folders extends QueryableCollection {
      *
      */
     public getByName(name: string): Folder {
-        let f = new Folder(this);
+        const f = new Folder(this);
         f.concat(`('${name}')`);
         return f;
     }

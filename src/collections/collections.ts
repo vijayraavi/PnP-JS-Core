@@ -24,7 +24,7 @@ export class Dictionary<T> {
      * @param key The key whose value we want to return, returns null if the key does not exist
      */
     public get(key: string): T {
-        let index = this.keys.indexOf(key);
+        const index = this.keys.indexOf(key);
         if (index < 0) {
             return null;
         }
@@ -38,7 +38,7 @@ export class Dictionary<T> {
      * @param o The value to add
      */
     public add(key: string, o: T): void {
-        let index = this.keys.indexOf(key);
+        const index = this.keys.indexOf(key);
         if (index > -1) {
             this.values[index] = o;
         } else {
@@ -52,13 +52,13 @@ export class Dictionary<T> {
      */
     public merge(source: TypedHash<T> | Dictionary<T>): void {
         if ("getKeys" in source) {
-            let sourceAsDictionary = source as Dictionary<T>;
+            const sourceAsDictionary = source as Dictionary<T>;
             sourceAsDictionary.getKeys().map(key => {
                 this.add(key, sourceAsDictionary.get(key));
             });
         } else {
-            let sourceAsHash = source as TypedHash<T>;
-            for (let key in sourceAsHash) {
+            const sourceAsHash = source as TypedHash<T>;
+            for (const key in sourceAsHash) {
                 if (sourceAsHash.hasOwnProperty(key)) {
                     this.add(key, sourceAsHash[key]);
                 }
@@ -72,11 +72,11 @@ export class Dictionary<T> {
      * @param key The key of the key/value pair to remove. Returns null if the key was not found.
      */
     public remove(key: string): T {
-        let index = this.keys.indexOf(key);
+        const index = this.keys.indexOf(key);
         if (index < 0) {
             return null;
         }
-        let val = this.values[index];
+        const val = this.values[index];
         this.keys.splice(index, 1);
         this.values.splice(index, 1);
         return val;

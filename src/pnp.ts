@@ -45,7 +45,7 @@ export const setup: (config: LibraryConfiguration) => void = setRuntimeConfig;
 export * from "./types/index";
 
 // creating this class instead of directly assigning to default fixes issue #116
-let Def = {
+const Def = {
     /**
      * Global configuration instance to which providers can be added
      */

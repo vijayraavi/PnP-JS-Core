@@ -34,7 +34,7 @@ export class Files extends QueryableCollection {
      * @param name The name of the file, including extension.
      */
     public getByName(name: string): File {
-        let f = new File(this);
+        const f = new File(this);
         f.concat(`('${name}')`);
         return f;
     }
@@ -75,7 +75,7 @@ export class Files extends QueryableCollection {
         progress?: (data: ChunkedFileUploadProgressData) => void,
         shouldOverWrite = true,
         chunkSize = 10485760): Promise<FileAddResult> {
-        let adder = new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`);
+        const adder = new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`);
         return adder.post().then(() => this.getByName(url)).then(file => file.setContentChunked(content, progress, chunkSize)).then((response) => {
             return {
                 data: response,
@@ -310,7 +310,7 @@ export class File extends QueryableInstance {
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<File> {
 
-        let setter = new File(this, "$value");
+        const setter = new File(this, "$value");
 
         return setter.post({
             body: content,
@@ -336,11 +336,10 @@ export class File extends QueryableInstance {
             progress = () => null;
         }
 
-        let self = this;
-        let fileSize = file.size;
-
-        let blockCount = parseInt((file.size / chunkSize).toString(), 10) + ((file.size % chunkSize === 0) ? 1 : 0);
-        let uploadId = Util.getGUID();
+        const self = this;
+        const fileSize = file.size;
+        const blockCount = parseInt((file.size / chunkSize).toString(), 10) + ((file.size % chunkSize === 0) ? 1 : 0);
+        const uploadId = Util.getGUID();
 
         // start the chain with the first fragment
         progress({ blockNumber: 1, chunkSize: chunkSize, currentPointer: 0, fileSize: fileSize, stage: "starting", totalBlocks: blockCount });
@@ -446,7 +445,7 @@ export class Versions extends QueryableCollection {
      * @param versionId The id of the version to retrieve
      */
     public getById(versionId: number): Version {
-        let v = new Version(this);
+        const v = new Version(this);
         v.concat(`(${versionId})`);
         return v;
     }
