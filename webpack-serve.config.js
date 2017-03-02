@@ -12,20 +12,23 @@ module.exports = {
         libraryTarget: "umd",
         library: "$pnp"
     },
-    debug: true,
     devtool: "source-map",
     resolve: {
-        extensions: ['', '.ts']
+        enforceExtension: false,
+        extensions: ['.ts']
     },
     plugins: [
         new webpack.NormalModuleReplacementPlugin(/\.\.\/net\/nodefetchclient/, "../net/nodefetchclientbrowser"),
     ],
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
-                loader: 'babel-loader?presets[]=es2015!ts-loader'
-            }
+                use: [
+                    "babel-loader",
+                    "ts-loader"
+                ],
+            },
         ]
     }
 };

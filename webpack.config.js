@@ -15,15 +15,19 @@ module.exports = [{
     },
     devtool: "source-map",
     resolve: {
-        extensions: ['', '.js']
+        enforceExtension: false,
+        extensions: ['.js'],
     },
     plugins: [
         new webpack.NormalModuleReplacementPlugin(/\.\.\/net\/nodefetchclient/, "../net/nodefetchclientbrowser"),
-        new webpack.BannerPlugin(config.header, { entryOnly: true, raw: true })
+        new webpack.BannerPlugin({ banner: config.header, entryOnly: true, raw: true }),
     ],
     module: {
-        loaders: [
-            { test: /\.js$/, loader: 'babel-loader?presets[]=es2015' }
+        rules: [
+            {
+                test: /\.js$/,
+                use: ["babel-loader"],
+            },
         ]
     }
 },
@@ -40,22 +44,27 @@ module.exports = [{
     },
     devtool: "source-map",
     resolve: {
-        extensions: ['', '.js']
+        enforceExtension: false,
+        extensions: ['.js']
     },
     plugins: [
         new webpack.NormalModuleReplacementPlugin(/\.\.\/net\/nodefetchclient/, "../net/nodefetchclientbrowser"),
-        new webpack.BannerPlugin(config.header, { entryOnly: true, raw: true }),
+        new webpack.BannerPlugin({ banner: config.header, entryOnly: true, raw: true }),
         new webpack.DefinePlugin({
             "process.env": {
                 "NODE_ENV": JSON.stringify("production")
             }
         }),
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin()
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true
+        })
     ],
     module: {
-        loaders: [
-            { test: /\.js$/, loader: 'babel-loader?presets[]=es2015' },
+        rules: [
+            {
+                test: /\.js$/,
+                use: ["babel-loader"],
+            },
         ]
     }
 }];
