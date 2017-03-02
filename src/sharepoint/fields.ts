@@ -375,6 +375,9 @@ export class Field extends QueryableInstance {
     }
 }
 
+/**
+ * This interface defines the result of adding a field
+ */
 export interface FieldAddResult {
     data: any;
     field: Field;
