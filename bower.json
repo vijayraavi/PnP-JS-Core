@@ -33,6 +33,7 @@
         "server-root/",
         "src/",
         "tests/",
+        "assets",
         "typings.json",
         "gulptasks/",
         "typings.json",
