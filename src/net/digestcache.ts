@@ -8,9 +8,12 @@ export class CachedDigest {
     public value: string;
 }
 
+// allows for the caching of digests across all HttpClient's which each have their own DigestCache wrapper.
+const digests = new Dictionary<CachedDigest>();
+
 export class DigestCache {
 
-    constructor(private _httpClient: HttpClient, private _digests: Dictionary<CachedDigest> = new Dictionary<CachedDigest>()) { }
+    constructor(private _httpClient: HttpClient, private _digests: Dictionary<CachedDigest> = digests) { }
 
     public getDigest(webUrl: string): Promise<string> {
 

@@ -59,17 +59,17 @@ export class Lists extends QueryableCollection {
      */
     public add(title: string, description = "", template = 100, enableContentTypes = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ListAddResult> {
 
-        const postBody = JSON.stringify(Util.extend({
+        const addSettings = Util.extend({
             "AllowContentTypes": enableContentTypes,
             "BaseTemplate": template,
             "ContentTypesEnabled": enableContentTypes,
             "Description": description,
             "Title": title,
             "__metadata": { "type": "SP.List" },
-        }, additionalSettings));
+        }, additionalSettings);
 
-        return this.post({ body: postBody }).then((data) => {
-            return { data: data, list: this.getByTitle(title) };
+        return this.post({ body: JSON.stringify(addSettings) }).then((data) => {
+            return { data: data, list: this.getByTitle(addSettings.Title) };
         });
     }
 
@@ -95,18 +95,20 @@ export class Lists extends QueryableCollection {
 
         return new Promise((resolve, reject) => {
 
-            const list: List = this.getByTitle(title);
+            const addOrUpdateSettings = Util.extend(additionalSettings, { Title: title, Description: description, ContentTypesEnabled: enableContentTypes }, true);
+
+            const list: List = this.getByTitle(addOrUpdateSettings.Title);
 
             list.get().then(_ => {
 
-                list.update(additionalSettings).then(d => {
-                    resolve({ created: false, data: d, list: list });
+                list.update(addOrUpdateSettings).then(d => {
+                    resolve({ created: false, data: d, list: this.getByTitle(addOrUpdateSettings.Title) });
                 }).catch(e => reject(e));
 
             }).catch(_ => {
 
-                this.add(title, description, template, enableContentTypes, additionalSettings).then((r) => {
-                    resolve({ created: true, data: r.data, list: this.getByTitle(title) });
+                this.add(title, description, template, enableContentTypes, addOrUpdateSettings).then((r) => {
+                    resolve({ created: true, data: r.data, list: this.getByTitle(addOrUpdateSettings.Title) });
                 }).catch((e) => reject(e));
             });
         });
