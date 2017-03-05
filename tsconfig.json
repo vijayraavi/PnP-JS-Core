@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
-        "target": "es2015",
+        "target": "es5",
         "module": "commonjs",
         "jsx": "react",
         "declaration": false,
         "sourceMap": true,
         "removeComments": false,
         "types": [
+            "core-js",
             "sharepoint"
         ],
         "noImplicitAny": true,

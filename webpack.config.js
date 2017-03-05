@@ -21,15 +21,7 @@ module.exports = [{
     plugins: [
         new webpack.NormalModuleReplacementPlugin(/\.\.\/net\/nodefetchclient/, "../net/nodefetchclientbrowser"),
         new webpack.BannerPlugin({ banner: config.header, entryOnly: true, raw: true }),
-    ],
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                use: ["babel-loader"],
-            },
-        ]
-    }
+    ]
 },
 {
     // minified core file + sourcemap -> dist
@@ -58,13 +50,5 @@ module.exports = [{
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true
         })
-    ],
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                use: ["babel-loader"],
-            },
-        ]
-    }
+    ]
 }];
