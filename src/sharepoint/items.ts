@@ -206,6 +206,8 @@ export class Item extends QueryableSecurable {
                     "__metadata": { "type": d.ListItemEntityTypeFullName },
                 }, properties));
 
+                removeDependency();
+
                 return this.post({
                     body: postBody,
                     headers: {
@@ -213,7 +215,6 @@ export class Item extends QueryableSecurable {
                         "X-HTTP-Method": "MERGE",
                     },
                 }, new ItemUpdatedParser()).then((data) => {
-                    removeDependency();
                     resolve({
                         data: data,
                         item: this,
