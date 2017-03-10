@@ -143,6 +143,11 @@ export class Queryable {
         }
     }
 
+    public as<T>(factory: QueryableConstructor<T>): T {
+        const o = <T>new factory(this._url, null);
+        return Util.extend(o, this, true);
+    }
+
     /**
      * Adds this query to the supplied batch
      *

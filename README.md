@@ -24,7 +24,7 @@ Add the package from bower
 
 ### Wiki
 
-Please see [the wiki](https://github.com/SharePoint/PnP-JS-Core/wiki) for detailed guides on getting started both using and contributing to the library.
+Please see [the wiki](https://github.com/SharePoint/PnP-JS-Core/wiki) for detailed guides on getting started both using and contributing to the library. The **[Developer Guide](https://github.com/SharePoint/PnP-JS-Core/wiki/Developer-Guide)** is a great place to get started.
 
 ### API Documentation
 

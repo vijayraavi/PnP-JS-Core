@@ -54,11 +54,11 @@ export function pipe<T>(context: RequestContext<T>): Promise<T> {
  */
 function requestPipelineMethod(alwaysRun = false) {
 
-    return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 
         const method = descriptor.value;
 
-        descriptor.value = function(...args: any[]) {
+        descriptor.value = function (...args: any[]) {
 
             // if we have a result already in the pipeline, pass it along and don't call the tagged method
             if (!alwaysRun && args.length > 0 && args[0].hasOwnProperty("hasResult") && args[0].hasResult) {
@@ -165,7 +165,7 @@ class PipelineMethods {
 
                 // we are not part of a batch, so proceed as normal
                 const client = new HttpClient();
-                const opts = Util.extend(context.options, { method: context.verb });
+                const opts = Util.extend(context.options || {}, { method: context.verb });
                 client.fetch(context.requestAbsoluteUrl, opts)
                     .then(response => context.parser.parse(response))
                     .then(result => PipelineMethods.setResult(context, result))

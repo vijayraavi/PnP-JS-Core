@@ -64,6 +64,13 @@ export {
 } from "./odata";
 
 export {
+    Queryable,
+    QueryableInstance,
+    QueryableCollection,
+    QueryableConstructor
+} from "./queryable";
+
+export {
     RoleDefinitionUpdateResult,
     RoleDefinitionAddResult,
     RoleDefinitionBindings
