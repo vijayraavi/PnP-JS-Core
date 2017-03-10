@@ -143,6 +143,11 @@ export class Queryable {
         }
     }
 
+    /**
+     * Creates a new instance of the supplied factory and extends this into that new instance
+     *
+     * @param factory constructor for the new queryable
+     */
     public as<T>(factory: QueryableConstructor<T>): T {
         const o = <T>new factory(this._url, null);
         return Util.extend(o, this, true);
