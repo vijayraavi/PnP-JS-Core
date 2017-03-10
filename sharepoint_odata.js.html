@@ -27,12 +27,23 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
-const util_1 = require("../utils/util");
-const logging_1 = require("../utils/logging");
-const httpclient_1 = require("../net/httpclient");
-const pnplibconfig_1 = require("../configuration/pnplibconfig");
-const exceptions_1 = require("../utils/exceptions");
-const exceptions_2 = require("../utils/exceptions");
+var __extends = (this &amp;&amp; this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = require("../utils/util");
+var logging_1 = require("../utils/logging");
+var httpclient_1 = require("../net/httpclient");
+var pnplibconfig_1 = require("../configuration/pnplibconfig");
+var exceptions_1 = require("../utils/exceptions");
+var exceptions_2 = require("../utils/exceptions");
 function extractOdataId(candidate) {
     if (candidate.hasOwnProperty("odata.id")) {
         return candidate["odata.id"];
@@ -45,29 +56,37 @@ function extractOdataId(candidate) {
     }
 }
 exports.extractOdataId = extractOdataId;
-class ODataParserBase {
-    parse(r) {
-        return new Promise((resolve, reject) => {
-            if (this.handleError(r, reject)) {
+var ODataParserBase = (function () {
+    function ODataParserBase() {
+    }
+    ODataParserBase.prototype.parse = function (r) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            if (_this.handleError(r, reject)) {
                 if ((r.headers.has("Content-Length") &amp;&amp; parseFloat(r.headers.get("Content-Length")) === 0) || r.status === 204) {
                     resolve({});
                 }
                 else {
-                    r.json().then(json => resolve(this.parseODataJSON(json)));
+                    r.json().then(function (json) { return resolve(_this.parseODataJSON(json)); });
                 }
             }
         });
-    }
-    handleError(r, reject) {
+    };
+    ODataParserBase.prototype.handleError = function (r, reject) {
         if (!r.ok) {
-            r.json().then(json => {
-                reject(new exceptions_2.ProcessHttpClientResponseException(r.status, r.statusText, json));
+            r.json().then(function (json) {
+                // include the headers as they contain diagnostic information
+                var data = {
+                    responseBody: json,
+                    responseHeaders: r.headers,
+                };
+                reject(new exceptions_2.ProcessHttpClientResponseException(r.status, r.statusText, data));
             });
         }
         return r.ok;
-    }
-    parseODataJSON(json) {
-        let result = json;
+    };
+    ODataParserBase.prototype.parseODataJSON = function (json) {
+        var result = json;
         if (json.hasOwnProperty("d")) {
             if (json.d.hasOwnProperty("results")) {
                 result = json.d.results;
@@ -80,49 +99,71 @@ class ODataParserBase {
             result = json.value;
         }
         return result;
-    }
-}
+    };
+    return ODataParserBase;
+}());
 exports.ODataParserBase = ODataParserBase;
-class ODataDefaultParser extends ODataParserBase {
-}
+var ODataDefaultParser = (function (_super) {
+    __extends(ODataDefaultParser, _super);
+    function ODataDefaultParser() {
+        return _super !== null &amp;&amp; _super.apply(this, arguments) || this;
+    }
+    return ODataDefaultParser;
+}(ODataParserBase));
 exports.ODataDefaultParser = ODataDefaultParser;
-class ODataRawParserImpl {
-    parse(r) {
+var ODataRawParserImpl = (function () {
+    function ODataRawParserImpl() {
+    }
+    ODataRawParserImpl.prototype.parse = function (r) {
         return r.json();
-    }
-}
+    };
+    return ODataRawParserImpl;
+}());
 exports.ODataRawParserImpl = ODataRawParserImpl;
-class ODataValueParserImpl extends ODataParserBase {
-    parse(r) {
-        return super.parse(r).then(d => d);
+var ODataValueParserImpl = (function (_super) {
+    __extends(ODataValueParserImpl, _super);
+    function ODataValueParserImpl() {
+        return _super !== null &amp;&amp; _super.apply(this, arguments) || this;
     }
-}
-class ODataEntityParserImpl extends ODataParserBase {
-    constructor(factory) {
-        super();
-        this.factory = factory;
+    ODataValueParserImpl.prototype.parse = function (r) {
+        return _super.prototype.parse.call(this, r).then(function (d) { return d; });
+    };
+    return ODataValueParserImpl;
+}(ODataParserBase));
+var ODataEntityParserImpl = (function (_super) {
+    __extends(ODataEntityParserImpl, _super);
+    function ODataEntityParserImpl(factory) {
+        var _this = _super.call(this) || this;
+        _this.factory = factory;
+        return _this;
     }
-    parse(r) {
-        return super.parse(r).then(d => {
-            let o = new this.factory(getEntityUrl(d), null);
+    ODataEntityParserImpl.prototype.parse = function (r) {
+        var _this = this;
+        return _super.prototype.parse.call(this, r).then(function (d) {
+            var o = new _this.factory(getEntityUrl(d), null);
             return util_1.Util.extend(o, d);
         });
+    };
+    return ODataEntityParserImpl;
+}(ODataParserBase));
+var ODataEntityArrayParserImpl = (function (_super) {
+    __extends(ODataEntityArrayParserImpl, _super);
+    function ODataEntityArrayParserImpl(factory) {
+        var _this = _super.call(this) || this;
+        _this.factory = factory;
+        return _this;
     }
-}
-class ODataEntityArrayParserImpl extends ODataParserBase {
-    constructor(factory) {
-        super();
-        this.factory = factory;
-    }
-    parse(r) {
-        return super.parse(r).then((d) => {
-            return d.map(v => {
-                let o = new this.factory(getEntityUrl(v), null);
+    ODataEntityArrayParserImpl.prototype.parse = function (r) {
+        var _this = this;
+        return _super.prototype.parse.call(this, r).then(function (d) {
+            return d.map(function (v) {
+                var o = new _this.factory(getEntityUrl(v), null);
                 return util_1.Util.extend(o, v);
             });
         });
-    }
-}
+    };
+    return ODataEntityArrayParserImpl;
+}(ODataParserBase));
 function getEntityUrl(entity) {
     if (entity.hasOwnProperty("odata.editLink")) {
         // we are dealign with minimal metadata (default)
@@ -155,12 +196,13 @@ exports.ODataEntityArray = ODataEntityArray;
 /**
  * Manages a batch of OData operations
  */
-class ODataBatch {
-    constructor(baseUrl, _batchId = util_1.Util.getGUID()) {
+var ODataBatch = (function () {
+    function ODataBatch(baseUrl, _batchId) {
+        if (_batchId === void 0) { _batchId = util_1.Util.getGUID(); }
         this.baseUrl = baseUrl;
         this._batchId = _batchId;
         this._requests = [];
-        this._batchDependencies = Promise.resolve();
+        this._dependencies = Promise.resolve();
     }
     /**
      * Adds a request to a batch (not designed for public use)
@@ -170,8 +212,8 @@ class ODataBatch {
      * @param options Any options to include in the request
      * @param parser The parser that will hadle the results of the request
      */
-    add(url, method, options, parser) {
-        let info = {
+    ODataBatch.prototype.add = function (url, method, options, parser) {
+        var info = {
             method: method.toUpperCase(),
             options: options,
             parser: parser,
@@ -179,89 +221,91 @@ class ODataBatch {
             resolve: null,
             url: url,
         };
-        let p = new Promise((resolve, reject) => {
+        var p = new Promise(function (resolve, reject) {
             info.resolve = resolve;
             info.reject = reject;
         });
         this._requests.push(info);
         return p;
-    }
+    };
     /**
      * Adds a dependency insuring that some set of actions will occur before a batch is processed.
      * MUST be cleared using the returned resolve delegate to allow batches to run
      */
-    addBatchDependency() {
-        let resolver;
-        let promise = new Promise((resolve) => {
+    ODataBatch.prototype.addDependency = function () {
+        var resolver;
+        var promise = new Promise(function (resolve) {
             resolver = resolve;
         });
-        this._batchDependencies = this._batchDependencies.then(() => promise);
+        this._dependencies = this._dependencies.then(function () { return promise; });
         return resolver;
-    }
+    };
     /**
      * Execute the current batch and resolve the associated promises
      *
      * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
-    execute() {
-        return this._batchDependencies.then(() => this.executeImpl());
-    }
-    executeImpl() {
-        logging_1.Logger.write(`Executing batch with ${this._requests.length} requests.`, logging_1.LogLevel.Info);
+    ODataBatch.prototype.execute = function () {
+        var _this = this;
+        return this._dependencies.then(function () { return _this.executeImpl(); });
+    };
+    ODataBatch.prototype.executeImpl = function () {
+        var _this = this;
+        logging_1.Logger.write("Executing batch with " + this._requests.length + " requests.", logging_1.LogLevel.Info);
         // if we don't have any requests, don't bother sending anything
         // this could be due to caching further upstream, or just an empty batch
         if (this._requests.length &lt; 1) {
-            logging_1.Logger.write(`Resolving empty batch.`, logging_1.LogLevel.Info);
+            logging_1.Logger.write("Resolving empty batch.", logging_1.LogLevel.Info);
             return Promise.resolve();
         }
         // creating the client here allows the url to be populated for nodejs client as well as potentially
         // any other hacks needed for other types of clients. Essentially allows the absoluteRequestUrl
         // below to be correct
-        let client = new httpclient_1.HttpClient();
+        var client = new httpclient_1.HttpClient();
         // due to timing we need to get the absolute url here so we can use it for all the individual requests
         // and for sending the entire batch
-        return util_1.Util.toAbsoluteUrl(this.baseUrl).then(absoluteRequestUrl => {
+        return util_1.Util.toAbsoluteUrl(this.baseUrl).then(function (absoluteRequestUrl) {
             // build all the requests, send them, pipe results in order to parsers
-            let batchBody = [];
-            let currentChangeSetId = "";
-            this._requests.map((reqInfo) => {
+            var batchBody = [];
+            var currentChangeSetId = "";
+            _this._requests.map(function (reqInfo) {
                 if (reqInfo.method === "GET") {
                     if (currentChangeSetId.length > 0) {
                         // end an existing change set
-                        batchBody.push(`--changeset_${currentChangeSetId}--\n\n`);
+                        batchBody.push("--changeset_" + currentChangeSetId + "--\n\n");
                         currentChangeSetId = "";
                     }
-                    batchBody.push(`--batch_${this._batchId}\n`);
+                    batchBody.push("--batch_" + _this._batchId + "\n");
                 }
                 else {
                     if (currentChangeSetId.length &lt; 1) {
                         // start new change set
                         currentChangeSetId = util_1.Util.getGUID();
-                        batchBody.push(`--batch_${this._batchId}\n`);
-                        batchBody.push(`Content-Type: multipart/mixed; boundary="changeset_${currentChangeSetId}"\n\n`);
+                        batchBody.push("--batch_" + _this._batchId + "\n");
+                        batchBody.push("Content-Type: multipart/mixed; boundary=\"changeset_" + currentChangeSetId + "\"\n\n");
                     }
-                    batchBody.push(`--changeset_${currentChangeSetId}\n`);
+                    batchBody.push("--changeset_" + currentChangeSetId + "\n");
                 }
                 // common batch part prefix
-                batchBody.push(`Content-Type: application/http\n`);
-                batchBody.push(`Content-Transfer-Encoding: binary\n\n`);
-                let headers = {
+                batchBody.push("Content-Type: application/http\n");
+                batchBody.push("Content-Transfer-Encoding: binary\n\n");
+                var headers = {
                     "Accept": "application/json;",
                 };
                 // this is the url of the individual request within the batch
-                let url = util_1.Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : util_1.Util.combinePaths(absoluteRequestUrl, reqInfo.url);
-                logging_1.Logger.write(`Adding request ${reqInfo.method} ${url} to batch.`, logging_1.LogLevel.Verbose);
+                var url = util_1.Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : util_1.Util.combinePaths(absoluteRequestUrl, reqInfo.url);
+                logging_1.Logger.write("Adding request " + reqInfo.method + " " + url + " to batch.", logging_1.LogLevel.Verbose);
                 if (reqInfo.method !== "GET") {
-                    let method = reqInfo.method;
+                    var method = reqInfo.method;
                     if (reqInfo.hasOwnProperty("options") &amp;&amp; reqInfo.options.hasOwnProperty("headers") &amp;&amp; typeof reqInfo.options.headers["X-HTTP-Method"] !== "undefined") {
                         method = reqInfo.options.headers["X-HTTP-Method"];
                         delete reqInfo.options.headers["X-HTTP-Method"];
                     }
-                    batchBody.push(`${method} ${url} HTTP/1.1\n`);
+                    batchBody.push(method + " " + url + " HTTP/1.1\n");
                     headers = util_1.Util.extend(headers, { "Content-Type": "application/json;odata=verbose;charset=utf-8" });
                 }
                 else {
-                    batchBody.push(`${reqInfo.method} ${url} HTTP/1.1\n`);
+                    batchBody.push(reqInfo.method + " " + url + " HTTP/1.1\n");
                 }
                 if (typeof pnplibconfig_1.RuntimeConfig.headers !== "undefined") {
                     headers = util_1.Util.extend(headers, pnplibconfig_1.RuntimeConfig.headers);
@@ -269,63 +313,63 @@ class ODataBatch {
                 if (reqInfo.options &amp;&amp; reqInfo.options.headers) {
                     headers = util_1.Util.extend(headers, reqInfo.options.headers);
                 }
-                for (let name in headers) {
-                    if (headers.hasOwnProperty(name)) {
-                        batchBody.push(`${name}: ${headers[name]}\n`);
+                for (var name_1 in headers) {
+                    if (headers.hasOwnProperty(name_1)) {
+                        batchBody.push(name_1 + ": " + headers[name_1] + "\n");
                     }
                 }
                 batchBody.push("\n");
                 if (reqInfo.options.body) {
-                    batchBody.push(`${reqInfo.options.body}\n\n`);
+                    batchBody.push(reqInfo.options.body + "\n\n");
                 }
             });
             if (currentChangeSetId.length > 0) {
                 // Close the changeset
-                batchBody.push(`--changeset_${currentChangeSetId}--\n\n`);
+                batchBody.push("--changeset_" + currentChangeSetId + "--\n\n");
                 currentChangeSetId = "";
             }
-            batchBody.push(`--batch_${this._batchId}--\n`);
-            let batchHeaders = {
-                "Content-Type": `multipart/mixed; boundary=batch_${this._batchId}`,
+            batchBody.push("--batch_" + _this._batchId + "--\n");
+            var batchHeaders = {
+                "Content-Type": "multipart/mixed; boundary=batch_" + _this._batchId,
             };
-            let batchOptions = {
+            var batchOptions = {
                 "body": batchBody.join(""),
                 "headers": batchHeaders,
             };
             logging_1.Logger.write("Sending batch request.", logging_1.LogLevel.Info);
             return client.post(util_1.Util.combinePaths(absoluteRequestUrl, "/_api/$batch"), batchOptions)
-                .then(r => r.text())
-                .then(this._parseResponse)
-                .then((responses) => {
-                if (responses.length !== this._requests.length) {
+                .then(function (r) { return r.text(); })
+                .then(_this._parseResponse)
+                .then(function (responses) {
+                if (responses.length !== _this._requests.length) {
                     throw new exceptions_1.BatchParseException("Could not properly parse responses to match requests in batch.");
                 }
                 logging_1.Logger.write("Resolving batched requests.", logging_1.LogLevel.Info);
-                return responses.reduce((chain, response, index) => {
-                    let request = this._requests[index];
-                    logging_1.Logger.write(`Resolving request ${request.method} ${request.url}.`, logging_1.LogLevel.Verbose);
-                    return chain.then(_ => request.parser.parse(response).then(request.resolve).catch(request.reject));
+                return responses.reduce(function (chain, response, index) {
+                    var request = _this._requests[index];
+                    logging_1.Logger.write("Resolving request " + request.method + " " + request.url + ".", logging_1.LogLevel.Verbose);
+                    return chain.then(function (_) { return request.parser.parse(response).then(request.resolve).catch(request.reject); });
                 }, Promise.resolve());
             });
         });
-    }
+    };
     /**
      * Parses the response from a batch request into an array of Response instances
      *
      * @param body Text body of the response from the batch request
      */
-    _parseResponse(body) {
-        return new Promise((resolve, reject) => {
-            let responses = [];
-            let header = "--batchresponse_";
+    ODataBatch.prototype._parseResponse = function (body) {
+        return new Promise(function (resolve, reject) {
+            var responses = [];
+            var header = "--batchresponse_";
             // Ex. "HTTP/1.1 500 Internal Server Error"
-            let statusRegExp = new RegExp("^HTTP/[0-9.]+ +([0-9]+) +(.*)", "i");
-            let lines = body.split("\n");
-            let state = "batch";
-            let status;
-            let statusText;
-            for (let i = 0; i &lt; lines.length; ++i) {
-                let line = lines[i];
+            var statusRegExp = new RegExp("^HTTP/[0-9.]+ +([0-9]+) +(.*)", "i");
+            var lines = body.split("\n");
+            var state = "batch";
+            var status;
+            var statusText;
+            for (var i = 0; i &lt; lines.length; ++i) {
+                var line = lines[i];
                 switch (state) {
                     case "batch":
                         if (line.substr(0, header.length) === header) {
@@ -333,7 +377,7 @@ class ODataBatch {
                         }
                         else {
                             if (line.trim() !== "") {
-                                throw new exceptions_1.BatchParseException(`Invalid response, line ${i}`);
+                                throw new exceptions_1.BatchParseException("Invalid response, line " + i);
                             }
                         }
                         break;
@@ -343,9 +387,9 @@ class ODataBatch {
                         }
                         break;
                     case "status":
-                        let parts = statusRegExp.exec(line);
+                        var parts = statusRegExp.exec(line);
                         if (parts.length !== 3) {
-                            throw new exceptions_1.BatchParseException(`Invalid status, line ${i}`);
+                            throw new exceptions_1.BatchParseException("Invalid status, line " + i);
                         }
                         status = parseInt(parts[1], 10);
                         statusText = parts[2];
@@ -367,35 +411,48 @@ class ODataBatch {
             }
             resolve(responses);
         });
-    }
-}
+    };
+    return ODataBatch;
+}());
 exports.ODataBatch = ODataBatch;
-class TextFileParser {
-    parse(r) {
+var TextFileParser = (function () {
+    function TextFileParser() {
+    }
+    TextFileParser.prototype.parse = function (r) {
         return r.text();
-    }
-}
+    };
+    return TextFileParser;
+}());
 exports.TextFileParser = TextFileParser;
-class BlobFileParser {
-    parse(r) {
+var BlobFileParser = (function () {
+    function BlobFileParser() {
+    }
+    BlobFileParser.prototype.parse = function (r) {
         return r.blob();
-    }
-}
+    };
+    return BlobFileParser;
+}());
 exports.BlobFileParser = BlobFileParser;
-class JSONFileParser {
-    parse(r) {
-        return r.json();
+var JSONFileParser = (function () {
+    function JSONFileParser() {
     }
-}
+    JSONFileParser.prototype.parse = function (r) {
+        return r.json();
+    };
+    return JSONFileParser;
+}());
 exports.JSONFileParser = JSONFileParser;
-class BufferFileParser {
-    parse(r) {
+var BufferFileParser = (function () {
+    function BufferFileParser() {
+    }
+    BufferFileParser.prototype.parse = function (r) {
         if (util_1.Util.isFunction(r.arrayBuffer)) {
             return r.arrayBuffer();
         }
         return r.buffer();
-    }
-}
+    };
+    return BufferFileParser;
+}());
 exports.BufferFileParser = BufferFileParser;
 </code></pre>
         </article>
@@ -407,13 +464,13 @@ exports.BufferFileParser = BufferFileParser;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="LimitedWebPartManager.html">LimitedWebPartManager</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PipelineMethods.html">PipelineMethods</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li><li><a href="WebPart.html">WebPart</a></li><li><a href="WebPartDefinition.html">WebPartDefinition</a></li><li><a href="WebPartDefinitions.html">WebPartDefinitions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#AttachmentFile">AttachmentFile</a></li><li><a href="global.html#AttachmentFiles">AttachmentFiles</a></li><li><a href="global.html#CachingConfigurationProvider">CachingConfigurationProvider</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ConsoleListener">ConsoleListener</a></li><li><a href="global.html#ContentType">ContentType</a></li><li><a href="global.html#ContentTypes">ContentTypes</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#CurrentUser">CurrentUser</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#Dictionary">Dictionary</a></li><li><a href="global.html#Features">Features</a></li><li><a href="global.html#FetchClient">FetchClient</a></li><li><a href="global.html#Field">Field</a></li><li><a href="global.html#FieldLink">FieldLink</a></li><li><a href="global.html#FieldLinks">FieldLinks</a></li><li><a href="global.html#Fields">Fields</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#File">File</a></li><li><a href="global.html#Files">Files</a></li><li><a href="global.html#Folder">Folder</a></li><li><a href="global.html#Folders">Folders</a></li><li><a href="global.html#Form">Form</a></li><li><a href="global.html#Forms">Forms</a></li><li><a href="global.html#FunctionListener">FunctionListener</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#Items">Items</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Lists">Lists</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#Logger">Logger</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#Navigation">Navigation</a></li><li><a href="global.html#NavigationNodes">NavigationNodes</a></li><li><a href="global.html#NodeFetchClient">NodeFetchClient</a></li><li><a href="global.html#ODataBatch">ODataBatch</a></li><li><a href="global.html#PagedItemCollection">PagedItemCollection</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PipelineMethods">PipelineMethods</a></li><li><a href="global.html#PnPClientStorage">PnPClientStorage</a></li><li><a href="global.html#PnPClientStorageWrapper">PnPClientStorageWrapper</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#ProcessHttpClientResponseException">ProcessHttpClientResponseException</a></li><li><a href="global.html#Queryable">Queryable</a></li><li><a href="global.html#QueryableCollection">QueryableCollection</a></li><li><a href="global.html#QueryableInstance">QueryableInstance</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#Rest">Rest</a></li><li><a href="global.html#RoleAssignments">RoleAssignments</a></li><li><a href="global.html#Search">Search</a></li><li><a href="global.html#SearchResult">SearchResult</a></li><li><a href="global.html#SearchResults">SearchResults</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#Site">Site</a></li><li><a href="global.html#SiteGroup">SiteGroup</a></li><li><a href="global.html#SiteGroups">SiteGroups</a></li><li><a href="global.html#SiteUser">SiteUser</a></li><li><a href="global.html#SiteUsers">SiteUsers</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#SPListConfigurationProvider">SPListConfigurationProvider</a></li><li><a href="global.html#SPRequestExecutorClient">SPRequestExecutorClient</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#Subscription">Subscription</a></li><li><a href="global.html#Subscriptions">Subscriptions</a></li><li><a href="global.html#util">util</a></li><li><a href="global.html#Version">Version</a></li><li><a href="global.html#Versions">Versions</a></li><li><a href="global.html#View">View</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Web">Web</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Feb 10 2017 15:26:03 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 10 2017 10:35:19 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

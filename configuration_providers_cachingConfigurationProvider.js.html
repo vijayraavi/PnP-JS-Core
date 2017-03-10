@@ -27,13 +27,14 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
-const storage = require("../../utils/storage");
-const exceptions_1 = require("../../utils/exceptions");
+Object.defineProperty(exports, "__esModule", { value: true });
+var storage = require("../../utils/storage");
+var exceptions_1 = require("../../utils/exceptions");
 /**
  * A caching provider which can wrap other non-caching providers
  *
  */
-class CachingConfigurationProvider {
+var CachingConfigurationProvider = (function () {
     /**
      * Creates a new caching configuration provider
      * @constructor
@@ -41,45 +42,46 @@ class CachingConfigurationProvider {
      * @param {string} cacheKey Key that will be used to store cached items to the cache
      * @param {IPnPClientStore} cacheStore OPTIONAL storage, which will be used to store cached settings.
      */
-    constructor(wrappedProvider, cacheKey, cacheStore) {
+    function CachingConfigurationProvider(wrappedProvider, cacheKey, cacheStore) {
         this.wrappedProvider = wrappedProvider;
         this.store = (cacheStore) ? cacheStore : this.selectPnPCache();
-        this.cacheKey = `_configcache_${cacheKey}`;
+        this.cacheKey = "_configcache_" + cacheKey;
     }
     /**
      * Gets the wrapped configuration providers
      *
      * @return {IConfigurationProvider} Wrapped configuration provider
      */
-    getWrappedProvider() {
+    CachingConfigurationProvider.prototype.getWrappedProvider = function () {
         return this.wrappedProvider;
-    }
+    };
     /**
      * Loads the configuration values either from the cache or from the wrapped provider
      *
      * @return {Promise&lt;TypedHash&lt;string>>} Promise of loaded configuration values
      */
-    getConfiguration() {
+    CachingConfigurationProvider.prototype.getConfiguration = function () {
+        var _this = this;
         // Cache not available, pass control to  the wrapped provider
         if ((!this.store) || (!this.store.enabled)) {
             return this.wrappedProvider.getConfiguration();
         }
         // Value is found in cache, return it directly
-        let cachedConfig = this.store.get(this.cacheKey);
+        var cachedConfig = this.store.get(this.cacheKey);
         if (cachedConfig) {
-            return new Promise((resolve) => {
+            return new Promise(function (resolve) {
                 resolve(cachedConfig);
             });
         }
         // Get and cache value from the wrapped provider
-        let providerPromise = this.wrappedProvider.getConfiguration();
-        providerPromise.then((providedConfig) => {
-            this.store.put(this.cacheKey, providedConfig);
+        var providerPromise = this.wrappedProvider.getConfiguration();
+        providerPromise.then(function (providedConfig) {
+            _this.store.put(_this.cacheKey, providedConfig);
         });
         return providerPromise;
-    }
-    selectPnPCache() {
-        let pnpCache = new storage.PnPClientStorage();
+    };
+    CachingConfigurationProvider.prototype.selectPnPCache = function () {
+        var pnpCache = new storage.PnPClientStorage();
         if ((pnpCache.local) &amp;&amp; (pnpCache.local.enabled)) {
             return pnpCache.local;
         }
@@ -87,9 +89,9 @@ class CachingConfigurationProvider {
             return pnpCache.session;
         }
         throw new exceptions_1.NoCacheAvailableException();
-    }
-}
-Object.defineProperty(exports, "__esModule", { value: true });
+    };
+    return CachingConfigurationProvider;
+}());
 exports.default = CachingConfigurationProvider;
 </code></pre>
         </article>
@@ -101,13 +103,13 @@ exports.default = CachingConfigurationProvider;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="LimitedWebPartManager.html">LimitedWebPartManager</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PipelineMethods.html">PipelineMethods</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li><li><a href="WebPart.html">WebPart</a></li><li><a href="WebPartDefinition.html">WebPartDefinition</a></li><li><a href="WebPartDefinitions.html">WebPartDefinitions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#AttachmentFile">AttachmentFile</a></li><li><a href="global.html#AttachmentFiles">AttachmentFiles</a></li><li><a href="global.html#CachingConfigurationProvider">CachingConfigurationProvider</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ConsoleListener">ConsoleListener</a></li><li><a href="global.html#ContentType">ContentType</a></li><li><a href="global.html#ContentTypes">ContentTypes</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#CurrentUser">CurrentUser</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#Dictionary">Dictionary</a></li><li><a href="global.html#Features">Features</a></li><li><a href="global.html#FetchClient">FetchClient</a></li><li><a href="global.html#Field">Field</a></li><li><a href="global.html#FieldLink">FieldLink</a></li><li><a href="global.html#FieldLinks">FieldLinks</a></li><li><a href="global.html#Fields">Fields</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#File">File</a></li><li><a href="global.html#Files">Files</a></li><li><a href="global.html#Folder">Folder</a></li><li><a href="global.html#Folders">Folders</a></li><li><a href="global.html#Form">Form</a></li><li><a href="global.html#Forms">Forms</a></li><li><a href="global.html#FunctionListener">FunctionListener</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#Items">Items</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Lists">Lists</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#Logger">Logger</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#Navigation">Navigation</a></li><li><a href="global.html#NavigationNodes">NavigationNodes</a></li><li><a href="global.html#NodeFetchClient">NodeFetchClient</a></li><li><a href="global.html#ODataBatch">ODataBatch</a></li><li><a href="global.html#PagedItemCollection">PagedItemCollection</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PipelineMethods">PipelineMethods</a></li><li><a href="global.html#PnPClientStorage">PnPClientStorage</a></li><li><a href="global.html#PnPClientStorageWrapper">PnPClientStorageWrapper</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#ProcessHttpClientResponseException">ProcessHttpClientResponseException</a></li><li><a href="global.html#Queryable">Queryable</a></li><li><a href="global.html#QueryableCollection">QueryableCollection</a></li><li><a href="global.html#QueryableInstance">QueryableInstance</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#Rest">Rest</a></li><li><a href="global.html#RoleAssignments">RoleAssignments</a></li><li><a href="global.html#Search">Search</a></li><li><a href="global.html#SearchResult">SearchResult</a></li><li><a href="global.html#SearchResults">SearchResults</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#Site">Site</a></li><li><a href="global.html#SiteGroup">SiteGroup</a></li><li><a href="global.html#SiteGroups">SiteGroups</a></li><li><a href="global.html#SiteUser">SiteUser</a></li><li><a href="global.html#SiteUsers">SiteUsers</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#SPListConfigurationProvider">SPListConfigurationProvider</a></li><li><a href="global.html#SPRequestExecutorClient">SPRequestExecutorClient</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#Subscription">Subscription</a></li><li><a href="global.html#Subscriptions">Subscriptions</a></li><li><a href="global.html#util">util</a></li><li><a href="global.html#Version">Version</a></li><li><a href="global.html#Versions">Versions</a></li><li><a href="global.html#View">View</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Web">Web</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Feb 10 2017 15:26:03 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 10 2017 10:35:19 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

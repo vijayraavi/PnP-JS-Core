@@ -27,63 +27,28 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
-const util_1 = require("../utils/util");
-const collections_1 = require("../collections/collections");
-const odata_1 = require("./odata");
-const pnplibconfig_1 = require("../configuration/pnplibconfig");
-const exceptions_1 = require("../utils/exceptions");
-const queryablerequest_1 = require("./queryablerequest");
+var __extends = (this &amp;&amp; this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = require("../utils/util");
+var collections_1 = require("../collections/collections");
+var odata_1 = require("./odata");
+var pnplibconfig_1 = require("../configuration/pnplibconfig");
+var exceptions_1 = require("../utils/exceptions");
+var queryablerequest_1 = require("./queryablerequest");
 /**
  * Queryable Base Class
  *
  */
-class Queryable {
-    /**
-     * Directly concatonates the supplied string to the current url, not normalizing "/" chars
-     *
-     * @param pathPart The string to concatonate to the url
-     */
-    concat(pathPart) {
-        this._url += pathPart;
-    }
-    /**
-     * Appends the given string and normalizes "/" chars
-     *
-     * @param pathPart The string to append
-     */
-    append(pathPart) {
-        this._url = util_1.Util.combinePaths(this._url, pathPart);
-    }
-    /**
-     * Blocks a batch call from occuring, MUST be cleared by calling the returned function
-     */
-    addBatchDependency() {
-        if (this.hasBatch) {
-            return this._batch.addBatchDependency();
-        }
-        return () => null;
-    }
-    /**
-     * Indicates if the current query has a batch associated
-     *
-     */
-    get hasBatch() {
-        return this._batch !== null;
-    }
-    /**
-     * Gets the parent url used when creating this instance
-     *
-     */
-    get parentUrl() {
-        return this._parentUrl;
-    }
-    /**
-     * Provides access to the query builder for this url
-     *
-     */
-    get query() {
-        return this._query;
-    }
+var Queryable = (function () {
     /**
      * Creates a new instance of the Queryable class
      *
@@ -91,41 +56,108 @@ class Queryable {
      * @param baseUrl A string or Queryable that should form the base part of the url
      *
      */
-    constructor(baseUrl, path) {
+    function Queryable(baseUrl, path) {
         this._query = new collections_1.Dictionary();
         this._batch = null;
         if (typeof baseUrl === "string") {
             // we need to do some extra parsing to get the parent url correct if we are
             // being created from just a string.
-            let urlStr = baseUrl;
+            var urlStr = baseUrl;
             if (util_1.Util.isUrlAbsolute(urlStr) || urlStr.lastIndexOf("/") &lt; 0) {
                 this._parentUrl = urlStr;
                 this._url = util_1.Util.combinePaths(urlStr, path);
             }
             else if (urlStr.lastIndexOf("/") > urlStr.lastIndexOf("(")) {
                 // .../items(19)/fields
-                let index = urlStr.lastIndexOf("/");
+                var index = urlStr.lastIndexOf("/");
                 this._parentUrl = urlStr.slice(0, index);
                 path = util_1.Util.combinePaths(urlStr.slice(index), path);
                 this._url = util_1.Util.combinePaths(this._parentUrl, path);
             }
             else {
                 // .../items(19)
-                let index = urlStr.lastIndexOf("(");
+                var index = urlStr.lastIndexOf("(");
                 this._parentUrl = urlStr.slice(0, index);
                 this._url = util_1.Util.combinePaths(urlStr, path);
             }
         }
         else {
-            let q = baseUrl;
+            var q = baseUrl;
             this._parentUrl = q._url;
-            let target = q._query.get("@target");
+            var target = q._query.get("@target");
             if (target !== null) {
                 this._query.add("@target", target);
             }
             this._url = util_1.Util.combinePaths(this._parentUrl, path);
         }
     }
+    /**
+     * Directly concatonates the supplied string to the current url, not normalizing "/" chars
+     *
+     * @param pathPart The string to concatonate to the url
+     */
+    Queryable.prototype.concat = function (pathPart) {
+        this._url += pathPart;
+    };
+    /**
+     * Appends the given string and normalizes "/" chars
+     *
+     * @param pathPart The string to append
+     */
+    Queryable.prototype.append = function (pathPart) {
+        this._url = util_1.Util.combinePaths(this._url, pathPart);
+    };
+    /**
+     * Blocks a batch call from occuring, MUST be cleared by calling the returned function
+     */
+    Queryable.prototype.addBatchDependency = function () {
+        if (this.hasBatch) {
+            return this._batch.addDependency();
+        }
+        return function () { return null; };
+    };
+    Object.defineProperty(Queryable.prototype, "hasBatch", {
+        /**
+         * Indicates if the current query has a batch associated
+         *
+         */
+        get: function () {
+            return this._batch !== null;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Queryable.prototype, "parentUrl", {
+        /**
+         * Gets the parent url used when creating this instance
+         *
+         */
+        get: function () {
+            return this._parentUrl;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Queryable.prototype, "query", {
+        /**
+         * Provides access to the query builder for this url
+         *
+         */
+        get: function () {
+            return this._query;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Creates a new instance of the supplied factory and extends this into that new instance
+     *
+     * @param factory constructor for the new queryable
+     */
+    Queryable.prototype.as = function (factory) {
+        var o = new factory(this._url, null);
+        return util_1.Util.extend(o, this, true);
+    };
     /**
      * Adds this query to the supplied batch
      *
@@ -137,90 +169,106 @@ class Queryable {
      * b.execute().then(...)
      * ```
      */
-    inBatch(batch) {
+    Queryable.prototype.inBatch = function (batch) {
         if (this._batch !== null) {
             throw new exceptions_1.AlreadyInBatchException();
         }
         this._batch = batch;
         return this;
-    }
+    };
     /**
      * Enables caching for this request
      *
      * @param options Defines the options used when caching this request
      */
-    usingCaching(options) {
+    Queryable.prototype.usingCaching = function (options) {
         if (!pnplibconfig_1.RuntimeConfig.globalCacheDisable) {
             this._useCaching = true;
             this._cachingOptions = options;
         }
         return this;
-    }
+    };
     /**
      * Gets the currentl url, made absolute based on the availability of the _spPageContextInfo object
      *
      */
-    toUrl() {
+    Queryable.prototype.toUrl = function () {
         return this._url;
-    }
+    };
     /**
      * Gets the full url with query information
      *
      */
-    toUrlAndQuery() {
-        let url = this.toUrl();
+    Queryable.prototype.toUrlAndQuery = function () {
+        var _this = this;
+        var url = this.toUrl();
         if (this._query.count() > 0) {
-            url += `?${this._query.getKeys().map(key => `${key}=${this._query.get(key)}`).join("&amp;")}`;
+            url += "?" + this._query.getKeys().map(function (key) { return key + "=" + _this._query.get(key); }).join("&amp;");
         }
         return url;
-    }
+    };
     /**
      * Gets a parent for this instance as specified
      *
      * @param factory The contructor for the class to create
      */
-    getParent(factory, baseUrl = this.parentUrl, path) {
-        let parent = new factory(baseUrl, path);
-        let target = this.query.get("@target");
+    Queryable.prototype.getParent = function (factory, baseUrl, path) {
+        if (baseUrl === void 0) { baseUrl = this.parentUrl; }
+        var parent = new factory(baseUrl, path);
+        var target = this.query.get("@target");
         if (target !== null) {
             parent.query.add("@target", target);
         }
         return parent;
-    }
+    };
     /**
      * Executes the currently built request
      *
      * @param parser Allows you to specify a parser to handle the result
      * @param getOptions The options used for this request
      */
-    get(parser = new odata_1.ODataDefaultParser(), getOptions = {}) {
-        return this.toRequestContext("GET", getOptions, parser).then(context => queryablerequest_1.pipe(context));
-    }
-    getAs(parser = new odata_1.ODataDefaultParser(), getOptions = {}) {
-        return this.toRequestContext("GET", getOptions, parser).then(context => queryablerequest_1.pipe(context));
-    }
-    post(postOptions = {}, parser = new odata_1.ODataDefaultParser()) {
-        return this.toRequestContext("POST", postOptions, parser).then(context => queryablerequest_1.pipe(context));
-    }
-    postAs(postOptions = {}, parser = new odata_1.ODataDefaultParser()) {
-        return this.toRequestContext("POST", postOptions, parser).then(context => queryablerequest_1.pipe(context));
-    }
-    patch(patchOptions = {}, parser = new odata_1.ODataDefaultParser()) {
-        return this.toRequestContext("PATCH", patchOptions, parser).then(context => queryablerequest_1.pipe(context));
-    }
-    delete(deleteOptions = {}, parser = new odata_1.ODataDefaultParser()) {
-        return this.toRequestContext("DELETE", deleteOptions, parser).then(context => queryablerequest_1.pipe(context));
-    }
-    toRequestContext(verb, options = {}, parser) {
-        let dependencyDispose = this.hasBatch ? this.addBatchDependency() : () => { return; };
-        return util_1.Util.toAbsoluteUrl(this.toUrlAndQuery()).then(url => {
+    Queryable.prototype.get = function (parser, getOptions) {
+        if (parser === void 0) { parser = new odata_1.ODataDefaultParser(); }
+        if (getOptions === void 0) { getOptions = {}; }
+        return this.toRequestContext("GET", getOptions, parser).then(function (context) { return queryablerequest_1.pipe(context); });
+    };
+    Queryable.prototype.getAs = function (parser, getOptions) {
+        if (parser === void 0) { parser = new odata_1.ODataDefaultParser(); }
+        if (getOptions === void 0) { getOptions = {}; }
+        return this.toRequestContext("GET", getOptions, parser).then(function (context) { return queryablerequest_1.pipe(context); });
+    };
+    Queryable.prototype.post = function (postOptions, parser) {
+        if (postOptions === void 0) { postOptions = {}; }
+        if (parser === void 0) { parser = new odata_1.ODataDefaultParser(); }
+        return this.toRequestContext("POST", postOptions, parser).then(function (context) { return queryablerequest_1.pipe(context); });
+    };
+    Queryable.prototype.postAs = function (postOptions, parser) {
+        if (postOptions === void 0) { postOptions = {}; }
+        if (parser === void 0) { parser = new odata_1.ODataDefaultParser(); }
+        return this.toRequestContext("POST", postOptions, parser).then(function (context) { return queryablerequest_1.pipe(context); });
+    };
+    Queryable.prototype.patch = function (patchOptions, parser) {
+        if (patchOptions === void 0) { patchOptions = {}; }
+        if (parser === void 0) { parser = new odata_1.ODataDefaultParser(); }
+        return this.toRequestContext("PATCH", patchOptions, parser).then(function (context) { return queryablerequest_1.pipe(context); });
+    };
+    Queryable.prototype.delete = function (deleteOptions, parser) {
+        if (deleteOptions === void 0) { deleteOptions = {}; }
+        if (parser === void 0) { parser = new odata_1.ODataDefaultParser(); }
+        return this.toRequestContext("DELETE", deleteOptions, parser).then(function (context) { return queryablerequest_1.pipe(context); });
+    };
+    Queryable.prototype.toRequestContext = function (verb, options, parser) {
+        var _this = this;
+        if (options === void 0) { options = {}; }
+        var dependencyDispose = this.hasBatch ? this.addBatchDependency() : function () { return; };
+        return util_1.Util.toAbsoluteUrl(this.toUrlAndQuery()).then(function (url) {
             // build our request context
-            let context = {
-                batch: this._batch,
+            var context = {
+                batch: _this._batch,
                 batchDependency: dependencyDispose,
-                cachingOptions: this._cachingOptions,
-                isBatched: this.hasBatch,
-                isCached: this._useCaching,
+                cachingOptions: _this._cachingOptions,
+                isBatched: _this.hasBatch,
+                isCached: _this._useCaching,
                 options: options,
                 parser: parser,
                 requestAbsoluteUrl: url,
@@ -229,105 +277,133 @@ class Queryable {
             };
             return context;
         });
-    }
-}
+    };
+    return Queryable;
+}());
 exports.Queryable = Queryable;
 /**
  * Represents a REST collection which can be filtered, paged, and selected
  *
  */
-class QueryableCollection extends Queryable {
+var QueryableCollection = (function (_super) {
+    __extends(QueryableCollection, _super);
+    function QueryableCollection() {
+        return _super !== null &amp;&amp; _super.apply(this, arguments) || this;
+    }
     /**
      * Filters the returned collection (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#bk_supported)
      *
      * @param filter The string representing the filter query
      */
-    filter(filter) {
+    QueryableCollection.prototype.filter = function (filter) {
         this._query.add("$filter", filter);
         return this;
-    }
+    };
     /**
      * Choose which fields to return
      *
      * @param selects One or more fields to return
      */
-    select(...selects) {
+    QueryableCollection.prototype.select = function () {
+        var selects = [];
+        for (var _i = 0; _i &lt; arguments.length; _i++) {
+            selects[_i] = arguments[_i];
+        }
         this._query.add("$select", selects.join(","));
         return this;
-    }
+    };
     /**
      * Expands fields such as lookups to get additional data
      *
      * @param expands The Fields for which to expand the values
      */
-    expand(...expands) {
+    QueryableCollection.prototype.expand = function () {
+        var expands = [];
+        for (var _i = 0; _i &lt; arguments.length; _i++) {
+            expands[_i] = arguments[_i];
+        }
         this._query.add("$expand", expands.join(","));
         return this;
-    }
+    };
     /**
      * Orders based on the supplied fields ascending
      *
      * @param orderby The name of the field to sort on
      * @param ascending If false DESC is appended, otherwise ASC (default)
      */
-    orderBy(orderBy, ascending = true) {
-        let keys = this._query.getKeys();
-        let query = [];
-        let asc = ascending ? " asc" : " desc";
-        for (let i = 0; i &lt; keys.length; i++) {
+    QueryableCollection.prototype.orderBy = function (orderBy, ascending) {
+        if (ascending === void 0) { ascending = true; }
+        var keys = this._query.getKeys();
+        var query = [];
+        var asc = ascending ? " asc" : " desc";
+        for (var i = 0; i &lt; keys.length; i++) {
             if (keys[i] === "$orderby") {
                 query.push(this._query.get("$orderby"));
                 break;
             }
         }
-        query.push(`${orderBy}${asc}`);
+        query.push("" + orderBy + asc);
         this._query.add("$orderby", query.join(","));
         return this;
-    }
+    };
     /**
      * Skips the specified number of items
      *
      * @param skip The number of items to skip
      */
-    skip(skip) {
+    QueryableCollection.prototype.skip = function (skip) {
         this._query.add("$skip", skip.toString());
         return this;
-    }
+    };
     /**
      * Limits the query to only return the specified number of items
      *
      * @param top The query row limit
      */
-    top(top) {
+    QueryableCollection.prototype.top = function (top) {
         this._query.add("$top", top.toString());
         return this;
-    }
-}
+    };
+    return QueryableCollection;
+}(Queryable));
 exports.QueryableCollection = QueryableCollection;
 /**
  * Represents an instance that can be selected
  *
  */
-class QueryableInstance extends Queryable {
+var QueryableInstance = (function (_super) {
+    __extends(QueryableInstance, _super);
+    function QueryableInstance() {
+        return _super !== null &amp;&amp; _super.apply(this, arguments) || this;
+    }
     /**
      * Choose which fields to return
      *
      * @param selects One or more fields to return
      */
-    select(...selects) {
+    QueryableInstance.prototype.select = function () {
+        var selects = [];
+        for (var _i = 0; _i &lt; arguments.length; _i++) {
+            selects[_i] = arguments[_i];
+        }
         this._query.add("$select", selects.join(","));
         return this;
-    }
+    };
     /**
      * Expands fields such as lookups to get additional data
      *
      * @param expands The Fields for which to expand the values
      */
-    expand(...expands) {
+    QueryableInstance.prototype.expand = function () {
+        var expands = [];
+        for (var _i = 0; _i &lt; arguments.length; _i++) {
+            expands[_i] = arguments[_i];
+        }
         this._query.add("$expand", expands.join(","));
         return this;
-    }
-}
+    };
+    return QueryableInstance;
+}(Queryable));
 exports.QueryableInstance = QueryableInstance;
 </code></pre>
         </article>
@@ -339,13 +415,13 @@ exports.QueryableInstance = QueryableInstance;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="LimitedWebPartManager.html">LimitedWebPartManager</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PipelineMethods.html">PipelineMethods</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li><li><a href="WebPart.html">WebPart</a></li><li><a href="WebPartDefinition.html">WebPartDefinition</a></li><li><a href="WebPartDefinitions.html">WebPartDefinitions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#AttachmentFile">AttachmentFile</a></li><li><a href="global.html#AttachmentFiles">AttachmentFiles</a></li><li><a href="global.html#CachingConfigurationProvider">CachingConfigurationProvider</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ConsoleListener">ConsoleListener</a></li><li><a href="global.html#ContentType">ContentType</a></li><li><a href="global.html#ContentTypes">ContentTypes</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#CurrentUser">CurrentUser</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#Dictionary">Dictionary</a></li><li><a href="global.html#Features">Features</a></li><li><a href="global.html#FetchClient">FetchClient</a></li><li><a href="global.html#Field">Field</a></li><li><a href="global.html#FieldLink">FieldLink</a></li><li><a href="global.html#FieldLinks">FieldLinks</a></li><li><a href="global.html#Fields">Fields</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#File">File</a></li><li><a href="global.html#Files">Files</a></li><li><a href="global.html#Folder">Folder</a></li><li><a href="global.html#Folders">Folders</a></li><li><a href="global.html#Form">Form</a></li><li><a href="global.html#Forms">Forms</a></li><li><a href="global.html#FunctionListener">FunctionListener</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#Items">Items</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Lists">Lists</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#Logger">Logger</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#Navigation">Navigation</a></li><li><a href="global.html#NavigationNodes">NavigationNodes</a></li><li><a href="global.html#NodeFetchClient">NodeFetchClient</a></li><li><a href="global.html#ODataBatch">ODataBatch</a></li><li><a href="global.html#PagedItemCollection">PagedItemCollection</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PipelineMethods">PipelineMethods</a></li><li><a href="global.html#PnPClientStorage">PnPClientStorage</a></li><li><a href="global.html#PnPClientStorageWrapper">PnPClientStorageWrapper</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#ProcessHttpClientResponseException">ProcessHttpClientResponseException</a></li><li><a href="global.html#Queryable">Queryable</a></li><li><a href="global.html#QueryableCollection">QueryableCollection</a></li><li><a href="global.html#QueryableInstance">QueryableInstance</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#Rest">Rest</a></li><li><a href="global.html#RoleAssignments">RoleAssignments</a></li><li><a href="global.html#Search">Search</a></li><li><a href="global.html#SearchResult">SearchResult</a></li><li><a href="global.html#SearchResults">SearchResults</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#Site">Site</a></li><li><a href="global.html#SiteGroup">SiteGroup</a></li><li><a href="global.html#SiteGroups">SiteGroups</a></li><li><a href="global.html#SiteUser">SiteUser</a></li><li><a href="global.html#SiteUsers">SiteUsers</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#SPListConfigurationProvider">SPListConfigurationProvider</a></li><li><a href="global.html#SPRequestExecutorClient">SPRequestExecutorClient</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#Subscription">Subscription</a></li><li><a href="global.html#Subscriptions">Subscriptions</a></li><li><a href="global.html#util">util</a></li><li><a href="global.html#Version">Version</a></li><li><a href="global.html#Versions">Versions</a></li><li><a href="global.html#View">View</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Web">Web</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Feb 10 2017 15:26:03 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 10 2017 10:35:19 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

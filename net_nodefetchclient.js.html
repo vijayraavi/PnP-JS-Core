@@ -27,15 +27,17 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
-let nodeFetch = require("node-fetch");
-let u = require("url");
-const util_1 = require("../utils/util");
-const exceptions_1 = require("../utils/exceptions");
+Object.defineProperty(exports, "__esModule", { value: true });
+var nodeFetch = require("node-fetch");
+var u = require("url");
+var util_1 = require("../utils/util");
+var exceptions_1 = require("../utils/exceptions");
 /**
  * Fetch client for use within nodejs, requires you register a client id and secret with app only permissions
  */
-class NodeFetchClient {
-    constructor(siteUrl, _clientId, _clientSecret, _realm = "") {
+var NodeFetchClient = (function () {
+    function NodeFetchClient(siteUrl, _clientId, _clientSecret, _realm) {
+        if (_realm === void 0) { _realm = ""; }
         this.siteUrl = siteUrl;
         this._clientId = _clientId;
         this._clientSecret = _clientSecret;
@@ -49,95 +51,98 @@ class NodeFetchClient {
             webAbsoluteUrl: siteUrl,
         };
     }
-    fetch(url, options) {
+    NodeFetchClient.prototype.fetch = function (url, options) {
         if (!util_1.Util.isUrlAbsolute(url)) {
             url = util_1.Util.combinePaths(this.siteUrl, url);
         }
-        return this.getAddInOnlyAccessToken().then(token => {
-            options.headers.set("Authorization", `Bearer ${token.access_token}`);
+        return this.getAddInOnlyAccessToken().then(function (token) {
+            options.headers.set("Authorization", "Bearer " + token.access_token);
             return nodeFetch(url, options);
         });
-    }
+    };
     /**
      * Gets an add-in only authentication token based on the supplied site url, client id and secret
      */
-    getAddInOnlyAccessToken() {
-        return new Promise((resolve, reject) => {
-            if (this.token !== null &amp;&amp; new Date() &lt; this.toDate(this.token.expires_on)) {
-                resolve(this.token);
+    NodeFetchClient.prototype.getAddInOnlyAccessToken = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            if (_this.token !== null &amp;&amp; new Date() &lt; _this.toDate(_this.token.expires_on)) {
+                resolve(_this.token);
             }
             else {
-                this.getRealm().then((realm) => {
-                    let resource = this.getFormattedPrincipal(NodeFetchClient.SharePointServicePrincipal, u.parse(this.siteUrl).hostname, realm);
-                    let formattedClientId = this.getFormattedPrincipal(this._clientId, "", realm);
-                    this.getAuthUrl(realm).then((authUrl) => {
-                        let body = [];
+                _this.getRealm().then(function (realm) {
+                    var resource = _this.getFormattedPrincipal(NodeFetchClient.SharePointServicePrincipal, u.parse(_this.siteUrl).hostname, realm);
+                    var formattedClientId = _this.getFormattedPrincipal(_this._clientId, "", realm);
+                    _this.getAuthUrl(realm).then(function (authUrl) {
+                        var body = [];
                         body.push("grant_type=client_credentials");
-                        body.push(`client_id=${formattedClientId}`);
-                        body.push(`client_secret=${encodeURIComponent(this._clientSecret)}`);
-                        body.push(`resource=${resource}`);
+                        body.push("client_id=" + formattedClientId);
+                        body.push("client_secret=" + encodeURIComponent(_this._clientSecret));
+                        body.push("resource=" + resource);
                         nodeFetch(authUrl, {
                             body: body.join("&amp;"),
                             headers: {
                                 "Content-Type": "application/x-www-form-urlencoded",
                             },
                             method: "POST",
-                        }).then((r) => r.json()).then((tok) => {
-                            this.token = tok;
-                            resolve(this.token);
+                        }).then(function (r) { return r.json(); }).then(function (tok) {
+                            _this.token = tok;
+                            resolve(_this.token);
                         });
                     });
-                }).catch(e => reject(e));
+                }).catch(function (e) { return reject(e); });
             }
         });
-    }
-    getRealm() {
-        return new Promise(resolve => {
-            if (this._realm.length > 0) {
-                resolve(this._realm);
+    };
+    NodeFetchClient.prototype.getRealm = function () {
+        var _this = this;
+        return new Promise(function (resolve) {
+            if (_this._realm.length > 0) {
+                resolve(_this._realm);
             }
-            let url = util_1.Util.combinePaths(this.siteUrl, "vti_bin/client.svc");
+            var url = util_1.Util.combinePaths(_this.siteUrl, "vti_bin/client.svc");
             nodeFetch(url, {
                 "headers": {
                     "Authorization": "Bearer ",
                 },
                 "method": "POST",
-            }).then((r) => {
-                let data = r.headers.get("www-authenticate");
-                let index = data.indexOf("Bearer realm=\"");
-                this._realm = data.substring(index + 14, index + 50);
-                resolve(this._realm);
+            }).then(function (r) {
+                var data = r.headers.get("www-authenticate");
+                var index = data.indexOf("Bearer realm=\"");
+                _this._realm = data.substring(index + 14, index + 50);
+                resolve(_this._realm);
             });
         });
-    }
-    getAuthUrl(realm) {
-        let url = `https://accounts.accesscontrol.windows.net/metadata/json/1?realm=${realm}`;
-        return nodeFetch(url).then((r) => r.json()).then((json) => {
-            let eps = json.endpoints.filter(ep => ep.protocol === "OAuth2");
+    };
+    NodeFetchClient.prototype.getAuthUrl = function (realm) {
+        var url = "https://accounts.accesscontrol.windows.net/metadata/json/1?realm=" + realm;
+        return nodeFetch(url).then(function (r) { return r.json(); }).then(function (json) {
+            var eps = json.endpoints.filter(function (ep) { return ep.protocol === "OAuth2"; });
             if (eps.length > 0) {
                 return eps[0].location;
             }
             throw new exceptions_1.AuthUrlException(json);
         });
-    }
-    getFormattedPrincipal(principalName, hostName, realm) {
-        let resource = principalName;
+    };
+    NodeFetchClient.prototype.getFormattedPrincipal = function (principalName, hostName, realm) {
+        var resource = principalName;
         if (hostName !== null &amp;&amp; hostName !== "") {
             resource += "/" + hostName;
         }
         resource += "@" + realm;
         return resource;
-    }
-    toDate(epoch) {
-        let tmp = parseInt(epoch, 10);
+    };
+    NodeFetchClient.prototype.toDate = function (epoch) {
+        var tmp = parseInt(epoch, 10);
         if (tmp &lt; 10000000000) {
             tmp *= 1000;
         }
-        let d = new Date();
+        var d = new Date();
         d.setTime(tmp);
         return d;
-    }
-}
+    };
+    return NodeFetchClient;
+}());
 NodeFetchClient.SharePointServicePrincipal = "00000003-0000-0ff1-ce00-000000000000";
 exports.NodeFetchClient = NodeFetchClient;
 </code></pre>
@@ -150,13 +155,13 @@ exports.NodeFetchClient = NodeFetchClient;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AttachmentFile.html">AttachmentFile</a></li><li><a href="AttachmentFiles.html">AttachmentFiles</a></li><li><a href="CachingConfigurationProvider.html">CachingConfigurationProvider</a></li><li><a href="ConsoleListener.html">ConsoleListener</a></li><li><a href="ContentType.html">ContentType</a></li><li><a href="ContentTypes.html">ContentTypes</a></li><li><a href="CurrentUser.html">CurrentUser</a></li><li><a href="Dictionary.html">Dictionary</a></li><li><a href="Feature.html">Feature</a></li><li><a href="Features.html">Features</a></li><li><a href="FetchClient.html">FetchClient</a></li><li><a href="Field.html">Field</a></li><li><a href="FieldLink.html">FieldLink</a></li><li><a href="FieldLinks.html">FieldLinks</a></li><li><a href="Fields.html">Fields</a></li><li><a href="File.html">File</a></li><li><a href="Files.html">Files</a></li><li><a href="Folder.html">Folder</a></li><li><a href="Folders.html">Folders</a></li><li><a href="Form.html">Form</a></li><li><a href="Forms.html">Forms</a></li><li><a href="FunctionListener.html">FunctionListener</a></li><li><a href="Item.html">Item</a></li><li><a href="Items.html">Items</a></li><li><a href="LimitedWebPartManager.html">LimitedWebPartManager</a></li><li><a href="List.html">List</a></li><li><a href="Lists.html">Lists</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Navigation.html">Navigation</a></li><li><a href="NavigationNodes.html">NavigationNodes</a></li><li><a href="NodeFetchClient.html">NodeFetchClient</a></li><li><a href="ODataBatch.html">ODataBatch</a></li><li><a href="PagedItemCollection.html">PagedItemCollection</a></li><li><a href="PipelineMethods.html">PipelineMethods</a></li><li><a href="PnPClientStorage.html">PnPClientStorage</a></li><li><a href="PnPClientStorageWrapper.html">PnPClientStorageWrapper</a></li><li><a href="ProcessHttpClientResponseException.html">ProcessHttpClientResponseException</a></li><li><a href="Queryable.html">Queryable</a></li><li><a href="QueryableCollection.html">QueryableCollection</a></li><li><a href="QueryableInstance.html">QueryableInstance</a></li><li><a href="Rest.html">Rest</a></li><li><a href="RoleAssignment.html">RoleAssignment</a></li><li><a href="RoleAssignments.html">RoleAssignments</a></li><li><a href="RoleDefinitions.html">RoleDefinitions</a></li><li><a href="Search.html">Search</a></li><li><a href="SearchResult.html">SearchResult</a></li><li><a href="SearchResults.html">SearchResults</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Site.html">Site</a></li><li><a href="SiteGroup.html">SiteGroup</a></li><li><a href="SiteGroups.html">SiteGroups</a></li><li><a href="SiteUser.html">SiteUser</a></li><li><a href="SiteUsers.html">SiteUsers</a></li><li><a href="SPListConfigurationProvider.html">SPListConfigurationProvider</a></li><li><a href="SPRequestExecutorClient.html">SPRequestExecutorClient</a></li><li><a href="Subscription.html">Subscription</a></li><li><a href="Subscriptions.html">Subscriptions</a></li><li><a href="Version.html">Version</a></li><li><a href="Versions.html">Versions</a></li><li><a href="View.html">View</a></li><li><a href="Views.html">Views</a></li><li><a href="Web.html">Web</a></li><li><a href="WebPart.html">WebPart</a></li><li><a href="WebPartDefinition.html">WebPartDefinition</a></li><li><a href="WebPartDefinitions.html">WebPartDefinitions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#util">util</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFieldOptions">AddFieldOptions</a></li><li><a href="global.html#AddFieldOptions%255Bundefined%255D">AddFieldOptions[undefined]</a></li><li><a href="global.html#AttachmentFile">AttachmentFile</a></li><li><a href="global.html#AttachmentFiles">AttachmentFiles</a></li><li><a href="global.html#CachingConfigurationProvider">CachingConfigurationProvider</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#ConsoleListener">ConsoleListener</a></li><li><a href="global.html#ContentType">ContentType</a></li><li><a href="global.html#ContentTypes">ContentTypes</a></li><li><a href="global.html#ControlMode">ControlMode</a></li><li><a href="global.html#CurrentUser">CurrentUser</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#Dictionary">Dictionary</a></li><li><a href="global.html#Features">Features</a></li><li><a href="global.html#FetchClient">FetchClient</a></li><li><a href="global.html#Field">Field</a></li><li><a href="global.html#FieldLink">FieldLink</a></li><li><a href="global.html#FieldLinks">FieldLinks</a></li><li><a href="global.html#Fields">Fields</a></li><li><a href="global.html#FieldTypes">FieldTypes</a></li><li><a href="global.html#File">File</a></li><li><a href="global.html#Files">Files</a></li><li><a href="global.html#Folder">Folder</a></li><li><a href="global.html#Folders">Folders</a></li><li><a href="global.html#Form">Form</a></li><li><a href="global.html#Forms">Forms</a></li><li><a href="global.html#FunctionListener">FunctionListener</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#Items">Items</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Lists">Lists</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#Logger">Logger</a></li><li><a href="global.html#LogLevel">LogLevel</a></li><li><a href="global.html#Navigation">Navigation</a></li><li><a href="global.html#NavigationNodes">NavigationNodes</a></li><li><a href="global.html#NodeFetchClient">NodeFetchClient</a></li><li><a href="global.html#ODataBatch">ODataBatch</a></li><li><a href="global.html#PagedItemCollection">PagedItemCollection</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#PipelineMethods">PipelineMethods</a></li><li><a href="global.html#PnPClientStorage">PnPClientStorage</a></li><li><a href="global.html#PnPClientStorageWrapper">PnPClientStorageWrapper</a></li><li><a href="global.html#PrincipalType">PrincipalType</a></li><li><a href="global.html#ProcessHttpClientResponseException">ProcessHttpClientResponseException</a></li><li><a href="global.html#Queryable">Queryable</a></li><li><a href="global.html#QueryableCollection">QueryableCollection</a></li><li><a href="global.html#QueryableInstance">QueryableInstance</a></li><li><a href="global.html#QueryPropertyValueType">QueryPropertyValueType</a></li><li><a href="global.html#readBlobAs">readBlobAs</a></li><li><a href="global.html#readBlobAsArrayBuffer">readBlobAsArrayBuffer</a></li><li><a href="global.html#readBlobAsText">readBlobAsText</a></li><li><a href="global.html#ReorderingRuleMatchType">ReorderingRuleMatchType</a></li><li><a href="global.html#requestPipelineMethod">requestPipelineMethod</a></li><li><a href="global.html#Rest">Rest</a></li><li><a href="global.html#RoleAssignments">RoleAssignments</a></li><li><a href="global.html#Search">Search</a></li><li><a href="global.html#SearchResult">SearchResult</a></li><li><a href="global.html#SearchResults">SearchResults</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#Site">Site</a></li><li><a href="global.html#SiteGroup">SiteGroup</a></li><li><a href="global.html#SiteGroups">SiteGroups</a></li><li><a href="global.html#SiteUser">SiteUser</a></li><li><a href="global.html#SiteUsers">SiteUsers</a></li><li><a href="global.html#SortDirection">SortDirection</a></li><li><a href="global.html#sp">sp</a></li><li><a href="global.html#SPListConfigurationProvider">SPListConfigurationProvider</a></li><li><a href="global.html#SPRequestExecutorClient">SPRequestExecutorClient</a></li><li><a href="global.html#storage">storage</a></li><li><a href="global.html#Subscription">Subscription</a></li><li><a href="global.html#Subscriptions">Subscriptions</a></li><li><a href="global.html#util">util</a></li><li><a href="global.html#Version">Version</a></li><li><a href="global.html#Versions">Versions</a></li><li><a href="global.html#View">View</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Web">Web</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Feb 10 2017 15:26:03 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 10 2017 10:35:19 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
