@@ -91,11 +91,9 @@ export class Items extends QueryableCollection {
      */
     private ensureListItemEntityTypeName(candidatelistItemEntityTypeFullName: string): Promise<string> {
 
-        if (candidatelistItemEntityTypeFullName) {
-            return Promise.resolve(candidatelistItemEntityTypeFullName);
-        }
-
-        return this.getParent(List).getListItemEntityTypeFullName();
+        return candidatelistItemEntityTypeFullName ?
+            Promise.resolve(candidatelistItemEntityTypeFullName) :
+            this.getParent(List).getListItemEntityTypeFullName();
     }
 }
 

@@ -25,7 +25,6 @@ module.exports = {
             {
                 test: /\.ts$/,
                 use: [
-                    "babel-loader",
                     "ts-loader"
                 ],
             },
