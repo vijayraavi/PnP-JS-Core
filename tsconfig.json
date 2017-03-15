@@ -10,6 +10,7 @@
             "core-js",
             "sharepoint"
         ],
+        "lib": ["es6", "dom"],
         "noImplicitAny": true,
         "allowUnreachableCode": false,
         "forceConsistentCasingInFileNames": true,
