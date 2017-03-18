@@ -53,7 +53,7 @@ export class SiteUsers extends QueryableCollection {
     public getByLoginName(loginName: string): SiteUser {
         const su = new SiteUser(this);
         su.concat("(@v)");
-        su.query.add("@v", encodeURIComponent(loginName));
+        su.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return su;
     }
 
@@ -74,7 +74,7 @@ export class SiteUsers extends QueryableCollection {
      */
     public removeByLoginName(loginName: string): Promise<any> {
         const o = new SiteUsers(this, `removeByLoginName(@v)`);
-        o.query.add("@v", encodeURIComponent(loginName));
+        o.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return o.post();
     }
 
