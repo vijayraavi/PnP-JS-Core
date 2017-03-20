@@ -121,13 +121,10 @@ export class ContentType extends QueryableInstance {
 
     /**
      * Delete this content type
-     *
-     * @param eTag Value used in the IF-Match header, by default "*"
      */
-    public delete(eTag = "*"): Promise<void> {
+    public delete(): Promise<void> {
         return this.post({
             headers: {
-                "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
             },
         });
