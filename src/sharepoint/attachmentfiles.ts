@@ -28,21 +28,20 @@ export class AttachmentFiles extends QueryableCollection {
     }
 
     /**
-     * Adds a new attachment to the collection
+     * Adds a new attachment to the collection. Not supported for batching.
      *
      * @param name The name of the file, including extension.
      * @param content The Base64 file content.
      */
     public add(name: string, content: string | Blob | ArrayBuffer): Promise<AttachmentFileAddResult> {
-        return new AttachmentFiles(this, `add(FileName='${name}')`)
-            .post({
-                body: content,
-            }).then((response) => {
-                return {
-                    data: response,
-                    file: this.getByName(name),
-                };
-            });
+        return this.clone(AttachmentFiles, `add(FileName='${name}')`, true).post({
+            body: content,
+        }).then((response) => {
+            return {
+                data: response,
+                file: this.getByName(name),
+            };
+        });
     }
 }
 
@@ -51,15 +50,6 @@ export class AttachmentFiles extends QueryableCollection {
  *
  */
 export class AttachmentFile extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the AttachmentFile class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this attachment file
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Gets the contents of the file as text
@@ -96,7 +86,7 @@ export class AttachmentFile extends QueryableInstance {
     }
 
     /**
-     * Sets the content of a file
+     * Sets the content of a file. Not supported for batching
      *
      * @param content The value to set for the file contents
      */

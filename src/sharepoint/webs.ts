@@ -12,7 +12,7 @@ import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
 import * as Types from "./types";
 import { List } from "./lists";
-import { SiteUsers, SiteUser, CurrentUser } from "./siteusers";
+import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId, ODataBatch } from "./odata";
 import { Features } from "./features";
@@ -59,8 +59,7 @@ export class Webs extends QueryableCollection {
             }, props),
         });
 
-        const q = new Webs(this, "add");
-        return q.post({ body: postBody }).then((data) => {
+        return this.clone(Webs, "add", true).post({ body: postBody }).then((data) => {
             return {
                 data: data,
                 web: new Web(extractOdataId(data).replace(/_api\/web\/?/i, "")),
@@ -263,8 +262,7 @@ export class Web extends QueryableSecurable {
             shareGenerated: shareGenerated,
         });
 
-        const q = new Web(this, "applytheme");
-        return q.post({ body: postBody });
+        return this.clone(Web, "applytheme", true).post({ body: postBody });
     }
 
     /**
@@ -273,7 +271,8 @@ export class Web extends QueryableSecurable {
      * @param template Name of the site definition or the name of the site template
      */
     public applyWebTemplate(template: string): Promise<void> {
-        const q = new Web(this, "applywebtemplate");
+
+        const q = this.clone(Web, "applywebtemplate", true);
         q.concat(`(@t)`);
         q.query.add("@t", template);
         return q.post();
@@ -285,7 +284,8 @@ export class Web extends QueryableSecurable {
      * @param perms The high and low permission range.
      */
     public doesUserHavePermissions(perms: Types.BasePermissions): Promise<boolean> {
-        const q = new Web(this, "doesuserhavepermissions");
+
+        const q = this.clone(Web, "doesuserhavepermissions", true);
         q.concat(`(@p)`);
         q.query.add("@p", JSON.stringify(perms));
         return q.get();
@@ -296,15 +296,17 @@ export class Web extends QueryableSecurable {
      *
      * @param loginName The login name of the user (ex: i:0#.f|membership|user@domain.onmicrosoft.com)
      */
-    public ensureUser(loginName: string): Promise<any> {
-        // TODO:: this should resolve to a User
-
+    public ensureUser(loginName: string): Promise<WebEnsureUserResult> {
         const postBody = JSON.stringify({
             logonName: loginName,
         });
 
-        const q = new Web(this, "ensureuser");
-        return q.post({ body: postBody });
+        return this.clone(Web, "ensureuser", true).post({ body: postBody }).then((data: any) => {
+            return {
+                data: data,
+                user: new SiteUser(extractOdataId(data)),
+            };
+        });
     }
 
     /**
@@ -324,9 +326,7 @@ export class Web extends QueryableSecurable {
      * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
     public getCatalog(type: number): Promise<List> {
-        const q = new Web(this, `getcatalog(${type})`);
-        q.select("Id");
-        return q.get().then((data) => {
+        return this.clone(Web, `getcatalog(${type})`, true).select("Id").get().then((data) => {
             return new List(extractOdataId(data));
         });
     }
@@ -337,10 +337,7 @@ export class Web extends QueryableSecurable {
     public getChanges(query: Types.ChangeQuery): Promise<any> {
 
         const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
-
-        // don't change "this" instance, make a new one
-        const q = new Web(this, "getchanges");
-        return q.post({ body: postBody });
+        return this.clone(Web, "getchanges", true).post({ body: postBody });
     }
 
     /**
@@ -368,8 +365,7 @@ export class Web extends QueryableSecurable {
      * @param progId The ProgID of the application that was used to create the file, in the form OLEServerName.ObjectName
      */
     public mapToIcon(filename: string, size = 0, progId = ""): Promise<string> {
-        const q = new Web(this, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`);
-        return q.get();
+        return this.clone(Web, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`, true).get();
     }
 }
 
@@ -386,4 +382,9 @@ export interface WebUpdateResult {
 export interface GetCatalogResult {
     data: any;
     list: List;
+}
+
+export interface WebEnsureUserResult {
+    data: SiteUserProps;
+    user: SiteUser;
 }
