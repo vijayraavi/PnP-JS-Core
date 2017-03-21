@@ -1,7 +1,8 @@
 export * from "./caching";
 
 export {
-    AttachmentFileAddResult
+    AttachmentFileAddResult,
+    AttachmentFileInfo
 } from "./attachmentfiles"
 
 export {
