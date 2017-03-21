@@ -33,7 +33,8 @@ export class Folders extends QueryableCollection {
      * @returns The new Folder and the raw response.
      */
     public add(url: string): Promise<FolderAddResult> {
-        return new Folders(this, `add('${url}')`).post().then((response) => {
+
+        return this.clone(Folders, `add('${url}')`, true).post().then((response) => {
             return {
                 data: response,
                 folder: this.getByName(url),
@@ -47,23 +48,6 @@ export class Folders extends QueryableCollection {
  *
  */
 export class Folder extends QueryableInstance {
-
-    //
-    // TODO:
-    //      Properties (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FolderProperties)
-    //          UniqueContentTypeOrder (setter)
-    //          WelcomePage (setter)
-    //
-
-    /**
-     * Creates a new instance of the Folder class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path Optional, if supplied will be appended to the supplied baseUrl
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Specifies the sequence in which content types are displayed.
@@ -135,7 +119,7 @@ export class Folder extends QueryableInstance {
     * @param eTag Value used in the IF-Match header, by default "*"
     */
     public delete(eTag = "*"): Promise<void> {
-        return new Folder(this).post({
+        return this.clone(Folder, null, true).post({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -147,7 +131,7 @@ export class Folder extends QueryableInstance {
      * Moves the folder to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        return new Folder(this, "recycle").post();
+        return this.clone(Folder, "recycle", true).post();
     }
 }
 

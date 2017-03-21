@@ -18,10 +18,6 @@ export interface NavigationNodeUpdateResult {
  */
 export class NavigationNodes extends QueryableCollection {
 
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
-
     /**
      * Gets a navigation node by id
      *
@@ -49,8 +45,7 @@ export class NavigationNodes extends QueryableCollection {
             "__metadata": { "type": "SP.NavigationNode" },
         });
 
-        const adder = new NavigationNodes(this);
-        return adder.post({ body: postBody }).then((data) => {
+        return this.clone(NavigationNodes, null, true).post({ body: postBody }).then((data) => {
             return {
                 data: data,
                 node: this.getById(data.Id),
@@ -71,16 +66,11 @@ export class NavigationNodes extends QueryableCollection {
             previousNodeId: previousNodeId,
         });
 
-        const mover = new NavigationNodes(this, "MoveAfter");
-        return mover.post({ body: postBody });
+        return this.clone(NavigationNodes, "MoveAfter", true).post({ body: postBody });
     }
 }
 
 export class NavigationNode extends QueryableInstance {
-
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Represents the child nodes of this node

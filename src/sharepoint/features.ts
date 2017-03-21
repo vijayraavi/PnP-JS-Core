@@ -34,8 +34,7 @@ export class Features extends QueryableCollection {
      */
     public add(id: string, force = false): Promise<FeatureAddResult> {
 
-        const adder = new Features(this, "add");
-        return adder.post({
+        return this.clone(Features, "add", true).post({
             body: JSON.stringify({
                 featdefScope: 0,
                 featureId: id,
@@ -57,8 +56,7 @@ export class Features extends QueryableCollection {
      */
     public remove(id: string, force = false): Promise<any> {
 
-        const remover = new Features(this, "remove");
-        return remover.post({
+        return this.clone(Features, "remove", true).post({
             body: JSON.stringify({
                 featureId: id,
                 force: force,
@@ -68,15 +66,6 @@ export class Features extends QueryableCollection {
 }
 
 export class Feature extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the Lists class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Removes (deactivates) a feature from the collection
@@ -91,7 +80,7 @@ export class Feature extends QueryableInstance {
 
         return idGet.getAs<{ DefinitionId: string }>().then(feature => {
 
-            const promise = this.getParent(Features, this.parentUrl, "").remove(feature.DefinitionId, force);
+            const promise = this.getParent(Features, this.parentUrl, "", this.batch).remove(feature.DefinitionId, force);
 
             removeDependency();
 
