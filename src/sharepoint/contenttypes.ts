@@ -118,6 +118,17 @@ export class ContentType extends QueryableInstance {
     public get workflowAssociations(): QueryableCollection {
         return new QueryableCollection(this, "workflowAssociations");
     }
+
+    /**
+     * Delete this content type
+     */
+    public delete(): Promise<void> {
+        return this.post({
+            headers: {
+                "X-HTTP-Method": "DELETE",
+            },
+        });
+    }
 }
 
 export interface ContentTypeAddResult {
