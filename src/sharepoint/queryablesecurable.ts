@@ -27,7 +27,7 @@ export class QueryableSecurable extends QueryableInstance {
      * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
      */
     public getUserEffectivePermissions(loginName: string): Promise<BasePermissions> {
-        let q = this.clone(Queryable, "getUserEffectivePermissions(@user)", true);
+        const q = this.clone(Queryable, "getUserEffectivePermissions(@user)", true);
         q.query.add("@user", `'${encodeURIComponent(loginName)}'`);
         return q.getAs<BasePermissions>();
     }
@@ -65,9 +65,10 @@ export class QueryableSecurable extends QueryableInstance {
     }
 
     /**
-     * 
-     * @param loginName 
-     * @param permission 
+     * Determines if a given user has the appropriate permissions
+     *
+     * @param loginName The user to check
+     * @param permission The permission being checked
      */
     public userHasPermissions(loginName: string, permission: PermissionKind): Promise<boolean> {
 
@@ -79,7 +80,7 @@ export class QueryableSecurable extends QueryableInstance {
 
     /**
      * Determines if the current user has the requested permissions
-     * 
+     *
      * @param permission The permission we wish to check
      */
     public currentUserHasPermissions(permission: PermissionKind): Promise<boolean> {
@@ -92,10 +93,11 @@ export class QueryableSecurable extends QueryableInstance {
 
     /**
      * Taken from sp.js, checks the supplied permissions against the mask
-     * 
+     *
      * @param value The security principal's permissions on the given object
      * @param perm The permission checked against the value
      */
+    /* tslint:disable:no-bitwise */
     public hasPermissions(value: BasePermissions, perm: PermissionKind): boolean {
 
         if (!perm) {
@@ -111,11 +113,11 @@ export class QueryableSecurable extends QueryableInstance {
         if (perm >= 0 && perm < 32) {
             num = num << perm;
             return 0 !== (value.Low & num);
-        }
-        else if (perm >= 32 && perm < 64) {
+        } else if (perm >= 32 && perm < 64) {
             num = num << perm - 32;
             return 0 !== (value.High & num);
         }
         return false;
     }
+    /* tslint:enable */
 }
