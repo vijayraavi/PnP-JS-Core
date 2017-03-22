@@ -381,8 +381,210 @@ export enum UrlFieldFormatType {
 }
 
 export interface BasePermissions {
-    Low: string;
-    High: string;
+    Low: number;
+    High: number;
+}
+
+export enum PermissionKind {
+
+    /**
+     * Has no permissions on the Site. Not available through the user interface.
+     */
+    EmptyMask = 0, //0x0000000000000000
+
+    /**
+     * View items in lists, documents in document libraries, and Web discussion comments.
+     */
+    ViewListItems = 1,
+
+    /**
+     * Add items to lists, documents to document libraries, and Web discussion comments.
+     */
+    AddListItems = 2,
+
+    /**
+     * Edit items in lists, edit documents in document libraries, edit Web discussion comments
+     * in documents, and customize Web Part Pages in document libraries.
+     */
+    EditListItems = 3, //0x0000000000000004,
+
+    /**
+     * Delete items from a list, documents from a document library, and Web discussion
+     * comments in documents.
+     */
+    DeleteListItems = 4, //0x0000000000000008,
+
+    /**
+     * Approve a minor version of a list item or document.
+     */
+    ApproveItems = 5, //0x0000000000000010,
+
+    /**
+     * View the source of documents with server-side file handlers.
+     */
+    OpenItems = 6, //0x0000000000000020,
+
+    /**
+     * View past versions of a list item or document.
+     */
+    ViewVersions = 7, //0x0000000000000040,
+
+    /**
+     * Delete past versions of a list item or document.
+     */
+    DeleteVersions = 8, //0x0000000000000080,
+
+    /**
+     * Discard or check in a document which is checked out to another user.
+     */
+    CancelCheckout = 9, //0x0000000000000100,
+
+    /**
+     * Create, change, and delete personal views of lists.
+     */
+    ManagePersonalViews = 10, //0x0000000000000200,
+
+    /**
+     * Create and delete lists, add or remove columns in a list, and add or remove public views of a list.
+     */
+    ManageLists = 12, //0x0000000000000800,
+
+    /**
+     * View forms, views, and application pages, and enumerate lists.
+     */
+    ViewFormPages = 13, //0x0000000000001000,
+
+    /**
+     * Make content of a list or document library retrieveable for anonymous users through SharePoint search.
+     * The list permissions in the site do not change.
+     */
+    AnonymousSearchAccessList = 14, //0x0000000000002000,
+
+    /**
+     * Allow users to open a Site, list, or folder to access items inside that container.
+     */
+    Open = 17, //0x0000000000010000,
+
+    /**
+     * View pages in a Site.
+     */
+    ViewPages = 18, //0x0000000000020000,
+
+    /**
+     * Add, change, or delete HTML pages or Web Part Pages, and edit the Site using
+     * a Windows SharePoint Services compatible editor.
+     */
+    AddAndCustomizePages = 19, //0x0000000000040000,
+
+    /**
+     * Apply a theme or borders to the entire Site.
+     */
+    ApplyThemeAndBorder = 20, //0x0000000000080000,
+
+    /**
+     * Apply a style sheet (.css file) to the Site.
+     */
+    ApplyStyleSheets = 21, //0x0000000000100000,
+
+    /**
+     * View reports on Site usage.
+     */
+    ViewUsageData = 22, //0x0000000000200000,
+
+    /**
+     * Create a Site using Self-Service Site Creation.
+     */
+    CreateSSCSite = 23, //0x0000000000400000,
+
+    /**
+     * Create subsites such as team sites, Meeting Workspace sites, and Document Workspace sites.
+     */
+    ManageSubwebs = 24, //0x0000000000800000,
+
+    /**
+     * Create a group of users that can be used anywhere within the site collection.
+     */
+    CreateGroups = 25, //0x0000000001000000,
+
+    /**
+     * Create and change permission levels on the Site and assign permissions to users
+     * and groups.
+     */
+    ManagePermissions = 26, //0x0000000002000000,
+
+    /**
+     * Enumerate files and folders in a Site using Microsoft Office SharePoint Designer
+     * and WebDAV interfaces.
+     */
+    BrowseDirectories = 27, //0x0000000004000000,
+
+    /**
+     * View information about users of the Site.
+     */
+    BrowseUserInfo = 28, //0x0000000008000000,
+
+    /**
+     * Add or remove personal Web Parts on a Web Part Page.
+     */
+    AddDelPrivateWebParts = 29, //0x0000000010000000,
+
+    /**
+     * Update Web Parts to display personalized information.
+     */
+    UpdatePersonalWebParts = 30, //0x0000000020000000,
+
+    /**
+     * Grant the ability to perform all administration tasks for the Site as well as
+     * manage content, activate, deactivate, or edit properties of Site scoped Features
+     * through the object model or through the user interface (UI). When granted on the
+     * root Site of a Site Collection, activate, deactivate, or edit properties of
+     * site collection scoped Features through the object model. To browse to the Site
+     * Collection Features page and activate or deactivate Site Collection scoped Features
+     * through the UI, you must be a Site Collection administrator.
+     */
+    ManageWeb = 31, //0x0000000040000000,
+
+    /**
+     * Content of lists and document libraries in the Web site will be retrieveable for anonymous users through
+     * SharePoint search if the list or document library has AnonymousSearchAccessList set.
+     */
+    AnonymousSearchAccessWebLists = 32, //0x0000000080000000,
+
+    /**
+     * Use features that launch client applications. Otherwise, users must work on documents
+     * locally and upload changes.
+     */
+    UseClientIntegration = 37, //0x0000001000000000,
+
+    /**
+     * Use SOAP, WebDAV, or Microsoft Office SharePoint Designer interfaces to access the Site.
+     */
+    UseRemoteAPIs = 38, //0x0000002000000000,
+
+    /**
+     * Manage alerts for all users of the Site.
+     */
+    ManageAlerts = 39, //0x0000004000000000,
+
+    /**
+     * Create e-mail alerts.
+     */
+    CreateAlerts = 40, //0x0000008000000000,
+
+    /**
+     * Allows a user to change his or her user information, such as adding a picture.
+     */
+    EditMyUserInfo = 41, //0x0000010000000000,
+
+    /**
+     * Enumerate permissions on Site, list, folder, document, or list item.
+     */
+    EnumeratePermissions = 63, //0x4000000000000000,
+
+    /**
+     * Has all permissions on the Site. Not available through the user interface.
+     */
+    FullMask = 65,
 }
 
 export interface FollowedContent {

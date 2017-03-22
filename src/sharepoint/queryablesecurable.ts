@@ -1,4 +1,6 @@
+import { Web } from "./webs";
 import { RoleAssignments } from "./roles";
+import { BasePermissions, PermissionKind } from "./types";
 import { Queryable, QueryableInstance } from "./queryable";
 
 export class QueryableSecurable extends QueryableInstance {
@@ -24,10 +26,22 @@ export class QueryableSecurable extends QueryableInstance {
      *
      * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
      */
-    public getUserEffectivePermissions(loginName: string): Queryable {
-        const perms = new Queryable(this, "getUserEffectivePermissions(@user)");
-        perms.query.add("@user", "'" + encodeURIComponent(loginName) + "'");
-        return perms;
+    public getUserEffectivePermissions(loginName: string): Promise<BasePermissions> {
+        let q = this.clone(Queryable, "getUserEffectivePermissions(@user)", true);
+        q.query.add("@user", `'${encodeURIComponent(loginName)}'`);
+        return q.getAs<BasePermissions>();
+    }
+
+    /**
+     * Gets the effective permissions for the current user
+     */
+    public getCurrentUserEffectivePermissions(): Promise<BasePermissions> {
+
+        const w = Web.fromUrl(this.toUrl());
+        return w.currentUser.select("LoginName").getAs<{ LoginName: string }>().then(user => {
+
+            return this.getUserEffectivePermissions(user.LoginName);
+        });
     }
 
     /**
@@ -48,5 +62,60 @@ export class QueryableSecurable extends QueryableInstance {
     public resetRoleInheritance(): Promise<any> {
 
         return this.clone(QueryableSecurable, "resetroleinheritance", true).post();
+    }
+
+    /**
+     * 
+     * @param loginName 
+     * @param permission 
+     */
+    public userHasPermissions(loginName: string, permission: PermissionKind): Promise<boolean> {
+
+        return this.getUserEffectivePermissions(loginName).then(perms => {
+
+            return this.hasPermissions(perms, permission);
+        });
+    }
+
+    /**
+     * Determines if the current user has the requested permissions
+     * 
+     * @param permission The permission we wish to check
+     */
+    public currentUserHasPermissions(permission: PermissionKind): Promise<boolean> {
+
+        return this.getCurrentUserEffectivePermissions().then(perms => {
+
+            return this.hasPermissions(perms, permission);
+        });
+    }
+
+    /**
+     * Taken from sp.js, checks the supplied permissions against the mask
+     * 
+     * @param value The security principal's permissions on the given object
+     * @param perm The permission checked against the value
+     */
+    public hasPermissions(value: BasePermissions, perm: PermissionKind): boolean {
+
+        if (!perm) {
+            return true;
+        }
+        if (perm === PermissionKind.FullMask) {
+            return (value.High & 32767) === 32767 && value.Low === 65535;
+        }
+
+        perm = perm - 1;
+        let num = 1;
+
+        if (perm >= 0 && perm < 32) {
+            num = num << perm;
+            return 0 !== (value.Low & num);
+        }
+        else if (perm >= 32 && perm < 64) {
+            num = num << perm - 32;
+            return 0 !== (value.High & num);
+        }
+        return false;
     }
 }
