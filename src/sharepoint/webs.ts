@@ -16,7 +16,7 @@ import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId, ODataBatch } from "./odata";
 import { Features } from "./features";
-
+import { deprecated } from "../utils/decorators";
 
 export class Webs extends QueryableCollection {
     constructor(baseUrl: string | Queryable, webPath = "webs") {
@@ -74,6 +74,24 @@ export class Webs extends QueryableCollection {
  *
  */
 export class Web extends QueryableSecurable {
+
+    /**
+     * Creates a new web instance from the given url by indexing the location of the /_api/
+     * segment. If this is not found the method creates a new web with the entire string as
+     * supplied.
+     *
+     * @param url
+     */
+    public static fromUrl(url: string) {
+
+        const index = url.indexOf("/_api/");
+
+        if (index > -1) {
+            return new Web(url.substr(0, index));
+        }
+
+        return new Web(url);
+    }
 
     constructor(baseUrl: string | Queryable, path = "_api/web") {
         super(baseUrl, path);
@@ -283,6 +301,7 @@ export class Web extends QueryableSecurable {
      *
      * @param perms The high and low permission range.
      */
+    @deprecated("This method will be removed in future releases. Please use the methods found in queryable securable.")
     public doesUserHavePermissions(perms: Types.BasePermissions): Promise<boolean> {
 
         const q = this.clone(Web, "doesuserhavepermissions", true);
