@@ -27,8 +27,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public add(principalId: number, roleDefId: number): Promise<void> {
-        const a = new RoleAssignments(this, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`);
-        return a.post();
+        return this.clone(RoleAssignments, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).post();
     }
 
     /**
@@ -39,8 +38,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public remove(principalId: number, roleDefId: number): Promise<void> {
-        const a = new RoleAssignments(this, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`);
-        return a.post();
+        return this.clone(RoleAssignments, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).post();
     }
 
     /**
@@ -56,15 +54,6 @@ export class RoleAssignments extends QueryableCollection {
 }
 
 export class RoleAssignment extends QueryableInstance {
-
-    /**
- * Creates a new instance of the RoleAssignment class
- *
- * @param baseUrl The url or Queryable which forms the parent of this fields collection
- */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     public get groups(): SiteGroups {
         return new SiteGroups(this, "groups");
@@ -163,9 +152,6 @@ export class RoleDefinitions extends QueryableCollection {
 }
 
 export class RoleDefinition extends QueryableInstance {
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Updates this web intance with the supplied properties

@@ -69,9 +69,7 @@ export class Fields extends QueryableCollection {
             }, info),
         });
 
-        const q: Fields = new Fields(this, "createfieldasxml");
-
-        return q.postAs<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Fields, "createfieldasxml", true).postAs<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),
@@ -93,7 +91,7 @@ export class Fields extends QueryableCollection {
             "__metadata": { "type": fieldType },
         }, properties));
 
-        return this.postAs<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Fields, null, true).postAs<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),
@@ -305,15 +303,6 @@ export class Fields extends QueryableCollection {
 export class Field extends QueryableInstance {
 
     /**
-     * Creates a new instance of the Field class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this field instance
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
-
-    /**
      * Updates this field intance with the supplied properties
      *
      * @param properties A plain object hash of values to update for the list
@@ -354,24 +343,21 @@ export class Field extends QueryableInstance {
      * Sets the value of the ShowInDisplayForm property for this field.
      */
     public setShowInDisplayForm(show: boolean): Promise<void> {
-        const q: Field = new Field(this, `setshowindisplayform(${show})`);
-        return q.post();
+        return this.clone(Field, `setshowindisplayform(${show})`, true).post();
     }
 
     /**
      * Sets the value of the ShowInEditForm property for this field.
      */
     public setShowInEditForm(show: boolean): Promise<void> {
-        const q: Field = new Field(this, `setshowineditform(${show})`);
-        return q.post();
+        return this.clone(Field, `setshowineditform(${show})`, true).post();
     }
 
     /**
      * Sets the value of the ShowInNewForm property for this field.
      */
     public setShowInNewForm(show: boolean): Promise<void> {
-        const q: Field = new Field(this, `setshowinnewform(${show})`);
-        return q.post();
+        return this.clone(Field, `setshowinnewform(${show})`, true).post();
     }
 }
 

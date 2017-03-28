@@ -1,6 +1,11 @@
 import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "./odata";
 
+export interface AttachmentFileInfo {
+    name: string;
+    content: string | Blob | ArrayBuffer;
+}
+
 /**
  * Describes a collection of Item objects
  *
@@ -28,21 +33,33 @@ export class AttachmentFiles extends QueryableCollection {
     }
 
     /**
-     * Adds a new attachment to the collection
+     * Adds a new attachment to the collection. Not supported for batching.
      *
      * @param name The name of the file, including extension.
      * @param content The Base64 file content.
      */
     public add(name: string, content: string | Blob | ArrayBuffer): Promise<AttachmentFileAddResult> {
-        return new AttachmentFiles(this, `add(FileName='${name}')`)
-            .post({
-                body: content,
-            }).then((response) => {
-                return {
-                    data: response,
-                    file: this.getByName(name),
-                };
-            });
+        return this.clone(AttachmentFiles, `add(FileName='${name}')`).post({
+            body: content,
+        }).then((response) => {
+            return {
+                data: response,
+                file: this.getByName(name),
+            };
+        });
+    }
+
+    /**
+     * Adds mjultiple new attachment to the collection. Not supported for batching.
+     *
+     * @files name The collection of files to add
+     */
+    public addMultiple(files: AttachmentFileInfo[]): Promise<void> {
+
+        // add the files in series so we don't get update conflicts
+        return files.reduce((chain, file) => chain.then(() => this.clone(AttachmentFiles, `add(FileName='${file.name}')`).post({
+            body: file.content,
+        })), Promise.resolve());
     }
 }
 
@@ -53,21 +70,12 @@ export class AttachmentFiles extends QueryableCollection {
 export class AttachmentFile extends QueryableInstance {
 
     /**
-     * Creates a new instance of the AttachmentFile class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this attachment file
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
-
-    /**
      * Gets the contents of the file as text
      *
      */
     public getText(): Promise<string> {
 
-        return new AttachmentFile(this, "$value").get(new TextFileParser());
+        return this.clone(AttachmentFile, "$value").get(new TextFileParser());
     }
 
     /**
@@ -76,7 +84,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public getBlob(): Promise<Blob> {
 
-        return new AttachmentFile(this, "$value").get(new BlobFileParser());
+        return this.clone(AttachmentFile, "$value").get(new BlobFileParser());
     }
 
     /**
@@ -84,7 +92,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public getBuffer(): Promise<ArrayBuffer> {
 
-        return new AttachmentFile(this, "$value").get(new BufferFileParser());
+        return this.clone(AttachmentFile, "$value").get(new BufferFileParser());
     }
 
     /**
@@ -92,19 +100,17 @@ export class AttachmentFile extends QueryableInstance {
      */
     public getJSON(): Promise<any> {
 
-        return new AttachmentFile(this, "$value").get(new JSONFileParser());
+        return this.clone(AttachmentFile, "$value").get(new JSONFileParser());
     }
 
     /**
-     * Sets the content of a file
+     * Sets the content of a file. Not supported for batching
      *
      * @param content The value to set for the file contents
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<AttachmentFile> {
 
-        const setter = new AttachmentFile(this, "$value");
-
-        return setter.post({
+        return this.clone(AttachmentFile, "$value").post({
             body: content,
             headers: {
                 "X-HTTP-Method": "PUT",

@@ -1,7 +1,8 @@
 export * from "./caching";
 
 export {
-    AttachmentFileAddResult
+    AttachmentFileAddResult,
+    AttachmentFileInfo
 } from "./attachmentfiles"
 
 export {
@@ -106,7 +107,8 @@ export {
 } from "./sitegroups";
 
 export {
-    UserUpdateResult
+    UserUpdateResult,
+    SiteUserProps
 } from "./siteusers";
 
 export {
@@ -130,5 +132,6 @@ export {
     Web,
     WebAddResult,
     WebUpdateResult,
-    GetCatalogResult
+    GetCatalogResult,
+    WebEnsureUserResult
 } from "./webs";

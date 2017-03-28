@@ -93,8 +93,7 @@ export class SiteGroups extends QueryableCollection {
      * @param id The id of the group to remove
      */
     public removeById(id: number): Promise<void> {
-        const g = new SiteGroups(this, `removeById('${id}')`);
-        return g.post();
+        return this.clone(SiteGroups, `removeById('${id}')`, true).post();
     }
 
     /**
@@ -103,8 +102,7 @@ export class SiteGroups extends QueryableCollection {
      * @param loginName The login name of the user
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        const g = new SiteGroups(this, `removeByLoginName('${loginName}')`);
-        return g.post();
+        return this.clone(SiteGroups, `removeByLoginName('${loginName}')`, true).post();
     }
 }
 
@@ -113,15 +111,6 @@ export class SiteGroups extends QueryableCollection {
  *
  */
 export class SiteGroup extends QueryableInstance {
-    /**
-     * Creates a new instance of the Group class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this site group
-     * @param path Optional, passes the path to the group
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Get's the users for this group
