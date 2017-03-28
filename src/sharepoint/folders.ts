@@ -1,5 +1,7 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 import { Files } from "./files";
+import { TypedHash } from "../collections/collections";
+import { Util } from "../utils/util";
 
 /**
  * Describes a collection of Folder objects
@@ -52,7 +54,6 @@ export class Folder extends QueryableInstance {
     // TODO:
     //      Properties (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FolderProperties)
     //          UniqueContentTypeOrder (setter)
-    //          WelcomePage (setter)
     //
 
     /**
@@ -129,6 +130,24 @@ export class Folder extends QueryableInstance {
         return new QueryableCollection(this, "uniqueContentTypeOrder");
     }
 
+    public update(properties: TypedHash<string | number | boolean>): Promise<FolderUpdateResult> {
+        const postBody: string = JSON.stringify(Util.extend({
+            "__metadata": { "type": "SP.Folder" },
+        }, properties));
+
+        return this.post({
+            body: postBody,
+            headers: {
+                "X-HTTP-Method": "MERGE",
+            },
+        }).then((data) => {
+            return {
+                data: data,
+                folder: this,
+            };
+        });
+    }
+
     /**
     * Delete this folder
     *
@@ -152,6 +171,11 @@ export class Folder extends QueryableInstance {
 }
 
 export interface FolderAddResult {
+    folder: Folder;
+    data: any;
+}
+
+export interface FolderUpdateResult {
     folder: Folder;
     data: any;
 }

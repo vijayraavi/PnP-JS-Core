@@ -187,6 +187,10 @@ export class Web extends QueryableSecurable {
         return new ODataBatch(this.parentUrl);
     }
 
+    public get rootFolder(): Folder {
+        return new Folder(this, "rootFolder");
+    }
+
     /**
      * Get a folder by server relative url
      *
