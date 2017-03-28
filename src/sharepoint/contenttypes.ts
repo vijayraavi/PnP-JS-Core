@@ -37,7 +37,7 @@ export class ContentTypes extends QueryableCollection {
             "contentTypeId": contentTypeId,
         });
 
-        return new ContentTypes(this, `addAvailableContentType`).postAs<{ id: string }>({ body: postBody }).then((data) => {
+        return this.clone(ContentTypes, "addAvailableContentType", true).postAs<{ id: string }>({ body: postBody }).then((data) => {
             return {
                 contentType: this.getById(data.id),
                 data: data,
@@ -81,15 +81,6 @@ export class ContentTypes extends QueryableCollection {
  *
  */
 export class ContentType extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the ContentType class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this content type instance
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Gets the column (also known as field) references in the content type.
@@ -165,14 +156,4 @@ export class FieldLinks extends QueryableCollection {
 /**
  * Represents a field link instance
  */
-export class FieldLink extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the ContentType class
-    *
-    * @param baseUrl The url or Queryable which forms the parent of this content type instance
-    */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
-}
+export class FieldLink extends QueryableInstance { }

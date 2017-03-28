@@ -53,7 +53,7 @@ export class SiteUsers extends QueryableCollection {
     public getByLoginName(loginName: string): SiteUser {
         const su = new SiteUser(this);
         su.concat("(@v)");
-        su.query.add("@v", encodeURIComponent(loginName));
+        su.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return su;
     }
 
@@ -63,8 +63,7 @@ export class SiteUsers extends QueryableCollection {
      * @param id The id of the user
      */
     public removeById(id: number | Queryable): Promise<any> {
-        const o = new SiteUsers(this, `removeById(${id})`);
-        return o.post();
+        return this.clone(SiteUsers, `removeById(${id})`, true).post();
     }
 
     /**
@@ -73,8 +72,8 @@ export class SiteUsers extends QueryableCollection {
      * @param loginName The login name of the user
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        const o = new SiteUsers(this, `removeByLoginName(@v)`);
-        o.query.add("@v", encodeURIComponent(loginName));
+        const o = this.clone(SiteUsers, `removeByLoginName(@v)`, true);
+        o.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return o.post();
     }
 
@@ -85,8 +84,9 @@ export class SiteUsers extends QueryableCollection {
      *
      */
     public add(loginName: string): Promise<SiteUser> {
-        const postBody = JSON.stringify({ "__metadata": { "type": "SP.User" }, LoginName: loginName });
-        return this.post({ body: postBody }).then(() => this.getByLoginName(loginName));
+        return this.clone(SiteUsers, null, true).post({
+            body: JSON.stringify({ "__metadata": { "type": "SP.User" }, LoginName: loginName }),
+        }).then(() => this.getByLoginName(loginName));
     }
 }
 
@@ -96,15 +96,6 @@ export class SiteUsers extends QueryableCollection {
  *
  */
 export class SiteUser extends QueryableInstance {
-    /**
-     * Creates a new instance of the User class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path Optional, passes the path to the user
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Get's the groups for this user.
@@ -157,4 +148,15 @@ export class CurrentUser extends QueryableInstance {
     constructor(baseUrl: string | Queryable, path = "currentuser") {
         super(baseUrl, path);
     }
+}
+
+export interface SiteUserProps {
+    Email: string;
+    Id: number;
+    IsHiddenInUI: boolean;
+    IsShareByEmailGuestUser: boolean;
+    IsSiteAdmin: boolean;
+    LoginName: string;
+    PrincipalType: number;
+    Title: string;
 }

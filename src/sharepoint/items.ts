@@ -71,7 +71,7 @@ export class Items extends QueryableCollection {
                 "__metadata": { "type": listItemEntityType },
             }, properties));
 
-            const promise = this.postAs<{ Id: number }>({ body: postBody }).then((data) => {
+            const promise = this.clone(Items, null, true).postAs<{ Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
@@ -102,15 +102,6 @@ export class Items extends QueryableCollection {
  *
  */
 export class Item extends QueryableSecurable {
-
-    /**
-     * Creates a new instance of the Items class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Gets the set of attachments for this item
@@ -240,8 +231,7 @@ export class Item extends QueryableSecurable {
      * Moves the list item to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        const i = new Item(this, "recycle");
-        return i.post();
+        return this.clone(Item, "recycle", true).post();
     }
 
     /**
@@ -251,7 +241,7 @@ export class Item extends QueryableSecurable {
      * @param action Display mode: 0: view, 1: edit, 2: mobileView, 3: interactivePreview
      */
     public getWopiFrameUrl(action = 0): Promise<string> {
-        const i = new Item(this, "getWOPIFrameUrl(@action)");
+        const i = this.clone(Item, "getWOPIFrameUrl(@action)", true);
         i._query.add("@action", <any>action);
         return i.post().then((data: { GetWOPIFrameUrl: string }) => {
             return data.GetWOPIFrameUrl;
@@ -266,9 +256,9 @@ export class Item extends QueryableSecurable {
      */
     /* tslint:disable max-line-length */
     public validateUpdateListItem(formValues: Types.ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<Types.ListItemFormUpdateValue[]> {
-        const postBody = JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate });
-        const item = new Item(this, "validateupdatelistitem");
-        return item.post({ body: postBody });
+        return this.clone(Item, "validateupdatelistitem", true).post({
+            body: JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate }),
+        });
     }
     /* tslint:enable */
 }

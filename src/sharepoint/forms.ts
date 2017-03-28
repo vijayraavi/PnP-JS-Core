@@ -31,14 +31,4 @@ export class Forms extends QueryableCollection {
  * Describes a single of Form instance
  *
  */
-export class Form extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the Form class
-     *
-     * @param baseUrl The url or Queryable which is the parent of this form instance
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
-}
+export class Form extends QueryableInstance { }

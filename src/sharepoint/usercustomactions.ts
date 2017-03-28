@@ -42,16 +42,11 @@ export class UserCustomActions extends QueryableCollection {
      *
      */
     public clear(): Promise<void> {
-        const a = new UserCustomActions(this, "clear");
-        return a.post();
+        return this.clone(UserCustomActions, "clear", true).post();
     }
 }
 
 export class UserCustomAction extends QueryableInstance {
-
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     public update(properties: TypedHash<string | boolean | number>): Promise<UserCustomActionUpdateResult> {
 
