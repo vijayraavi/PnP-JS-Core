@@ -204,6 +204,9 @@ export class Web extends QueryableSecurable {
         return new ODataBatch(this.parentUrl);
     }
 
+    /**
+     * The root folder of the web
+     */
     public get rootFolder(): Folder {
         return new Folder(this, "rootFolder");
     }

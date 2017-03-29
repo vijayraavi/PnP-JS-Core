@@ -254,13 +254,11 @@ export class Item extends QueryableSecurable {
      * @param formValues The fields to change and their new values.
      * @param newDocumentUpdate true if the list item is a document being updated after upload; otherwise false.
      */
-    /* tslint:disable max-line-length */
     public validateUpdateListItem(formValues: Types.ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<Types.ListItemFormUpdateValue[]> {
         return this.clone(Item, "validateupdatelistitem", true).post({
             body: JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate }),
         });
     }
-    /* tslint:enable */
 }
 
 export interface ItemAddResult {

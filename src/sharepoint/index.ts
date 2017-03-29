@@ -24,11 +24,14 @@ export {
 } from "./features";
 
 export {
-    FolderAddResult
+    FolderAddResult,
+    Folder,
+    Folders
 } from "./folders";
 
 export {
     Item,
+    Items,
     ItemAddResult,
     ItemUpdateResult,
     ItemUpdateResultData,
@@ -44,6 +47,7 @@ export {
 
 export {
     List,
+    Lists,
     ListAddResult,
     ListUpdateResult,
     ListEnsureResult
