@@ -12,6 +12,7 @@ import { ControlMode, RenderListData, ChangeQuery, CamlQuery, ChangeLogitemQuery
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId } from "./odata";
 import { NotSupportedInBatchException } from "../utils/exceptions";
+import { Folder } from "./folders";
 
 /**
  * Describes a collection of List objects
@@ -234,6 +235,13 @@ export class List extends QueryableSecurable {
      */
     public get subscriptions(): Subscriptions {
         return new Subscriptions(this);
+    }
+
+    /**
+     * The root folder of the list
+     */
+    public get rootFolder(): Folder {
+        return new Folder(this, "rootFolder");
     }
 
     /**

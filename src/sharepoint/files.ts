@@ -47,7 +47,7 @@ export class Files extends QueryableCollection {
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten? (default: true)
      * @returns The new File and the raw response.
      */
-    public add(url: string, content: Blob, shouldOverWrite = true): Promise<FileAddResult> {
+    public add(url: string, content: string | ArrayBuffer | Blob, shouldOverWrite = true): Promise<FileAddResult> {
         return new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`)
             .post({
                 body: content,
@@ -71,7 +71,7 @@ export class Files extends QueryableCollection {
      */
     public addChunked(
         url: string,
-        content: Blob,
+        content: string | ArrayBuffer | Blob,
         progress?: (data: ChunkedFileUploadProgressData) => void,
         shouldOverWrite = true,
         chunkSize = 10485760): Promise<FileAddResult> {

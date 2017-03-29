@@ -51,23 +51,6 @@ export class Folders extends QueryableCollection {
  */
 export class Folder extends QueryableInstance {
 
-
-    //
-    // TODO:
-    //      Properties (https://msdn.microsoft.com/en-us/library/office/dn450841.aspx#bk_FolderProperties)
-    //          UniqueContentTypeOrder (setter)
-    //
-
-    /**
-     * Creates a new instance of the Folder class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path Optional, if supplied will be appended to the supplied baseUrl
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
-
     /**
      * Specifies the sequence in which content types are displayed.
      *
