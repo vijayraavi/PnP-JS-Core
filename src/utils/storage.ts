@@ -1,4 +1,6 @@
 import { Util } from "./util";
+import { Dictionary } from "../collections/collections";
+import { RuntimeConfig } from "../configuration/pnplibconfig";
 
 /**
  * A wrapper class to provide a consistent interface to browser based storage
@@ -17,7 +19,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
      * @constructor
      */
     constructor(private store: Storage, public defaultTimeoutMinutes?: number) {
-        this.defaultTimeoutMinutes = (defaultTimeoutMinutes === void 0) ? 5 : defaultTimeoutMinutes;
+        this.defaultTimeoutMinutes = (defaultTimeoutMinutes === void 0) ? -1 : defaultTimeoutMinutes;
         this.enabled = this.test();
     }
 
@@ -121,7 +123,13 @@ export class PnPClientStorageWrapper implements PnPClientStore {
      */
     private createPersistable(o: any, expire?: Date): string {
         if (typeof expire === "undefined") {
-            expire = Util.dateAdd(new Date(), "minute", this.defaultTimeoutMinutes);
+
+            // ensure we are by default inline with the global library setting
+            let defaultTimeout = RuntimeConfig.defaultCachingTimeoutSeconds;
+            if (this.defaultTimeoutMinutes > 0) {
+                defaultTimeout = this.defaultTimeoutMinutes * 60;
+            }
+            expire = Util.dateAdd(new Date(), "second", defaultTimeout);
         }
 
         return JSON.stringify({ expiration: expire, value: o });
@@ -171,6 +179,41 @@ export interface PnPClientStore {
 }
 
 /**
+ * A thin implementation of in-memory storage for use in nodejs
+ */
+class MemoryStorage {
+
+    constructor(private _store = new Dictionary<string>()) { }
+
+    public get length(): number {
+        return this._store.count();
+    }
+
+    public clear(): void {
+        this._store.clear();
+    }
+
+    public getItem(key: string): any {
+        return this._store.get(key);
+    }
+
+    public key(index: number): string {
+        return this._store.getKeys()[index];
+    }
+
+    public removeItem(key: string): void {
+        this._store.remove(key);
+    }
+
+    public setItem(key: string, data: string): void {
+        this._store.add(key, data);
+    }
+
+    [key: string]: any;
+    [index: number]: string;
+}
+
+/**
  * A class that will establish wrappers for both local and session storage
  */
 export class PnPClientStorage {
@@ -191,7 +234,7 @@ export class PnPClientStorage {
      * @constructor
      */
     constructor() {
-        this.local = typeof localStorage !== "undefined" ? new PnPClientStorageWrapper(localStorage) : null;
-        this.session = typeof sessionStorage !== "undefined" ? new PnPClientStorageWrapper(sessionStorage) : null;
+        this.local = typeof localStorage !== "undefined" ? new PnPClientStorageWrapper(localStorage) : new PnPClientStorageWrapper(new MemoryStorage());
+        this.session = typeof sessionStorage !== "undefined" ? new PnPClientStorageWrapper(sessionStorage) : new PnPClientStorageWrapper(new MemoryStorage());
     }
 }
