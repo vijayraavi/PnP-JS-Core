@@ -63,19 +63,19 @@ describe("Sharing", () => {
                     .and.have.deep.property("Url").that.is.not.null;
             });
 
-            it("Should get a sharing link with a specified kind.", () => {
-                return expect(folder.getShareLink(SharingLinkKind.AnonymousView))
-                    .to.eventually.be.fulfilled
-                    .and.have.property("sharingLinkInfo")
-                    .and.have.deep.property("Url").that.is.not.null;
-            });
+            // it("Should get a sharing link with a specified kind.", () => {
+            //     return expect(folder.getShareLink(SharingLinkKind.AnonymousView))
+            //         .to.eventually.be.fulfilled
+            //         .and.have.property("sharingLinkInfo")
+            //         .and.have.deep.property("Url").that.is.not.null;
+            // });
 
-            it("Should get a sharing link with a specified kind and expiration.", () => {
-                return expect(folder.getShareLink(SharingLinkKind.AnonymousView, Util.dateAdd(new Date(), "day", 5)))
-                    .to.eventually.be.fulfilled
-                    .and.have.property("sharingLinkInfo")
-                    .and.have.deep.property("Url").that.is.not.null;
-            });
+            // it("Should get a sharing link with a specified kind and expiration.", () => {
+            //     return expect(folder.getShareLink(SharingLinkKind.AnonymousView, Util.dateAdd(new Date(), "day", 5)))
+            //         .to.eventually.be.fulfilled
+            //         .and.have.property("sharingLinkInfo")
+            //         .and.have.deep.property("Url").that.is.not.null;
+            // });
 
             it("Should allow sharing to a person with default settings.", () => {
 
@@ -122,21 +122,21 @@ describe("Sharing", () => {
                     .to.eventually.be.fulfilled;
             });
 
-            it("Should allow deleting a link by kind.", () => {
+            // it("Should allow deleting a link by kind.", () => {
 
-                return expect(folder.getShareLink(SharingLinkKind.AnonymousView).then(_ => {
+            //     return expect(folder.getShareLink(SharingLinkKind.AnonymousView).then(_ => {
 
-                    return folder.deleteSharingLinkByKind(SharingLinkKind.AnonymousView);
-                })).to.eventually.be.fulfilled;
-            });
+            //         return folder.deleteSharingLinkByKind(SharingLinkKind.AnonymousView);
+            //     })).to.eventually.be.fulfilled;
+            // });
 
-            it("Should allow unsharing a link by kind.", () => {
+            // it("Should allow unsharing a link by kind.", () => {
 
-                return expect(folder.getShareLink(SharingLinkKind.AnonymousView).then(response => {
+            //     return expect(folder.getShareLink(SharingLinkKind.AnonymousView).then(response => {
 
-                    return folder.unshareLink(SharingLinkKind.AnonymousView, response.sharingLinkInfo.ShareId);
-                })).to.eventually.be.fulfilled;
-            });
+            //         return folder.unshareLink(SharingLinkKind.AnonymousView, response.sharingLinkInfo.ShareId);
+            //     })).to.eventually.be.fulfilled;
+            // });
         });
 
         describe("can operate on files", () => {
@@ -156,19 +156,19 @@ describe("Sharing", () => {
                     .and.have.deep.property("Url").that.is.not.null;
             });
 
-            it("Should get a sharing link with a specified kind.", () => {
-                return expect(file.getShareLink(SharingLinkKind.AnonymousView))
-                    .to.eventually.be.fulfilled
-                    .and.have.property("sharingLinkInfo")
-                    .and.have.deep.property("Url").that.is.not.null;
-            });
+            // it("Should get a sharing link with a specified kind.", () => {
+            //     return expect(file.getShareLink(SharingLinkKind.AnonymousView))
+            //         .to.eventually.be.fulfilled
+            //         .and.have.property("sharingLinkInfo")
+            //         .and.have.deep.property("Url").that.is.not.null;
+            // });
 
-            it("Should get a sharing link with a specified kind and expiration.", () => {
-                return expect(file.getShareLink(SharingLinkKind.AnonymousView, Util.dateAdd(new Date(), "day", 5)))
-                    .to.eventually.be.fulfilled
-                    .and.have.property("sharingLinkInfo")
-                    .and.have.deep.property("Url").that.is.not.null;
-            });
+            // it("Should get a sharing link with a specified kind and expiration.", () => {
+            //     return expect(file.getShareLink(SharingLinkKind.AnonymousView, Util.dateAdd(new Date(), "day", 5)))
+            //         .to.eventually.be.fulfilled
+            //         .and.have.property("sharingLinkInfo")
+            //         .and.have.deep.property("Url").that.is.not.null;
+            // });
 
             it("Should allow sharing to a person with default settings.", () => {
 
@@ -215,21 +215,21 @@ describe("Sharing", () => {
                     .to.eventually.be.fulfilled;
             });
 
-            it("Should allow deleting a link by kind.", () => {
+            // it("Should allow deleting a link by kind.", () => {
 
-                return expect(file.getShareLink(SharingLinkKind.AnonymousView).then(_ => {
+            //     return expect(file.getShareLink(SharingLinkKind.AnonymousView).then(_ => {
 
-                    return file.deleteSharingLinkByKind(SharingLinkKind.AnonymousView);
-                })).to.eventually.be.fulfilled;
-            });
+            //         return file.deleteSharingLinkByKind(SharingLinkKind.AnonymousView);
+            //     })).to.eventually.be.fulfilled;
+            // });
 
-            it("Should allow unsharing a link by kind.", () => {
+            // it("Should allow unsharing a link by kind.", () => {
 
-                return expect(file.getShareLink(SharingLinkKind.AnonymousView).then(response => {
+            //     return expect(file.getShareLink(SharingLinkKind.AnonymousView).then(response => {
 
-                    return file.unshareLink(SharingLinkKind.AnonymousView, response.sharingLinkInfo.ShareId);
-                })).to.eventually.be.fulfilled;
-            });
+            //         return file.unshareLink(SharingLinkKind.AnonymousView, response.sharingLinkInfo.ShareId);
+            //     })).to.eventually.be.fulfilled;
+            // });
         });
 
         describe("can operate on items", () => {
@@ -249,19 +249,19 @@ describe("Sharing", () => {
                     .and.have.deep.property("Url").that.is.not.null;
             });
 
-            it("Should get a sharing link with a specified kind.", () => {
-                return expect(item.getShareLink(SharingLinkKind.AnonymousView))
-                    .to.eventually.be.fulfilled
-                    .and.have.property("sharingLinkInfo")
-                    .and.have.deep.property("Url").that.is.not.null;
-            });
+            // it("Should get a sharing link with a specified kind.", () => {
+            //     return expect(item.getShareLink(SharingLinkKind.AnonymousView))
+            //         .to.eventually.be.fulfilled
+            //         .and.have.property("sharingLinkInfo")
+            //         .and.have.deep.property("Url").that.is.not.null;
+            // });
 
-            it("Should get a sharing link with a specified kind and expiration.", () => {
-                return expect(item.getShareLink(SharingLinkKind.AnonymousView, Util.dateAdd(new Date(), "day", 5)))
-                    .to.eventually.be.fulfilled
-                    .and.have.property("sharingLinkInfo")
-                    .and.have.deep.property("Url").that.is.not.null;
-            });
+            // it("Should get a sharing link with a specified kind and expiration.", () => {
+            //     return expect(item.getShareLink(SharingLinkKind.AnonymousView, Util.dateAdd(new Date(), "day", 5)))
+            //         .to.eventually.be.fulfilled
+            //         .and.have.property("sharingLinkInfo")
+            //         .and.have.deep.property("Url").that.is.not.null;
+            // });
 
             it("Should allow sharing to a person with default settings.", () => {
 
@@ -315,21 +315,21 @@ describe("Sharing", () => {
                     .to.eventually.be.fulfilled;
             });
 
-            it("Should allow deleting a link by kind.", () => {
+            // it("Should allow deleting a link by kind.", () => {
 
-                return expect(item.getShareLink(SharingLinkKind.AnonymousView).then(_ => {
+            //     return expect(item.getShareLink(SharingLinkKind.AnonymousView).then(_ => {
 
-                    return item.deleteSharingLinkByKind(SharingLinkKind.AnonymousView);
-                })).to.eventually.be.fulfilled;
-            });
+            //         return item.deleteSharingLinkByKind(SharingLinkKind.AnonymousView);
+            //     })).to.eventually.be.fulfilled;
+            // });
 
-            it("Should allow unsharing a link by kind.", () => {
+            // it("Should allow unsharing a link by kind.", () => {
 
-                return expect(item.getShareLink(SharingLinkKind.AnonymousView).then(response => {
+            //     return expect(item.getShareLink(SharingLinkKind.AnonymousView).then(response => {
 
-                    return item.unshareLink(SharingLinkKind.AnonymousView, response.sharingLinkInfo.ShareId);
-                })).to.eventually.be.fulfilled;
-            });
+            //         return item.unshareLink(SharingLinkKind.AnonymousView, response.sharingLinkInfo.ShareId);
+            //     })).to.eventually.be.fulfilled;
+            // });
         });
 
         describe("can operate on webs", () => {
