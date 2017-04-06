@@ -17,6 +17,7 @@ import { extractOdataId, ODataBatch } from "./odata";
 import { Features } from "./features";
 import { deprecated } from "../utils/decorators";
 import { QueryableShareableWeb } from "./queryableshareable";
+import { RelatedItemManger, RelatedItemManagerImpl } from "./relateditems";
 
 export class Webs extends QueryableCollection {
     constructor(baseUrl: string | Queryable, webPath = "webs") {
@@ -198,6 +199,14 @@ export class Web extends QueryableShareableWeb {
      */
     public get roleDefinitions(): RoleDefinitions {
         return new RoleDefinitions(this);
+    }
+
+    /**
+     * Provides an interface to manage related items
+     *
+     */
+    public get relatedItems(): RelatedItemManger {
+        return RelatedItemManagerImpl.FromUrl(this.toUrl());
     }
 
     /**
