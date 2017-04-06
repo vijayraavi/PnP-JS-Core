@@ -211,7 +211,7 @@ export class Queryable {
      */
     public toUrlAndQuery(): string {
 
-        let aliasedParams = new Dictionary<string>();
+        const aliasedParams = new Dictionary<string>();
 
         let url = this.toUrl().replace(/'!(@.*?)::(.*?)'/ig, (match, labelName, value) => {
             Logger.write(`Rewriting aliased parameter from match ${match} to label: ${labelName} value: ${value}`, LogLevel.Verbose);
