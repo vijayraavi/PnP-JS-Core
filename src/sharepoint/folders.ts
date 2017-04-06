@@ -1,7 +1,10 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
+import { QueryableShareableFolder } from "./queryableshareable";
 import { Files } from "./files";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
+import { getEntityUrl } from "./odata";
+import { Item } from "./items";
 
 /**
  * Describes a collection of Folder objects
@@ -49,7 +52,7 @@ export class Folders extends QueryableCollection {
  * Describes a single Folder instance
  *
  */
-export class Folder extends QueryableInstance {
+export class Folder extends QueryableShareableFolder {
 
     /**
      * Specifies the sequence in which content types are displayed.
@@ -152,6 +155,18 @@ export class Folder extends QueryableInstance {
      */
     public recycle(): Promise<string> {
         return this.clone(Folder, "recycle", true).post();
+    }
+
+    /**
+     * Gets the associated list item for this folder, loading the default properties
+     */
+    public getItem<T>(...selects: string[]): Promise<Item & T> {
+
+        const q = this.listItemAllFields;
+        return q.select.apply(q, selects).get().then((d: any) => {
+
+            return Util.extend(new Item(getEntityUrl(d)), d);
+        });
     }
 }
 

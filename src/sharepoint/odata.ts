@@ -133,7 +133,7 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T[]> {
     }
 }
 
-function getEntityUrl(entity: any): string {
+export function getEntityUrl(entity: any): string {
 
     if (entity.hasOwnProperty("odata.editLink")) {
         // we are dealign with minimal metadata (default)

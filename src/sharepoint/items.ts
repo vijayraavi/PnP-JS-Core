@@ -1,11 +1,11 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
-import { QueryableSecurable } from "./queryablesecurable";
+import { QueryableShareableItem } from "./queryableshareable";
 import { Folder } from "./folders";
 import { File } from "./files";
 import { ContentType } from "./contenttypes";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
-import * as Types from "./types";
+import { ListItemFormUpdateValue } from "./types";
 import { ODataParserBase } from "./odata";
 import { AttachmentFiles } from "./attachmentfiles";
 import { List } from "./lists";
@@ -101,7 +101,7 @@ export class Items extends QueryableCollection {
  * Descrines a single Item instance
  *
  */
-export class Item extends QueryableSecurable {
+export class Item extends QueryableShareableItem {
 
     /**
      * Gets the set of attachments for this item
@@ -254,7 +254,7 @@ export class Item extends QueryableSecurable {
      * @param formValues The fields to change and their new values.
      * @param newDocumentUpdate true if the list item is a document being updated after upload; otherwise false.
      */
-    public validateUpdateListItem(formValues: Types.ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<Types.ListItemFormUpdateValue[]> {
+    public validateUpdateListItem(formValues: ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<ListItemFormUpdateValue[]> {
         return this.clone(Item, "validateupdatelistitem", true).post({
             body: JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate }),
         });
