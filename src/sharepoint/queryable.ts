@@ -6,6 +6,7 @@ import { ICachingOptions } from "./caching";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { AlreadyInBatchException } from "../utils/exceptions";
 import { RequestContext, pipe } from "./queryablerequest";
+import { Logger, LogLevel } from "../utils/logging";
 
 export interface QueryableConstructor<T> {
     new (baseUrl: string | Queryable, path?: string): T;
@@ -210,10 +211,19 @@ export class Queryable {
      */
     public toUrlAndQuery(): string {
 
-        let url = this.toUrl();
+        let aliasedParams = new Dictionary<string>();
 
-        if (this._query.count() > 0) {
-            url += `?${this._query.getKeys().map(key => `${key}=${this._query.get(key)}`).join("&")}`;
+        let url = this.toUrl().replace(/'!(@.*?)::(.*?)'/ig, (match, labelName, value) => {
+            Logger.write(`Rewriting aliased parameter from match ${match} to label: ${labelName} value: ${value}`, LogLevel.Verbose);
+            aliasedParams.add(labelName, `'${value}'`);
+            return labelName;
+        });
+
+        // inlude our explicitly set query string params
+        aliasedParams.merge(this._query);
+
+        if (aliasedParams.count() > 0) {
+            url += `?${aliasedParams.getKeys().map(key => `${key}=${aliasedParams.get(key)}`).join("&")}`;
         }
 
         return url;
