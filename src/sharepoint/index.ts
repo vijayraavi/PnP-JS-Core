@@ -76,6 +76,11 @@ export {
 } from "./queryable";
 
 export {
+    RelatedItem,
+    RelatedItemManger
+} from "./relateditems";
+
+export {
     RoleDefinitionUpdateResult,
     RoleDefinitionAddResult,
     RoleDefinitionBindings
