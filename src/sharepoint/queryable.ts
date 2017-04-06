@@ -85,7 +85,7 @@ export class Queryable {
     }
 
     /**
-     * Indicates if the current query has a batch associated
+     * The batch currently associated with this query or null
      *
      */
     protected get batch(): ODataBatch {
@@ -336,7 +336,9 @@ export class QueryableCollection extends Queryable {
      * @param selects One or more fields to return
      */
     public select(...selects: string[]): this {
-        this._query.add("$select", selects.join(","));
+        if (selects.length > 0) {
+            this._query.add("$select", selects.join(","));
+        }
         return this;
     }
 
@@ -346,7 +348,9 @@ export class QueryableCollection extends Queryable {
      * @param expands The Fields for which to expand the values
      */
     public expand(...expands: string[]): this {
-        this._query.add("$expand", expands.join(","));
+        if (expands.length > 0) {
+            this._query.add("$expand", expands.join(","));
+        }
         return this;
     }
 
@@ -407,7 +411,9 @@ export class QueryableInstance extends Queryable {
      * @param selects One or more fields to return
      */
     public select(...selects: string[]): this {
-        this._query.add("$select", selects.join(","));
+        if (selects.length > 0) {
+            this._query.add("$select", selects.join(","));
+        }
         return this;
     }
 
@@ -417,7 +423,9 @@ export class QueryableInstance extends Queryable {
      * @param expands The Fields for which to expand the values
      */
     public expand(...expands: string[]): this {
-        this._query.add("$expand", expands.join(","));
+        if (expands.length > 0) {
+            this._query.add("$expand", expands.join(","));
+        }
         return this;
     }
 }

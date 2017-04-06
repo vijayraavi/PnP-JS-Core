@@ -1,7 +1,13 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
-import * as Types from "./types";
+import {
+    XmlSchemaFieldCreationInformation,
+    DateTimeFieldFormatType,
+    FieldTypes,
+    CalendarType,
+    UrlFieldFormatType,
+} from "./types";
 
 /**
  * Describes a collection of Field objects
@@ -50,13 +56,13 @@ export class Fields extends QueryableCollection {
     /**
      * Creates a field based on the specified schema
      */
-    public createFieldAsXml(xml: string | Types.XmlSchemaFieldCreationInformation): Promise<FieldAddResult> {
+    public createFieldAsXml(xml: string | XmlSchemaFieldCreationInformation): Promise<FieldAddResult> {
 
-        let info: Types.XmlSchemaFieldCreationInformation;
+        let info: XmlSchemaFieldCreationInformation;
         if (typeof xml === "string") {
             info = { SchemaXml: xml };
         } else {
-            info = xml as Types.XmlSchemaFieldCreationInformation;
+            info = xml as XmlSchemaFieldCreationInformation;
         }
 
         const postBody: string = JSON.stringify({
@@ -128,15 +134,15 @@ export class Fields extends QueryableCollection {
     public addCalculated(
         title: string,
         formula: string,
-        dateFormat: Types.DateTimeFieldFormatType,
-        outputType: Types.FieldTypes = Types.FieldTypes.Text,
+        dateFormat: DateTimeFieldFormatType,
+        outputType: FieldTypes = FieldTypes.Text,
         properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
         const props: {
-            DateFormat: Types.DateTimeFieldFormatType;
+            DateFormat: DateTimeFieldFormatType;
             FieldTypeKind: number;
             Formula: string;
-            OutputType: Types.FieldTypes;
+            OutputType: FieldTypes;
         } = {
                 DateFormat: dateFormat,
                 FieldTypeKind: 17,
@@ -157,14 +163,14 @@ export class Fields extends QueryableCollection {
      */
     public addDateTime(
         title: string,
-        displayFormat: Types.DateTimeFieldFormatType = Types.DateTimeFieldFormatType.DateOnly,
-        calendarType: Types.CalendarType = Types.CalendarType.Gregorian,
+        displayFormat: DateTimeFieldFormatType = DateTimeFieldFormatType.DateOnly,
+        calendarType: CalendarType = CalendarType.Gregorian,
         friendlyDisplayFormat = 0,
         properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
         const props: {
-            DateTimeCalendarType: Types.CalendarType;
-            DisplayFormat: Types.DateTimeFieldFormatType;
+            DateTimeCalendarType: CalendarType;
+            DisplayFormat: DateTimeFieldFormatType;
             FieldTypeKind: number;
             FriendlyDisplayFormat: number;
         } = {
@@ -283,11 +289,11 @@ export class Fields extends QueryableCollection {
      */
     public addUrl(
         title: string,
-        displayFormat: Types.UrlFieldFormatType = Types.UrlFieldFormatType.Hyperlink,
+        displayFormat: UrlFieldFormatType = UrlFieldFormatType.Hyperlink,
         properties?: TypedHash<string | number | boolean>,
     ): Promise<FieldAddResult> {
 
-        const props: { DisplayFormat: Types.UrlFieldFormatType; FieldTypeKind: number } = {
+        const props: { DisplayFormat: UrlFieldFormatType; FieldTypeKind: number } = {
             DisplayFormat: displayFormat,
             FieldTypeKind: 11,
         };

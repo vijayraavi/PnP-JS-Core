@@ -1,22 +1,22 @@
 import { Queryable, QueryableCollection } from "./queryable";
-import { QueryableSecurable } from "./queryablesecurable";
 import { Lists } from "./lists";
 import { Fields } from "./fields";
 import { Navigation } from "./navigation";
-import { SiteGroups } from "./sitegroups";
+import { SiteGroups, SiteGroup } from "./sitegroups";
 import { ContentTypes } from "./contenttypes";
 import { Folders, Folder } from "./folders";
 import { RoleDefinitions } from "./roles";
 import { File } from "./files";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
-import * as Types from "./types";
+import { BasePermissions, ChangeQuery } from "./types";
 import { List } from "./lists";
 import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId, ODataBatch } from "./odata";
 import { Features } from "./features";
 import { deprecated } from "../utils/decorators";
+import { QueryableShareableWeb } from "./queryableshareable";
 
 export class Webs extends QueryableCollection {
     constructor(baseUrl: string | Queryable, webPath = "webs") {
@@ -73,7 +73,7 @@ export class Webs extends QueryableCollection {
  * Describes a web
  *
  */
-export class Web extends QueryableSecurable {
+export class Web extends QueryableShareableWeb {
 
     /**
      * Creates a new web instance from the given url by indexing the location of the /_api/
@@ -82,15 +82,19 @@ export class Web extends QueryableSecurable {
      *
      * @param url
      */
-    public static fromUrl(url: string) {
+    public static fromUrl(url: string, path?: string) {
 
-        const index = url.indexOf("/_api/");
-
-        if (index > -1) {
-            return new Web(url.substr(0, index));
+        if (url === null) {
+            return new Web("");
         }
 
-        return new Web(url);
+        const index = url.indexOf("_api/");
+
+        if (index > -1) {
+            return new Web(url.substr(0, index), path);
+        }
+
+        return new Web(url, path);
     }
 
     constructor(baseUrl: string | Queryable, path = "_api/web") {
@@ -211,6 +215,18 @@ export class Web extends QueryableSecurable {
         return new Folder(this, "rootFolder");
     }
 
+    public get associatedOwnerGroup(): SiteGroup {
+        return new SiteGroup(this, "associatedownergroup");
+    }
+
+    public get associatedMemberGroup(): SiteGroup {
+        return new SiteGroup(this, "associatedmembergroup");
+    }
+
+    public get associatedVisitorGroup(): SiteGroup {
+        return new SiteGroup(this, "associatedvisitorgroup");
+    }
+
     /**
      * Get a folder by server relative url
      *
@@ -309,7 +325,7 @@ export class Web extends QueryableSecurable {
      * @param perms The high and low permission range.
      */
     @deprecated("This method will be removed in future releases. Please use the methods found in queryable securable.")
-    public doesUserHavePermissions(perms: Types.BasePermissions): Promise<boolean> {
+    public doesUserHavePermissions(perms: BasePermissions): Promise<boolean> {
 
         const q = this.clone(Web, "doesuserhavepermissions", true);
         q.concat(`(@p)`);
@@ -360,7 +376,7 @@ export class Web extends QueryableSecurable {
     /**
      * Returns the collection of changes from the change log that have occurred within the list, based on the specified query.
      */
-    public getChanges(query: Types.ChangeQuery): Promise<any> {
+    public getChanges(query: ChangeQuery): Promise<any> {
 
         const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
         return this.clone(Web, "getchanges", true).post({ body: postBody });

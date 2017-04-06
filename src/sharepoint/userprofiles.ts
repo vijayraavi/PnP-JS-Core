@@ -1,6 +1,6 @@
 import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
-import * as Types from "./types";
-import * as FileUtil from "../utils/files";
+import { HashTagCollection, UserProfile } from "./types";
+import { readBlobAsArrayBuffer } from "../utils/files";
 import { ODataValue } from "./odata";
 
 export class UserProfileQuery extends QueryableInstance {
@@ -111,7 +111,7 @@ export class UserProfileQuery extends QueryableInstance {
      * Gets the most popular tags.
      *
      */
-    public get trendingTags(): Promise<Types.HashTagCollection> {
+    public get trendingTags(): Promise<HashTagCollection> {
         const q = this.clone(UserProfileQuery, null, true);
         q.concat(".gettrendingtags");
         return q.get();
@@ -162,7 +162,7 @@ export class UserProfileQuery extends QueryableInstance {
     public setMyProfilePic(profilePicSource: Blob): Promise<void> {
 
         return new Promise<void>((resolve, reject) => {
-            FileUtil.readBlobAsArrayBuffer(profilePicSource).then((buffer) => {
+            readBlobAsArrayBuffer(profilePicSource).then((buffer) => {
                 const request = new UserProfileQuery(this, "setmyprofilepicture");
                 request.post({
                     body: String.fromCharCode.apply(null, new Uint16Array(buffer)),
@@ -184,7 +184,7 @@ export class UserProfileQuery extends QueryableInstance {
      * Gets the user profile of the site owner.
      *
      */
-    public get ownerUserProfile(): Promise<Types.UserProfile> {
+    public get ownerUserProfile(): Promise<UserProfile> {
         return this.profileLoader.ownerUserProfile;
     }
 
@@ -236,22 +236,22 @@ class ProfileLoader extends Queryable {
      * Gets the user profile of the site owner.
      *
      */
-    public get ownerUserProfile(): Promise<Types.UserProfile> {
+    public get ownerUserProfile(): Promise<UserProfile> {
         let q = this.getParent(ProfileLoader, this.parentUrl, "_api/sp.userprofiles.profileloader.getowneruserprofile");
 
         if (this.hasBatch) {
             q = q.inBatch(this.batch);
         }
 
-        return q.postAs<Types.UserProfile>();
+        return q.postAs<UserProfile>();
     }
 
     /**
      * Gets the user profile that corresponds to the current user.
      *
      */
-    public get userProfile(): Promise<Types.UserProfile> {
-        return this.clone(ProfileLoader, "getuserprofile", true).postAs<Types.UserProfile>();
+    public get userProfile(): Promise<UserProfile> {
+        return this.clone(ProfileLoader, "getuserprofile", true).postAs<UserProfile>();
     }
 
     /**

@@ -3,6 +3,9 @@ import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from
 import { Util } from "../utils/util";
 import { MaxCommentLengthException } from "../utils/exceptions";
 import { LimitedWebPartManager } from "./webparts";
+import { Item } from "./items";
+import { QueryableShareableFile } from "./queryableshareable";
+import { getEntityUrl } from "./odata";
 
 export interface ChunkedFileUploadProgressData {
     stage: "starting" | "continue" | "finishing";
@@ -102,12 +105,11 @@ export class Files extends QueryableCollection {
     }
 }
 
-
 /**
  * Describes a single File instance
  *
  */
-export class File extends QueryableInstance {
+export class File extends QueryableShareableFile {
 
     /**
      * Gets a value that specifies the list item field values for the list item corresponding to the file.
@@ -316,6 +318,18 @@ export class File extends QueryableInstance {
                 "X-HTTP-Method": "PUT",
             },
         }).then(_ => new File(this));
+    }
+
+    /**
+     * Gets the associated list item for this folder, loading the default properties
+     */
+    public getItem<T>(...selects: string[]): Promise<Item & T> {
+
+        const q = this.listItemAllFields;
+        return q.select.apply(q, selects).get().then((d: any) => {
+
+            return Util.extend(new Item(getEntityUrl(d)), d);
+        });
     }
 
     /**
