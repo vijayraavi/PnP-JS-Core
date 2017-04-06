@@ -168,12 +168,12 @@ export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataPars
  */
 export class ODataBatch {
 
-    private _dependencies: Promise<void>;
+    private _dependencies: Promise<void>[];
     private _requests: ODataBatchRequestInfo[];
 
     constructor(private baseUrl: string, private _batchId = Util.getGUID()) {
         this._requests = [];
-        this._dependencies = Promise.resolve();
+        this._dependencies = [];
     }
 
     /**
@@ -216,7 +216,7 @@ export class ODataBatch {
             resolver = resolve;
         });
 
-        this._dependencies = this._dependencies.then(() => promise);
+        this._dependencies.push(promise);
 
         return resolver;
     }
@@ -227,7 +227,10 @@ export class ODataBatch {
      * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
     public execute(): Promise<void> {
-        return this._dependencies.then(() => this.executeImpl());
+
+        // we need to check the dependencies twice due to how different engines handle things.
+        // We can get a second set of promises added after the first set resolve
+        return Promise.all(this._dependencies).then(() => Promise.all(this._dependencies)).then(() => this.executeImpl());
     }
 
     private executeImpl(): Promise<void> {
