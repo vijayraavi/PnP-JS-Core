@@ -1,11 +1,11 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
-import { QueryableSecurable } from "./queryablesecurable";
+import { QueryableShareableItem } from "./queryableshareable";
 import { Folder } from "./folders";
 import { File } from "./files";
 import { ContentType } from "./contenttypes";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
-import * as Types from "./types";
+import { ListItemFormUpdateValue } from "./types";
 import { ODataParserBase } from "./odata";
 import { AttachmentFiles } from "./attachmentfiles";
 import { List } from "./lists";
@@ -71,7 +71,7 @@ export class Items extends QueryableCollection {
                 "__metadata": { "type": listItemEntityType },
             }, properties));
 
-            const promise = this.postAs<{ Id: number }>({ body: postBody }).then((data) => {
+            const promise = this.clone(Items, null, true).postAs<{ Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
@@ -91,11 +91,9 @@ export class Items extends QueryableCollection {
      */
     private ensureListItemEntityTypeName(candidatelistItemEntityTypeFullName: string): Promise<string> {
 
-        if (candidatelistItemEntityTypeFullName) {
-            return Promise.resolve(candidatelistItemEntityTypeFullName);
-        }
-
-        return this.getParent(List).getListItemEntityTypeFullName();
+        return candidatelistItemEntityTypeFullName ?
+            Promise.resolve(candidatelistItemEntityTypeFullName) :
+            this.getParent(List).getListItemEntityTypeFullName();
     }
 }
 
@@ -103,16 +101,7 @@ export class Items extends QueryableCollection {
  * Descrines a single Item instance
  *
  */
-export class Item extends QueryableSecurable {
-
-    /**
-     * Creates a new instance of the Items class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
+export class Item extends QueryableShareableItem {
 
     /**
      * Gets the set of attachments for this item
@@ -242,8 +231,7 @@ export class Item extends QueryableSecurable {
      * Moves the list item to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        const i = new Item(this, "recycle");
-        return i.post();
+        return this.clone(Item, "recycle", true).post();
     }
 
     /**
@@ -253,7 +241,7 @@ export class Item extends QueryableSecurable {
      * @param action Display mode: 0: view, 1: edit, 2: mobileView, 3: interactivePreview
      */
     public getWopiFrameUrl(action = 0): Promise<string> {
-        const i = new Item(this, "getWOPIFrameUrl(@action)");
+        const i = this.clone(Item, "getWOPIFrameUrl(@action)", true);
         i._query.add("@action", <any>action);
         return i.post().then((data: { GetWOPIFrameUrl: string }) => {
             return data.GetWOPIFrameUrl;
@@ -266,13 +254,11 @@ export class Item extends QueryableSecurable {
      * @param formValues The fields to change and their new values.
      * @param newDocumentUpdate true if the list item is a document being updated after upload; otherwise false.
      */
-    /* tslint:disable max-line-length */
-    public validateUpdateListItem(formValues: Types.ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<Types.ListItemFormUpdateValue[]> {
-        const postBody = JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate });
-        const item = new Item(this, "validateupdatelistitem");
-        return item.post({ body: postBody });
+    public validateUpdateListItem(formValues: ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<ListItemFormUpdateValue[]> {
+        return this.clone(Item, "validateupdatelistitem", true).post({
+            body: JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate }),
+        });
     }
-    /* tslint:enable */
 }
 
 export interface ItemAddResult {

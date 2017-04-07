@@ -1,6 +1,6 @@
 import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
-import * as Types from "./types";
-import * as FileUtil from "../utils/files";
+import { HashTagCollection, UserProfile } from "./types";
+import { readBlobAsArrayBuffer } from "../utils/files";
 import { ODataValue } from "./odata";
 
 export class UserProfileQuery extends QueryableInstance {
@@ -17,16 +17,14 @@ export class UserProfileQuery extends QueryableInstance {
      * The URL of the edit profile page for the current user.
      */
     public get editProfileLink(): Promise<string> {
-        const q = new UserProfileQuery(this, "EditProfileLink");
-        return q.getAs(ODataValue<string>());
+        return this.clone(UserProfileQuery, "EditProfileLink").getAs(ODataValue<string>());
     }
 
     /**
      * A Boolean value that indicates whether the current user's People I'm Following list is public.
      */
     public get isMyPeopleListPublic(): Promise<boolean> {
-        const q = new UserProfileQuery(this, "IsMyPeopleListPublic");
-        return q.getAs(ODataValue<boolean>());
+        return this.clone(UserProfileQuery, "IsMyPeopleListPublic").getAs(ODataValue<boolean>());
     }
 
     /**
@@ -35,8 +33,8 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user
      */
     public amIFollowedBy(loginName: string): Promise<boolean> {
-        const q = new UserProfileQuery(this, "amifollowedby(@v)");
-        q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
+        const q = this.clone(UserProfileQuery, "amifollowedby(@v)", true);
+        q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return q.get();
     }
 
@@ -46,8 +44,8 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user
      */
     public amIFollowing(loginName: string): Promise<boolean> {
-        const q = new UserProfileQuery(this, "amifollowing(@v)");
-        q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
+        const q = this.clone(UserProfileQuery, "amifollowing(@v)", true);
+        q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return q.get();
     }
 
@@ -57,8 +55,7 @@ export class UserProfileQuery extends QueryableInstance {
      * @param maxCount The maximum number of tags to get.
      */
     public getFollowedTags(maxCount = 20): Promise<string[]> {
-        const q = new UserProfileQuery(this, "getfollowedtags(" + maxCount + ")");
-        return q.get();
+        return this.clone(UserProfileQuery, `getfollowedtags(${maxCount})`, true).get();
     }
 
     /**
@@ -67,8 +64,8 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public getFollowersFor(loginName: string): Promise<any[]> {
-        const q = new UserProfileQuery(this, "getfollowersfor(@v)");
-        q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
+        const q = this.clone(UserProfileQuery, "getfollowersfor(@v)", true);
+        q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return q.get();
     }
 
@@ -94,8 +91,8 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public getPeopleFollowedBy(loginName: string): Promise<any[]> {
-        const q = new UserProfileQuery(this, "getpeoplefollowedby(@v)");
-        q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
+        const q = this.clone(UserProfileQuery, "getpeoplefollowedby(@v)", true);
+        q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return q.get();
     }
 
@@ -105,8 +102,8 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public getPropertiesFor(loginName: string): Promise<any[]> {
-        const q = new UserProfileQuery(this, "getpropertiesfor(@v)");
-        q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
+        const q = this.clone(UserProfileQuery, "getpropertiesfor(@v)", true);
+        q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return q.get();
     }
 
@@ -114,8 +111,8 @@ export class UserProfileQuery extends QueryableInstance {
      * Gets the most popular tags.
      *
      */
-    public get trendingTags(): Promise<Types.HashTagCollection> {
-        const q = new UserProfileQuery(this, null);
+    public get trendingTags(): Promise<HashTagCollection> {
+        const q = this.clone(UserProfileQuery, null, true);
         q.concat(".gettrendingtags");
         return q.get();
     }
@@ -127,8 +124,8 @@ export class UserProfileQuery extends QueryableInstance {
      * @param propertyName The case-sensitive name of the property to get.
      */
     public getUserProfilePropertyFor(loginName: string, propertyName: string): Promise<string> {
-        const q = new UserProfileQuery(this, `getuserprofilepropertyfor(accountname=@v, propertyname='${propertyName}')`);
-        q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
+        const q = this.clone(UserProfileQuery, `getuserprofilepropertyfor(accountname=@v, propertyname='${propertyName}')`, true);
+        q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return q.get();
     }
 
@@ -138,8 +135,8 @@ export class UserProfileQuery extends QueryableInstance {
      * @param loginName The account name of the user.
      */
     public hideSuggestion(loginName: string): Promise<void> {
-        const q = new UserProfileQuery(this, "hidesuggestion(@v)");
-        q.query.add("@v", "'" + encodeURIComponent(loginName) + "'");
+        const q = this.clone(UserProfileQuery, "hidesuggestion(@v)", true);
+        q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return q.post();
     }
 
@@ -150,22 +147,22 @@ export class UserProfileQuery extends QueryableInstance {
      * @param followee The account name of the user who might be followed.
      */
     public isFollowing(follower: string, followee: string): Promise<boolean> {
-        const q = new UserProfileQuery(this, null);
+        const q = this.clone(UserProfileQuery, null, true);
         q.concat(`.isfollowing(possiblefolloweraccountname=@v, possiblefolloweeaccountname=@y)`);
-        q.query.add("@v", "'" + encodeURIComponent(follower) + "'");
-        q.query.add("@y", "'" + encodeURIComponent(followee) + "'");
+        q.query.add("@v", `'${encodeURIComponent(follower)}'`);
+        q.query.add("@y", `'${encodeURIComponent(followee)}'`);
         return q.get();
     }
 
     /**
-     * Uploads and sets the user profile picture
+     * Uploads and sets the user profile picture. Not supported for batching.
      *
      * @param profilePicSource Blob data representing the user's picture
      */
     public setMyProfilePic(profilePicSource: Blob): Promise<void> {
 
         return new Promise<void>((resolve, reject) => {
-            FileUtil.readBlobAsArrayBuffer(profilePicSource).then((buffer) => {
+            readBlobAsArrayBuffer(profilePicSource).then((buffer) => {
                 const request = new UserProfileQuery(this, "setmyprofilepicture");
                 request.post({
                     body: String.fromCharCode.apply(null, new Uint16Array(buffer)),
@@ -187,7 +184,7 @@ export class UserProfileQuery extends QueryableInstance {
      * Gets the user profile of the site owner.
      *
      */
-    public get ownerUserProfile(): Promise<Types.UserProfile> {
+    public get ownerUserProfile(): Promise<UserProfile> {
         return this.profileLoader.ownerUserProfile;
     }
 
@@ -229,10 +226,9 @@ class ProfileLoader extends Queryable {
      * @param emails The email addresses of the users to provision sites for
      */
     public createPersonalSiteEnqueueBulk(emails: string[]): Promise<void> {
-        const q = new ProfileLoader(this, "createpersonalsiteenqueuebulk");
-        const postBody = JSON.stringify({ "emailIDs": emails });
-        return q.post({
-            body: postBody,
+
+        return this.clone(ProfileLoader, "createpersonalsiteenqueuebulk").post({
+            body: JSON.stringify({ "emailIDs": emails }),
         });
     }
 
@@ -240,18 +236,22 @@ class ProfileLoader extends Queryable {
      * Gets the user profile of the site owner.
      *
      */
-    public get ownerUserProfile(): Promise<Types.UserProfile> {
-        const q = this.getParent(ProfileLoader, this.parentUrl, "_api/sp.userprofiles.profileloader.getowneruserprofile");
-        return q.postAs<Types.UserProfile>();
+    public get ownerUserProfile(): Promise<UserProfile> {
+        let q = this.getParent(ProfileLoader, this.parentUrl, "_api/sp.userprofiles.profileloader.getowneruserprofile");
+
+        if (this.hasBatch) {
+            q = q.inBatch(this.batch);
+        }
+
+        return q.postAs<UserProfile>();
     }
 
     /**
      * Gets the user profile that corresponds to the current user.
      *
      */
-    public get userProfile(): Promise<Types.UserProfile> {
-        const q = new ProfileLoader(this, "getuserprofile");
-        return q.postAs<Types.UserProfile>();
+    public get userProfile(): Promise<UserProfile> {
+        return this.clone(ProfileLoader, "getuserprofile", true).postAs<UserProfile>();
     }
 
     /**
@@ -260,8 +260,7 @@ class ProfileLoader extends Queryable {
      * @param interactiveRequest true if interactively (web) initiated request, or false if non-interactively (client) initiated request
      */
     public createPersonalSite(interactiveRequest = false): Promise<void> {
-        const q = new ProfileLoader(this, `getuserprofile/createpersonalsiteenque(${interactiveRequest})",`);
-        return q.post();
+        return this.clone(ProfileLoader, `getuserprofile/createpersonalsiteenque(${interactiveRequest})`, true).post();
     }
 
     /**
@@ -270,8 +269,7 @@ class ProfileLoader extends Queryable {
      * @param share true to make all social data public; false to make all social data private.
      */
     public shareAllSocialData(share: boolean): Promise<void> {
-        const q = new ProfileLoader(this, `getuserprofile/shareallsocialdata(${share})",`);
-        return q.post();
+        return this.clone(ProfileLoader, `getuserprofile/shareallsocialdata(${share})`, true).post();
     }
 }
 

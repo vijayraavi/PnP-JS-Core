@@ -3,7 +3,7 @@ import { SearchSuggest, SearchSuggestQuery, SearchSuggestResult } from "./search
 import { Site } from "./site";
 import { Web } from "./webs";
 import { Util } from "../utils/util";
-import { Queryable } from "./queryable";
+import { Queryable, QueryableConstructor } from "./queryable";
 import { UserProfileQuery } from "./userprofiles";
 import { ODataBatch } from "./odata";
 import { UrlException } from "../utils/exceptions";
@@ -110,7 +110,7 @@ export class Rest {
      * @param urlPart String part to append to the url "site" | "web"
      */
     private _cdImpl<T extends Queryable>(
-        factory: { new (s: string, p: string): T },
+        factory: QueryableConstructor<T>,
         addInWebUrl: string,
         hostWebUrl: string,
         urlPart: string): T {

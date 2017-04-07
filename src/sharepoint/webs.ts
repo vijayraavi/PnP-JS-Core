@@ -1,22 +1,23 @@
 import { Queryable, QueryableCollection } from "./queryable";
-import { QueryableSecurable } from "./queryablesecurable";
 import { Lists } from "./lists";
 import { Fields } from "./fields";
 import { Navigation } from "./navigation";
-import { SiteGroups } from "./sitegroups";
+import { SiteGroups, SiteGroup } from "./sitegroups";
 import { ContentTypes } from "./contenttypes";
 import { Folders, Folder } from "./folders";
 import { RoleDefinitions } from "./roles";
 import { File } from "./files";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
-import * as Types from "./types";
+import { BasePermissions, ChangeQuery } from "./types";
 import { List } from "./lists";
-import { SiteUsers, SiteUser, CurrentUser } from "./siteusers";
+import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId, ODataBatch } from "./odata";
 import { Features } from "./features";
-
+import { deprecated } from "../utils/decorators";
+import { QueryableShareableWeb } from "./queryableshareable";
+import { RelatedItemManger, RelatedItemManagerImpl } from "./relateditems";
 
 export class Webs extends QueryableCollection {
     constructor(baseUrl: string | Queryable, webPath = "webs") {
@@ -59,8 +60,7 @@ export class Webs extends QueryableCollection {
             }, props),
         });
 
-        const q = new Webs(this, "add");
-        return q.post({ body: postBody }).then((data) => {
+        return this.clone(Webs, "add", true).post({ body: postBody }).then((data) => {
             return {
                 data: data,
                 web: new Web(extractOdataId(data).replace(/_api\/web\/?/i, "")),
@@ -74,7 +74,29 @@ export class Webs extends QueryableCollection {
  * Describes a web
  *
  */
-export class Web extends QueryableSecurable {
+export class Web extends QueryableShareableWeb {
+
+    /**
+     * Creates a new web instance from the given url by indexing the location of the /_api/
+     * segment. If this is not found the method creates a new web with the entire string as
+     * supplied.
+     *
+     * @param url
+     */
+    public static fromUrl(url: string, path?: string) {
+
+        if (url === null) {
+            return new Web("");
+        }
+
+        const index = url.indexOf("_api/");
+
+        if (index > -1) {
+            return new Web(url.substr(0, index), path);
+        }
+
+        return new Web(url, path);
+    }
 
     constructor(baseUrl: string | Queryable, path = "_api/web") {
         super(baseUrl, path);
@@ -180,11 +202,38 @@ export class Web extends QueryableSecurable {
     }
 
     /**
+     * Provides an interface to manage related items
+     *
+     */
+    public get relatedItems(): RelatedItemManger {
+        return RelatedItemManagerImpl.FromUrl(this.toUrl());
+    }
+
+    /**
      * Creates a new batch for requests within the context of context this web
      *
      */
     public createBatch(): ODataBatch {
         return new ODataBatch(this.parentUrl);
+    }
+
+    /**
+     * The root folder of the web
+     */
+    public get rootFolder(): Folder {
+        return new Folder(this, "rootFolder");
+    }
+
+    public get associatedOwnerGroup(): SiteGroup {
+        return new SiteGroup(this, "associatedownergroup");
+    }
+
+    public get associatedMemberGroup(): SiteGroup {
+        return new SiteGroup(this, "associatedmembergroup");
+    }
+
+    public get associatedVisitorGroup(): SiteGroup {
+        return new SiteGroup(this, "associatedvisitorgroup");
     }
 
     /**
@@ -263,8 +312,7 @@ export class Web extends QueryableSecurable {
             shareGenerated: shareGenerated,
         });
 
-        const q = new Web(this, "applytheme");
-        return q.post({ body: postBody });
+        return this.clone(Web, "applytheme", true).post({ body: postBody });
     }
 
     /**
@@ -273,7 +321,8 @@ export class Web extends QueryableSecurable {
      * @param template Name of the site definition or the name of the site template
      */
     public applyWebTemplate(template: string): Promise<void> {
-        const q = new Web(this, "applywebtemplate");
+
+        const q = this.clone(Web, "applywebtemplate", true);
         q.concat(`(@t)`);
         q.query.add("@t", template);
         return q.post();
@@ -284,8 +333,10 @@ export class Web extends QueryableSecurable {
      *
      * @param perms The high and low permission range.
      */
-    public doesUserHavePermissions(perms: Types.BasePermissions): Promise<boolean> {
-        const q = new Web(this, "doesuserhavepermissions");
+    @deprecated("This method will be removed in future releases. Please use the methods found in queryable securable.")
+    public doesUserHavePermissions(perms: BasePermissions): Promise<boolean> {
+
+        const q = this.clone(Web, "doesuserhavepermissions", true);
         q.concat(`(@p)`);
         q.query.add("@p", JSON.stringify(perms));
         return q.get();
@@ -296,15 +347,17 @@ export class Web extends QueryableSecurable {
      *
      * @param loginName The login name of the user (ex: i:0#.f|membership|user@domain.onmicrosoft.com)
      */
-    public ensureUser(loginName: string): Promise<any> {
-        // TODO:: this should resolve to a User
-
+    public ensureUser(loginName: string): Promise<WebEnsureUserResult> {
         const postBody = JSON.stringify({
             logonName: loginName,
         });
 
-        const q = new Web(this, "ensureuser");
-        return q.post({ body: postBody });
+        return this.clone(Web, "ensureuser", true).post({ body: postBody }).then((data: any) => {
+            return {
+                data: data,
+                user: new SiteUser(extractOdataId(data)),
+            };
+        });
     }
 
     /**
@@ -324,9 +377,7 @@ export class Web extends QueryableSecurable {
      * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
     public getCatalog(type: number): Promise<List> {
-        const q = new Web(this, `getcatalog(${type})`);
-        q.select("Id");
-        return q.get().then((data) => {
+        return this.clone(Web, `getcatalog(${type})`, true).select("Id").get().then((data) => {
             return new List(extractOdataId(data));
         });
     }
@@ -334,13 +385,10 @@ export class Web extends QueryableSecurable {
     /**
      * Returns the collection of changes from the change log that have occurred within the list, based on the specified query.
      */
-    public getChanges(query: Types.ChangeQuery): Promise<any> {
+    public getChanges(query: ChangeQuery): Promise<any> {
 
         const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
-
-        // don't change "this" instance, make a new one
-        const q = new Web(this, "getchanges");
-        return q.post({ body: postBody });
+        return this.clone(Web, "getchanges", true).post({ body: postBody });
     }
 
     /**
@@ -368,8 +416,7 @@ export class Web extends QueryableSecurable {
      * @param progId The ProgID of the application that was used to create the file, in the form OLEServerName.ObjectName
      */
     public mapToIcon(filename: string, size = 0, progId = ""): Promise<string> {
-        const q = new Web(this, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`);
-        return q.get();
+        return this.clone(Web, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`, true).get();
     }
 }
 
@@ -386,4 +433,9 @@ export interface WebUpdateResult {
 export interface GetCatalogResult {
     data: any;
     list: List;
+}
+
+export interface WebEnsureUserResult {
+    data: SiteUserProps;
+    user: SiteUser;
 }

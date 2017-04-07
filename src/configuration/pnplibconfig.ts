@@ -54,7 +54,7 @@ export class RuntimeConfigImpl {
         // these are our default values for the library
         this._headers = null;
         this._defaultCachingStore = "session";
-        this._defaultCachingTimeoutSeconds = 30;
+        this._defaultCachingTimeoutSeconds = 60;
         this._globalCacheDisable = false;
         this._fetchClientFactory = () => new FetchClient();
         this._baseUrl = null;

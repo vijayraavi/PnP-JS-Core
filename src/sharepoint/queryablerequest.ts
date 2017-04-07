@@ -211,7 +211,7 @@ class PipelineMethods {
     /**
      * Sets the result on the context
      */
-    private static setResult<T>(context: RequestContext<T>, value: any): Promise<RequestContext<T>> {
+    public static setResult<T>(context: RequestContext<T>, value: any): Promise<RequestContext<T>> {
 
         return new Promise<RequestContext<T>>((resolve) => {
 

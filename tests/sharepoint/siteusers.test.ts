@@ -35,9 +35,9 @@ describe("SiteUsers", () => {
     });
 
     describe("getByLoginName", () => {
-        it("Should return _api/web/siteusers(@v)?@v=i%3A0%23.f%7Cmembership%7Cuser%40tenant.com", () => {
+        it("Should return _api/web/siteusers(@v)?@v='i%3A0%23.f%7Cmembership%7Cuser%40tenant.com'", () => {
             let user = users.getByLoginName("i:0#.f|membership|user@tenant.com");
-            expect(user.toUrlAndQuery()).to.match(toMatchEndRegex("_api/web/siteusers(@v)?@v=i%3A0%23.f%7Cmembership%7Cuser%40tenant.com"));
+            expect(user.toUrlAndQuery()).to.match(toMatchEndRegex("_api/web/siteusers(@v)?@v='i%3A0%23.f%7Cmembership%7Cuser%40tenant.com'"));
         });
     });
 });

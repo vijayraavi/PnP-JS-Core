@@ -1,7 +1,8 @@
 export * from "./caching";
 
 export {
-    AttachmentFileAddResult
+    AttachmentFileAddResult,
+    AttachmentFileInfo
 } from "./attachmentfiles"
 
 export {
@@ -23,11 +24,14 @@ export {
 } from "./features";
 
 export {
-    FolderAddResult
+    FolderAddResult,
+    Folder,
+    Folders
 } from "./folders";
 
 export {
     Item,
+    Items,
     ItemAddResult,
     ItemUpdateResult,
     ItemUpdateResultData,
@@ -43,6 +47,7 @@ export {
 
 export {
     List,
+    Lists,
     ListAddResult,
     ListUpdateResult,
     ListEnsureResult
@@ -69,6 +74,11 @@ export {
     QueryableCollection,
     QueryableConstructor
 } from "./queryable";
+
+export {
+    RelatedItem,
+    RelatedItemManger
+} from "./relateditems";
 
 export {
     RoleDefinitionUpdateResult,
@@ -106,7 +116,8 @@ export {
 } from "./sitegroups";
 
 export {
-    UserUpdateResult
+    UserUpdateResult,
+    SiteUserProps
 } from "./siteusers";
 
 export {
@@ -130,5 +141,6 @@ export {
     Web,
     WebAddResult,
     WebUpdateResult,
-    GetCatalogResult
+    GetCatalogResult,
+    WebEnsureUserResult
 } from "./webs";

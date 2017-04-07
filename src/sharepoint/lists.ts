@@ -12,6 +12,7 @@ import { ControlMode, RenderListData, ChangeQuery, CamlQuery, ChangeLogitemQuery
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId } from "./odata";
 import { NotSupportedInBatchException } from "../utils/exceptions";
+import { Folder } from "./folders";
 
 /**
  * Describes a collection of List objects
@@ -118,8 +119,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default asset location for images or other files, which the users upload to their wiki pages.
      */
     public ensureSiteAssetsLibrary(): Promise<List> {
-        const q = new Lists(this, "ensuresiteassetslibrary");
-        return q.post().then((json) => {
+        return this.clone(Lists, "ensuresiteassetslibrary", true).post().then((json) => {
             return new List(extractOdataId(json));
         });
     }
@@ -128,8 +128,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default location for wiki pages.
      */
     public ensureSitePagesLibrary(): Promise<List> {
-        const q = new Lists(this, "ensuresitepageslibrary");
-        return q.post().then((json) => {
+        return this.clone(Lists, "ensuresitepageslibrary", true).post().then((json) => {
             return new List(extractOdataId(json));
         });
     }
@@ -141,16 +140,6 @@ export class Lists extends QueryableCollection {
  *
  */
 export class List extends QueryableSecurable {
-
-    /**
-     * Creates a new instance of the Lists class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path Optional, if supplied will be appended to the supplied baseUrl
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Gets the content types in this list
@@ -249,6 +238,13 @@ export class List extends QueryableSecurable {
     }
 
     /**
+     * The root folder of the list
+     */
+    public get rootFolder(): Folder {
+        return new Folder(this, "rootFolder");
+    }
+
+    /**
      * Gets a view by view guid id
      *
      */
@@ -310,11 +306,9 @@ export class List extends QueryableSecurable {
      */
     public getChanges(query: ChangeQuery): Promise<any> {
 
-        const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
-
-        // don't change "this" instance of the List, make a new one
-        const q = new List(this, "getchanges");
-        return q.post({ body: postBody });
+        return this.clone(List, "getchanges", true).post({
+            body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) }),
+        });
     }
 
     /**
@@ -338,31 +332,27 @@ export class List extends QueryableSecurable {
      */
     public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
-        const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) });
-
-        // don't change "this" instance of the List, make a new one
-        const q = new List(this, "getitems");
-        return q.expand.apply(q, expands).post({ body: postBody });
+        const q = this.clone(List, "getitems", true);
+        return q.expand.apply(q, expands).post({
+            body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) }),
+        });
     }
 
     /**
      * See: https://msdn.microsoft.com/en-us/library/office/dn292554.aspx
      */
     public getListItemChangesSinceToken(query: ChangeLogitemQuery): Promise<string> {
-        const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) });
 
-        // don't change "this" instance of the List, make a new one
-        const q = new List(this, "getlistitemchangessincetoken");
-        // note we are using a custom parser to return text as the response is an xml doc
-        return q.post({ body: postBody }, { parse(r) { return r.text(); } });
+        return this.clone(List, "getlistitemchangessincetoken", true).post({
+            body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) }),
+        }, { parse(r) { return r.text(); } });
     }
 
     /**
      * Moves the list to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        this.append("recycle");
-        return this.post().then(data => {
+        return this.clone(List, "recycle", true).post().then(data => {
             if (data.hasOwnProperty("Recycle")) {
                 return data.Recycle;
             } else {
@@ -375,9 +365,9 @@ export class List extends QueryableSecurable {
      * Renders list data based on the view xml provided
      */
     public renderListData(viewXml: string): Promise<RenderListData> {
-        // don't change "this" instance of the List, make a new one
-        const q = new List(this, "renderlistdata(@viewXml)");
-        q.query.add("@viewXml", "'" + viewXml + "'");
+
+        const q = this.clone(List, "renderlistdata(@viewXml)");
+        q.query.add("@viewXml", `'${viewXml}'`);
         return q.post().then(data => {
             // data will be a string, so we parse it again
             data = JSON.parse(data);
@@ -393,9 +383,7 @@ export class List extends QueryableSecurable {
      * Gets the field values and field schema attributes for a list item.
      */
     public renderListFormData(itemId: number, formId: string, mode: ControlMode): Promise<ListFormData> {
-        // don't change "this" instance of the List, make a new one
-        const q = new List(this, "renderlistformdata(itemid=" + itemId + ", formid='" + formId + "', mode=" + mode + ")");
-        return q.post().then(data => {
+        return this.clone(List, `renderlistformdata(itemid=${itemId}, formid='${formId}', mode='${mode}')`, true).post().then(data => {
             // data will be a string, so we parse it again
             data = JSON.parse(data);
             if (data.hasOwnProperty("ListData")) {
@@ -410,9 +398,7 @@ export class List extends QueryableSecurable {
      * Reserves a list item ID for idempotent list item creation.
      */
     public reserveListItemId(): Promise<number> {
-        // don't change "this" instance of the List, make a new one
-        const q = new List(this, "reservelistitemid");
-        return q.post().then(data => {
+        return this.clone(List, "reservelistitemid", true).post().then(data => {
             if (data.hasOwnProperty("ReserveListItemId")) {
                 return data.ReserveListItemId;
             } else {
@@ -422,12 +408,11 @@ export class List extends QueryableSecurable {
     }
 
     /**
-     * Returns the ListItemEntityTypeFullName for this list, used when adding/updating list items
+     * Returns the ListItemEntityTypeFullName for this list, used when adding/updating list items. Does not support batching.
      *
      */
     public getListItemEntityTypeFullName(): Promise<string> {
-        const q = new QueryableInstance(this);
-        return q.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
+        return this.clone(List, null).select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
     }
 }
 

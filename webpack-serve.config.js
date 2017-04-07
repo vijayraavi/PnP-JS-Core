@@ -1,4 +1,5 @@
 var path = require("path"),
+    pkg = require("./package.json"),
     webpack = require('webpack');
 
 module.exports = {
@@ -24,10 +25,16 @@ module.exports = {
         rules: [
             {
                 test: /\.ts$/,
-                use: [
-                    "babel-loader",
-                    "ts-loader"
-                ],
+                use: [{
+                    loader: "ts-loader"
+                },
+                {
+                    loader: "string-replace-loader",
+                    options: {
+                        search: "$$Version$$",
+                        replace: pkg.version
+                    }
+                }]
             },
         ]
     }

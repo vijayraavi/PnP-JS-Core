@@ -1,12 +1,12 @@
-import * as Collections  from "../../src/collections/collections";
+import { Dictionary }  from "../../src/collections/collections";
 
 export default class MockStorage implements Storage {
     constructor() {
-        this._store = new Collections.Dictionary<string>();
+        this._store = new Dictionary<string>();
         this._length = 0;
     }
 
-    private _store: Collections.Dictionary<any>;
+    private _store: Dictionary<any>;
 
     private _length: number;
 

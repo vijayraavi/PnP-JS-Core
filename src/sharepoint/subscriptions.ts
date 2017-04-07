@@ -52,15 +52,6 @@ export class Subscriptions extends QueryableCollection {
 export class Subscription extends QueryableInstance {
 
     /**
-     * Creates a new instance of the Subscription class
-     *
-     * @param baseUrl - The url or Queryable which forms the parent of this webhook subscription instance
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
-
-    /**
      * Update a webhook subscription
      *
      */

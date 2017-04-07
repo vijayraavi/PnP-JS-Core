@@ -3,6 +3,9 @@ import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from
 import { Util } from "../utils/util";
 import { MaxCommentLengthException } from "../utils/exceptions";
 import { LimitedWebPartManager } from "./webparts";
+import { Item } from "./items";
+import { QueryableShareableFile } from "./queryableshareable";
+import { getEntityUrl } from "./odata";
 
 export interface ChunkedFileUploadProgressData {
     stage: "starting" | "continue" | "finishing";
@@ -40,14 +43,14 @@ export class Files extends QueryableCollection {
     }
 
     /**
-     * Uploads a file.
+     * Uploads a file. Not supported for batching
      *
      * @param url The folder-relative url of the file.
      * @param content The file contents blob.
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten? (default: true)
      * @returns The new File and the raw response.
      */
-    public add(url: string, content: Blob, shouldOverWrite = true): Promise<FileAddResult> {
+    public add(url: string, content: string | ArrayBuffer | Blob, shouldOverWrite = true): Promise<FileAddResult> {
         return new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`)
             .post({
                 body: content,
@@ -60,7 +63,7 @@ export class Files extends QueryableCollection {
     }
 
     /**
-     * Uploads a file.
+     * Uploads a file. Not supported for batching
      *
      * @param url The folder-relative url of the file.
      * @param content The Blob file content to add
@@ -71,11 +74,11 @@ export class Files extends QueryableCollection {
      */
     public addChunked(
         url: string,
-        content: Blob,
+        content: string | ArrayBuffer | Blob,
         progress?: (data: ChunkedFileUploadProgressData) => void,
         shouldOverWrite = true,
         chunkSize = 10485760): Promise<FileAddResult> {
-        const adder = new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`);
+        const adder = this.clone(Files, `add(overwrite=${shouldOverWrite},url='${url}')`);
         return adder.post().then(() => this.getByName(url)).then(file => file.setContentChunked(content, progress, chunkSize)).then((response) => {
             return {
                 data: response,
@@ -85,14 +88,14 @@ export class Files extends QueryableCollection {
     }
 
     /**
-     * Adds a ghosted file to an existing list or document library.
+     * Adds a ghosted file to an existing list or document library. Not supported for batching.
      *
      * @param fileUrl The server-relative url where you want to save the file.
      * @param templateFileType The type of use to create the file.
      * @returns The template file that was added and the raw response.
      */
     public addTemplateFile(fileUrl: string, templateFileType: TemplateFileType): Promise<FileAddResult> {
-        return new Files(this, `addTemplateFile(urloffile='${fileUrl}',templatefiletype=${templateFileType})`)
+        return this.clone(Files, `addTemplateFile(urloffile='${fileUrl}',templatefiletype=${templateFileType})`)
             .post().then((response) => {
                 return {
                     data: response,
@@ -102,22 +105,11 @@ export class Files extends QueryableCollection {
     }
 }
 
-
 /**
  * Describes a single File instance
  *
  */
-export class File extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the File class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path Optional, if supplied will be appended to the supplied baseUrl
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
+export class File extends QueryableShareableFile {
 
     /**
      * Gets a value that specifies the list item field values for the list item corresponding to the file.
@@ -142,11 +134,11 @@ export class File extends QueryableInstance {
      * @param comment The comment for the approval.
      */
     public approve(comment: string): Promise<void> {
-        return new File(this, `approve(comment='${comment}')`).post();
+        return this.clone(File, `approve(comment='${comment}')`, true).post();
     }
 
     /**
-     * Stops the chunk upload session without saving the uploaded data.
+     * Stops the chunk upload session without saving the uploaded data. Does not support batching.
      * If the file doesn’t already exist in the library, the partially uploaded file will be deleted.
      * Use this in response to user action (as in a request to cancel an upload) or an error or exception.
      * Use the uploadId value that was passed to the StartUpload method that started the upload session.
@@ -155,7 +147,7 @@ export class File extends QueryableInstance {
      * @param uploadId The unique identifier of the upload session.
      */
     public cancelUpload(uploadId: string): Promise<void> {
-        return new File(this, `cancelUpload(uploadId=guid'${uploadId}')`).post();
+        return this.clone(File, `cancelUpload(uploadId=guid'${uploadId}')`, false).post();
     }
 
     /**
@@ -165,15 +157,19 @@ export class File extends QueryableInstance {
      * @param checkinType The check-in type for the file.
      */
     public checkin(comment = "", checkinType = CheckinType.Major): Promise<void> {
-        // TODO: Enforce comment length <= 1023
-        return new File(this, `checkin(comment='${comment}',checkintype=${checkinType})`).post();
+
+        if (comment.length > 1023) {
+            throw new MaxCommentLengthException();
+        }
+
+        return this.clone(File, `checkin(comment='${comment}',checkintype=${checkinType})`, true).post();
     }
 
     /**
      * Checks out the file from a document library.
      */
     public checkout(): Promise<void> {
-        return new File(this, "checkout").post();
+        return this.clone(File, "checkout", true).post();
     }
 
     /**
@@ -183,7 +179,7 @@ export class File extends QueryableInstance {
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten?
      */
     public copyTo(url: string, shouldOverWrite = true): Promise<void> {
-        return new File(this, `copyTo(strnewurl='${url}',boverwrite=${shouldOverWrite})`).post();
+        return this.clone(File, `copyTo(strnewurl='${url}',boverwrite=${shouldOverWrite})`, true).post();
     }
 
     /**
@@ -192,7 +188,7 @@ export class File extends QueryableInstance {
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
-        return new File(this).post({
+        return this.clone(File, null, true).post({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -207,7 +203,10 @@ export class File extends QueryableInstance {
      * @param comment The comment for the denial.
      */
     public deny(comment = ""): Promise<void> {
-        return new File(this, `deny(comment='${comment}')`).post();
+        if (comment.length > 1023) {
+            throw new MaxCommentLengthException();
+        }
+        return this.clone(File, `deny(comment='${comment}')`, true).post();
     }
 
     /**
@@ -227,7 +226,7 @@ export class File extends QueryableInstance {
      * @param moveOperations The bitwise MoveOperations value for how to move the file.
      */
     public moveTo(url: string, moveOperations = MoveOperations.Overwrite): Promise<void> {
-        return new File(this, `moveTo(newurl='${url}',flags=${moveOperations})`).post();
+        return this.clone(File, `moveTo(newurl='${url}',flags=${moveOperations})`, true).post();
     }
 
     /**
@@ -236,7 +235,10 @@ export class File extends QueryableInstance {
      * @param comment The comment for the published file. Its length must be <= 1023.
      */
     public publish(comment = ""): Promise<void> {
-        return new File(this, `publish(comment='${comment}')`).post();
+        if (comment.length > 1023) {
+            throw new MaxCommentLengthException();
+        }
+        return this.clone(File, `publish(comment='${comment}')`, true).post();
     }
 
     /**
@@ -245,7 +247,7 @@ export class File extends QueryableInstance {
      * @returns The GUID of the recycled file.
      */
     public recycle(): Promise<string> {
-        return new File(this, "recycle").post();
+        return this.clone(File, "recycle", true).post();
     }
 
     /**
@@ -253,7 +255,7 @@ export class File extends QueryableInstance {
      *
      */
     public undoCheckout(): Promise<void> {
-        return new File(this, "undoCheckout").post();
+        return this.clone(File, "undoCheckout", true).post();
     }
 
     /**
@@ -265,54 +267,52 @@ export class File extends QueryableInstance {
         if (comment.length > 1023) {
             throw new MaxCommentLengthException();
         }
-        return new File(this, `unpublish(comment='${comment}')`).post();
+        return this.clone(File, `unpublish(comment='${comment}')`, true).post();
     }
 
     /**
-     * Gets the contents of the file as text
+     * Gets the contents of the file as text. Not supported in batching.
      *
      */
     public getText(): Promise<string> {
 
-        return new File(this, "$value").get(new TextFileParser(), { headers: { "binaryStringResponseBody": "true" } });
+        return this.clone(File, "$value").get(new TextFileParser(), { headers: { "binaryStringResponseBody": "true" } });
     }
 
     /**
-     * Gets the contents of the file as a blob, does not work in Node.js
+     * Gets the contents of the file as a blob, does not work in Node.js. Not supported in batching.
      *
      */
     public getBlob(): Promise<Blob> {
 
-        return new File(this, "$value").get(new BlobFileParser(), { headers: { "binaryStringResponseBody": "true" } });
+        return this.clone(File, "$value").get(new BlobFileParser(), { headers: { "binaryStringResponseBody": "true" } });
     }
 
     /**
-     * Gets the contents of a file as an ArrayBuffer, works in Node.js
+     * Gets the contents of a file as an ArrayBuffer, works in Node.js. Not supported in batching.
      */
     public getBuffer(): Promise<ArrayBuffer> {
 
-        return new File(this, "$value").get(new BufferFileParser(), { headers: { "binaryStringResponseBody": "true" } });
+        return this.clone(File, "$value").get(new BufferFileParser(), { headers: { "binaryStringResponseBody": "true" } });
     }
 
     /**
-     * Gets the contents of a file as an ArrayBuffer, works in Node.js
+     * Gets the contents of a file as an ArrayBuffer, works in Node.js. Not supported in batching.
      */
     public getJSON(): Promise<any> {
 
-        return new File(this, "$value").get(new JSONFileParser(), { headers: { "binaryStringResponseBody": "true" } });
+        return this.clone(File, "$value").get(new JSONFileParser(), { headers: { "binaryStringResponseBody": "true" } });
     }
 
     /**
-     * Sets the content of a file, for large files use setContentChunked
+     * Sets the content of a file, for large files use setContentChunked. Not supported in batching.
      *
      * @param content The file content
      *
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<File> {
 
-        const setter = new File(this, "$value");
-
-        return setter.post({
+        return this.clone(File, "$value").post({
             body: content,
             headers: {
                 "X-HTTP-Method": "PUT",
@@ -321,7 +321,19 @@ export class File extends QueryableInstance {
     }
 
     /**
-     * Sets the contents of a file using a chunked upload approach
+     * Gets the associated list item for this folder, loading the default properties
+     */
+    public getItem<T>(...selects: string[]): Promise<Item & T> {
+
+        const q = this.listItemAllFields;
+        return q.select.apply(q, selects).get().then((d: any) => {
+
+            return Util.extend(new Item(getEntityUrl(d)), d);
+        });
+    }
+
+    /**
+     * Sets the contents of a file using a chunked upload approach. Not supported in batching.
      *
      * @param file The file to upload
      * @param progress A callback function which can be used to track the progress of the upload
@@ -385,7 +397,7 @@ export class File extends QueryableInstance {
      * @returns The size of the total uploaded data in bytes.
      */
     private startUpload(uploadId: string, fragment: ArrayBuffer | Blob): Promise<number> {
-        return new File(this, `startUpload(uploadId=guid'${uploadId}')`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
+        return this.clone(File, `startUpload(uploadId=guid'${uploadId}')`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
     }
 
     /**
@@ -400,7 +412,7 @@ export class File extends QueryableInstance {
      * @returns The size of the total uploaded data in bytes.
      */
     private continueUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<number> {
-        return new File(this, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
+        return this.clone(File, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
     }
 
     /**
@@ -414,7 +426,7 @@ export class File extends QueryableInstance {
      * @returns The newly uploaded file.
      */
     private finishUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<FileAddResult> {
-        return new File(this, `finishUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
+        return this.clone(File, `finishUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
             .postAs<{ ServerRelativeUrl: string }>({ body: fragment }).then((response) => {
                 return {
                     data: response,
@@ -464,7 +476,7 @@ export class Versions extends QueryableCollection {
      * @param versionId The ID of the file version to delete.
      */
     public deleteById(versionId: number): Promise<void> {
-        return new Versions(this, `deleteById(vid=${versionId})`).post();
+        return this.clone(Versions, `deleteById(vid=${versionId})`, true).post();
     }
 
     /**
@@ -473,7 +485,7 @@ export class Versions extends QueryableCollection {
      * @param label The version label of the file version to delete, for example: 1.2
      */
     public deleteByLabel(label: string): Promise<void> {
-        return new Versions(this, `deleteByLabel(versionlabel='${label}')`).post();
+        return this.clone(Versions, `deleteByLabel(versionlabel='${label}')`, true).post();
     }
 
     /**
@@ -482,7 +494,7 @@ export class Versions extends QueryableCollection {
      * @param label The version label of the file version to restore, for example: 1.2
      */
     public restoreByLabel(label: string): Promise<void> {
-        return new Versions(this, `restoreByLabel(versionlabel='${label}')`).post();
+        return this.clone(Versions, `restoreByLabel(versionlabel='${label}')`, true).post();
     }
 }
 
@@ -492,16 +504,6 @@ export class Versions extends QueryableCollection {
  *
  */
 export class Version extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the Version class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path Optional, if supplied will be appended to the supplied baseUrl
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
     * Delete a specific version of a file.

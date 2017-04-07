@@ -6,6 +6,7 @@ import { ICachingOptions } from "./caching";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { AlreadyInBatchException } from "../utils/exceptions";
 import { RequestContext, pipe } from "./queryablerequest";
+import { Logger, LogLevel } from "../utils/logging";
 
 export interface QueryableConstructor<T> {
     new (baseUrl: string | Queryable, path?: string): T;
@@ -82,6 +83,14 @@ export class Queryable {
      */
     protected get hasBatch(): boolean {
         return this._batch !== null;
+    }
+
+    /**
+     * The batch currently associated with this query or null
+     *
+     */
+    protected get batch(): ODataBatch {
+        return this.hasBatch ? this._batch : null;
     }
 
     /**
@@ -202,10 +211,19 @@ export class Queryable {
      */
     public toUrlAndQuery(): string {
 
-        let url = this.toUrl();
+        const aliasedParams = new Dictionary<string>();
 
-        if (this._query.count() > 0) {
-            url += `?${this._query.getKeys().map(key => `${key}=${this._query.get(key)}`).join("&")}`;
+        let url = this.toUrl().replace(/'!(@.*?)::(.*?)'/ig, (match, labelName, value) => {
+            Logger.write(`Rewriting aliased parameter from match ${match} to label: ${labelName} value: ${value}`, LogLevel.Verbose);
+            aliasedParams.add(labelName, `'${value}'`);
+            return labelName;
+        });
+
+        // inlude our explicitly set query string params
+        aliasedParams.merge(this._query);
+
+        if (aliasedParams.count() > 0) {
+            url += `?${aliasedParams.getKeys().map(key => `${key}=${aliasedParams.get(key)}`).join("&")}`;
         }
 
         return url;
@@ -219,14 +237,36 @@ export class Queryable {
     protected getParent<T extends Queryable>(
         factory: QueryableConstructor<T>,
         baseUrl: string | Queryable = this.parentUrl,
-        path?: string): T {
+        path?: string,
+        batch?: ODataBatch): T {
 
-        const parent = new factory(baseUrl, path);
+        let parent = new factory(baseUrl, path);
         const target = this.query.get("@target");
         if (target !== null) {
             parent.query.add("@target", target);
         }
+        if (typeof batch !== "undefined") {
+            parent = parent.inBatch(batch);
+        }
         return parent;
+    }
+
+    /**
+     * Clones this queryable into a new queryable instance of T
+     * @param factory Constructor used to create the new instance
+     * @param additionalPath Any additional path to include in the clone
+     * @param includeBatch If true this instance's batch will be added to the cloned instance
+     */
+    protected clone<T extends Queryable>(factory: QueryableConstructor<T>, additionalPath?: string, includeBatch = false): T {
+        let clone = new factory(this, additionalPath);
+        const target = this.query.get("@target");
+        if (target !== null) {
+            clone.query.add("@target", target);
+        }
+        if (includeBatch && this.hasBatch) {
+            clone = clone.inBatch(this.batch);
+        }
+        return clone;
     }
 
     /**
@@ -306,7 +346,9 @@ export class QueryableCollection extends Queryable {
      * @param selects One or more fields to return
      */
     public select(...selects: string[]): this {
-        this._query.add("$select", selects.join(","));
+        if (selects.length > 0) {
+            this._query.add("$select", selects.join(","));
+        }
         return this;
     }
 
@@ -316,7 +358,9 @@ export class QueryableCollection extends Queryable {
      * @param expands The Fields for which to expand the values
      */
     public expand(...expands: string[]): this {
-        this._query.add("$expand", expands.join(","));
+        if (expands.length > 0) {
+            this._query.add("$expand", expands.join(","));
+        }
         return this;
     }
 
@@ -377,7 +421,9 @@ export class QueryableInstance extends Queryable {
      * @param selects One or more fields to return
      */
     public select(...selects: string[]): this {
-        this._query.add("$select", selects.join(","));
+        if (selects.length > 0) {
+            this._query.add("$select", selects.join(","));
+        }
         return this;
     }
 
@@ -387,7 +433,9 @@ export class QueryableInstance extends Queryable {
      * @param expands The Fields for which to expand the values
      */
     public expand(...expands: string[]): this {
-        this._query.add("$expand", expands.join(","));
+        if (expands.length > 0) {
+            this._query.add("$expand", expands.join(","));
+        }
         return this;
     }
 }

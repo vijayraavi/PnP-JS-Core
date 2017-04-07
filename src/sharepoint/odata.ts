@@ -32,7 +32,7 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
                 if ((r.headers.has("Content-Length") && parseFloat(r.headers.get("Content-Length")) === 0) || r.status === 204) {
                     resolve(<T>{});
                 } else {
-                    r.json().then(json => resolve(this.parseODataJSON<T>(json)));
+                    r.json().then(json => resolve(this.parseODataJSON<T>(json))).catch(e => reject(e));
                 }
             }
         });
@@ -40,6 +40,7 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
 
     protected handleError(r: Response, reject: (reason?: any) => void): boolean {
         if (!r.ok) {
+
             r.json().then(json => {
 
                 // include the headers as they contain diagnostic information
@@ -49,8 +50,26 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
                 };
 
                 reject(new ProcessHttpClientResponseException(r.status, r.statusText, data));
+            }).catch(e => {
+
+                // we failed to read the body - possibly it is empty. Let's report the original status that caused
+                // the request to fail and log the error with parsing the body if anyone needs it for debugging
+                Logger.log({
+                    data: e,
+                    level: LogLevel.Warning,
+                    message: "There was an error parsing the error response body. See data for details.",
+                });
+
+                // include the headers as they contain diagnostic information
+                const data = {
+                    responseBody: "[[body not available]]",
+                    responseHeaders: r.headers,
+                };
+
+                reject(new ProcessHttpClientResponseException(r.status, r.statusText, data));
             });
         }
+
         return r.ok;
     }
 
@@ -114,7 +133,7 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T[]> {
     }
 }
 
-function getEntityUrl(entity: any): string {
+export function getEntityUrl(entity: any): string {
 
     if (entity.hasOwnProperty("odata.editLink")) {
         // we are dealign with minimal metadata (default)
@@ -149,12 +168,12 @@ export function ODataEntityArray<T>(factory: QueryableConstructor<T>): ODataPars
  */
 export class ODataBatch {
 
-    private _dependencies: Promise<void>;
+    private _dependencies: Promise<void>[];
     private _requests: ODataBatchRequestInfo[];
 
     constructor(private baseUrl: string, private _batchId = Util.getGUID()) {
         this._requests = [];
-        this._dependencies = Promise.resolve();
+        this._dependencies = [];
     }
 
     /**
@@ -197,7 +216,7 @@ export class ODataBatch {
             resolver = resolve;
         });
 
-        this._dependencies = this._dependencies.then(() => promise);
+        this._dependencies.push(promise);
 
         return resolver;
     }
@@ -208,7 +227,10 @@ export class ODataBatch {
      * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
     public execute(): Promise<void> {
-        return this._dependencies.then(() => this.executeImpl());
+
+        // we need to check the dependencies twice due to how different engines handle things.
+        // We can get a second set of promises added after the first set resolve
+        return Promise.all(this._dependencies).then(() => Promise.all(this._dependencies)).then(() => this.executeImpl());
     }
 
     private executeImpl(): Promise<void> {

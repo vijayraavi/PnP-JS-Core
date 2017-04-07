@@ -1,7 +1,13 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
-import * as Types from "./types";
+import {
+    XmlSchemaFieldCreationInformation,
+    DateTimeFieldFormatType,
+    FieldTypes,
+    CalendarType,
+    UrlFieldFormatType,
+} from "./types";
 
 /**
  * Describes a collection of Field objects
@@ -50,13 +56,13 @@ export class Fields extends QueryableCollection {
     /**
      * Creates a field based on the specified schema
      */
-    public createFieldAsXml(xml: string | Types.XmlSchemaFieldCreationInformation): Promise<FieldAddResult> {
+    public createFieldAsXml(xml: string | XmlSchemaFieldCreationInformation): Promise<FieldAddResult> {
 
-        let info: Types.XmlSchemaFieldCreationInformation;
+        let info: XmlSchemaFieldCreationInformation;
         if (typeof xml === "string") {
             info = { SchemaXml: xml };
         } else {
-            info = xml as Types.XmlSchemaFieldCreationInformation;
+            info = xml as XmlSchemaFieldCreationInformation;
         }
 
         const postBody: string = JSON.stringify({
@@ -69,9 +75,7 @@ export class Fields extends QueryableCollection {
             }, info),
         });
 
-        const q: Fields = new Fields(this, "createfieldasxml");
-
-        return q.postAs<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Fields, "createfieldasxml", true).postAs<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),
@@ -93,7 +97,7 @@ export class Fields extends QueryableCollection {
             "__metadata": { "type": fieldType },
         }, properties));
 
-        return this.postAs<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Fields, null, true).postAs<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),
@@ -130,15 +134,15 @@ export class Fields extends QueryableCollection {
     public addCalculated(
         title: string,
         formula: string,
-        dateFormat: Types.DateTimeFieldFormatType,
-        outputType: Types.FieldTypes = Types.FieldTypes.Text,
+        dateFormat: DateTimeFieldFormatType,
+        outputType: FieldTypes = FieldTypes.Text,
         properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
         const props: {
-            DateFormat: Types.DateTimeFieldFormatType;
+            DateFormat: DateTimeFieldFormatType;
             FieldTypeKind: number;
             Formula: string;
-            OutputType: Types.FieldTypes;
+            OutputType: FieldTypes;
         } = {
                 DateFormat: dateFormat,
                 FieldTypeKind: 17,
@@ -159,14 +163,14 @@ export class Fields extends QueryableCollection {
      */
     public addDateTime(
         title: string,
-        displayFormat: Types.DateTimeFieldFormatType = Types.DateTimeFieldFormatType.DateOnly,
-        calendarType: Types.CalendarType = Types.CalendarType.Gregorian,
+        displayFormat: DateTimeFieldFormatType = DateTimeFieldFormatType.DateOnly,
+        calendarType: CalendarType = CalendarType.Gregorian,
         friendlyDisplayFormat = 0,
         properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
 
         const props: {
-            DateTimeCalendarType: Types.CalendarType;
-            DisplayFormat: Types.DateTimeFieldFormatType;
+            DateTimeCalendarType: CalendarType;
+            DisplayFormat: DateTimeFieldFormatType;
             FieldTypeKind: number;
             FriendlyDisplayFormat: number;
         } = {
@@ -285,11 +289,11 @@ export class Fields extends QueryableCollection {
      */
     public addUrl(
         title: string,
-        displayFormat: Types.UrlFieldFormatType = Types.UrlFieldFormatType.Hyperlink,
+        displayFormat: UrlFieldFormatType = UrlFieldFormatType.Hyperlink,
         properties?: TypedHash<string | number | boolean>,
     ): Promise<FieldAddResult> {
 
-        const props: { DisplayFormat: Types.UrlFieldFormatType; FieldTypeKind: number } = {
+        const props: { DisplayFormat: UrlFieldFormatType; FieldTypeKind: number } = {
             DisplayFormat: displayFormat,
             FieldTypeKind: 11,
         };
@@ -303,15 +307,6 @@ export class Fields extends QueryableCollection {
  *
  */
 export class Field extends QueryableInstance {
-
-    /**
-     * Creates a new instance of the Field class
-     *
-     * @param baseUrl The url or Queryable which forms the parent of this field instance
-     */
-    constructor(baseUrl: string | Queryable, path?: string) {
-        super(baseUrl, path);
-    }
 
     /**
      * Updates this field intance with the supplied properties
@@ -354,24 +349,21 @@ export class Field extends QueryableInstance {
      * Sets the value of the ShowInDisplayForm property for this field.
      */
     public setShowInDisplayForm(show: boolean): Promise<void> {
-        const q: Field = new Field(this, `setshowindisplayform(${show})`);
-        return q.post();
+        return this.clone(Field, `setshowindisplayform(${show})`, true).post();
     }
 
     /**
      * Sets the value of the ShowInEditForm property for this field.
      */
     public setShowInEditForm(show: boolean): Promise<void> {
-        const q: Field = new Field(this, `setshowineditform(${show})`);
-        return q.post();
+        return this.clone(Field, `setshowineditform(${show})`, true).post();
     }
 
     /**
      * Sets the value of the ShowInNewForm property for this field.
      */
     public setShowInNewForm(show: boolean): Promise<void> {
-        const q: Field = new Field(this, `setshowinnewform(${show})`);
-        return q.post();
+        return this.clone(Field, `setshowinnewform(${show})`, true).post();
     }
 }
 
