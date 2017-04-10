@@ -379,7 +379,10 @@ export interface SearchProperty {
  * Defines one search property value
  */
 export interface SearchPropertyValue {
-    StrVal: string;
+    StrVal?: string;
+    BoolVal?: boolean;
+    Intval?: number;
+    StrArray?: string[];
     QueryPropertyValueTypeIndex: QueryPropertyValueType;
 }
 
