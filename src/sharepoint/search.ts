@@ -376,7 +376,7 @@ export interface SearchProperty {
 }
 
 /**
- * Defines one search property value
+ * Defines one search property value. Set only one of StrlVal/BoolVal/IntVal/StrArray.
  */
 export interface SearchPropertyValue {
     StrVal?: string;
