@@ -36,5 +36,10 @@ gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
         .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 30000 }))
         .pipe(istanbul.writeReports({
             reporters: reports
-        }));
+        })).once('error', function () {
+            process.exit(1);
+        })
+        .once('end', function () {
+            process.exit();
+        });
 });
