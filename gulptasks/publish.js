@@ -17,7 +17,7 @@ const
     readline = require('readline');
 
 const log = (value) => { console.log(value); return value };
-const exec = (command) => execSync(log(command), { encoding: 'utf8' })
+const exec = (command) => execSync(log(command), { encoding: 'utf8' });
 
 const rl = readline.createInterface({
     input: process.stdin,
