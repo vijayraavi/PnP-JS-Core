@@ -7,29 +7,12 @@
 var gulp = require("gulp"),
     mocha = require("gulp-mocha"),
     tslint = require("gulp-tslint"),
-    config = require('./@configuration.js'),
-    semver = require('semver'),
-    fs = require('fs'),
-    package = require("../package.json"),
-    execSync = require('child_process').execSync;
+    config = require('./@configuration.js');
 
 gulp.task("travis:lint", function () {
     return gulp.src(config.paths.sourceGlob)
         .pipe(tslint({ formatter: "prose" }))
         .pipe(tslint.report({ emitError: true }));
-});
-
-gulp.task("travis:publish-dev-as-beta", [], (done) => {
-
-    console.log("I ran.");
-
-    // get the current version of package.json
-
-    const versionTag = semver.inc(package.version, 'prerelease', 'beta');
-
-    console.log(versionTag);
-
-    done();
 });
 
 gulp.task("travis:webtest", ["build:testing"], () => {
