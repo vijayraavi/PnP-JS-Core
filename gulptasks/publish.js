@@ -123,7 +123,8 @@ function engine(tasks) {
                 engine(tasks);
             } else {
 
-                tasks.pop();
+                // run the final cleanup and shutdown task.
+                tasks.pop()();
             }
         });
     }
