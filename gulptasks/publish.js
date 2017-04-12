@@ -216,7 +216,7 @@ gulp.task("publish-beta", (done) => {
         betaPushVersionUpdate,
         betaPackage,
         publishToNPMGate,
-        publishToNPM,
+        betaPublishToNPM,
         function () {
             log('BETA Publishing complete');
             rl.close();
