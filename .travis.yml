@@ -9,10 +9,4 @@ before_script:
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then gulp travis:pull-request; fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gulp travis:push; fi'
-
-deploy:
-  provider: script
-  script: 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gulp travis:publish-dev-as-beta; fi'
-  on:
-    branch: dev
-  skip_cleanup: true
+  
