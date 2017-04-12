@@ -17,16 +17,16 @@ const
     readline = require('readline');
 
 const log = (value) => { console.log(value); return value };
-const exec = (command) => execSync(log(command), { encoding: 'utf8' })
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const exec = (command) => execSync(log(command), { encoding: 'utf8' });
 
 function publishSetup() {
 
     log(`Starting automated npm publish of ${package.name}...`);
+}
+
+function publishBetaSetup() {
+
+    log(`Starting automated npm publish of BETA for ${package.name}...`);
 }
 
 function mergeDevToMaster() {
@@ -109,7 +109,45 @@ function mergeMasterToDev() {
     log('## Merged master -> dev');
 }
 
-function engine(tasks) {
+function updateDevForBeta() {
+
+    log('## Updating dev branch for beta release.');
+
+    exec('git checkout dev');
+    exec('git pull');
+    exec('npm install');
+
+    const npmVersion = semver.clean(exec(`npm show ${package.name} version`));
+    const newVersion = semver.inc(package.version, 'prerelease', 'beta');
+
+    log(`Current version in package.json: ${package.version}`);
+    log(`Latest version on npm: ${npmVersion}`);
+    log(`New version after patch: ${newVersion}`);
+
+    exec(`npm version ${newVersion}`);
+
+    if (!semver.gt(newVersion, npmVersion)) {
+        log('Aborting publish, local version is not new.');
+        process.exit(0);
+    }
+
+    // and push those changes to the dev branch
+    exec('git add .');
+    exec('git commit -m "version dev branch for beta release"');
+    exec('git push');
+
+    log('## Updated dev branch for beta release.');
+}
+
+function betaPackage() {
+
+    log('## Packaging files for BETA release');
+    exec('git checkout dev');
+    exec('gulp package');
+    log('## Packaged files for BETA release');
+}
+
+function engine(tasks, rl) {
 
     let task = tasks.shift();
 
@@ -120,16 +158,22 @@ function engine(tasks) {
         rl.question('Do you want to continue? (/^y(es)?$/i): ', (answer) => {
             if (answer.match(/^y(es)?$/i)) {
                 rl.pause();
-                engine(tasks);
+                engine(tasks, rl);
             } else {
 
-                tasks.pop();
+                // run the final cleanup and shutdown task.
+                tasks.pop()();
             }
         });
     }
 }
 
 gulp.task("publish", (done) => {
+
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
 
     const publishTasks = [
         publishSetup,
@@ -147,16 +191,28 @@ gulp.task("publish", (done) => {
         },
     ];
 
-    engine(publishTasks);
+    engine(publishTasks, rl);
 });
 
+gulp.task("publish-beta", (done) => {
 
-    //log(`Tagging repo with v${package.version}...`);
-    // exec('git fetch --unshallow || true');
-    // exec(`git tag v${packageVersion}`);
-    // exec('git push git@github.com:foo/bar.git --tags');  
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
 
+    const publishBetaTasks = [
+        publishBetaSetup,
+        updateDevForBeta,
+        betaPackage,
+        publishToNPMGate,
+        publishToNPM,
+        function () {
+            log('BETA Publishing complete');
+            rl.close();
+            done();
+        },
+    ];
 
-// gulp.task("publish-beta", function () {
-
-// });
+    engine(publishBetaTasks, rl);
+});

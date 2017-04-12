@@ -9,3 +9,4 @@ before_script:
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then gulp travis:pull-request; fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gulp travis:push; fi'
+  
