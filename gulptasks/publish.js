@@ -149,6 +149,13 @@ function betaPackage() {
     log('## Packaged files for BETA release');
 }
 
+function betaPublishToNPM() {
+
+    log('## Publishing to NPM');
+    log(exec('npm publish --tag beta'));
+    log('## Published to NPM');
+}
+
 function engine(tasks, rl) {
 
     let task = tasks.shift();
