@@ -20,6 +20,8 @@ gulp.task("travis:publish-dev-as-beta", [], (done) => {
 
     console.log("I ran.");
 
+    // get the current version of package.json
+
     const versionTag = semver.inc('1.2.3', 'prerelease', 'beta');
 
     console.log(versionTag);
