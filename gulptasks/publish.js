@@ -115,6 +115,7 @@ function updateDevForBeta() {
 
     exec('git checkout dev');
     exec('git pull');
+    exec('npm install');
 
     const npmVersion = semver.clean(exec(`npm show ${package.name} version`));
     const newVersion = semver.inc(package.version, 'prerelease', 'beta');
@@ -130,11 +131,20 @@ function updateDevForBeta() {
         process.exit(0);
     }
 
-    // exec('git add .');
-    // exec('git commit -m "version dev branch for beta release"');
-    // exec('git push');
+    // and push those changes to the dev branch
+    exec('git add .');
+    exec('git commit -m "version dev branch for beta release"');
+    exec('git push');
 
     log('## Updated dev branch for beta release.');
+}
+
+function betaPackage() {
+
+    log('## Packaging files for BETA release');
+    exec('git checkout dev');
+    exec('gulp package');
+    log('## Packaged files for BETA release');
 }
 
 function engine(tasks, rl) {
@@ -194,6 +204,9 @@ gulp.task("publish-beta", (done) => {
     const publishBetaTasks = [
         publishBetaSetup,
         updateDevForBeta,
+        betaPackage,
+        publishToNPMGate,
+        publishToNPM,
         function () {
             log('BETA Publishing complete');
             rl.close();
