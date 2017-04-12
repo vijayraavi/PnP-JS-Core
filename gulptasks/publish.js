@@ -131,12 +131,14 @@ function updateDevForBeta() {
         process.exit(0);
     }
 
-    // and push those changes to the dev branch
-    exec('git add .');
-    exec('git commit -m "version dev branch for beta release"');
-    exec('git push');
-
     log('## Updated dev branch for beta release.');
+}
+
+function betaPushVersionUpdate() {
+
+    log('## Pushing dev branch for beta release.');
+    exec('git push');
+    log('## Pushed dev branch for beta release.');
 }
 
 function betaPackage() {
@@ -204,6 +206,7 @@ gulp.task("publish-beta", (done) => {
     const publishBetaTasks = [
         publishBetaSetup,
         updateDevForBeta,
+        betaPushVersionUpdate,
         betaPackage,
         publishToNPMGate,
         publishToNPM,
