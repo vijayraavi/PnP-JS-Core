@@ -176,6 +176,10 @@ export class ODataBatch {
         this._dependencies = [];
     }
 
+    public get batchId(): string {
+        return this._batchId;
+    }
+
     /**
      * Adds a request to a batch (not designed for public use)
      *
@@ -226,16 +230,16 @@ export class ODataBatch {
      *
      * @returns A promise which will be resolved once all of the batch's child promises have resolved
      */
-    public execute(): Promise<void> {
+    public execute(): Promise<any> {
 
         // we need to check the dependencies twice due to how different engines handle things.
         // We can get a second set of promises added after the first set resolve
         return Promise.all(this._dependencies).then(() => Promise.all(this._dependencies)).then(() => this.executeImpl());
     }
 
-    private executeImpl(): Promise<void> {
+    private executeImpl(): Promise<any> {
 
-        Logger.write(`Executing batch with ${this._requests.length} requests.`, LogLevel.Info);
+        Logger.write(`[${this.batchId}] (${(new Date()).getTime()}) Executing batch with ${this._requests.length} requests.`, LogLevel.Info);
 
         // if we don't have any requests, don't bother sending anything
         // this could be due to caching further upstream, or just an empty batch
@@ -258,7 +262,8 @@ export class ODataBatch {
 
             let currentChangeSetId = "";
 
-            this._requests.map((reqInfo) => {
+            for (let i = 0; i < this._requests.length; i++) {
+                const reqInfo = this._requests[i];
 
                 if (reqInfo.method === "GET") {
 
@@ -293,7 +298,7 @@ export class ODataBatch {
                 // this is the url of the individual request within the batch
                 const url = Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : Util.combinePaths(absoluteRequestUrl, reqInfo.url);
 
-                Logger.write(`Adding request ${reqInfo.method} ${url} to batch.`, LogLevel.Verbose);
+                Logger.write(`[${this.batchId}] (${(new Date()).getTime()}) Adding request ${reqInfo.method} ${url} to batch.`, LogLevel.Verbose);
 
                 if (reqInfo.method !== "GET") {
 
@@ -331,7 +336,7 @@ export class ODataBatch {
                 if (reqInfo.options.body) {
                     batchBody.push(`${reqInfo.options.body}\n\n`);
                 }
-            });
+            }
 
             if (currentChangeSetId.length > 0) {
                 // Close the changeset
@@ -350,7 +355,7 @@ export class ODataBatch {
                 "headers": batchHeaders,
             };
 
-            Logger.write("Sending batch request.", LogLevel.Info);
+            Logger.write(`[${this.batchId}] (${(new Date()).getTime()}) Sending batch request.`, LogLevel.Info);
 
             return client.post(Util.combinePaths(absoluteRequestUrl, "/_api/$batch"), batchOptions)
                 .then(r => r.text())
@@ -361,13 +366,13 @@ export class ODataBatch {
                         throw new BatchParseException("Could not properly parse responses to match requests in batch.");
                     }
 
-                    Logger.write("Resolving batched requests.", LogLevel.Info);
+                    Logger.write(`[${this.batchId}] (${(new Date()).getTime()}) Resolving batched requests.`, LogLevel.Info);
 
                     return responses.reduce((chain, response, index) => {
 
                         const request = this._requests[index];
 
-                        Logger.write(`Resolving request ${request.method} ${request.url}.`, LogLevel.Verbose);
+                        Logger.write(`[${this.batchId}] (${(new Date()).getTime()}) Resolving batched request ${request.method} ${request.url}.`, LogLevel.Verbose);
 
                         return chain.then(_ => request.parser.parse(response).then(request.resolve).catch(request.reject));
 

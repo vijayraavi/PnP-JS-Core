@@ -45,7 +45,7 @@ export class Views extends QueryableCollection {
      * @param additionalSettings Will be passed as part of the view creation body
      */
     /*tslint:disable max-line-length */
-    public add(title: string, personalView = false, additionalSettings: TypedHash<string | number | boolean> = {}): Promise<ViewAddResult> {
+    public add(title: string, personalView = false, additionalSettings: TypedHash<any> = {}): Promise<ViewAddResult> {
 
         const postBody = JSON.stringify(Util.extend({
             "PersonalView": personalView,
@@ -79,7 +79,7 @@ export class View extends QueryableInstance {
      *
      * @param properties A plain object hash of values to update for the view
      */
-    public update(properties: TypedHash<string | number | boolean>): Promise<ViewUpdateResult> {
+    public update(properties: TypedHash<any>): Promise<ViewUpdateResult> {
 
         const postBody = JSON.stringify(Util.extend({
             "__metadata": { "type": "SP.View" },

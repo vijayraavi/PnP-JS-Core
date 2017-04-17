@@ -5,8 +5,12 @@ import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
 import { ICachingOptions } from "./caching";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { AlreadyInBatchException } from "../utils/exceptions";
-import { RequestContext, pipe } from "./queryablerequest";
 import { Logger, LogLevel } from "../utils/logging";
+import {
+    RequestContext,
+    PipelineMethods,
+    pipe,
+} from "./pipeline";
 
 export interface QueryableConstructor<T> {
     new (baseUrl: string | Queryable, path?: string): T;
@@ -53,8 +57,9 @@ export class Queryable {
      *
      * @param pathPart The string to concatonate to the url
      */
-    public concat(pathPart: string) {
+    public concat(pathPart: string): this {
         this._url += pathPart;
+        return this;
     }
 
     /**
@@ -299,7 +304,19 @@ export class Queryable {
         return this.toRequestContext("DELETE", deleteOptions, parser).then(context => pipe(context));
     }
 
-    private toRequestContext<T>(verb: string, options: FetchOptions = {}, parser: ODataParser<T>): Promise<RequestContext<T>> {
+    /**
+     * Converts the current instance to a request context
+     *
+     * @param verb The request verb
+     * @param options The set of supplied request options
+     * @param parser The supplied ODataParser instance
+     * @param pipeline Optional request processing pipeline
+     */
+    private toRequestContext<T>(
+        verb: string,
+        options: FetchOptions = {},
+        parser: ODataParser<T>,
+        pipeline: Array<(c: RequestContext<T>) => Promise<RequestContext<T>>> = PipelineMethods.default): Promise<RequestContext<T>> {
 
         const dependencyDispose = this.hasBatch ? this.addBatchDependency() : () => { return; };
 
@@ -314,6 +331,7 @@ export class Queryable {
                 isCached: this._useCaching,
                 options: options,
                 parser: parser,
+                pipeline: pipeline,
                 requestAbsoluteUrl: url,
                 requestId: Util.getGUID(),
                 verb: verb,
