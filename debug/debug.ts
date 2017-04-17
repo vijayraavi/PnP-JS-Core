@@ -20,7 +20,9 @@ pnp.setup({
 
 // setup console logger
 Logger.subscribe(new ConsoleListener());
-Logger.activeLogLevel = LogLevel.Verbose;
+
+// change this to LogLevel.Verbose for more details about the request
+Logger.activeLogLevel = LogLevel.Info;
 
 // importing the example debug scenario and running it
 // adding your debugging to other files and importing them will keep them out of git

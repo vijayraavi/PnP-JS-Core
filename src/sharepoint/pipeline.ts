@@ -11,34 +11,72 @@ export interface RequestContext<T> {
     batch: ODataBatch;
     batchDependency: () => void;
     cachingOptions: ICachingOptions;
+    hasResult?: boolean;
     isBatched: boolean;
     isCached: boolean;
-    requestAbsoluteUrl: string;
-    verb: string;
     options: FetchOptions;
     parser: ODataParser<T>;
-    hasResult?: boolean;
-    result?: T;
+    pipeline?: Array<(c: RequestContext<T>) => Promise<RequestContext<T>>>;
+    requestAbsoluteUrl: string;
     requestId: string;
+    result?: T;
+    verb: string;
+}
+
+
+/**
+ * Resolves the context's result value
+ *
+ * @param context The current context
+ */
+function returnResult<T>(context: RequestContext<T>): Promise<T> {
+
+    Logger.log({
+        data: context.result,
+        level: LogLevel.Verbose,
+        message: `[${context.requestId}] (${(new Date()).getTime()}) Returning result, see data property for value.`,
+    });
+
+    return Promise.resolve(context.result);
 }
 
 /**
- * Processes a given context through the request pipeline
+ * Sets the result on the context
+ */
+export function setResult<T>(context: RequestContext<T>, value: any): Promise<RequestContext<T>> {
+
+    return new Promise<RequestContext<T>>((resolve) => {
+
+        context.result = value;
+        context.hasResult = true;
+        resolve(context);
+    });
+}
+
+/**
+ * Invokes the next method in the provided context's pipeline
  *
- * @param context The request context we are processing
+ * @param c The current request context
+ */
+function next<T>(c: RequestContext<T>): Promise<RequestContext<T>> {
+
+    if (c.pipeline.length < 1) {
+
+        return Promise.resolve(c);
+    }
+
+    return c.pipeline.shift()(c);
+}
+
+/**
+ * Executes the current request context's pipeline
+ *
+ * @param context Current context
  */
 export function pipe<T>(context: RequestContext<T>): Promise<T> {
 
-    // this is the beginning of the extensible pipeline in future versions
-    const pipeline: Array<(c: void | RequestContext<T>) => Promise<RequestContext<T>>> = [
-        PipelineMethods.logStart,
-        PipelineMethods.caching,
-        PipelineMethods.send,
-        PipelineMethods.logEnd,
-    ];
-
-    return pipeline.reduce((chain, next) => chain.then(c => next(c)), Promise.resolve(context))
-        .then(ctx => PipelineMethods.returnResult(ctx))
+    return next(context)
+        .then(ctx => returnResult(ctx))
         .catch((e: Error) => {
             Logger.log({
                 data: e,
@@ -52,9 +90,9 @@ export function pipe<T>(context: RequestContext<T>): Promise<T> {
 /**
  * decorator factory applied to methods in the pipeline to control behavior
  */
-function requestPipelineMethod(alwaysRun = false) {
+export function requestPipelineMethod(alwaysRun = false) {
 
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
 
         const method = descriptor.value;
 
@@ -68,7 +106,9 @@ function requestPipelineMethod(alwaysRun = false) {
 
             // apply the tagged method
             Logger.write(`[${args[0].requestId}] (${(new Date()).getTime()}) Calling request pipeline method ${propertyKey}.`, LogLevel.Verbose);
-            return method.apply(target, args);
+
+            // then chain the next method in the context's pipeline - allows for dynamic pipeline
+            return method.apply(target, args).then((ctx: RequestContext<any>) => next(ctx));
         };
     };
 }
@@ -76,7 +116,7 @@ function requestPipelineMethod(alwaysRun = false) {
 /**
  * Contains the methods used within the request pipeline
  */
-class PipelineMethods {
+export class PipelineMethods {
 
     /**
      * Logs the start of the request
@@ -89,7 +129,7 @@ class PipelineMethods {
             Logger.log({
                 data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
                 level: LogLevel.Info,
-                message: `[${context.requestId}] (${(new Date()).getTime()}) Beginning ${context.verb} request to ${context.requestAbsoluteUrl}`,
+                message: `[${context.requestId}] (${(new Date()).getTime()}) Beginning ${context.verb} request (${context.requestAbsoluteUrl})`,
             });
 
             resolve(context);
@@ -114,7 +154,7 @@ class PipelineMethods {
                     cacheOptions = Util.extend(cacheOptions, context.cachingOptions);
                 }
 
-                // we may not have a valid store, i.e. on node
+                // we may not have a valid store
                 if (cacheOptions.store !== null) {
                     // check if we have the data in cache and if so resolve the promise and return
                     const data = cacheOptions.store.get(cacheOptions.key);
@@ -126,7 +166,7 @@ class PipelineMethods {
                             message: `[${context.requestId}] (${(new Date()).getTime()}) Value returned from cache.`,
                         });
                         context.batchDependency();
-                        return PipelineMethods.setResult(context, data).then(ctx => resolve(ctx));
+                        return setResult(context, data).then(ctx => resolve(ctx));
                     }
                 }
 
@@ -157,8 +197,11 @@ class PipelineMethods {
                 // we release the dependency here to ensure the batch does not execute until the request is added to the batch
                 context.batchDependency();
 
-                Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Batching request.`, LogLevel.Info);
-                resolve(p.then(result => PipelineMethods.setResult(context, result)));
+                Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Batching request in batch ${context.batch.batchId}.`, LogLevel.Info);
+
+                // we set the result as the promise which will be resolved by the batch's execution
+                resolve(setResult(context, p));
+
             } else {
 
                 Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Sending request.`, LogLevel.Info);
@@ -168,7 +211,7 @@ class PipelineMethods {
                 const opts = Util.extend(context.options || {}, { method: context.verb });
                 client.fetch(context.requestAbsoluteUrl, opts)
                     .then(response => context.parser.parse(response))
-                    .then(result => PipelineMethods.setResult(context, result))
+                    .then(result => setResult(context, result))
                     .then(ctx => resolve(ctx))
                     .catch(e => reject(e));
             }
@@ -183,41 +226,33 @@ class PipelineMethods {
 
         return new Promise<RequestContext<T>>(resolve => {
 
-            Logger.log({
-                data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
-                level: LogLevel.Info,
-                message: `[${context.requestId}] (${(new Date()).getTime()}) Completing ${context.verb} request to ${context.requestAbsoluteUrl}`,
-            });
+            if (context.isBatched) {
+
+                Logger.log({
+                    data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
+                    level: LogLevel.Info,
+                    message: `[${context.requestId}] (${(new Date()).getTime()}) ${context.verb} request will complete in batch ${context.batch.batchId}.`,
+                });
+
+            } else {
+
+                Logger.log({
+                    data: Logger.activeLogLevel === LogLevel.Info ? {} : context,
+                    level: LogLevel.Info,
+                    message: `[${context.requestId}] (${(new Date()).getTime()}) Completing ${context.verb} request.`,
+                });
+            }
 
             resolve(context);
         });
     }
 
-    /**
-     * At the end of the pipeline resolves the request's result
-     */
-    @requestPipelineMethod(true)
-    public static returnResult<T>(context: RequestContext<T>): Promise<T> {
-
-        Logger.log({
-            data: context.result,
-            level: LogLevel.Verbose,
-            message: `[${context.requestId}] (${(new Date()).getTime()}) Returning, see data property for value.`,
-        });
-
-        return Promise.resolve(context.result);
-    }
-
-    /**
-     * Sets the result on the context
-     */
-    public static setResult<T>(context: RequestContext<T>, value: any): Promise<RequestContext<T>> {
-
-        return new Promise<RequestContext<T>>((resolve) => {
-
-            context.result = value;
-            context.hasResult = true;
-            resolve(context);
-        });
+    public static get default() {
+        return [
+            PipelineMethods.logStart,
+            PipelineMethods.caching,
+            PipelineMethods.send,
+            PipelineMethods.logEnd,
+        ];
     }
 }
