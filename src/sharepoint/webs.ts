@@ -68,6 +68,11 @@ export class Webs extends QueryableCollection {
     }
 }
 
+export class WebInfos extends QueryableCollection {
+    constructor(baseUrl: string | Queryable, webPath = "webinfos") {
+        super(baseUrl, webPath);
+    }
+}
 
 /**
  * Describes a web
@@ -99,6 +104,10 @@ export class Web extends QueryableSecurable {
 
     public get webs(): Webs {
         return new Webs(this);
+    }
+
+    public get webinfos(): WebInfos {
+        return new WebInfos(this);
     }
 
     /**
