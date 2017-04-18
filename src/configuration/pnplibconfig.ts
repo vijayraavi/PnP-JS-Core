@@ -87,7 +87,7 @@ export class RuntimeConfigImpl {
             this._baseUrl = config.baseUrl;
         }
 
-        if (config.hasOwnProperty("spFXContext")) {
+        if (config.hasOwnProperty("spfxContext")) {
             this._spfxContext = config.spfxContext;
         }
     }
