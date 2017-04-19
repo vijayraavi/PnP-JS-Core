@@ -442,3 +442,21 @@ export enum QueryPropertyValueType {
     StringArrayType = 4,
     UnSupportedType = 5,
 }
+
+export class SearchBuiltInSourceId {
+    public static readonly Documents = "e7ec8cee-ded8-43c9-beb5-436b54b31e84";
+    public static readonly ItemsMatchingContentType = "5dc9f503-801e-4ced-8a2c-5d1237132419";
+    public static readonly ItemsMatchingTag = "e1327b9c-2b8c-4b23-99c9-3730cb29c3f7";
+    public static readonly ItemsRelatedToCurrentUser = "48fec42e-4a92-48ce-8363-c2703a40e67d";
+    public static readonly ItemsWithSameKeywordAsThisItem = "5c069288-1d17-454a-8ac6-9c642a065f48";
+    public static readonly LocalPeopleResults = "b09a7990-05ea-4af9-81ef-edfab16c4e31";
+    public static readonly LocalReportsAndDataResults = "203fba36-2763-4060-9931-911ac8c0583b";
+    public static readonly LocalSharePointResults = "8413cd39-2156-4e00-b54d-11efd9abdb89";
+    public static readonly LocalVideoResults = "78b793ce-7956-4669-aa3b-451fc5defebf";
+    public static readonly Pages = "5e34578e-4d08-4edc-8bf3-002acf3cdbcc";
+    public static readonly Pictures = "38403c8c-3975-41a8-826e-717f2d41568a";
+    public static readonly Popular = "97c71db1-58ce-4891-8b64-585bc2326c12";
+    public static readonly RecentlyChangedItems = "ba63bbae-fa9c-42c0-b027-9a878f16557c";
+    public static readonly RecommendedItems = "ec675252-14fa-4fbe-84dd-8d098ed74181";
+    public static readonly Wiki = "9479bf85-e257-4318-b5a8-81a180f5faa1";
+}
