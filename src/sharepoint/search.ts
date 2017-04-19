@@ -289,7 +289,7 @@ export class Search extends QueryableInstance {
  */
 export class SearchResults {
 
-    public PrimarySearchResults: any;
+    public PrimarySearchResults: any[];
     public RawSearchResults: any;
     public RowCount: number;
     public TotalRows: number;
