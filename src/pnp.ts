@@ -2,7 +2,7 @@ import { Util } from "./utils/util";
 import { PnPClientStorage } from "./utils/storage";
 import { Settings } from "./configuration/configuration";
 import { Logger } from "./utils/logging";
-import { Rest } from "./sharepoint/rest";
+import { SPRest } from "./sharepoint/rest";
 import { setRuntimeConfig, LibraryConfiguration } from "./configuration/pnplibconfig";
 
 /**
@@ -17,7 +17,7 @@ export const util = Util;
 /**
  * Provides access to the REST interface
  */
-export const sp = new Rest();
+export const sp = new SPRest();
 
 /**
  * Provides access to local and session storage
