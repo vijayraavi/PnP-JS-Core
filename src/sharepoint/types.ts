@@ -1374,7 +1374,7 @@ export interface EmailProperties {
     Subject: string;
     Body: string;
     AdditionalHeaders?: TypedHash<string>;
-    From: string;
+    From?: string;
 }
 
 export interface WikiPageCreationInformation {
