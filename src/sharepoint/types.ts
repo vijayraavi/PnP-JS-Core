@@ -1,5 +1,7 @@
 // reference: https://msdn.microsoft.com/en-us/library/office/dn600183.aspx
 
+import { TypedHash } from "../collections/collections";
+
 /**
  * Represents the unique sequential location of a change within the change log.
  */
@@ -681,6 +683,15 @@ export enum PrincipalType {
     All = 15,
 }
 
+export enum PrincipalSource {
+    None = 0,
+    UserInfoList = 1,
+    Windows = 2,
+    MembershipProvider = 4,
+    RoleProvider = 8,
+    All = 15,
+}
+
 export enum RoleType {
     None = 0,
     Guest = 1,
@@ -691,15 +702,15 @@ export enum RoleType {
 }
 
 export interface PrincipalInfo {
-    email: string;
-    id: number;
-    isActive: boolean;
-    isExternal: boolean;
-    jobTitle: string;
-    loginName: string;
-    name: string;
-    principalType: PrincipalType;
-    userId: UserIdInfo;
+    Department: string;
+    DisplayName: string;
+    Email: string;
+    JobTitle: string;
+    LoginName: string;
+    Mobile: string;
+    PrincipalId: number;
+    PrincipalType: PrincipalType;
+    SIPAddress: string;
 }
 
 export interface DocumentLibraryInformation {
@@ -1354,3 +1365,27 @@ export enum SharingDomainRestrictionMode {
     AllowList = 1,
     BlockList = 2,
 };
+
+export interface EmailProperties {
+
+    To: string[];
+    CC?: string[];
+    BCC?: string[];
+    Subject: string;
+    Body: string;
+    AdditionalHeaders?: TypedHash<string>;
+    From: string;
+}
+
+export interface WikiPageCreationInformation {
+    /**
+     * The server-relative-url of the wiki page to be created.
+     */
+    ServerRelativeUrl: string;
+
+
+    /**
+     * The wiki content to be set in the wiki page.
+     */
+    WikiHtmlContent: string;
+}

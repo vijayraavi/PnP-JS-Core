@@ -7,11 +7,12 @@ import { Queryable, QueryableConstructor } from "./queryable";
 import { UserProfileQuery } from "./userprofiles";
 import { ODataBatch } from "./odata";
 import { UrlException } from "../utils/exceptions";
+import { UtilityMethod, UtilityMethods } from "./utilities";
 
 /**
  * Root of the SharePoint REST module
  */
-export class Rest {
+export class SPRest {
 
     /**
      * Executes a search against this web context
@@ -79,6 +80,13 @@ export class Rest {
      */
     public createBatch(): ODataBatch {
         return this.web.createBatch();
+    }
+
+    /**
+     * Static utilities methods from SP.Utilities.Utility
+     */
+    public get utility(): UtilityMethods {
+        return new UtilityMethod("", "");
     }
 
     /**

@@ -133,6 +133,11 @@ export {
 } from "./usercustomactions";
 
 export {
+    UtilityMethod,
+    CreateWikiPageResult
+} from "./utilities";
+
+export {
     ViewAddResult,
     ViewUpdateResult
 } from "./views";
