@@ -91,6 +91,7 @@ export {
     SearchProperty,
     SearchPropertyValue,
     SearchQuery,
+    SearchQueryBuilder,
     SearchResult,
     SearchResults,
     Sort,

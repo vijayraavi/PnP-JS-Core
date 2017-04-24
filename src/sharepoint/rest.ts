@@ -1,4 +1,4 @@
-import { Search, SearchQuery, SearchResults } from "./search";
+import { Search, SearchQuery, SearchResults, SearchQueryBuilder } from "./search";
 import { SearchSuggest, SearchSuggestQuery, SearchSuggestResult } from "./searchsuggest";
 import { Site } from "./site";
 import { Web } from "./webs";
@@ -37,12 +37,14 @@ export class SPRest {
      *
      * @param query The SearchQuery definition
      */
-    public search(query: string | SearchQuery): Promise<SearchResults> {
+    public search(query: string | SearchQuery | SearchQueryBuilder): Promise<SearchResults> {
 
         let finalQuery: SearchQuery;
 
         if (typeof query === "string") {
             finalQuery = { Querytext: query };
+        } else if (query instanceof  SearchQueryBuilder) {
+            finalQuery = (query as SearchQueryBuilder).toSearchQuery();
         } else {
             finalQuery = query;
         }
