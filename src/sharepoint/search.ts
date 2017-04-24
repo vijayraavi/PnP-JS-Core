@@ -1,6 +1,330 @@
 import { Queryable, QueryableInstance } from "./queryable";
 import { Util } from "../utils/util";
+import { Dictionary } from "../collections/collections";
 
+/**
+ * Allows for the fluent construction of search queries
+ */
+export class SearchQueryBuilder {
+
+    public static create(queryText = "", queryTemplate = {}): SearchQueryBuilder {
+        return new SearchQueryBuilder(queryText, queryTemplate);
+    }
+
+    constructor(queryText = "", private _query = {}) {
+
+        if (typeof queryText === "string" && queryText.length > 0) {
+
+            this.extendQuery({ Querytext: queryText });
+        }
+    }
+
+    public text(queryText: string): this {
+        return this.extendQuery({ Querytext: queryText });
+    }
+
+    public template(template: string): this {
+        return this.extendQuery({ QueryTemplate: template });
+    }
+
+    public sourceId(id: string): this {
+        return this.extendQuery({ SourceId: id });
+    }
+
+    public get enableInterleaving(): this {
+        return this.extendQuery({ EnableInterleaving: true });
+    }
+
+    public get enableStemming(): this {
+        return this.extendQuery({ EnableStemming: true });
+    }
+
+    public get trimDuplicates(): this {
+        return this.extendQuery({ TrimDuplicates: true });
+    }
+
+    public get enableNicknames(): this {
+        return this.extendQuery({ EnableNicknames: true });
+    }
+
+    public get enableFql(): this {
+        return this.extendQuery({ EnableFql: true });
+    }
+
+    public get enablePhonetic(): this {
+        return this.extendQuery({ EnablePhonetic: true });
+    }
+
+    public get bypassResultTypes(): this {
+        return this.extendQuery({ BypassResultTypes: true });
+    }
+
+    public get processBestBets(): this {
+        return this.extendQuery({ ProcessBestBets: true });
+    }
+
+    public get enableQueryRules(): this {
+        return this.extendQuery({ EnableQueryRules: true });
+    }
+
+    public get enableSorting(): this {
+        return this.extendQuery({ EnableSorting: true });
+    }
+
+    public get generateBlockRankLog(): this {
+        return this.extendQuery({ GenerateBlockRankLog: true });
+    }
+
+    public rankingModelId(id: string): this {
+        return this.extendQuery({ RankingModelId: id });
+    }
+
+    public startRow(id: number): this {
+        return this.extendQuery({ StartRow: id });
+    }
+
+    public rowLimit(id: number): this {
+        return this.extendQuery({ RowLimit: id });
+    }
+
+    public rowsPerPage(id: number): this {
+        return this.extendQuery({ RowsPerPage: id });
+    }
+
+    public selectProperties(...properties: string[]): this {
+        return this.extendQuery({ SelectProperties: properties });
+    }
+
+    public culture(culture: number): this {
+        return this.extendQuery({ Culture: culture });
+    }
+
+    public refinementFilters(...filters: string[]): this {
+        return this.extendQuery({ RefinementFilters: filters });
+    }
+
+    public refiners(refiners: string): this {
+        return this.extendQuery({ Refiners: refiners });
+    }
+
+    public hiddenConstraints(constraints: string): this {
+        return this.extendQuery({ HiddenConstraints: constraints });
+    }
+
+    public sortList(...sorts: Sort[]): this {
+        return this.extendQuery({ SortList: sorts });
+    }
+
+    public timeout(milliseconds: number): this {
+        return this.extendQuery({ Timeout: milliseconds });
+    }
+
+    public hithighlightedProperties(...properties: string[]): this {
+        return this.extendQuery({ HithighlightedProperties: properties });
+    }
+
+    public clientType(clientType: string): this {
+        return this.extendQuery({ ClientType: clientType });
+    }
+
+    public personalizationData(data: string): this {
+        return this.extendQuery({ PersonalizationData: data });
+    }
+
+    public resultsURL(url: string): this {
+        return this.extendQuery({ ResultsURL: url });
+    }
+
+    public queryTag(...tags: string[]): this {
+        return this.extendQuery({ QueryTag: tags });
+    }
+
+    public properties(...properties: SearchProperty[]): this {
+        return this.extendQuery({ Properties: properties });
+    }
+
+    public get processPersonalFavorites(): this {
+        return this.extendQuery({ ProcessPersonalFavorites: true });
+    }
+
+    public queryTemplatePropertiesUrl(url: string): this {
+        return this.extendQuery({ QueryTemplatePropertiesUrl: url });
+    }
+
+    public reorderingRules(...rules: ReorderingRule[]): this {
+        return this.extendQuery({ ReorderingRules: rules });
+    }
+
+    public hitHighlightedMultivaluePropertyLimit(limit: number): this {
+        return this.extendQuery({ HitHighlightedMultivaluePropertyLimit: limit });
+    }
+
+    public get enableOrderingHitHighlightedProperty(): this {
+        return this.extendQuery({ EnableOrderingHitHighlightedProperty: true });
+    }
+
+    public collapseSpecification(spec: string): this {
+        return this.extendQuery({ CollapseSpecification: spec });
+    }
+
+    public uiLanguage(lang: number): this {
+        return this.extendQuery({ UIlanguage: lang });
+    }
+
+    public desiredSnippetLength(len: number): this {
+        return this.extendQuery({ DesiredSnippetLength: len });
+    }
+
+    public maxSnippetLength(len: number): this {
+        return this.extendQuery({ MaxSnippetLength: len });
+    }
+
+    public summaryLength(len: number): this {
+        return this.extendQuery({ SummaryLength: len });
+    }
+
+    public toSearchQuery(): SearchQuery {
+        return <SearchQuery>this._query;
+    }
+
+    private extendQuery(part: any): this {
+
+        this._query = Util.extend(this._query, part);
+        return this;
+    }
+}
+
+/**
+ * Describes the search API
+ *
+ */
+export class Search extends QueryableInstance {
+
+    /**
+     * Creates a new instance of the Search class
+     *
+     * @param baseUrl The url for the search context
+     * @param query The SearchQuery object to execute
+     */
+    constructor(baseUrl: string | Queryable, path = "_api/search/postquery") {
+        super(baseUrl, path);
+    }
+
+    /**
+     * .......
+     * @returns Promise
+     */
+    public execute(query: SearchQuery): Promise<SearchResults> {
+
+        let formattedBody: any;
+        formattedBody = query;
+
+        if (formattedBody.SelectProperties) {
+            formattedBody.SelectProperties = { results: query.SelectProperties };
+        }
+
+        if (formattedBody.RefinementFilters) {
+            formattedBody.RefinementFilters = { results: query.RefinementFilters };
+        }
+
+        if (formattedBody.SortList) {
+            formattedBody.SortList = { results: query.SortList };
+        }
+
+        if (formattedBody.HithighlightedProperties) {
+            formattedBody.HithighlightedProperties = { results: query.HithighlightedProperties };
+        }
+
+        if (formattedBody.ReorderingRules) {
+            formattedBody.ReorderingRules = { results: query.ReorderingRules };
+        }
+
+        if (formattedBody.Properties) {
+            formattedBody.Properties = { results: query.Properties };
+        }
+
+        const postBody = JSON.stringify({
+            request: Util.extend({
+                "__metadata": { "type": "Microsoft.Office.Server.Search.REST.SearchRequest" },
+            }, formattedBody),
+        });
+
+        return this.post({ body: postBody }).then((data) => new SearchResults(data));
+    }
+}
+
+/**
+ * Describes the SearchResults class, which returns the formatted and raw version of the query response
+ */
+export class SearchResults {
+
+    /**
+     * Creates a new instance of the SearchResult class
+     *
+     */
+    constructor(rawResponse: any, private _raw: SearchResponse = null, private _primary: SearchResult[] = null) {
+        this._raw = rawResponse.postquery ? rawResponse.postquery : rawResponse;
+    }
+
+    public get ElapsedTime(): number {
+        return this.RawSearchResults.ElapsedTime;
+    }
+
+    public get RowCount(): number {
+        return this.RawSearchResults.PrimaryQueryResult.RelevantResults.RowCount;
+    }
+
+    public get TotalRows(): number {
+        return this.RawSearchResults.PrimaryQueryResult.RefinementResults.TotalRows;
+    }
+
+    public get TotalRowsIncludingDuplicates(): number {
+        return this.RawSearchResults.PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates;
+    }
+
+    public get RawSearchResults(): SearchResponse {
+        return this._raw;
+    }
+
+    public get PrimarySearchResults(): SearchResult[] {
+        if (this._primary === null) {
+            this._primary = this.formatSearchResults(this._raw.PrimaryQueryResult.RelevantResults.Table.Rows);
+        }
+        return this._primary;
+    }
+
+    /**
+     * Formats a search results array
+     *
+     * @param rawResults The array to process
+     */
+    protected formatSearchResults(rawResults: any): SearchResult[] {
+
+        const results = new Array<SearchResult>();
+        const tempResults = rawResults.results ? rawResults.results : rawResults;
+
+        for (const tempResult of tempResults) {
+
+            const cells: { Key: string, Value: any }[] = tempResult.Cells.results ? tempResult.Cells.results : tempResult.Cells;
+
+            results.push(cells.reduce((res, cell) => {
+
+                Object.defineProperty(res, cell.Key,
+                    {
+                        configurable: false,
+                        enumerable: false,
+                        value: cell.Value,
+                        writable: false,
+                    });
+
+                return res;
+
+            }, {}));
+        }
+
+        return results;
+    }
+}
 
 /**
  * Describes the SearchQuery interface
@@ -226,129 +550,85 @@ export interface SearchQuery {
 }
 
 /**
- * Describes the search API
- *
+ * Provides hints at the properties which may be available on the result object
  */
-export class Search extends QueryableInstance {
+export interface SearchResult {
 
-    /**
-     * Creates a new instance of the Search class
-     *
-     * @param baseUrl The url for the search context
-     * @param query The SearchQuery object to execute
-     */
-    constructor(baseUrl: string | Queryable, path = "_api/search/postquery") {
-        super(baseUrl, path);
-    }
-
-    /**
-     * .......
-     * @returns Promise
-     */
-    public execute(query: SearchQuery): Promise<SearchResults> {
-
-        let formattedBody: any;
-        formattedBody = query;
-
-        if (formattedBody.SelectProperties) {
-            formattedBody.SelectProperties = { results: query.SelectProperties };
-        }
-
-        if (formattedBody.RefinementFilters) {
-            formattedBody.RefinementFilters = { results: query.RefinementFilters };
-        }
-
-        if (formattedBody.SortList) {
-            formattedBody.SortList = { results: query.SortList };
-        }
-
-        if (formattedBody.HithighlightedProperties) {
-            formattedBody.HithighlightedProperties = { results: query.HithighlightedProperties };
-        }
-
-        if (formattedBody.ReorderingRules) {
-            formattedBody.ReorderingRules = { results: query.ReorderingRules };
-        }
-
-        if (formattedBody.Properties) {
-            formattedBody.Properties = { results: query.Properties };
-        }
-
-        const postBody = JSON.stringify({
-            request: Util.extend({
-                "__metadata": { "type": "Microsoft.Office.Server.Search.REST.SearchRequest" },
-            }, formattedBody),
-        });
-
-        return this.post({ body: postBody }).then((data) => new SearchResults(data));
-    }
+    Rank?: number;
+    DocId?: number;
+    WorkId?: number;
+    Title?: string;
+    Author?: string;
+    Size?: number;
+    Path?: string;
+    Description?: string;
+    Write?: Date;
+    LastModifiedTime?: Date;
+    CollapsingStatus?: number;
+    HitHighlightedSummary?: string;
+    HitHighlightedProperties?: string;
+    contentclass?: string;
+    PictureThumbnailURL?: string;
+    ServerRedirectedURL?: string;
+    ServerRedirectedEmbedURL?: string;
+    ServerRedirectedPreviewURL?: string;
+    FileExtension?: string;
+    ContentTypeId?: string;
+    ParentLink?: string;
+    ViewsLifeTime?: number;
+    ViewsRecent?: number;
+    SectionNames?: string;
+    SectionIndexes?: string;
+    SiteLogo?: string;
+    SiteDescription?: string;
+    importance?: number;
+    SiteName?: string;
+    IsDocument?: boolean;
+    FileType?: string;
+    IsContainer?: boolean;
+    WebTemplate?: string;
+    SPWebUrl?: string;
+    UniqueId?: string;
+    ProgId?: string;
+    OriginalPath?: string;
+    RenderTemplateId?: string;
+    PartitionId?: string;
+    UrlZone?: number;
+    Culture?: string;
 }
 
-/**
- * Describes the SearchResults class, which returns the formatted and raw version of the query response
- */
-export class SearchResults {
-
-    public PrimarySearchResults: any[];
-    public RawSearchResults: any;
-    public RowCount: number;
-    public TotalRows: number;
-    public TotalRowsIncludingDuplicates: number;
-    public ElapsedTime: number;
-
-    /**
-     * Creates a new instance of the SearchResult class
-     *
-     */
-    constructor(rawResponse: any) {
-        const response = rawResponse.postquery ? rawResponse.postquery : rawResponse;
-        this.PrimarySearchResults = this.formatSearchResults(response.PrimaryQueryResult.RelevantResults.Table.Rows);
-        this.RawSearchResults = response;
-        this.ElapsedTime = response.ElapsedTime;
-        this.RowCount = response.PrimaryQueryResult.RelevantResults.RowCount;
-        this.TotalRows = response.PrimaryQueryResult.RelevantResults.TotalRows;
-        this.TotalRowsIncludingDuplicates = response.PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates;
-    }
-
-    /**
-     * Formats a search results array
-     *
-     * @param rawResults The array to process
-     */
-    protected formatSearchResults(rawResults: Array<any> | any): SearchResult[] {
-        const results = new Array<SearchResult>(),
-            tempResults = rawResults.results ? rawResults.results : rawResults;
-
-        for (const i of tempResults) {
-            results.push(new SearchResult(i.Cells));
-        }
-
-        return results;
-    }
-
+export interface SearchResponse {
+    ElapsedTime: number;
+    Properties?: { Key: string, Value: any, ValueType: string }[];
+    PrimaryQueryResult?: ResultTableCollection;
+    SecondaryQueryResults?: ResultTableCollection;
+    SpellingSuggestion?: string;
+    TriggeredRules?: any[];
 }
 
-/**
- * Describes the SearchResult class
- */
-export class SearchResult {
+export interface ResultTableCollection {
 
-    /**
-     * Creates a new instance of the SearchResult class
-     *
-     */
-    constructor(rawItem: any) {
-        const item = rawItem.results ? rawItem.results : rawItem;
-        for (const i of item) {
-            Object.defineProperty(this, i.Key,
-                {
-                    configurable: false,
-                    enumerable: false,
-                    value: i.Value,
-                    writable: false,
-                });
-        }
-    }
+    QueryErrors?: Dictionary<any>;
+    QueryId?: string;
+    QueryRuleId?: string;
+    CustomResults?: ResultTable;
+    RefinementResults?: ResultTable;
+    RelevantResults?: ResultTable;
+    SpecialTermResults?: ResultTable;
+}
+
+export interface ResultTable {
+
+    GroupTemplateId?: string;
+    ItemTemplateId?: string;
+    Properties?: { Key: string, Value: any, ValueType: string }[];
+    Table: { Rows: { Cells: { Key: string, Value: any, ValueType: string }[] }[] };
+    ResultTitle?: string;
+    ResultTitleUrl?: string;
+    RowCount?: number;
+    TableType?: string;
+    TotalRows?: number;
+    TotalRowsIncludingDuplicates?: number;
 }
 
 /**

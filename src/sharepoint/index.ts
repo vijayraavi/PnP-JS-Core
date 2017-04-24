@@ -91,13 +91,18 @@ export {
     SearchProperty,
     SearchPropertyValue,
     SearchQuery,
+    SearchQueryBuilder,
     SearchResult,
     SearchResults,
     Sort,
     SortDirection,
     ReorderingRule,
     ReorderingRuleMatchType,
-    QueryPropertyValueType
+    QueryPropertyValueType,
+    SearchBuiltInSourceId,
+    SearchResponse,
+    ResultTableCollection,
+    ResultTable
 } from "./search";
 
 export {
