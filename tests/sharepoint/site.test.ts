@@ -37,5 +37,21 @@ describe("Site", () => {
                 return expect(pnp.sp.site.getWebUrlFromPageUrl(pageUrl)).to.eventually.equal(testSettings.webUrl.replace(/\/$/, ""));
             });
         });
+
+        describe("openWebById", () => {
+            it("should get a web by id", () => {
+
+                const chain = pnp.sp.web.select("Id").get().then(w => {
+
+                    return pnp.sp.site.openWebById(w.Id).then(ww => {
+
+                        // prove that we can successfully chain from the Web instance
+                        return ww.web.select("Title").get();
+                    });
+                });
+
+                return expect(chain).to.eventually.be.fulfilled;
+            });
+        });
     }
 });

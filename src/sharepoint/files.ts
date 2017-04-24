@@ -133,7 +133,7 @@ export class File extends QueryableShareableFile {
      *
      * @param comment The comment for the approval.
      */
-    public approve(comment: string): Promise<void> {
+    public approve(comment = ""): Promise<void> {
         return this.clone(File, `approve(comment='${comment}')`, true).post();
     }
 
