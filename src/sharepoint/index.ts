@@ -98,7 +98,11 @@ export {
     SortDirection,
     ReorderingRule,
     ReorderingRuleMatchType,
-    QueryPropertyValueType
+    QueryPropertyValueType,
+    SearchBuiltInSourceId,
+    SearchResponse,
+    ResultTableCollection,
+    ResultTable
 } from "./search";
 
 export {
