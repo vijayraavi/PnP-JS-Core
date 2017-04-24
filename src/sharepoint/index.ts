@@ -108,7 +108,8 @@ export {
 } from "./searchsuggest";
 
 export {
-    Site
+    Site,
+    OpenWebByIdResult
 } from "./site";
 
 export {

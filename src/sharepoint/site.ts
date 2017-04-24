@@ -2,7 +2,7 @@ import { Queryable, QueryableInstance } from "./queryable";
 import { Web } from "./webs";
 import { UserCustomActions } from "./usercustomactions";
 import { ContextInfo, DocumentLibraryInformation } from "./types";
-import { ODataBatch } from "./odata";
+import { ODataBatch, extractOdataId } from "./odata";
 import { Features } from "./features";
 
 /**
@@ -101,4 +101,28 @@ export class Site extends QueryableInstance {
     public createBatch(): ODataBatch {
         return new ODataBatch(this.parentUrl);
     }
+
+    /**
+     * Opens a web by Id (using POST)
+     *
+     * @param webId The GUID id fo the web to open
+     */
+    public openWebById(webId: string): Promise<OpenWebByIdResult> {
+
+        return this.clone(Site, `openWebById('${webId}')`, true).post().then(d => {
+
+            return {
+                data: d,
+                web: Web.fromUrl(extractOdataId(d)),
+            };
+        });
+    }
+}
+
+/**
+ * The result of opening a web by id, contains the data retruned as well as a chainable web instance
+ */
+export interface OpenWebByIdResult {
+    data: any;
+    web: Web;
 }

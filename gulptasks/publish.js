@@ -162,7 +162,7 @@ function engine(tasks, rl) {
 
     task();
 
-    if (tasks.length > 0) {
+    if (tasks.length > 1) {
 
         rl.question('Do you want to continue? (/^y(es)?$/i): ', (answer) => {
             if (answer.match(/^y(es)?$/i)) {
@@ -174,6 +174,10 @@ function engine(tasks, rl) {
                 tasks.pop()();
             }
         });
+    } else if (tasks.length === 1) {
+
+        // run the final cleanup and shutdown task.
+        tasks.pop()();
     }
 }
 
