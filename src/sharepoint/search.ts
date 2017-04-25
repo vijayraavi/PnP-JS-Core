@@ -7,7 +7,7 @@ import { Dictionary } from "../collections/collections";
  */
 export class SearchQueryBuilder {
 
-    public static create(queryText = "", queryTemplate = {}): SearchQueryBuilder {
+    public static create(queryText = "", queryTemplate: SearchQuery = {}): SearchQueryBuilder {
         return new SearchQueryBuilder(queryText, queryTemplate);
     }
 
@@ -334,7 +334,7 @@ export interface SearchQuery {
     /**
      * A string that contains the text for the search query.
      */
-    Querytext: string;
+    Querytext?: string;
 
     /**
      * A string that contains the text that replaces the query text, as part of a query transform.
