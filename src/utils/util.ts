@@ -1,6 +1,5 @@
 declare var global: any;
 import { TypedHash } from "../collections/collections";
-import { deprecated } from "./decorators";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 
 export class Util {
@@ -120,7 +119,7 @@ export class Util {
     public static combinePaths(...paths: string[]): string {
 
         return paths
-            .filter(path => typeof path !== "undefined" && path !== null)
+            .filter(path => !Util.stringIsNullOrEmpty(path))
             .map(path => path.replace(/^[\\|\/]/, "").replace(/[\\|\/]$/, ""))
             .join("/")
             .replace(/\\/g, "/");
@@ -185,7 +184,7 @@ export class Util {
      * @param s The string to test
      */
     public static stringIsNullOrEmpty(s: string): boolean {
-        return typeof s === "undefined" || s === null || s === "";
+        return typeof s === "undefined" || s === null || s.length < 1;
     }
 
     /**
@@ -220,29 +219,6 @@ export class Util {
      */
     public static isUrlAbsolute(url: string): boolean {
         return /^https?:\/\/|^\/\//i.test(url);
-    }
-
-    /**
-     * Attempts to make the supplied relative url absolute based on the _spPageContextInfo object, if available
-     *
-     * @param url The relative url to make absolute
-     */
-    @deprecated("The Util.makeUrlAbsolute method is deprecated and will be removed from future releases. Use Util.toAbsoluteUrl instead")
-    public static makeUrlAbsolute(url: string): string {
-
-        if (Util.isUrlAbsolute(url)) {
-            return url;
-        }
-
-        if (typeof global._spPageContextInfo !== "undefined") {
-            if (global._spPageContextInfo.hasOwnProperty("webAbsoluteUrl")) {
-                return Util.combinePaths(global._spPageContextInfo.webAbsoluteUrl, url);
-            } else if (global._spPageContextInfo.hasOwnProperty("webServerRelativeUrl")) {
-                return Util.combinePaths(global._spPageContextInfo.webServerRelativeUrl, url);
-            }
-        } else {
-            return url;
-        }
     }
 
     /**

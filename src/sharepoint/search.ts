@@ -249,7 +249,7 @@ export class Search extends QueryableInstance {
             }, formattedBody),
         });
 
-        return this.post({ body: postBody }).then((data) => new SearchResults(data));
+        return this.post({ body: postBody }).then((data) => new SearchResults(data, this.toUrl(), query));
     }
 }
 
@@ -262,7 +262,12 @@ export class SearchResults {
      * Creates a new instance of the SearchResult class
      *
      */
-    constructor(rawResponse: any, private _raw: SearchResponse = null, private _primary: SearchResult[] = null) {
+    constructor(rawResponse: any,
+        private _url: string,
+        private _query: SearchQuery,
+        private _raw: SearchResponse = null,
+        private _primary: SearchResult[] = null) {
+
         this._raw = rawResponse.postquery ? rawResponse.postquery : rawResponse;
     }
 
@@ -275,7 +280,7 @@ export class SearchResults {
     }
 
     public get TotalRows(): number {
-        return this.RawSearchResults.PrimaryQueryResult.RefinementResults.TotalRows;
+        return this.RawSearchResults.PrimaryQueryResult.RelevantResults.TotalRows;
     }
 
     public get TotalRowsIncludingDuplicates(): number {
@@ -291,6 +296,37 @@ export class SearchResults {
             this._primary = this.formatSearchResults(this._raw.PrimaryQueryResult.RelevantResults.Table.Rows);
         }
         return this._primary;
+    }
+
+    /**
+     * Gets a page of results
+     *
+     * @param pageNumber Index of the page to return. Used to determine StartRow
+     * @param pageSize Optional, items per page (default = 10)
+     */
+    public getPage(pageNumber: number, pageSize?: number): Promise<SearchResults> {
+
+        // if we got all the available rows we don't have another page
+        if (this.TotalRows < this.RowCount) {
+            return Promise.resolve(null);
+        }
+
+        // if pageSize is supplied, then we use that regardless of any previous values
+        // otherwise get the previous RowLimit or default to 10
+        const rows = typeof pageSize !== "undefined" ? pageSize : this._query.hasOwnProperty("RowLimit") ? this._query.RowLimit : 10;
+
+        const query: SearchQuery = Util.extend(this._query, {
+            RowLimit: rows,
+            StartRow: rows * (pageNumber - 1) + 1,
+        });
+
+        // we have reached the end
+        if (query.StartRow > this.TotalRows) {
+            return Promise.resolve(null);
+        }
+
+        const search = new Search(this._url, null);
+        return search.execute(query);
     }
 
     /**

@@ -63,6 +63,10 @@ describe("Util", () => {
             expect(Util.combinePaths(null, "path2", undefined, null, "/path4")).to.eq("path2/path4");
         });
 
+        it("Should combine the paths null, 'path2', undefined, \"\", null and '/path4' to be path2/path4", () => {
+            expect(Util.combinePaths(null, "path2", undefined, "", null, "/path4")).to.eq("path2/path4");
+        });
+
         it("Should not error with no arguments specified", () => {
             expect(Util.combinePaths()).to.eq("");
         });
@@ -99,6 +103,20 @@ describe("Util", () => {
             expect(Util.isFunction({ val: 0 })).to.be.false;
             expect(Util.isFunction(null)).to.be.false;
             expect(Util.isFunction(undefined)).to.be.false;
+        });
+    });
+
+    describe("isArray", () => {
+        it("Should find that an Array is an Array", () => {
+            expect(Util.isArray([1, 2, 3, 4])).to.be.true;
+        });
+
+        it("Should find that a non-Array is not an Array", () => {
+            expect(Util.isArray(null)).to.be.false;
+            expect(Util.isArray("")).to.be.false;
+            expect(Util.isArray(3)).to.be.false;
+            expect(Util.isArray({})).to.be.false;
+            expect(Util.isArray(undefined)).to.be.false;
         });
     });
 });
