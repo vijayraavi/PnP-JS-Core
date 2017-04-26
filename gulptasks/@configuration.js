@@ -36,12 +36,12 @@ module.exports = {
     },
     testing: {
         testsSource: "./tests",
-        testsSourceGlob: "./tests/**/*.ts",
+        testsSourceGlob: "./tests/**/*.test.ts",
         testingRoot: "./testing",
         testingTestsDest: "./testing/tests",
-        testingTestsDestGlob: "./testing/tests/**/*.js",
+        testingTestsDestGlob: "./testing/tests/**/*.test.js",
         testingSrcDest: "./testing/src",
-        testingSrcDestGlob: "./testing/src/**/*.js"
+        testingSrcDestGlob: "./testing/src/**/*.test.js"
     },
     debug: {
         debugSourceGlob: "./debug/**/*.ts",
