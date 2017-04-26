@@ -43,16 +43,6 @@ module.exports = {
         testingSrcDest: "./testing/src",
         testingSrcDestGlob: "./testing/src/**/*.js"
     },
-
-        // testsSource: "./tests",
-        // testsSourceGlob: "./tests/**/*.ts",
-        // testingRoot: "./testing",
-        // testingTestsDest: "./testing/tests",
-        // testingTestsDestGlob: "./testing/tests/**/*.js",
-        // testingSrcDest: "./testing/src",
-        // testingSrcDestGlob: "./testing/src/**/*.js"
-
-
     debug: {
         debugSourceGlob: "./debug/**/*.ts",
         outputRoot: "./debugging",
