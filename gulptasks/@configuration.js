@@ -4,7 +4,7 @@ function getBanner() {
 
     let pkg = require("../package.json");
 
-    return [    
+    return [
         "/**",
         ` * ${pkg.name} v${pkg.version} - ${pkg.description}`,
         ` * ${pkg.license} (https://github.com/SharePoint/PnP-JS-Core/blob/master/LICENSE)`,
@@ -19,9 +19,9 @@ function getBanner() {
 function getSettings() {
 
     try {
-         return require("../settings.js");
-    } catch(e) {
-         return require("../settings.example.js");
+        return require("../settings.js");
+    } catch (e) {
+        return require("../settings.example.js");
     }
 }
 
@@ -36,13 +36,23 @@ module.exports = {
     },
     testing: {
         testsSource: "./tests",
-        testsSourceGlob: "./tests/**/*.test.ts",
+        testsSourceGlob: ["./tests/**/*.ts", "!./tests/**/*.inactive.ts"],
         testingRoot: "./testing",
         testingTestsDest: "./testing/tests",
-        testingTestsDestGlob: "./testing/tests/**/*.test.js",
+        testingTestsDestGlob: "./testing/tests/**/*.js",
         testingSrcDest: "./testing/src",
-        testingSrcDestGlob: "./testing/src/**/*.test.js"
+        testingSrcDestGlob: "./testing/src/**/*.js"
     },
+
+        // testsSource: "./tests",
+        // testsSourceGlob: "./tests/**/*.ts",
+        // testingRoot: "./testing",
+        // testingTestsDest: "./testing/tests",
+        // testingTestsDestGlob: "./testing/tests/**/*.js",
+        // testingSrcDest: "./testing/src",
+        // testingSrcDestGlob: "./testing/src/**/*.js"
+
+
     debug: {
         debugSourceGlob: "./debug/**/*.ts",
         outputRoot: "./debugging",
