@@ -26,9 +26,8 @@ export interface UtilityMethods {
         sources: PrincipalSource,
         groupName: string,
         maxCount: number): Promise<PrincipalInfo[]>;
-    getLocalizedString(source: string, defaultResourceFile: string, lang: number): Promise<string>;
     createEmailBodyForInvitation(pageAddress: string): Promise<string>;
-    expandGroupsToPrincipals(inputs: string[], maxCount: number): Promise<PrincipalInfo[]>;
+    expandGroupsToPrincipals(inputs: string[], maxCount?: number): Promise<PrincipalInfo[]>;
     createWikiPage(info: WikiPageCreationInformation): Promise<CreateWikiPageResult>;
 }
 
@@ -176,17 +175,6 @@ export class UtilityMethod extends Queryable implements UtilityMethods {
         return this.create("SearchPrincipalsUsingContextWeb", true).excute<PrincipalInfo[]>(params);
     }
 
-    public getLocalizedString(source: string, defaultResourceFile: string, lang: number): Promise<string> {
-
-        const params = {
-            defaultResourceFile: defaultResourceFile,
-            language: lang,
-            source: source,
-        };
-
-        return this.create("GetLocalizedString", true).excute<string>(params);
-    }
-
     public createEmailBodyForInvitation(pageAddress: string): Promise<string> {
 
         const params = {
@@ -196,7 +184,7 @@ export class UtilityMethod extends Queryable implements UtilityMethods {
         return this.create("CreateEmailBodyForInvitation", true).excute<string>(params);
     }
 
-    public expandGroupsToPrincipals(inputs: string[], maxCount: number): Promise<PrincipalInfo[]> {
+    public expandGroupsToPrincipals(inputs: string[], maxCount = 30): Promise<PrincipalInfo[]> {
 
         const params = {
             inputs: inputs,
