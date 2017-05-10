@@ -19,7 +19,7 @@ export interface UserUpdateResult {
 export class SiteUsers extends QueryableCollection {
 
     /**
-     * Creates a new instance of the Users class
+     * Creates a new instance of the SiteUsers class
      *
      * @param baseUrl The url or Queryable which forms the parent of this user collection
      */
@@ -30,7 +30,7 @@ export class SiteUsers extends QueryableCollection {
     /**
      * Gets a user from the collection by email
      *
-     * @param email The email of the user
+     * @param email The email address of the user to retrieve
      */
     public getByEmail(email: string): SiteUser {
         return new SiteUser(this, `getByEmail('${email}')`);
@@ -39,7 +39,7 @@ export class SiteUsers extends QueryableCollection {
     /**
      * Gets a user from the collection by id
      *
-     * @param id The id of the user
+     * @param id The id of the user to retrieve
      */
     public getById(id: number): SiteUser {
         return new SiteUser(this, `getById(${id})`);
@@ -48,7 +48,7 @@ export class SiteUsers extends QueryableCollection {
     /**
      * Gets a user from the collection by login name
      *
-     * @param loginName The email address of the user
+     * @param loginName The login name of the user to retrieve
      */
     public getByLoginName(loginName: string): SiteUser {
         const su = new SiteUser(this);
@@ -60,7 +60,7 @@ export class SiteUsers extends QueryableCollection {
     /**
      * Removes a user from the collection by id
      *
-     * @param id The id of the user
+     * @param id The id of the user to remove
      */
     public removeById(id: number | Queryable): Promise<any> {
         return this.clone(SiteUsers, `removeById(${id})`, true).post();
@@ -69,7 +69,7 @@ export class SiteUsers extends QueryableCollection {
     /**
      * Removes a user from the collection by login name
      *
-     * @param loginName The login name of the user
+     * @param loginName The login name of the user to remove
      */
     public removeByLoginName(loginName: string): Promise<any> {
         const o = this.clone(SiteUsers, `removeByLoginName(@v)`, true);
@@ -78,7 +78,7 @@ export class SiteUsers extends QueryableCollection {
     }
 
     /**
-     * Add a user to a group
+     * Adds a user to a group
      *
      * @param loginName The login name of the user to add to the group
      *
@@ -98,7 +98,7 @@ export class SiteUsers extends QueryableCollection {
 export class SiteUser extends QueryableInstance {
 
     /**
-     * Get's the groups for this user.
+     * Gets the groups for this user
      *
      */
     public get groups() {
