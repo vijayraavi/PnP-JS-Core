@@ -2,16 +2,25 @@ import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 
+/**
+ * Describes a collection of user custom actions
+ *
+ */
 export class UserCustomActions extends QueryableCollection {
 
+    /**
+     * Creates a new instance of the UserCustomActions class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this user custom actions collection
+     */
     constructor(baseUrl: string | Queryable, path = "usercustomactions") {
         super(baseUrl, path);
     }
 
     /**
-     * Returns the custom action with the specified identifier.
+     * Returns the user custom action with the specified id
      *
-     * @param id The GUID ID of the user custom action to get.
+     * @param id The GUID id of the user custom action to retrieve
      */
     public getById(id: string): UserCustomAction {
         const uca = new UserCustomAction(this);
@@ -20,9 +29,9 @@ export class UserCustomActions extends QueryableCollection {
     }
 
     /**
-     * Create a custom action
+     * Creates a user custom action
      *
-     * @param creationInfo The information which defines the new custom action
+     * @param properties The information object of property names and values which define the new user custom action
      *
      */
     public add(properties: TypedHash<string | boolean | number>): Promise<UserCustomActionAddResult> {
@@ -38,7 +47,7 @@ export class UserCustomActions extends QueryableCollection {
     }
 
     /**
-     * Deletes all custom actions in the collection.
+     * Deletes all user custom actions in the collection
      *
      */
     public clear(): Promise<void> {
@@ -46,8 +55,17 @@ export class UserCustomActions extends QueryableCollection {
     }
 }
 
+/**
+ * Describes a single user custom action
+ *
+ */
 export class UserCustomAction extends QueryableInstance {
 
+    /**
+    * Updates this user custom action with the supplied properties
+    *
+    * @param properties An information object of property names and values to update for this user custom action
+    */
     public update(properties: TypedHash<string | boolean | number>): Promise<UserCustomActionUpdateResult> {
 
         const postBody = JSON.stringify(Util.extend({
@@ -68,7 +86,7 @@ export class UserCustomAction extends QueryableInstance {
     }
 
     /**
-    * Remove a custom action
+    * Removes this user custom action
     *
     */
     public delete(): Promise<void> {
@@ -76,11 +94,19 @@ export class UserCustomAction extends QueryableInstance {
     }
 }
 
+/**
+ * Result from adding a user custom action
+ *
+ */
 export interface UserCustomActionAddResult {
     data: any;
     action: UserCustomAction;
 }
 
+/**
+ * Result from udating a user custom action
+ *
+ */
 export interface UserCustomActionUpdateResult {
     data: any;
     action: UserCustomAction;
