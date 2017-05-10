@@ -7,6 +7,11 @@ export class UserProfileQuery extends QueryableInstance {
 
     private profileLoader: ProfileLoader;
 
+    /**
+     * Creates a new instance of the UserProfileQuery class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this user profile query
+     */
     constructor(baseUrl: string | Queryable, path = "_api/sp.userprofiles.peoplemanager") {
         super(baseUrl, path);
 
@@ -14,21 +19,21 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * The URL of the edit profile page for the current user.
+     * The url of the edit profile page for the current user
      */
     public get editProfileLink(): Promise<string> {
         return this.clone(UserProfileQuery, "EditProfileLink").getAs(ODataValue<string>());
     }
 
     /**
-     * A Boolean value that indicates whether the current user's People I'm Following list is public.
+     * A boolean value that indicates whether the current user's "People I'm Following" list is public
      */
     public get isMyPeopleListPublic(): Promise<boolean> {
         return this.clone(UserProfileQuery, "IsMyPeopleListPublic").getAs(ODataValue<boolean>());
     }
 
     /**
-     * A Boolean value that indicates whether the current user's People I'm Following list is public.
+     * A boolean value that indicates whether the current user is being followed by the specified user
      *
      * @param loginName The account name of the user
      */
@@ -39,7 +44,7 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Checks whether the current user is following the specified user.
+     * A boolean value that indicates whether the current user is following the specified user
      *
      * @param loginName The account name of the user
      */
@@ -50,18 +55,18 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets tags that the user is following.
+     * Gets tags that the current user is following
      *
-     * @param maxCount The maximum number of tags to get.
+     * @param maxCount The maximum number of tags to retrieve (default is 20)
      */
     public getFollowedTags(maxCount = 20): Promise<string[]> {
         return this.clone(UserProfileQuery, `getfollowedtags(${maxCount})`, true).get();
     }
 
     /**
-     * Gets the people who are following the specified user.
+     * Gets the people who are following the specified user
      *
-     * @param loginName The account name of the user.
+     * @param loginName The account name of the user
      */
     public getFollowersFor(loginName: string): Promise<any[]> {
         const q = this.clone(UserProfileQuery, "getfollowersfor(@v)", true);
@@ -70,7 +75,7 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets the people who are following the current user.
+     * Gets the people who are following the current user
      *
      */
     public get myFollowers(): QueryableCollection {
@@ -78,7 +83,7 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets user properties for the current user.
+     * Gets user properties for the current user
      *
      */
     public get myProperties(): QueryableInstance {
@@ -86,7 +91,7 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets the people who the specified user is following.
+     * Gets the people who the specified user is following
      *
      * @param loginName The account name of the user.
      */
@@ -108,7 +113,7 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets the most popular tags.
+     * Gets the 20 most popular hash tags over the past week, sorted so that the most popular tag appears first
      *
      */
     public get trendingTags(): Promise<HashTagCollection> {
@@ -118,10 +123,10 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets the specified user profile property for the specified user.
+     * Gets the specified user profile property for the specified user
      *
-     * @param loginName The account name of the user.
-     * @param propertyName The case-sensitive name of the property to get.
+     * @param loginName The account name of the user
+     * @param propertyName The case-sensitive name of the property to get
      */
     public getUserProfilePropertyFor(loginName: string, propertyName: string): Promise<string> {
         const q = this.clone(UserProfileQuery, `getuserprofilepropertyfor(accountname=@v, propertyname='${propertyName}')`, true);
@@ -130,9 +135,9 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Removes the specified user from the user's list of suggested people to follow.
+     * Removes the specified user from the user's list of suggested people to follow
      *
-     * @param loginName The account name of the user.
+     * @param loginName The account name of the user
      */
     public hideSuggestion(loginName: string): Promise<void> {
         const q = this.clone(UserProfileQuery, "hidesuggestion(@v)", true);
@@ -141,10 +146,10 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Checks whether the first user is following the second user.
+     * A boolean values that indicates whether the first user is following the second user
      *
-     * @param follower The account name of the user who might be following followee.
-     * @param followee The account name of the user who might be followed.
+     * @param follower The account name of the user who might be following the followee
+     * @param followee The account name of the user who might be followed by the follower
      */
     public isFollowing(follower: string, followee: string): Promise<boolean> {
         const q = this.clone(UserProfileQuery, null, true);
@@ -155,9 +160,9 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Uploads and sets the user profile picture. Not supported for batching.
+     * Uploads and sets the user profile picture (Users can upload a picture to their own profile only). Not supported for batching.
      *
-     * @param profilePicSource Blob data representing the user's picture
+     * @param profilePicSource Blob data representing the user's picture in BMP, JPEG, or PNG format of up to 4.76MB
      */
     public setMyProfilePic(profilePicSource: Blob): Promise<void> {
 
@@ -181,7 +186,7 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets the user profile of the site owner.
+     * Gets the user profile of the site owner
      *
      */
     public get ownerUserProfile(): Promise<UserProfile> {
@@ -189,25 +194,25 @@ export class UserProfileQuery extends QueryableInstance {
     }
 
     /**
-     * Gets the user profile that corresponds to the current user.
+     * Gets the user profile for the current user
      */
     public get userProfile(): Promise<any> {
         return this.profileLoader.userProfile;
     }
 
     /**
-     * Enqueues creating a personal site for this user, which can be used to share documents, web pages, and other files.
+     * Enqueues creating a personal site for this user, which can be used to share documents, web pages, and other files
      *
-     * @param interactiveRequest true if interactively (web) initiated request, or false if non-interactively (client) initiated request
+     * @param interactiveRequest true if interactively (web) initiated request, or false (default) if non-interactively (client) initiated request
      */
     public createPersonalSite(interactiveRequest = false): Promise<void> {
         return this.profileLoader.createPersonalSite(interactiveRequest);
     }
 
     /**
-     * Sets the privacy settings for this profile.
+     * Sets the privacy settings for this profile
      *
-     * @param share true to make all social data public; false to make all social data private.
+     * @param share true to make all social data public; false to make all social data private
      */
     public shareAllSocialData(share: boolean): Promise<void> {
         return this.profileLoader.shareAllSocialData(share);
@@ -216,6 +221,11 @@ export class UserProfileQuery extends QueryableInstance {
 
 class ProfileLoader extends Queryable {
 
+      /**
+     * Creates a new instance of the ProfileLoader class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this profile loader
+     */
     constructor(baseUrl: string | Queryable, path = "_api/sp.userprofiles.profileloader.getprofileloader") {
         super(baseUrl, path);
     }
@@ -247,7 +257,7 @@ class ProfileLoader extends Queryable {
     }
 
     /**
-     * Gets the user profile that corresponds to the current user.
+     * Gets the user profile of the current user.
      *
      */
     public get userProfile(): Promise<UserProfile> {
@@ -257,14 +267,14 @@ class ProfileLoader extends Queryable {
     /**
      * Enqueues creating a personal site for this user, which can be used to share documents, web pages, and other files.
      *
-     * @param interactiveRequest true if interactively (web) initiated request, or false if non-interactively (client) initiated request
+     * @param interactiveRequest true if interactively (web) initiated request, or false (default) if non-interactively (client) initiated request
      */
     public createPersonalSite(interactiveRequest = false): Promise<void> {
         return this.clone(ProfileLoader, `getuserprofile/createpersonalsiteenque(${interactiveRequest})`, true).post();
     }
 
     /**
-     * Sets the privacy settings for this profile.
+     * Sets the privacy settings for this profile
      *
      * @param share true to make all social data public; false to make all social data private.
      */
@@ -272,15 +282,3 @@ class ProfileLoader extends Queryable {
         return this.clone(ProfileLoader, `getuserprofile/shareallsocialdata(${share})`, true).post();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
