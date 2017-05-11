@@ -87,7 +87,7 @@ export class QueryableShareable extends Queryable {
 
                 postBody = Util.extend(postBody, {
                     emailBody: emailData.body,
-                    emailSubject: typeof emailData.subject !== "undefined" ? "" : emailData.subject,
+                    emailSubject: typeof emailData.subject !== "undefined" ? emailData.subject : "",
                     sendEmail: true,
                 });
             }
@@ -139,7 +139,7 @@ export class QueryableShareable extends Queryable {
 
                 postBody = Util.extend(postBody, {
                     emailBody: options.emailData.body,
-                    emailSubject: typeof options.emailData.subject !== "undefined" ? "Shared for you." : options.emailData.subject,
+                    emailSubject: typeof options.emailData.subject !== "undefined" ? options.emailData.subject : "Shared with you.",
                     sendEmail: true,
                 });
             }
