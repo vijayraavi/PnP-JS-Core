@@ -17,7 +17,7 @@ export enum PrincipalType {
 }
 
 /**
- * Result from adding a group.
+ * Results from updating a group
  *
  */
 export interface GroupUpdateResult {
@@ -26,7 +26,7 @@ export interface GroupUpdateResult {
 }
 
 /**
- * Results from updating a group
+ * Results from adding a group
  *
  */
 export interface GroupAddResult {
@@ -36,15 +36,15 @@ export interface GroupAddResult {
 
 
 /**
- * Describes a collection of site users
+ * Describes a collection of site groups
  *
  */
 export class SiteGroups extends QueryableCollection {
 
     /**
-     * Creates a new instance of the SiteUsers class
+     * Creates a new instance of the SiteGroups class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this user collection
+     * @param baseUrl The url or Queryable which forms the parent of this group collection
      */
     constructor(baseUrl: string | Queryable, path = "sitegroups") {
         super(baseUrl, path);
@@ -53,7 +53,7 @@ export class SiteGroups extends QueryableCollection {
     /**
      * Adds a new group to the site collection
      *
-     * @param props The properties to be updated
+     * @param props The group properties object of property names and values to be set for the group
      */
     public add(properties: TypedHash<any>): Promise<GroupAddResult> {
         const postBody = JSON.stringify(Util.extend(
@@ -70,7 +70,7 @@ export class SiteGroups extends QueryableCollection {
     /**
      * Gets a group from the collection by name
      *
-     * @param email The name of the group
+     * @param groupName The name of the group to retrieve
      */
     public getByName(groupName: string): SiteGroup {
         return new SiteGroup(this, `getByName('${groupName}')`);
@@ -79,7 +79,7 @@ export class SiteGroups extends QueryableCollection {
     /**
      * Gets a group from the collection by id
      *
-     * @param id The id of the group
+     * @param id The id of the group to retrieve
      */
     public getById(id: number) {
         const sg = new SiteGroup(this);
@@ -88,7 +88,7 @@ export class SiteGroups extends QueryableCollection {
     }
 
     /**
-     * Removes the group with the specified member ID from the collection.
+     * Removes the group with the specified member id from the collection
      *
      * @param id The id of the group to remove
      */
@@ -97,9 +97,9 @@ export class SiteGroups extends QueryableCollection {
     }
 
     /**
-     * Removes a user from the collection by login name
+     * Removes the cross-site group with the specified name from the collection
      *
-     * @param loginName The login name of the user
+     * @param loginName The name of the group to remove
      */
     public removeByLoginName(loginName: string): Promise<any> {
         return this.clone(SiteGroups, `removeByLoginName('${loginName}')`, true).post();
@@ -113,7 +113,7 @@ export class SiteGroups extends QueryableCollection {
 export class SiteGroup extends QueryableInstance {
 
     /**
-     * Get's the users for this group
+     * Gets the users for this group
      *
      */
     public get users(): SiteUsers {
@@ -123,7 +123,7 @@ export class SiteGroup extends QueryableInstance {
     /**
     * Updates this group instance with the supplied properties
     *
-    * @param properties A GroupWriteableProperties object of property names and values to update for the user
+    * @param properties A GroupWriteableProperties object of property names and values to update for the group
     */
     /* tslint:disable no-string-literal */
     public update(properties: TypedHash<any>): Promise<GroupUpdateResult> {
