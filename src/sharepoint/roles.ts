@@ -13,17 +13,17 @@ export class RoleAssignments extends QueryableCollection {
     /**
      * Creates a new instance of the RoleAssignments class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or Queryable which forms the parent of this role assignments collection
      */
     constructor(baseUrl: string | Queryable, path = "roleassignments") {
         super(baseUrl, path);
     }
 
     /**
-     * Adds a new role assignment with the specified principal and role definitions to the collection.
+     * Adds a new role assignment with the specified principal and role definitions to the collection
      *
-     * @param principalId The ID of the user or group to assign permissions to
-     * @param roleDefId The ID of the role definition that defines the permissions to assign
+     * @param principalId The id of the user or group to assign permissions to
+     * @param roleDefId The id of the role definition that defines the permissions to assign
      *
      */
     public add(principalId: number, roleDefId: number): Promise<void> {
@@ -33,8 +33,8 @@ export class RoleAssignments extends QueryableCollection {
     /**
      * Removes the role assignment with the specified principal and role definition from the collection
      *
-     * @param principalId The ID of the user or group in the role assignment.
-     * @param roleDefId The ID of the role definition in the role assignment
+     * @param principalId The id of the user or group in the role assignment
+     * @param roleDefId The id of the role definition in the role assignment
      *
      */
     public remove(principalId: number, roleDefId: number): Promise<void> {
@@ -42,7 +42,7 @@ export class RoleAssignments extends QueryableCollection {
     }
 
     /**
-     * Gets the role assignment associated with the specified principal ID from the collection.
+     * Gets the role assignment associated with the specified principal id from the collection.
      *
      * @param id The id of the role assignment
      */
@@ -53,14 +53,22 @@ export class RoleAssignments extends QueryableCollection {
     }
 }
 
+/**
+ * Describes a role assignment
+ *
+ */
 export class RoleAssignment extends QueryableInstance {
 
+    /**
+     * Gets the groups that directly belong to the access control list (ACL) for this securable object
+     *
+     */
     public get groups(): SiteGroups {
         return new SiteGroups(this, "groups");
     }
 
     /**
-     * Get the role definition bindings for this role assignment
+     * Gets the role definition bindings for this role assignment
      *
      */
     public get bindings(): RoleDefinitionBindings {
@@ -68,7 +76,7 @@ export class RoleAssignment extends QueryableInstance {
     }
 
     /**
-     * Delete this role assignment
+     * Deletes this role assignment
      *
      */
     public delete(): Promise<void> {
@@ -80,13 +88,16 @@ export class RoleAssignment extends QueryableInstance {
     }
 }
 
+/**
+ * Describes a collection of role definitions
+ *
+ */
 export class RoleDefinitions extends QueryableCollection {
 
     /**
      * Creates a new instance of the RoleDefinitions class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
-     * @param path
+     * @param baseUrl The url or Queryable which forms the parent of this role definitions collection
      *
      */
     constructor(baseUrl: string | Queryable, path = "roledefinitions") {
@@ -94,9 +105,9 @@ export class RoleDefinitions extends QueryableCollection {
     }
 
     /**
-     * Gets the role definition with the specified ID from the collection.
+     * Gets the role definition with the specified id from the collection
      *
-     * @param id The ID of the role definition.
+     * @param id The id of the role definition
      *
      */
     public getById(id: number): RoleDefinition {
@@ -104,9 +115,9 @@ export class RoleDefinitions extends QueryableCollection {
     }
 
     /**
-     * Gets the role definition with the specified name.
+     * Gets the role definition with the specified name
      *
-     * @param name The name of the role definition.
+     * @param name The name of the role definition
      *
      */
     public getByName(name: string): RoleDefinition {
@@ -114,9 +125,9 @@ export class RoleDefinitions extends QueryableCollection {
     }
 
     /**
-     * Gets the role definition with the specified type.
+     * Gets the role definition with the specified role type
      *
-     * @param name The name of the role definition.
+     * @param roleTypeKind The roletypekind of the role definition (None=0, Guest=1, Reader=2, Contributor=3, WebDesigner=4, Administrator=5, Editor=6, System=7)
      *
      */
     public getByType(roleTypeKind: number): RoleDefinition {
@@ -124,7 +135,7 @@ export class RoleDefinitions extends QueryableCollection {
     }
 
     /**
-     * Create a role definition
+     * Creates a role definition
      *
      * @param name The new role definition's name
      * @param description The new role definition's description
@@ -151,12 +162,16 @@ export class RoleDefinitions extends QueryableCollection {
     }
 }
 
+/**
+ * Describes a role definition
+ *
+ */
 export class RoleDefinition extends QueryableInstance {
 
     /**
-     * Updates this web intance with the supplied properties
+     * Updates this role definition with the supplied properties
      *
-     * @param properties A plain object hash of values to update for the web
+     * @param properties A plain object hash of values to update for the role definition
      */
     /* tslint:disable no-string-literal */
     public update(properties: TypedHash<any>): Promise<RoleDefinitionUpdateResult> {
@@ -192,7 +207,7 @@ export class RoleDefinition extends QueryableInstance {
     /* tslint:enable */
 
     /**
-     * Delete this role definition
+     * Deletes this role definition
      *
      */
     public delete(): Promise<void> {
@@ -204,17 +219,35 @@ export class RoleDefinition extends QueryableInstance {
     }
 }
 
+/**
+ * Result from updating a role definition
+ *
+ */
 export interface RoleDefinitionUpdateResult {
     definition: RoleDefinition;
     data: any;
 }
 
+/**
+ * Result from adding a role definition
+ *
+ */
 export interface RoleDefinitionAddResult {
     definition: RoleDefinition;
     data: any;
 }
 
+/**
+ * Describes the role definitons bound to a role assignment object
+ *
+ */
 export class RoleDefinitionBindings extends QueryableCollection {
+    
+    /**
+     * Creates a new instance of the RoleDefinitionBindings class
+     *
+     * @param baseUrl The url or Queryable which forms the parent of this role definition bindings collection
+     */
     constructor(baseUrl: string | Queryable, path = "roledefinitionbindings") {
         super(baseUrl, path);
     }
