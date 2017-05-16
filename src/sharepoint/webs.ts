@@ -24,7 +24,7 @@ import { RelatedItemManger, RelatedItemManagerImpl } from "./relateditems";
  *
  */
 export class Webs extends QueryableCollection {
-    
+
     /**
      * Creates a new instance of the Webs class
      *
@@ -84,7 +84,7 @@ export class Webs extends QueryableCollection {
  *
  */
 export class WebInfos extends QueryableCollection {
-    
+
     /**
      * Creates a new instance of the WebInfos class
      *

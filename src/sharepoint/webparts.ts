@@ -38,11 +38,20 @@ export class WebPartDefinitions extends QueryableCollection {
     /**
      * Gets a web part definition from the collection by id
      *
-     * @param id GUID id of the web part definition to get
+     * @param id The storage ID of the SPWebPartDefinition to retrieve
      */
     public getById(id: string): WebPartDefinition {
 
         return new WebPartDefinition(this, `getbyid('${id}')`);
+    }
+
+    /**
+     * Gets a web part definition from the collection by storage id
+     *
+     * @param id The WebPart.ID of the SPWebPartDefinition to retrieve
+     */
+    public getByControlId(id: string): WebPartDefinition {
+        return new WebPartDefinition(this, `getByControlId('${id}')`);
     }
 }
 
@@ -53,6 +62,40 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public get webpart(): WebPart {
         return new WebPart(this);
+    }
+
+    /**
+     * Saves changes to the Web Part made using other properties and methods on the SPWebPartDefinition object
+     */
+    public saveChanges(): Promise<any> {
+
+        return this.clone(WebPartDefinition, "SaveWebPartChanges", true).post();
+    }
+
+    /**
+     * Moves the Web Part to a different location on a Web Part Page
+     *
+     * @param zoneId The ID of the Web Part Zone to which to move the Web Part
+     * @param zoneIndex A Web Part zone index that specifies the position at which the Web Part is to be moved within the destination Web Part zone
+     */
+    public moveTo(zoneId: string, zoneIndex: number): Promise<void> {
+
+        return this.clone(WebPartDefinition, `MoveWebPartTo(zoneID='${zoneId}', zoneIndex=${zoneIndex})`, true).post();
+    }
+
+    /**
+     * Closes the Web Part. If the Web Part is already closed, this method does nothing
+     */
+    public close(): Promise<void> {
+        return this.clone(WebPartDefinition, "CloseWebPart", true).post();
+    }
+
+    /**
+     * Opens the Web Part. If the Web Part is already closed, this method does nothing
+     */
+    public open(): Promise<void> {
+        return this.clone(WebPartDefinition, "OpenWebPart", true).post();
+
     }
 
     /**
