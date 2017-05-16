@@ -7,6 +7,7 @@ export class LimitedWebPartManager extends Queryable {
      *
      */
     public get webparts(): WebPartDefinitions {
+        
         return new WebPartDefinitions(this, "webparts");
     }
 
@@ -16,6 +17,7 @@ export class LimitedWebPartManager extends Queryable {
      * @param id the GUID id of the definition to export
      */
     public export(id: string): Promise<string> {
+
         return this.clone(LimitedWebPartManager, "ExportWebPart", true).post({
             body: JSON.stringify({ webPartId: id }),
         });
@@ -27,6 +29,7 @@ export class LimitedWebPartManager extends Queryable {
      * @param xml webpart definition which must be valid XML in the .dwp or .webpart format
      */
     public import(xml: string): Promise<any> {
+
         return this.clone(LimitedWebPartManager, "ImportWebPart", true).post({
             body: JSON.stringify({ webPartXml: xml }),
         });
@@ -51,6 +54,7 @@ export class WebPartDefinitions extends QueryableCollection {
      * @param id The WebPart.ID of the SPWebPartDefinition to retrieve
      */
     public getByControlId(id: string): WebPartDefinition {
+
         return new WebPartDefinition(this, `getByControlId('${id}')`);
     }
 }
@@ -61,6 +65,7 @@ export class WebPartDefinition extends QueryableInstance {
      * Gets the webpart information associated with this definition
      */
     public get webpart(): WebPart {
+
         return new WebPart(this);
     }
 
@@ -87,6 +92,7 @@ export class WebPartDefinition extends QueryableInstance {
      * Closes the Web Part. If the Web Part is already closed, this method does nothing
      */
     public close(): Promise<void> {
+
         return this.clone(WebPartDefinition, "CloseWebPart", true).post();
     }
 
@@ -94,6 +100,7 @@ export class WebPartDefinition extends QueryableInstance {
      * Opens the Web Part. If the Web Part is already closed, this method does nothing
      */
     public open(): Promise<void> {
+
         return this.clone(WebPartDefinition, "OpenWebPart", true).post();
 
     }
@@ -102,6 +109,7 @@ export class WebPartDefinition extends QueryableInstance {
      * Removes a webpart from a page, all settings will be lost
      */
     public delete(): Promise<void> {
+
         return this.clone(WebPartDefinition, "DeleteWebPart", true).post();
     }
 }
