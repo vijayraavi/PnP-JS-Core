@@ -242,7 +242,7 @@ export interface RoleDefinitionAddResult {
  *
  */
 export class RoleDefinitionBindings extends QueryableCollection {
-    
+
     /**
      * Creates a new instance of the RoleDefinitionBindings class
      *

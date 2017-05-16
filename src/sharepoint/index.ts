@@ -149,6 +149,12 @@ export {
 } from "./views";
 
 export {
+    WebPartDefinitions,
+    WebPartDefinition,
+    WebPart
+} from "./webparts";
+
+export {
     Web,
     WebAddResult,
     WebUpdateResult,
