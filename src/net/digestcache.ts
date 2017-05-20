@@ -2,6 +2,7 @@ import { Dictionary } from "../collections/collections";
 import { HttpClient } from "./httpclient";
 import { Util } from "../utils/util";
 import { ODataDefaultParser } from "../sharepoint/odata";
+import { RuntimeConfig } from "../configuration/pnplibconfig";
 
 export class CachedDigest {
     public expiration: Date;
@@ -27,13 +28,15 @@ export class DigestCache {
 
         const url = Util.combinePaths(webUrl, "/_api/contextinfo");
 
+        const headers = {
+            "Accept": "application/json;odata=verbose",
+            "Content-Type": "application/json;odata=verbose;charset=utf-8",
+        };
+
         return this._httpClient.fetchRaw(url, {
             cache: "no-cache",
             credentials: "same-origin",
-            headers: {
-                "Accept": "application/json;odata=verbose",
-                "Content-type": "application/json;odata=verbose;charset=utf-8",
-            },
+            headers: Util.extend(headers, RuntimeConfig.headers, true),
             method: "POST",
         }).then((response) => {
             const parser = new ODataDefaultParser();
