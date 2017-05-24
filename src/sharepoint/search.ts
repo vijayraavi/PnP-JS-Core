@@ -220,27 +220,27 @@ export class Search extends QueryableInstance {
         formattedBody = query;
 
         if (formattedBody.SelectProperties) {
-            formattedBody.SelectProperties = { results: query.SelectProperties };
+            formattedBody.SelectProperties = this.fixupProp(query.SelectProperties);
         }
 
         if (formattedBody.RefinementFilters) {
-            formattedBody.RefinementFilters = { results: query.RefinementFilters };
+            formattedBody.RefinementFilters = this.fixupProp(query.RefinementFilters);
         }
 
         if (formattedBody.SortList) {
-            formattedBody.SortList = { results: query.SortList };
+            formattedBody.SortList = this.fixupProp(query.SortList);
         }
 
         if (formattedBody.HithighlightedProperties) {
-            formattedBody.HithighlightedProperties = { results: query.HithighlightedProperties };
+            formattedBody.HithighlightedProperties = this.fixupProp(query.HithighlightedProperties);
         }
 
         if (formattedBody.ReorderingRules) {
-            formattedBody.ReorderingRules = { results: query.ReorderingRules };
+            formattedBody.ReorderingRules = this.fixupProp(query.ReorderingRules);
         }
 
         if (formattedBody.Properties) {
-            formattedBody.Properties = { results: query.Properties };
+            formattedBody.Properties = this.fixupProp(query.Properties);
         }
 
         const postBody = JSON.stringify({
@@ -250,6 +250,20 @@ export class Search extends QueryableInstance {
         });
 
         return this.post({ body: postBody }).then((data) => new SearchResults(data, this.toUrl(), query));
+    }
+
+    /**
+     * Fixes up properties that expect to consist of a "results" collection when needed
+     *
+     * @param prop property to fixup for container struct
+     */
+    private fixupProp(prop: any): any {
+
+        if (prop.hasOwnProperty("results")) {
+            return prop;
+        }
+
+        return { results: prop };
     }
 }
 
@@ -321,9 +335,9 @@ export class SearchResults {
         });
 
         // we have reached the end
-        if (query.StartRow > this.TotalRows) {
-            return Promise.resolve(null);
-        }
+        // if (query.StartRow > this.TotalRows) {
+        //     return Promise.resolve(null);
+        // }
 
         const search = new Search(this._url, null);
         return search.execute(query);
