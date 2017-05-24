@@ -8,11 +8,15 @@
 //******************************************************************************
 
 var gulp = require("gulp"),
-    tslint = require("gulp-tslint"),
-    config = require('./@configuration.js');
+    gulpTslint = require("gulp-tslint"),
+    config = require('./@configuration.js'),
+    tslint = require("tslint");
 
 gulp.task("lint", function () {
+
+    var program = tslint.Linter.createProgram("./tsconfig.json");
+
     return gulp.src(config.paths.sourceGlob)
-        .pipe(tslint({ formatter: "prose" }))
-        .pipe(tslint.report({ emitError: false }));
+        .pipe(gulpTslint({ formatter: "prose", program }))
+        .pipe(gulpTslint.report({ emitError: false }));
 });
