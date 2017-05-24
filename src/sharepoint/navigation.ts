@@ -2,11 +2,19 @@ import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 
+/**
+ * Result from adding a navigation node
+ *
+ */
 export interface NavigationNodeAddResult {
     data: any;
     node: NavigationNode;
 }
 
+/**
+ * Result from udpdating a navigation node
+ *
+ */
 export interface NavigationNodeUpdateResult {
     data: any;
     node: NavigationNode;
@@ -70,6 +78,10 @@ export class NavigationNodes extends QueryableCollection {
     }
 }
 
+/**
+ * Represents an instance of a navigation node
+ *
+ */
 export class NavigationNode extends QueryableInstance {
 
     /**
@@ -119,16 +131,16 @@ export class NavigationNode extends QueryableInstance {
 export class Navigation extends Queryable {
 
     /**
-     * Creates a new instance of the Lists class
+     * Creates a new instance of the Navigation class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or Queryable which forms the parent of these navigation components
      */
     constructor(baseUrl: string | Queryable, path = "navigation") {
         super(baseUrl, path);
     }
 
     /**
-     * Gets the quicklaunch navigation for the current context
+     * Gets the quicklaunch navigation nodes for the current context
      *
      */
     public get quicklaunch(): NavigationNodes {
@@ -136,7 +148,7 @@ export class Navigation extends Queryable {
     }
 
     /**
-     * Gets the top bar navigation navigation for the current context
+     * Gets the top bar navigation nodes for the current context
      *
      */
     public get topNavigationBar(): NavigationNodes {
