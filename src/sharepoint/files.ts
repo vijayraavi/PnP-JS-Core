@@ -74,7 +74,7 @@ export class Files extends QueryableCollection {
      */
     public addChunked(
         url: string,
-        content: string | ArrayBuffer | Blob,
+        content: Blob,
         progress?: (data: ChunkedFileUploadProgressData) => void,
         shouldOverWrite = true,
         chunkSize = 10485760): Promise<FileAddResult> {

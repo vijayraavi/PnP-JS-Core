@@ -151,7 +151,7 @@ interface RetryContext {
     reject: (reason?: any) => void;
     resolve: (value?: {} | PromiseLike<{}>) => void;
     retryCount: number;
-};
+}
 
 export interface HttpClientImpl {
     fetch(url: string, options: FetchOptions): Promise<Response>;

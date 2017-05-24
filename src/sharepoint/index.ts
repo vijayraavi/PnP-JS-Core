@@ -2,12 +2,12 @@ export * from "./caching";
 
 export {
     AttachmentFileAddResult,
-    AttachmentFileInfo
-} from "./attachmentfiles"
+    AttachmentFileInfo,
+} from "./attachmentfiles";
 
 export {
     FieldAddResult,
-    FieldUpdateResult
+    FieldUpdateResult,
 } from "./fields";
 
 export {
@@ -16,17 +16,17 @@ export {
     WebPartsPersonalizationScope,
     MoveOperations,
     TemplateFileType,
-    ChunkedFileUploadProgressData
+    ChunkedFileUploadProgressData,
 } from "./files";
 
 export {
-    FeatureAddResult
+    FeatureAddResult,
 } from "./features";
 
 export {
     FolderAddResult,
     Folder,
-    Folders
+    Folders,
 } from "./folders";
 
 export {
@@ -35,14 +35,14 @@ export {
     ItemAddResult,
     ItemUpdateResult,
     ItemUpdateResultData,
-    PagedItemCollection
+    PagedItemCollection,
 } from "./items";
 
 export {
     NavigationNodeAddResult,
     NavigationNodeUpdateResult,
     NavigationNodes,
-    NavigationNode
+    NavigationNode,
 } from "./navigation";
 
 export {
@@ -50,7 +50,7 @@ export {
     Lists,
     ListAddResult,
     ListUpdateResult,
-    ListEnsureResult
+    ListEnsureResult,
 } from "./lists";
 
 export {
@@ -65,26 +65,26 @@ export {
     TextFileParser,
     BlobFileParser,
     BufferFileParser,
-    JSONFileParser
+    JSONFileParser,
 } from "./odata";
 
 export {
     Queryable,
     QueryableInstance,
     QueryableCollection,
-    QueryableConstructor
+    QueryableConstructor,
 } from "./queryable";
 
 export {
     RelatedItem,
-    RelatedItemManger
+    RelatedItemManger,
 } from "./relateditems";
 
 export {
     RoleDefinitionUpdateResult,
     RoleDefinitionAddResult,
-    RoleDefinitionBindings
-} from "./roles"
+    RoleDefinitionBindings,
+} from "./roles";
 
 export {
     Search,
@@ -102,56 +102,56 @@ export {
     SearchBuiltInSourceId,
     SearchResponse,
     ResultTableCollection,
-    ResultTable
+    ResultTable,
 } from "./search";
 
 export {
     SearchSuggest,
     SearchSuggestQuery,
     SearchSuggestResult,
-    PersonalResultSuggestion
+    PersonalResultSuggestion,
 } from "./searchsuggest";
 
 export {
     Site,
-    OpenWebByIdResult
+    OpenWebByIdResult,
 } from "./site";
 
 export {
-    SiteGroupAddResult
+    SiteGroupAddResult,
 } from "./sitegroups";
 
 export {
     UserUpdateResult,
-    SiteUserProps
+    SiteUserProps,
 } from "./siteusers";
 
 export {
     SubscriptionAddResult,
-    SubscriptionUpdateResult
+    SubscriptionUpdateResult,
 } from "./subscriptions";
 
 export * from "./types";
 
 export {
     UserCustomActionAddResult,
-    UserCustomActionUpdateResult
+    UserCustomActionUpdateResult,
 } from "./usercustomactions";
 
 export {
     UtilityMethod,
-    CreateWikiPageResult
+    CreateWikiPageResult,
 } from "./utilities";
 
 export {
     ViewAddResult,
-    ViewUpdateResult
+    ViewUpdateResult,
 } from "./views";
 
 export {
     WebPartDefinitions,
     WebPartDefinition,
-    WebPart
+    WebPart,
 } from "./webparts";
 
 export {
@@ -159,5 +159,5 @@ export {
     WebAddResult,
     WebUpdateResult,
     GetCatalogResult,
-    WebEnsureUserResult
+    WebEnsureUserResult,
 } from "./webs";

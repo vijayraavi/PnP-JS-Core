@@ -7,7 +7,7 @@ export class LimitedWebPartManager extends Queryable {
      *
      */
     public get webparts(): WebPartDefinitions {
-        
+
         return new WebPartDefinitions(this, "webparts");
     }
 

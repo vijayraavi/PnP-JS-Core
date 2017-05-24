@@ -837,7 +837,7 @@ export enum SharingLinkKind {
      * Flexible sharing Link where properties can change without affecting link URL
      */
     Flexible = 6,
-};
+}
 
 export interface ShareObjectOptions {
     url?: string;
@@ -1364,7 +1364,7 @@ export enum SharingDomainRestrictionMode {
     None = 0,
     AllowList = 1,
     BlockList = 2,
-};
+}
 
 export interface EmailProperties {
 
