@@ -243,8 +243,14 @@ export class Item extends QueryableShareableItem {
     public getWopiFrameUrl(action = 0): Promise<string> {
         const i = this.clone(Item, "getWOPIFrameUrl(@action)", true);
         i._query.add("@action", <any>action);
-        return i.post().then((data: { GetWOPIFrameUrl: string }) => {
-            return data.GetWOPIFrameUrl;
+        return i.post().then((data: any) => {
+
+            // handle verbose mode
+            if (data.hasOwnProperty("GetWOPIFrameUrl")) {
+                return data.GetWOPIFrameUrl;
+            }
+
+            return data;
         });
     }
 
