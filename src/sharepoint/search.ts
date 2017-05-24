@@ -335,9 +335,9 @@ export class SearchResults {
         });
 
         // we have reached the end
-        // if (query.StartRow > this.TotalRows) {
-        //     return Promise.resolve(null);
-        // }
+        if (query.StartRow > this.TotalRows) {
+            return Promise.resolve(null);
+        }
 
         const search = new Search(this._url, null);
         return search.execute(query);
