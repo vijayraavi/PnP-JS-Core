@@ -251,13 +251,15 @@ export class Util {
                 }
             }
 
-            // does window.location exist and have _layouts in it?
+            // does window.location exist and have a certain path part in it?
             if (typeof global.location !== "undefined") {
-                const index = global.location.toString().toLowerCase().indexOf("/_layouts/");
-                if (index > 0) {
-                    // we are likely in the workbench in /_layouts/
-                    return resolve(Util.combinePaths(global.location.toString().substr(0, index), candidateUrl));
-                }
+                const baseUrl = global.location.toString().toLowerCase();
+                ["/_layouts/", "/siteassets/"].forEach((s: string) => {
+                    const index = baseUrl.indexOf(s);
+                    if (index > 0) {
+                        return resolve(Util.combinePaths(baseUrl.substr(0, index), candidateUrl));
+                    }
+                });
             }
 
             return resolve(candidateUrl);
