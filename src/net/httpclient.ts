@@ -50,7 +50,9 @@ export class HttpClient {
         opts = Util.extend(opts, { headers: headers });
 
         if (opts.method && opts.method.toUpperCase() !== "GET") {
-            if (!headers.has("X-RequestDigest")) {
+
+            // if we have either a request digest or an authorization header we don't need a digest
+            if (!headers.has("X-RequestDigest") && !headers.has("Authorization")) {
                 const index = url.indexOf("_api/");
                 if (index < 0) {
                     throw new APIUrlException();
