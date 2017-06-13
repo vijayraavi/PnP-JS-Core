@@ -237,7 +237,7 @@ describe("Web", () => {
 
         describe("doesUserHavePermissions", () => {
             it("should check a users permissions", function () {
-                return expect(pnp.sp.web.doesUserHavePermissions({ High: 432, Low: 1011028719 })).to.eventually.be.fulfilled;
+                return expect(pnp.sp.web.doesUserHavePermissions({ High: "432", Low: "1011028719" })).to.eventually.be.fulfilled;
             });
         });
 
