@@ -58,7 +58,7 @@ export class QueryableShareable extends Queryable {
      * @param propagateAcl True to apply this share to all children
      * @param emailData If supplied an email will be sent with the indicated properties
      */
-    public shareWith(loginNames: string | string[], role: SharingRole, requireSignin = true, propagateAcl = false, emailData?: SharingEmailData): Promise<SharingResult> {
+    public shareWith(loginNames: string | string[], role: SharingRole, requireSignin = false, propagateAcl = false, emailData?: SharingEmailData): Promise<SharingResult> {
 
         // handle the multiple input types
         if (!Array.isArray(loginNames)) {
@@ -376,7 +376,7 @@ export class QueryableShareableItem extends QueryableSecurable {
      * @param role The role (View | Edit) applied to the share
      * @param emailData Optional, if inlucded an email will be sent. Note subject currently has no effect.
      */
-    public shareWith(loginNames: string | string[], role: SharingRole = SharingRole.View, requireSignin = true, emailData?: SharingEmailData): Promise<SharingResult> {
+    public shareWith(loginNames: string | string[], role: SharingRole = SharingRole.View, requireSignin = false, emailData?: SharingEmailData): Promise<SharingResult> {
 
         return this.clone(QueryableShareable, null, true).shareWith(loginNames, role, requireSignin, false, emailData);
     }
@@ -579,7 +579,7 @@ export class QueryableShareableFile extends FileFolderShared {
      */
     public shareWith(loginNames: string | string[],
         role: SharingRole = SharingRole.View,
-        requireSignin = true,
+        requireSignin = false,
         emailData?: SharingEmailData): Promise<SharingResult> {
 
         const dependency = this.addBatchDependency();
@@ -604,7 +604,7 @@ export class QueryableShareableFolder extends FileFolderShared {
      */
     public shareWith(loginNames: string | string[],
         role: SharingRole = SharingRole.View,
-        requireSignin = true,
+        requireSignin = false,
         shareEverything = false,
         emailData?: SharingEmailData): Promise<SharingResult> {
 
