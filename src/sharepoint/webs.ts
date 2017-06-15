@@ -388,7 +388,7 @@ export class Web extends QueryableShareableWeb {
      *
      * @param perms The high and low permission range
      */
-    @deprecated("This method will be removed in future releases. Please use the methods found in queryable securable.")
+    @deprecated("2.0.7", "This method will be removed in future releases. Please use the methods found in queryable securable.")
     public doesUserHavePermissions(perms: BasePermissions): Promise<boolean> {
 
         const q = this.clone(Web, "doesuserhavepermissions", true);
