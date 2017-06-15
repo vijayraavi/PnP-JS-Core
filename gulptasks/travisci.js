@@ -17,22 +17,8 @@ gulp.task("travis:lint", function () {
 
 gulp.task("travis:webtest", ["build:testing"], () => {
 
-    // we shim up the global settings here from the environment vars configured for travis
-
-    let webTests = process.env.PnPTesting_ClientId && process.env.PnPTesting_ClientSecret && process.env.PnPTesting_SiteUrl;
-
-    global.settings = {
-        testing: {
-            clientId: process.env.PnPTesting_ClientId,
-            clientSecret: process.env.PnPTesting_ClientSecret,
-            enableWebTests: webTests,
-            siteUrl: process.env.PnPTesting_SiteUrl,
-            notificationUrl: process.env.PnPTesting_NotificationUrl || null,
-        }
-    };
-
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 45000 }))
+        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 45000, "pnp-test-mode": "travis" }))
         .once('error', function () {
             process.exit(1);
         })
@@ -43,15 +29,8 @@ gulp.task("travis:webtest", ["build:testing"], () => {
 
 gulp.task("travis:test", ["build:testing"], () => {
 
-    // we shim up the global settings here from the environment vars configured for travis
-    global.settings = {
-        testing: {
-            enableWebTests: false,
-        }
-    };
-
     return gulp.src(config.testing.testingTestsDestGlob)
-        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 5000 }))
+        .pipe(mocha({ ui: 'bdd', reporter: 'spec', timeout: 5000, "pnp-test-mode": "travis-noweb" }))
         .once('error', function () {
             process.exit(1);
         })

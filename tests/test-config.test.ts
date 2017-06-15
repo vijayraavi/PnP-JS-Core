@@ -1,4 +1,4 @@
-declare var global: any;
+declare var require: (s: string) => any;
 import * as chai from "chai";
 import "mocha";
 import pnp from "../src/pnp";
@@ -8,7 +8,48 @@ import { NodeFetchClient } from "../src/net/nodefetchclient";
 import * as chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 
-export let testSettings = Util.extend(global.settings.testing, { webUrl: "" });
+// we need to load up the appropriate settings based on where we are running
+var settings = null;
+var mode = "cmd";
+process.argv.forEach(s => {
+    if (/^--pnp-test-mode/.test(s)) {
+        mode = s.split("=")[1];
+    }
+});
+
+switch (mode) {
+
+    case "travis":
+        let webTests = process.env.PnPTesting_ClientId && process.env.PnPTesting_ClientSecret && process.env.PnPTesting_SiteUrl;
+
+        settings = {
+            testing: {
+                clientId: process.env.PnPTesting_ClientId,
+                clientSecret: process.env.PnPTesting_ClientSecret,
+                enableWebTests: webTests,
+                siteUrl: process.env.PnPTesting_SiteUrl,
+                notificationUrl: process.env.PnPTesting_NotificationUrl || null,
+            }
+        };
+
+        break;
+    case "travis-noweb":
+
+        settings = {
+            testing: {
+                enableWebTests: false,
+            }
+        };
+
+        break;
+    default:
+
+        settings = require("../../settings");
+
+        break;
+}
+
+export let testSettings = Util.extend(settings.testing, { webUrl: "" });
 
 before(function (done: MochaDone) {
 

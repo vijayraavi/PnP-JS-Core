@@ -13,7 +13,6 @@ var gulp = require("gulp"),
     config = require('./@configuration.js'),
     istanbul = require("gulp-istanbul");
 
-
 gulp.task("_istanbul:hook", ["build:testing"], () => {
 
     return gulp.src(config.testing.testingSrcDestGlob)
@@ -29,11 +28,8 @@ gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
     // determine if we show the full coverage table
     let reports = yargs["coverage-details"] ? ['text', 'text-summary'] : ['text-summary'];
 
-    // easiest way for tests to have settings available
-    global.settings = config.settings;
-
     return gulp.src(path)
-        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 30000 }))
+        .pipe(mocha({ ui: 'bdd', reporter: 'dot', timeout: 30000, "pnp-test-mode": "cmd" }))
         .pipe(istanbul.writeReports({
             reporters: reports
         })).once('error', function () {
