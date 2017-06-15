@@ -1,6 +1,6 @@
 import { Logger, LogLevel } from "./logging";
 
-export function deprecated(message: string) {
+export function deprecated(deprecationVersion: string, message: string) {
 
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 
@@ -14,7 +14,7 @@ export function deprecated(message: string) {
                     target: target,
                 },
                 level: LogLevel.Warning,
-                message: message,
+                message: `(${deprecationVersion}) ${message}`,
             });
 
             return method.apply(this, args);
