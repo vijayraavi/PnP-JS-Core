@@ -1,7 +1,7 @@
 import { QueryableConstructor } from "./queryable";
 import { Util } from "../utils/util";
 import { Logger, LogLevel } from "../utils/logging";
-import { HttpClient } from "../net/httpclient";
+import { HttpClient, mergeHeaders } from "../net/httpclient";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { TypedHash } from "../collections/collections";
 import { ODataIdException, BatchParseException } from "../utils/exceptions";
@@ -291,9 +291,7 @@ export class ODataBatch {
                 batchBody.push(`Content-Type: application/http\n`);
                 batchBody.push(`Content-Transfer-Encoding: binary\n\n`);
 
-                let headers: TypedHash<string> = {
-                    "Accept": "application/json;",
-                };
+                const headers = new Headers();
 
                 // this is the url of the individual request within the batch
                 const url = Util.isUrlAbsolute(reqInfo.url) ? reqInfo.url : Util.combinePaths(absoluteRequestUrl, reqInfo.url);
@@ -311,25 +309,37 @@ export class ODataBatch {
 
                     batchBody.push(`${method} ${url} HTTP/1.1\n`);
 
-                    headers = Util.extend(headers, { "Content-Type": "application/json;odata=verbose;charset=utf-8" });
+                    headers.set("Content-Type", "application/json;odata=verbose;charset=utf-8");
 
                 } else {
                     batchBody.push(`${reqInfo.method} ${url} HTTP/1.1\n`);
                 }
 
-                if (typeof RuntimeConfig.headers !== "undefined") {
-                    headers = Util.extend(headers, RuntimeConfig.headers);
+                // merge global config headers
+                mergeHeaders(headers, RuntimeConfig.headers);
+
+                // merge per-request headers
+                if (reqInfo.options) {
+                    mergeHeaders(headers, reqInfo.options.headers);
                 }
 
-                if (reqInfo.options && reqInfo.options.headers) {
-                    headers = Util.extend(headers, reqInfo.options.headers);
+                // lastly we apply any default headers we need that may not exist
+                if (!headers.has("Accept")) {
+                    headers.append("Accept", "application/json");
                 }
 
-                for (const name in headers) {
-                    if (headers.hasOwnProperty(name)) {
-                        batchBody.push(`${name}: ${headers[name]}\n`);
-                    }
+                if (!headers.has("Content-Type")) {
+                    headers.append("Content-Type", "application/json;odata=verbose;charset=utf-8");
                 }
+
+                if (!headers.has("X-ClientService-ClientTag")) {
+                    headers.append("X-ClientService-ClientTag", "PnPCoreJS:$$Version$$");
+                }
+
+                // write headers into batch body
+                headers.forEach((value: string, name: string) => {
+                    batchBody.push(`${name}: ${value}\n`);
+                });
 
                 batchBody.push("\n");
 

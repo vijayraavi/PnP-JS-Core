@@ -29,10 +29,10 @@ export class HttpClient {
         const headers = new Headers();
 
         // first we add the global headers so they can be overwritten by any passed in locally to this call
-        this.mergeHeaders(headers, RuntimeConfig.headers);
+        mergeHeaders(headers, RuntimeConfig.headers);
 
         // second we add the local options so we can overwrite the globals
-        this.mergeHeaders(headers, options.headers);
+        mergeHeaders(headers, options.headers);
 
         // lastly we apply any default headers we need that may not exist
         if (!headers.has("Accept")) {
@@ -73,7 +73,7 @@ export class HttpClient {
 
         // here we need to normalize the headers
         const rawHeaders = new Headers();
-        this.mergeHeaders(rawHeaders, options.headers);
+        mergeHeaders(rawHeaders, options.headers);
         options = Util.extend(options, { headers: rawHeaders });
 
         const retry = (ctx: RetryContext): void => {
@@ -136,14 +136,14 @@ export class HttpClient {
         const opts = Util.extend(options, { method: "DELETE" });
         return this.fetch(url, opts);
     }
+}
 
-    private mergeHeaders(target: Headers, source: any): void {
-        if (typeof source !== "undefined" && source !== null) {
-            const temp = <any>new Request("", { headers: source });
-            temp.headers.forEach((value: string, name: string) => {
-                target.append(name, value);
-            });
-        }
+export function mergeHeaders(target: Headers, source: any): void {
+    if (typeof source !== "undefined" && source !== null) {
+        const temp = <any>new Request("", { headers: source });
+        temp.headers.forEach((value: string, name: string) => {
+            target.append(name, value);
+        });
     }
 }
 
