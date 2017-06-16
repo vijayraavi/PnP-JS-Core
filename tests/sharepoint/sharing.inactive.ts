@@ -7,8 +7,6 @@ import { Item } from "../../src/sharepoint/items";
 import { SharingLinkKind, SharingRole } from "../../src/sharepoint/types";
 import { Web } from "../../src/sharepoint/webs";
 
-console.log("loaded!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
 describe("Sharing", () => {
 
     let webAbsUrl = "";
