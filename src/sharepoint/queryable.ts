@@ -1,6 +1,6 @@
 import { Util } from "../utils/util";
 import { Dictionary } from "../collections/collections";
-import { FetchOptions } from "../net/httpclient";
+import { FetchOptions, ConfigOptions, mergeOptions } from "../net/httpclient";
 import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
 import { ICachingOptions } from "./caching";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
@@ -21,6 +21,11 @@ export interface QueryableConstructor<T> {
  *
  */
 export class Queryable {
+
+    /**
+     * Additional options to be set before sending actual http request
+     */
+    protected _options: ConfigOptions;
 
     /**
      * Tracks the query parts of the url
@@ -123,6 +128,7 @@ export class Queryable {
      */
     constructor(baseUrl: string | Queryable, path?: string) {
 
+        this._options = {};
         this._query = new Dictionary<string>();
         this._batch = null;
 
@@ -149,12 +155,24 @@ export class Queryable {
         } else {
             const q = baseUrl as Queryable;
             this._parentUrl = q._url;
+            this._options = q._options;
             const target = q._query.get("@target");
             if (target !== null) {
                 this._query.add("@target", target);
             }
             this._url = Util.combinePaths(this._parentUrl, path);
         }
+    }
+
+    /**
+     * Sets custom options for current object and all derived objects accessible via chaining
+     * 
+     * @param options custom options
+     */
+    public configure(options: ConfigOptions): this {
+        mergeOptions(this._options, options);
+
+        return this;
     }
 
     /**
@@ -321,6 +339,8 @@ export class Queryable {
         const dependencyDispose = this.hasBatch ? this.addBatchDependency() : () => { return; };
 
         return Util.toAbsoluteUrl(this.toUrlAndQuery()).then(url => {
+
+            mergeOptions(options, this._options);
 
             // build our request context
             const context: RequestContext<T> = {

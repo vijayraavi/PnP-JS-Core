@@ -1,5 +1,5 @@
 export * from "../sharepoint/index";
-export { FetchOptions, HttpClient, HttpClientImpl } from "../net/httpclient";
+export { ConfigOptions, FetchOptions, HttpClient, HttpClientImpl } from "../net/httpclient";
 export { SPRequestExecutorClient } from "../net/sprequestexecutorclient";
 export { NodeFetchClient } from "../net/nodefetchclient";
 export { FetchClient } from "../net/fetchclient";
