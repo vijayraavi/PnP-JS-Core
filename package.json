@@ -33,7 +33,7 @@
     "string-replace-loader": "^1.2.0",
     "ts-loader": "^2.1.0",
     "tslint": "^5.4.3",
-    "typescript": "^2.3.4",
+    "typescript": "2.3.4",
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5",
     "yargs": "^8.0.2"
