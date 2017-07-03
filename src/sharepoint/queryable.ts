@@ -171,7 +171,6 @@ export class Queryable {
      */
     public configure(options: ConfigOptions): this {
         mergeOptions(this._options, options);
-
         return this;
     }
 
