@@ -76,7 +76,7 @@ export class Util {
      * http://stackoverflow.com/questions/1197928/how-to-add-30-minutes-to-a-javascript-date-object
      */
     public static dateAdd(date: Date, interval: string, units: number): Date {
-        let ret = new Date(date.toLocaleString()); // don't change original date
+        let ret = new Date(date); // don't change original date
         switch (interval.toLowerCase()) {
             case "year": ret.setFullYear(ret.getFullYear() + units); break;
             case "quarter": ret.setMonth(ret.getMonth() + 3 * units); break;
