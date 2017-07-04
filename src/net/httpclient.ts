@@ -3,13 +3,16 @@ import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { APIUrlException } from "../utils/exceptions";
 
-export interface FetchOptions {
-    method?: string;
+export interface ConfigOptions {
     headers?: string[][] | { [key: string]: string };
-    body?: any;
     mode?: "navigate" | "same-origin" | "no-cors" | "cors";
     credentials?: "omit" | "same-origin" | "include";
     cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
+}
+
+export interface FetchOptions extends ConfigOptions {
+    method?: string;
+    body?: any;
 }
 
 export class HttpClient {
@@ -136,6 +139,13 @@ export class HttpClient {
         const opts = Util.extend(options, { method: "DELETE" });
         return this.fetch(url, opts);
     }
+}
+
+export function mergeOptions(target: ConfigOptions, source: ConfigOptions): void {
+    target.headers = target.headers || {};
+    const headers = Util.extend(target.headers, source.headers);
+    target = Util.extend(target, source);
+    target.headers = headers;
 }
 
 export function mergeHeaders(target: Headers, source: any): void {
