@@ -24,7 +24,7 @@ describe("Custom options", () => {
         if (testSettings.enableWebTests) {
             pnp.setup({
                 fetchClientFactory: () => {
-                    return new NodeFetchClient(testSettings.siteUrl, testSettings.clientId, testSettings.clientSecret);
+                    return new NodeFetchClient(testSettings.webUrl, testSettings.clientId, testSettings.clientSecret);
                 },
             });
         }
