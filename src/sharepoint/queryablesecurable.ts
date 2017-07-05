@@ -29,7 +29,10 @@ export class QueryableSecurable extends QueryableInstance {
     public getUserEffectivePermissions(loginName: string): Promise<BasePermissions> {
         const q = this.clone(Queryable, "getUserEffectivePermissions(@user)", true);
         q.query.add("@user", `'${encodeURIComponent(loginName)}'`);
-        return q.getAs<BasePermissions>();
+        return q.get().then(r => {
+            // handle verbose mode
+            return r.hasOwnProperty("GetUserEffectivePermissions") ? r.GetUserEffectivePermissions : r;
+        });
     }
 
     /**
