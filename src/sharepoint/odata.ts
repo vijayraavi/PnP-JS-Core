@@ -1,11 +1,10 @@
 import { QueryableConstructor } from "./queryable";
-import { Util } from "../utils/util";
+import { Util, extractWebUrl } from "../utils/util";
 import { Logger, LogLevel } from "../utils/logging";
 import { HttpClient, mergeHeaders } from "../net/httpclient";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { TypedHash } from "../collections/collections";
-import { ODataIdException, BatchParseException } from "../utils/exceptions";
-import { ProcessHttpClientResponseException } from "../utils/exceptions";
+import { ODataIdException, BatchParseException, ProcessHttpClientResponseException } from "../utils/exceptions";
 
 export function extractOdataId(candidate: any): string {
 
@@ -135,9 +134,9 @@ class ODataEntityArrayParserImpl<T> extends ODataParserBase<T[]> {
 
 export function getEntityUrl(entity: any): string {
 
-    if (entity.hasOwnProperty("odata.editLink")) {
+    if (entity.hasOwnProperty("odata.metadata") && entity.hasOwnProperty("odata.editLink")) {
         // we are dealign with minimal metadata (default)
-        return Util.combinePaths("_api", entity["odata.editLink"]);
+        return Util.combinePaths(extractWebUrl(entity["odata.metadata"]), "_api", entity["odata.editLink"]);
     } else if (entity.hasOwnProperty("__metadata")) {
         // we are dealing with verbose, which has an absolute uri
         return entity.__metadata.uri;

@@ -8,7 +8,7 @@ import { Folders, Folder } from "./folders";
 import { RoleDefinitions } from "./roles";
 import { File } from "./files";
 import { TypedHash } from "../collections/collections";
-import { Util } from "../utils/util";
+import { Util, extractWebUrl } from "../utils/util";
 import { BasePermissions, ChangeQuery } from "./types";
 import { List } from "./lists";
 import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
@@ -109,18 +109,7 @@ export class Web extends QueryableShareableWeb {
      * @param url
      */
     public static fromUrl(url: string, path?: string) {
-
-        if (url === null) {
-            return new Web("");
-        }
-
-        const index = url.indexOf("_api/");
-
-        if (index > -1) {
-            return new Web(url.substr(0, index), path);
-        }
-
-        return new Web(url, path);
+        return new Web(extractWebUrl(url), path);
     }
 
     /**

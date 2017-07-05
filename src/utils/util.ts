@@ -2,6 +2,22 @@ declare var global: any;
 import { TypedHash } from "../collections/collections";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 
+export function extractWebUrl(candidateUrl: string) {
+
+    if (candidateUrl === null) {
+        return "";
+    }
+
+    const index = candidateUrl.indexOf("_api/");
+
+    if (index > -1) {
+        return candidateUrl.substr(0, index);
+    }
+
+    // if all else fails just give them what they gave us back
+    return candidateUrl;
+}
+
 export class Util {
 
     /**
