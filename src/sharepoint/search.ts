@@ -45,7 +45,7 @@ export class SearchQueryBuilder {
 
     public trimDuplicatesIncludeId(n: number): this {
         return this.extendQuery({ TrimDuplicatesIncludeId: n });
-    }    
+    }
 
     public get enableNicknames(): this {
         return this.extendQuery({ EnableNicknames: true });
