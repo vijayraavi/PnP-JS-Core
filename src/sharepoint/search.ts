@@ -43,12 +43,16 @@ export class SearchQueryBuilder {
         return this.extendQuery({ TrimDuplicates: true });
     }
 
+    public trimDuplicatesIncludeId(n: number): this {
+        return this.extendQuery({ TrimDuplicatesIncludeId: n });
+    }    
+
     public get enableNicknames(): this {
         return this.extendQuery({ EnableNicknames: true });
     }
 
     public get enableFql(): this {
-        return this.extendQuery({ EnableFql: true });
+        return this.extendQuery({ EnableFQL: true });
     }
 
     public get enablePhonetic(): this {
@@ -79,16 +83,16 @@ export class SearchQueryBuilder {
         return this.extendQuery({ RankingModelId: id });
     }
 
-    public startRow(id: number): this {
-        return this.extendQuery({ StartRow: id });
+    public startRow(n: number): this {
+        return this.extendQuery({ StartRow: n });
     }
 
-    public rowLimit(id: number): this {
-        return this.extendQuery({ RowLimit: id });
+    public rowLimit(n: number): this {
+        return this.extendQuery({ RowLimit: n });
     }
 
-    public rowsPerPage(id: number): this {
-        return this.extendQuery({ RowsPerPage: id });
+    public rowsPerPage(n: number): this {
+        return this.extendQuery({ RowsPerPage: n });
     }
 
     public selectProperties(...properties: string[]): this {
@@ -97,6 +101,10 @@ export class SearchQueryBuilder {
 
     public culture(culture: number): this {
         return this.extendQuery({ Culture: culture });
+    }
+
+    public timeZoneId(id: number): this {
+        return this.extendQuery({ TimeZoneId: id });
     }
 
     public refinementFilters(...filters: string[]): this {
@@ -120,7 +128,7 @@ export class SearchQueryBuilder {
     }
 
     public hithighlightedProperties(...properties: string[]): this {
-        return this.extendQuery({ HithighlightedProperties: properties });
+        return this.extendQuery({ HitHighlightedProperties: properties });
     }
 
     public clientType(clientType: string): this {
@@ -132,7 +140,7 @@ export class SearchQueryBuilder {
     }
 
     public resultsURL(url: string): this {
-        return this.extendQuery({ ResultsURL: url });
+        return this.extendQuery({ ResultsUrl: url });
     }
 
     public queryTag(...tags: string[]): this {
@@ -168,7 +176,7 @@ export class SearchQueryBuilder {
     }
 
     public uiLanguage(lang: number): this {
-        return this.extendQuery({ UIlanguage: lang });
+        return this.extendQuery({ UILanguage: lang });
     }
 
     public desiredSnippetLength(len: number): this {
@@ -232,7 +240,7 @@ export class Search extends QueryableInstance {
         }
 
         if (formattedBody.HithighlightedProperties) {
-            formattedBody.HithighlightedProperties = this.fixupProp(query.HithighlightedProperties);
+            formattedBody.HithighlightedProperties = this.fixupProp(query.HitHighlightedProperties);
         }
 
         if (formattedBody.ReorderingRules) {
@@ -415,7 +423,7 @@ export interface SearchQuery {
     /**
      * A Boolean value that specifies whether the query uses the FAST Query Language (FQL).
      */
-    EnableFql?: boolean;
+    EnableFQL?: boolean;
 
     /**
      * A Boolean value that specifies whether the phonetic forms of the query terms are used to find matches.
@@ -516,7 +524,7 @@ export interface SearchQuery {
     /**
      * The properties to highlight in the search result summary when the property value matches the search terms entered by the user.
      */
-    HithighlightedProperties?: string[];
+    HitHighlightedProperties?: string[];
 
     /**
      * The type of the client that issued the query.
@@ -531,7 +539,7 @@ export interface SearchQuery {
     /**
      * The URL for the search results page.
      */
-    ResultsURL?: string;
+    ResultsUrl?: string;
 
     /**
      * Custom tags that identify the query. You can specify multiple query tags
