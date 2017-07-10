@@ -42,7 +42,7 @@ export class Subscriptions extends QueryableCollection {
             "resource": this.toUrl(),
         });
 
-        return this.post({ body: postBody, headers: { "Content-Type": "application/json" } }).then(result => {
+        return this.postCore({ body: postBody, headers: { "Content-Type": "application/json" } }).then(result => {
 
             return { data: result, subscription: this.getById(result.id) };
         });
@@ -66,7 +66,7 @@ export class Subscription extends QueryableInstance {
             "expirationDateTime": expirationDate,
         });
 
-        return this.patch({ body: postBody, headers: { "Content-Type": "application/json" } }).then(data => {
+        return this.patchCore({ body: postBody, headers: { "Content-Type": "application/json" } }).then(data => {
             return { data: data, subscription: this };
         });
     }
@@ -76,7 +76,7 @@ export class Subscription extends QueryableInstance {
      *
      */
     public delete(): Promise<void> {
-        return super.delete();
+        return super.deleteCore();
     }
 }
 

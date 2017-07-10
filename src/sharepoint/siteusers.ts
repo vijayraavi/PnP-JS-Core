@@ -63,7 +63,7 @@ export class SiteUsers extends QueryableCollection {
      * @param id The id of the user to remove
      */
     public removeById(id: number | Queryable): Promise<any> {
-        return this.clone(SiteUsers, `removeById(${id})`, true).post();
+        return this.clone(SiteUsers, `removeById(${id})`, true).postCore();
     }
 
     /**
@@ -74,7 +74,7 @@ export class SiteUsers extends QueryableCollection {
     public removeByLoginName(loginName: string): Promise<any> {
         const o = this.clone(SiteUsers, `removeByLoginName(@v)`, true);
         o.query.add("@v", `'${encodeURIComponent(loginName)}'`);
-        return o.post();
+        return o.postCore();
     }
 
     /**
@@ -84,7 +84,7 @@ export class SiteUsers extends QueryableCollection {
      *
      */
     public add(loginName: string): Promise<SiteUser> {
-        return this.clone(SiteUsers, null, true).post({
+        return this.clone(SiteUsers, null, true).postCore({
             body: JSON.stringify({ "__metadata": { "type": "SP.User" }, LoginName: loginName }),
         }).then(() => this.getByLoginName(loginName));
     }
@@ -114,7 +114,7 @@ export class SiteUser extends QueryableInstance {
 
         const postBody = Util.extend({ "__metadata": { "type": "SP.User" } }, properties);
 
-        return this.post({
+        return this.postCore({
             body: JSON.stringify(postBody),
             headers: {
                 "X-HTTP-Method": "MERGE",
@@ -132,7 +132,7 @@ export class SiteUser extends QueryableInstance {
      *
      */
     public delete(): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "X-HTTP-Method": "DELETE",
             },

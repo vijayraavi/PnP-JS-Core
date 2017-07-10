@@ -59,7 +59,7 @@ export class SiteGroups extends QueryableCollection {
         const postBody = JSON.stringify(Util.extend(
             { "__metadata": { "type": "SP.Group" } }, properties));
 
-        return this.post({ body: postBody }).then((data) => {
+        return this.postCore({ body: postBody }).then((data) => {
             return {
                 data: data,
                 group: this.getById(data.Id),
@@ -93,7 +93,7 @@ export class SiteGroups extends QueryableCollection {
      * @param id The id of the group to remove
      */
     public removeById(id: number): Promise<void> {
-        return this.clone(SiteGroups, `removeById('${id}')`, true).post();
+        return this.clone(SiteGroups, `removeById('${id}')`, true).postCore();
     }
 
     /**
@@ -102,7 +102,7 @@ export class SiteGroups extends QueryableCollection {
      * @param loginName The name of the group to remove
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        return this.clone(SiteGroups, `removeByLoginName('${loginName}')`, true).post();
+        return this.clone(SiteGroups, `removeByLoginName('${loginName}')`, true).postCore();
     }
 }
 
@@ -130,7 +130,7 @@ export class SiteGroup extends QueryableInstance {
 
         const postBody = Util.extend({ "__metadata": { "type": "SP.Group" } }, properties);
 
-        return this.post({
+        return this.postCore({
             body: JSON.stringify(postBody),
             headers: {
                 "X-HTTP-Method": "MERGE",

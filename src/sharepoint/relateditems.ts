@@ -78,7 +78,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         const query = this.clone(RelatedItemManagerImpl, null, true);
         query.concat(".GetRelatedItems");
 
-        return query.post({
+        return query.postCore({
             body: JSON.stringify({
                 SourceItemID: sourceItemId,
                 SourceListName: sourceListName,
@@ -91,7 +91,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         const query = this.clone(RelatedItemManagerImpl, null, true);
         query.concat(".GetPageOneRelatedItems");
 
-        return query.post({
+        return query.postCore({
             body: JSON.stringify({
                 SourceItemID: sourceItemId,
                 SourceListName: sourceListName,
@@ -110,7 +110,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         const query = this.clone(RelatedItemManagerImpl, null, true);
         query.concat(".AddSingleLink");
 
-        return query.post({
+        return query.postCore({
             body: JSON.stringify({
                 SourceItemID: sourceItemId,
                 SourceListName: sourceListName,
@@ -136,7 +136,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         const query = this.clone(RelatedItemManagerImpl, null, true);
         query.concat(".AddSingleLinkToUrl");
 
-        return query.post({
+        return query.postCore({
             body: JSON.stringify({
                 SourceItemID: sourceItemId,
                 SourceListName: sourceListName,
@@ -159,7 +159,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         const query = this.clone(RelatedItemManagerImpl, null, true);
         query.concat(".AddSingleLinkFromUrl");
 
-        return query.post({
+        return query.postCore({
             body: JSON.stringify({
                 SourceItemUrl: sourceItemUrl,
                 TargetItemID: targetItemId,
@@ -180,7 +180,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         const query = this.clone(RelatedItemManagerImpl, null, true);
         query.concat(".DeleteSingleLink");
 
-        return query.post({
+        return query.postCore({
             body: JSON.stringify({
                 SourceItemID: sourceItemId,
                 SourceListName: sourceListName,

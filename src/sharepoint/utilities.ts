@@ -65,7 +65,7 @@ export class UtilityMethod extends Queryable implements UtilityMethods {
 
     public excute<T>(props: any): Promise<T> {
 
-        return this.postAs<T>({
+        return this.postAsCore<T>({
             body: JSON.stringify(props),
         });
     }

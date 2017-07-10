@@ -53,7 +53,7 @@ export class Views extends QueryableCollection {
             "__metadata": { "type": "SP.View" },
         }, additionalSettings));
 
-        return this.clone(Views, null, true).postAs<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Views, null, true).postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 view: this.getById(data.Id),
@@ -85,7 +85,7 @@ export class View extends QueryableInstance {
             "__metadata": { "type": "SP.View" },
         }, properties));
 
-        return this.post({
+        return this.postCore({
             body: postBody,
             headers: {
                 "X-HTTP-Method": "MERGE",
@@ -103,7 +103,7 @@ export class View extends QueryableInstance {
      *
      */
     public delete(): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "X-HTTP-Method": "DELETE",
             },
@@ -137,7 +137,7 @@ export class ViewFields extends QueryableCollection {
      * @param fieldTitleOrInternalName The case-sensitive internal name or display name of the field to add.
      */
     public add(fieldTitleOrInternalName: string): Promise<void> {
-        return this.clone(ViewFields, `addviewfield('${fieldTitleOrInternalName}')`, true).post();
+        return this.clone(ViewFields, `addviewfield('${fieldTitleOrInternalName}')`, true).postCore();
     }
 
     /**
@@ -147,7 +147,7 @@ export class ViewFields extends QueryableCollection {
      * @param index The zero-based index of the new position for the field.
      */
     public move(fieldInternalName: string, index: number): Promise<void> {
-        return this.clone(ViewFields, "moveviewfieldto", true).post({
+        return this.clone(ViewFields, "moveviewfieldto", true).postCore({
             body: JSON.stringify({ "field": fieldInternalName, "index": index }),
         });
     }
@@ -156,7 +156,7 @@ export class ViewFields extends QueryableCollection {
      * Removes all the fields from the collection.
      */
     public removeAll(): Promise<void> {
-        return this.clone(ViewFields, "removeallviewfields", true).post();
+        return this.clone(ViewFields, "removeallviewfields", true).postCore();
     }
 
     /**
@@ -165,7 +165,7 @@ export class ViewFields extends QueryableCollection {
      * @param fieldInternalName The case-sensitive internal name of the field to remove from the view.
      */
     public remove(fieldInternalName: string): Promise<void> {
-        return this.clone(ViewFields, `removeviewfield('${fieldInternalName}')`, true).post();
+        return this.clone(ViewFields, `removeviewfield('${fieldInternalName}')`, true).postCore();
     }
 }
 

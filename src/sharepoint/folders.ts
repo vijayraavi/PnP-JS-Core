@@ -39,7 +39,7 @@ export class Folders extends QueryableCollection {
      */
     public add(url: string): Promise<FolderAddResult> {
 
-        return this.clone(Folders, `add('${url}')`, true).post().then((response) => {
+        return this.clone(Folders, `add('${url}')`, true).postCore().then((response) => {
             return {
                 data: response,
                 folder: this.getByName(url),
@@ -123,7 +123,7 @@ export class Folder extends QueryableShareableFolder {
             "__metadata": { "type": "SP.Folder" },
         }, properties));
 
-        return this.post({
+        return this.postCore({
             body: postBody,
             headers: {
                 "X-HTTP-Method": "MERGE",
@@ -142,7 +142,7 @@ export class Folder extends QueryableShareableFolder {
     * @param eTag Value used in the IF-Match header, by default "*"
     */
     public delete(eTag = "*"): Promise<void> {
-        return this.clone(Folder, null, true).post({
+        return this.clone(Folder, null, true).postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -154,7 +154,7 @@ export class Folder extends QueryableShareableFolder {
      * Moves the folder to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        return this.clone(Folder, "recycle", true).post();
+        return this.clone(Folder, "recycle", true).postCore();
     }
 
     /**

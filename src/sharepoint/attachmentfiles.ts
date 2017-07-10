@@ -39,7 +39,7 @@ export class AttachmentFiles extends QueryableCollection {
      * @param content The Base64 file content.
      */
     public add(name: string, content: string | Blob | ArrayBuffer): Promise<AttachmentFileAddResult> {
-        return this.clone(AttachmentFiles, `add(FileName='${name}')`).post({
+        return this.clone(AttachmentFiles, `add(FileName='${name}')`).postCore({
             body: content,
         }).then((response) => {
             return {
@@ -57,7 +57,7 @@ export class AttachmentFiles extends QueryableCollection {
     public addMultiple(files: AttachmentFileInfo[]): Promise<void> {
 
         // add the files in series so we don't get update conflicts
-        return files.reduce((chain, file) => chain.then(() => this.clone(AttachmentFiles, `add(FileName='${file.name}')`).post({
+        return files.reduce((chain, file) => chain.then(() => this.clone(AttachmentFiles, `add(FileName='${file.name}')`).postCore({
             body: file.content,
         })), Promise.resolve());
     }
@@ -110,7 +110,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<AttachmentFile> {
 
-        return this.clone(AttachmentFile, "$value").post({
+        return this.clone(AttachmentFile, "$value").postCore({
             body: content,
             headers: {
                 "X-HTTP-Method": "PUT",
@@ -124,7 +124,7 @@ export class AttachmentFile extends QueryableInstance {
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",

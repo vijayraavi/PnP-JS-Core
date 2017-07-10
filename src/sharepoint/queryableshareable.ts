@@ -35,7 +35,7 @@ export class QueryableShareable extends Queryable {
         const expString = expiration !== null ? expiration.toISOString() : null;
 
         // clone using the factory and send the request
-        return this.clone(QueryableShareable, "shareLink", true).postAs<ShareLinkResponse>({
+        return this.clone(QueryableShareable, "shareLink", true).postAsCore<ShareLinkResponse>({
             body: JSON.stringify({
                 request: {
                     createLink: true,
@@ -92,7 +92,7 @@ export class QueryableShareable extends Queryable {
                 });
             }
 
-            return this.clone(QueryableShareable, "shareObject", true).postAs<SharingResult>({
+            return this.clone(QueryableShareable, "shareObject", true).postAsCore<SharingResult>({
                 body: JSON.stringify(postBody),
             });
         });
@@ -155,7 +155,7 @@ export class QueryableShareable extends Queryable {
      */
     public unshareObjectWeb(url: string): Promise<SharingResult> {
 
-        return this.clone(QueryableShareable, "unshareObject", true).postAs<SharingResult>({
+        return this.clone(QueryableShareable, "unshareObject", true).postAsCore<SharingResult>({
             body: JSON.stringify({
                 url: url,
             }),
@@ -169,7 +169,7 @@ export class QueryableShareable extends Queryable {
      */
     public checkPermissions(recipients: SharingRecipient[]): Promise<SharingEntityPermission[]> {
 
-        return this.clone(QueryableShareable, "checkPermissions", true).postAs<SharingEntityPermission[]>({
+        return this.clone(QueryableShareable, "checkPermissions", true).postAsCore<SharingEntityPermission[]>({
             body: JSON.stringify({
                 recipients: recipients,
             }),
@@ -183,7 +183,7 @@ export class QueryableShareable extends Queryable {
      */
     public getSharingInformation(request: SharingInformationRequest = null): Promise<SharingInformation> {
 
-        return this.clone(QueryableShareable, "getSharingInformation", true).postAs<SharingInformation>({
+        return this.clone(QueryableShareable, "getSharingInformation", true).postAsCore<SharingInformation>({
             body: JSON.stringify({
                 request: request,
             }),
@@ -197,7 +197,7 @@ export class QueryableShareable extends Queryable {
      */
     public getObjectSharingSettings(useSimplifiedRoles = true): Promise<ObjectSharingSettings> {
 
-        return this.clone(QueryableShareable, "getObjectSharingSettings", true).postAs<ObjectSharingSettings>({
+        return this.clone(QueryableShareable, "getObjectSharingSettings", true).postAsCore<ObjectSharingSettings>({
             body: JSON.stringify({
                 useSimplifiedRoles: useSimplifiedRoles,
             }),
@@ -209,7 +209,7 @@ export class QueryableShareable extends Queryable {
      */
     public unshareObject(): Promise<SharingResult> {
 
-        return this.clone(QueryableShareable, "unshareObject", true).postAs<SharingResult>();
+        return this.clone(QueryableShareable, "unshareObject", true).postAsCore<SharingResult>();
     }
 
     /**
@@ -219,7 +219,7 @@ export class QueryableShareable extends Queryable {
      */
     public deleteLinkByKind(kind: SharingLinkKind): Promise<void> {
 
-        return this.clone(QueryableShareable, "deleteLinkByKind", true).post({
+        return this.clone(QueryableShareable, "deleteLinkByKind", true).postCore({
             body: JSON.stringify({ linkKind: kind }),
         });
     }
@@ -232,7 +232,7 @@ export class QueryableShareable extends Queryable {
      */
     public unshareLink(kind: SharingLinkKind, shareId = "00000000-0000-0000-0000-000000000000"): Promise<void> {
 
-        return this.clone(QueryableShareable, "unshareLink", true).post({
+        return this.clone(QueryableShareable, "unshareLink", true).postCore({
             body: JSON.stringify({ linkKind: kind, shareId: shareId }),
         });
     }
@@ -277,7 +277,7 @@ export class QueryableShareable extends Queryable {
 
         return this.getShareObjectWeb(this.toUrl()).then(web => {
 
-            return web.expand("UsersWithAccessRequests", "GroupsSharedWith").as(QueryableShareable).post({
+            return web.expand("UsersWithAccessRequests", "GroupsSharedWith").as(QueryableShareable).postCore({
                 body: JSON.stringify(options),
             });
         });
@@ -396,7 +396,7 @@ export class QueryableShareableItem extends QueryableSecurable {
      *
      * @param request The SharingInformationRequest Object.
      */
-    public getSharingInformation(request: SharingInformationRequest = null): Promise<SharingEntityPermission[]> {
+    public getSharingInformation(request: SharingInformationRequest = null): Promise<SharingInformation> {
 
         return this.clone(QueryableShareable, null, true).getSharingInformation(request);
     }
@@ -477,7 +477,7 @@ export class FileFolderShared extends QueryableInstance {
      *
      * @param request The SharingInformationRequest Object.
      */
-    public getSharingInformation(request: SharingInformationRequest = null): Promise<SharingEntityPermission[]> {
+    public getSharingInformation(request: SharingInformationRequest = null): Promise<SharingInformation> {
 
         const dependency = this.addBatchDependency();
 

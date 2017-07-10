@@ -71,7 +71,7 @@ export class Items extends QueryableCollection {
                 "__metadata": { "type": listItemEntityType },
             }, properties));
 
-            const promise = this.clone(Items, null, true).postAs<{ Id: number }>({ body: postBody }).then((data) => {
+            const promise = this.clone(Items, null, true).postAsCore<{ Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
@@ -197,7 +197,7 @@ export class Item extends QueryableShareableItem {
 
                 removeDependency();
 
-                return this.post({
+                return this.postCore({
                     body: postBody,
                     headers: {
                         "IF-Match": eTag,
@@ -219,7 +219,7 @@ export class Item extends QueryableShareableItem {
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -231,7 +231,7 @@ export class Item extends QueryableShareableItem {
      * Moves the list item to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        return this.clone(Item, "recycle", true).post();
+        return this.clone(Item, "recycle", true).postCore();
     }
 
     /**
@@ -243,7 +243,7 @@ export class Item extends QueryableShareableItem {
     public getWopiFrameUrl(action = 0): Promise<string> {
         const i = this.clone(Item, "getWOPIFrameUrl(@action)", true);
         i._query.add("@action", <any>action);
-        return i.post().then((data: any) => {
+        return i.postCore().then((data: any) => {
 
             // handle verbose mode
             if (data.hasOwnProperty("GetWOPIFrameUrl")) {
@@ -261,7 +261,7 @@ export class Item extends QueryableShareableItem {
      * @param newDocumentUpdate true if the list item is a document being updated after upload; otherwise false.
      */
     public validateUpdateListItem(formValues: ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<ListItemFormUpdateValue[]> {
-        return this.clone(Item, "validateupdatelistitem", true).post({
+        return this.clone(Item, "validateupdatelistitem", true).postCore({
             body: JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate }),
         });
     }

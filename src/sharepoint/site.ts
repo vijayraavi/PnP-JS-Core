@@ -49,7 +49,7 @@ export class Site extends QueryableInstance {
      */
     public getContextInfo(): Promise<ContextInfo> {
         const q = new Site(this.parentUrl, "_api/contextinfo");
-        return q.post().then(data => {
+        return q.postCore().then(data => {
             if (data.hasOwnProperty("GetContextWebInformation")) {
                 const info = data.GetContextWebInformation;
                 info.SupportedSchemaVersions = info.SupportedSchemaVersions.results;
@@ -109,7 +109,7 @@ export class Site extends QueryableInstance {
      */
     public openWebById(webId: string): Promise<OpenWebByIdResult> {
 
-        return this.clone(Site, `openWebById('${webId}')`, true).post().then(d => {
+        return this.clone(Site, `openWebById('${webId}')`, true).postCore().then(d => {
 
             return {
                 data: d,

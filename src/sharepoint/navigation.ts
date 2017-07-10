@@ -53,7 +53,7 @@ export class NavigationNodes extends QueryableCollection {
             "__metadata": { "type": "SP.NavigationNode" },
         });
 
-        return this.clone(NavigationNodes, null, true).post({ body: postBody }).then((data) => {
+        return this.clone(NavigationNodes, null, true).postCore({ body: postBody }).then((data) => {
             return {
                 data: data,
                 node: this.getById(data.Id),
@@ -74,7 +74,7 @@ export class NavigationNodes extends QueryableCollection {
             previousNodeId: previousNodeId,
         });
 
-        return this.clone(NavigationNodes, "MoveAfter", true).post({ body: postBody });
+        return this.clone(NavigationNodes, "MoveAfter", true).postCore({ body: postBody });
     }
 }
 
@@ -102,7 +102,7 @@ export class NavigationNode extends QueryableInstance {
             "__metadata": { "type": "SP.NavigationNode" },
         }, properties));
 
-        return this.post({
+        return this.postCore({
             body: postBody,
             headers: {
                 "X-HTTP-Method": "MERGE",
@@ -119,7 +119,7 @@ export class NavigationNode extends QueryableInstance {
      * Deletes this node and any child nodes
      */
     public delete(): Promise<void> {
-        return super.delete();
+        return super.deleteCore();
     }
 }
 

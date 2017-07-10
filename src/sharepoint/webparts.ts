@@ -18,7 +18,7 @@ export class LimitedWebPartManager extends Queryable {
      */
     public export(id: string): Promise<string> {
 
-        return this.clone(LimitedWebPartManager, "ExportWebPart", true).post({
+        return this.clone(LimitedWebPartManager, "ExportWebPart", true).postCore({
             body: JSON.stringify({ webPartId: id }),
         });
     }
@@ -30,7 +30,7 @@ export class LimitedWebPartManager extends Queryable {
      */
     public import(xml: string): Promise<any> {
 
-        return this.clone(LimitedWebPartManager, "ImportWebPart", true).post({
+        return this.clone(LimitedWebPartManager, "ImportWebPart", true).postCore({
             body: JSON.stringify({ webPartXml: xml }),
         });
     }
@@ -74,7 +74,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public saveChanges(): Promise<any> {
 
-        return this.clone(WebPartDefinition, "SaveWebPartChanges", true).post();
+        return this.clone(WebPartDefinition, "SaveWebPartChanges", true).postCore();
     }
 
     /**
@@ -85,7 +85,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public moveTo(zoneId: string, zoneIndex: number): Promise<void> {
 
-        return this.clone(WebPartDefinition, `MoveWebPartTo(zoneID='${zoneId}', zoneIndex=${zoneIndex})`, true).post();
+        return this.clone(WebPartDefinition, `MoveWebPartTo(zoneID='${zoneId}', zoneIndex=${zoneIndex})`, true).postCore();
     }
 
     /**
@@ -93,7 +93,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public close(): Promise<void> {
 
-        return this.clone(WebPartDefinition, "CloseWebPart", true).post();
+        return this.clone(WebPartDefinition, "CloseWebPart", true).postCore();
     }
 
     /**
@@ -101,7 +101,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public open(): Promise<void> {
 
-        return this.clone(WebPartDefinition, "OpenWebPart", true).post();
+        return this.clone(WebPartDefinition, "OpenWebPart", true).postCore();
 
     }
 
@@ -110,7 +110,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public delete(): Promise<void> {
 
-        return this.clone(WebPartDefinition, "DeleteWebPart", true).post();
+        return this.clone(WebPartDefinition, "DeleteWebPart", true).postCore();
     }
 }
 
