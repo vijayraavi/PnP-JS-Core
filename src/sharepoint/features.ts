@@ -34,7 +34,7 @@ export class Features extends QueryableCollection {
      */
     public add(id: string, force = false): Promise<FeatureAddResult> {
 
-        return this.clone(Features, "add", true).post({
+        return this.clone(Features, "add", true).postCore({
             body: JSON.stringify({
                 featdefScope: 0,
                 featureId: id,
@@ -56,7 +56,7 @@ export class Features extends QueryableCollection {
      */
     public remove(id: string, force = false): Promise<any> {
 
-        return this.clone(Features, "remove", true).post({
+        return this.clone(Features, "remove", true).postCore({
             body: JSON.stringify({
                 featureId: id,
                 force: force,

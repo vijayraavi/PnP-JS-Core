@@ -142,7 +142,7 @@ export class UserProfileQuery extends QueryableInstance {
     public hideSuggestion(loginName: string): Promise<void> {
         const q = this.clone(UserProfileQuery, "hidesuggestion(@v)", true);
         q.query.add("@v", `'${encodeURIComponent(loginName)}'`);
-        return q.post();
+        return q.postCore();
     }
 
     /**
@@ -169,7 +169,7 @@ export class UserProfileQuery extends QueryableInstance {
         return new Promise<void>((resolve, reject) => {
             readBlobAsArrayBuffer(profilePicSource).then((buffer) => {
                 const request = new UserProfileQuery(this, "setmyprofilepicture");
-                request.post({
+                request.postCore({
                     body: String.fromCharCode.apply(null, new Uint16Array(buffer)),
                 }).then(_ => resolve());
             }).catch(e => reject(e));
@@ -237,7 +237,7 @@ class ProfileLoader extends Queryable {
      */
     public createPersonalSiteEnqueueBulk(emails: string[]): Promise<void> {
 
-        return this.clone(ProfileLoader, "createpersonalsiteenqueuebulk").post({
+        return this.clone(ProfileLoader, "createpersonalsiteenqueuebulk").postCore({
             body: JSON.stringify({ "emailIDs": emails }),
         });
     }
@@ -253,7 +253,7 @@ class ProfileLoader extends Queryable {
             q = q.inBatch(this.batch);
         }
 
-        return q.postAs<UserProfile>();
+        return q.postAsCore<UserProfile>();
     }
 
     /**
@@ -261,7 +261,7 @@ class ProfileLoader extends Queryable {
      *
      */
     public get userProfile(): Promise<UserProfile> {
-        return this.clone(ProfileLoader, "getuserprofile", true).postAs<UserProfile>();
+        return this.clone(ProfileLoader, "getuserprofile", true).postAsCore<UserProfile>();
     }
 
     /**
@@ -270,7 +270,7 @@ class ProfileLoader extends Queryable {
      * @param interactiveRequest true if interactively (web) initiated request, or false (default) if non-interactively (client) initiated request
      */
     public createPersonalSite(interactiveRequest = false): Promise<void> {
-        return this.clone(ProfileLoader, `getuserprofile/createpersonalsiteenque(${interactiveRequest})`, true).post();
+        return this.clone(ProfileLoader, `getuserprofile/createpersonalsiteenque(${interactiveRequest})`, true).postCore();
     }
 
     /**
@@ -279,6 +279,6 @@ class ProfileLoader extends Queryable {
      * @param share true to make all social data public; false to make all social data private.
      */
     public shareAllSocialData(share: boolean): Promise<void> {
-        return this.clone(ProfileLoader, `getuserprofile/shareallsocialdata(${share})`, true).post();
+        return this.clone(ProfileLoader, `getuserprofile/shareallsocialdata(${share})`, true).postCore();
     }
 }

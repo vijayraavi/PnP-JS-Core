@@ -38,7 +38,7 @@ export class UserCustomActions extends QueryableCollection {
 
         const postBody = JSON.stringify(Util.extend({ __metadata: { "type": "SP.UserCustomAction" } }, properties));
 
-        return this.post({ body: postBody }).then((data) => {
+        return this.postCore({ body: postBody }).then((data) => {
             return {
                 action: this.getById(data.Id),
                 data: data,
@@ -51,7 +51,7 @@ export class UserCustomActions extends QueryableCollection {
      *
      */
     public clear(): Promise<void> {
-        return this.clone(UserCustomActions, "clear", true).post();
+        return this.clone(UserCustomActions, "clear", true).postCore();
     }
 }
 
@@ -72,7 +72,7 @@ export class UserCustomAction extends QueryableInstance {
             "__metadata": { "type": "SP.UserCustomAction" },
         }, properties));
 
-        return this.post({
+        return this.postCore({
             body: postBody,
             headers: {
                 "X-HTTP-Method": "MERGE",
@@ -90,7 +90,7 @@ export class UserCustomAction extends QueryableInstance {
     *
     */
     public delete(): Promise<void> {
-        return super.delete();
+        return super.deleteCore();
     }
 }
 

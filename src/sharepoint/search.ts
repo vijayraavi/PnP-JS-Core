@@ -257,7 +257,7 @@ export class Search extends QueryableInstance {
             }, formattedBody),
         });
 
-        return this.post({ body: postBody }).then((data) => new SearchResults(data, this.toUrl(), query));
+        return this.postCore({ body: postBody }).then((data) => new SearchResults(data, this.toUrl(), query));
     }
 
     /**

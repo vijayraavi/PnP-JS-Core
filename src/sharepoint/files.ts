@@ -52,7 +52,7 @@ export class Files extends QueryableCollection {
      */
     public add(url: string, content: string | ArrayBuffer | Blob, shouldOverWrite = true): Promise<FileAddResult> {
         return new Files(this, `add(overwrite=${shouldOverWrite},url='${url}')`)
-            .post({
+            .postCore({
                 body: content,
             }).then((response) => {
                 return {
@@ -79,7 +79,7 @@ export class Files extends QueryableCollection {
         shouldOverWrite = true,
         chunkSize = 10485760): Promise<FileAddResult> {
         const adder = this.clone(Files, `add(overwrite=${shouldOverWrite},url='${url}')`);
-        return adder.post().then(() => this.getByName(url)).then(file => file.setContentChunked(content, progress, chunkSize)).then((response) => {
+        return adder.postCore().then(() => this.getByName(url)).then(file => file.setContentChunked(content, progress, chunkSize)).then((response) => {
             return {
                 data: response,
                 file: this.getByName(url),
@@ -96,7 +96,7 @@ export class Files extends QueryableCollection {
      */
     public addTemplateFile(fileUrl: string, templateFileType: TemplateFileType): Promise<FileAddResult> {
         return this.clone(Files, `addTemplateFile(urloffile='${fileUrl}',templatefiletype=${templateFileType})`)
-            .post().then((response) => {
+            .postCore().then((response) => {
                 return {
                     data: response,
                     file: this.getByName(fileUrl),
@@ -134,7 +134,7 @@ export class File extends QueryableShareableFile {
      * @param comment The comment for the approval.
      */
     public approve(comment = ""): Promise<void> {
-        return this.clone(File, `approve(comment='${comment}')`, true).post();
+        return this.clone(File, `approve(comment='${comment}')`, true).postCore();
     }
 
     /**
@@ -147,7 +147,7 @@ export class File extends QueryableShareableFile {
      * @param uploadId The unique identifier of the upload session.
      */
     public cancelUpload(uploadId: string): Promise<void> {
-        return this.clone(File, `cancelUpload(uploadId=guid'${uploadId}')`, false).post();
+        return this.clone(File, `cancelUpload(uploadId=guid'${uploadId}')`, false).postCore();
     }
 
     /**
@@ -162,14 +162,14 @@ export class File extends QueryableShareableFile {
             throw new MaxCommentLengthException();
         }
 
-        return this.clone(File, `checkin(comment='${comment}',checkintype=${checkinType})`, true).post();
+        return this.clone(File, `checkin(comment='${comment}',checkintype=${checkinType})`, true).postCore();
     }
 
     /**
      * Checks out the file from a document library.
      */
     public checkout(): Promise<void> {
-        return this.clone(File, "checkout", true).post();
+        return this.clone(File, "checkout", true).postCore();
     }
 
     /**
@@ -179,7 +179,7 @@ export class File extends QueryableShareableFile {
      * @param shouldOverWrite Should a file with the same name in the same location be overwritten?
      */
     public copyTo(url: string, shouldOverWrite = true): Promise<void> {
-        return this.clone(File, `copyTo(strnewurl='${url}',boverwrite=${shouldOverWrite})`, true).post();
+        return this.clone(File, `copyTo(strnewurl='${url}',boverwrite=${shouldOverWrite})`, true).postCore();
     }
 
     /**
@@ -188,7 +188,7 @@ export class File extends QueryableShareableFile {
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
-        return this.clone(File, null, true).post({
+        return this.clone(File, null, true).postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -206,7 +206,7 @@ export class File extends QueryableShareableFile {
         if (comment.length > 1023) {
             throw new MaxCommentLengthException();
         }
-        return this.clone(File, `deny(comment='${comment}')`, true).post();
+        return this.clone(File, `deny(comment='${comment}')`, true).postCore();
     }
 
     /**
@@ -226,7 +226,7 @@ export class File extends QueryableShareableFile {
      * @param moveOperations The bitwise MoveOperations value for how to move the file.
      */
     public moveTo(url: string, moveOperations = MoveOperations.Overwrite): Promise<void> {
-        return this.clone(File, `moveTo(newurl='${url}',flags=${moveOperations})`, true).post();
+        return this.clone(File, `moveTo(newurl='${url}',flags=${moveOperations})`, true).postCore();
     }
 
     /**
@@ -238,7 +238,7 @@ export class File extends QueryableShareableFile {
         if (comment.length > 1023) {
             throw new MaxCommentLengthException();
         }
-        return this.clone(File, `publish(comment='${comment}')`, true).post();
+        return this.clone(File, `publish(comment='${comment}')`, true).postCore();
     }
 
     /**
@@ -247,7 +247,7 @@ export class File extends QueryableShareableFile {
      * @returns The GUID of the recycled file.
      */
     public recycle(): Promise<string> {
-        return this.clone(File, "recycle", true).post();
+        return this.clone(File, "recycle", true).postCore();
     }
 
     /**
@@ -255,7 +255,7 @@ export class File extends QueryableShareableFile {
      *
      */
     public undoCheckout(): Promise<void> {
-        return this.clone(File, "undoCheckout", true).post();
+        return this.clone(File, "undoCheckout", true).postCore();
     }
 
     /**
@@ -267,7 +267,7 @@ export class File extends QueryableShareableFile {
         if (comment.length > 1023) {
             throw new MaxCommentLengthException();
         }
-        return this.clone(File, `unpublish(comment='${comment}')`, true).post();
+        return this.clone(File, `unpublish(comment='${comment}')`, true).postCore();
     }
 
     /**
@@ -312,7 +312,7 @@ export class File extends QueryableShareableFile {
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<File> {
 
-        return this.clone(File, "$value").post({
+        return this.clone(File, "$value").postCore({
             body: content,
             headers: {
                 "X-HTTP-Method": "PUT",
@@ -397,7 +397,7 @@ export class File extends QueryableShareableFile {
      * @returns The size of the total uploaded data in bytes.
      */
     private startUpload(uploadId: string, fragment: ArrayBuffer | Blob): Promise<number> {
-        return this.clone(File, `startUpload(uploadId=guid'${uploadId}')`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
+        return this.clone(File, `startUpload(uploadId=guid'${uploadId}')`).postAsCore<string>({ body: fragment }).then(n => parseFloat(n));
     }
 
     /**
@@ -412,7 +412,7 @@ export class File extends QueryableShareableFile {
      * @returns The size of the total uploaded data in bytes.
      */
     private continueUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<number> {
-        return this.clone(File, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).postAs<string>({ body: fragment }).then(n => parseFloat(n));
+        return this.clone(File, `continueUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`).postAsCore<string>({ body: fragment }).then(n => parseFloat(n));
     }
 
     /**
@@ -427,7 +427,7 @@ export class File extends QueryableShareableFile {
      */
     private finishUpload(uploadId: string, fileOffset: number, fragment: ArrayBuffer | Blob): Promise<FileAddResult> {
         return this.clone(File, `finishUpload(uploadId=guid'${uploadId}',fileOffset=${fileOffset})`)
-            .postAs<{ ServerRelativeUrl: string }>({ body: fragment }).then((response) => {
+            .postAsCore<{ ServerRelativeUrl: string }>({ body: fragment }).then((response) => {
                 return {
                     data: response,
                     file: new File(response.ServerRelativeUrl),
@@ -467,7 +467,7 @@ export class Versions extends QueryableCollection {
      *
      */
     public deleteAll(): Promise<void> {
-        return new Versions(this, "deleteAll").post();
+        return new Versions(this, "deleteAll").postCore();
     }
 
     /**
@@ -476,7 +476,7 @@ export class Versions extends QueryableCollection {
      * @param versionId The ID of the file version to delete.
      */
     public deleteById(versionId: number): Promise<void> {
-        return this.clone(Versions, `deleteById(vid=${versionId})`, true).post();
+        return this.clone(Versions, `deleteById(vid=${versionId})`, true).postCore();
     }
 
     /**
@@ -485,7 +485,7 @@ export class Versions extends QueryableCollection {
      * @param label The version label of the file version to delete, for example: 1.2
      */
     public deleteByLabel(label: string): Promise<void> {
-        return this.clone(Versions, `deleteByLabel(versionlabel='${label}')`, true).post();
+        return this.clone(Versions, `deleteByLabel(versionlabel='${label}')`, true).postCore();
     }
 
     /**
@@ -494,7 +494,7 @@ export class Versions extends QueryableCollection {
      * @param label The version label of the file version to restore, for example: 1.2
      */
     public restoreByLabel(label: string): Promise<void> {
-        return this.clone(Versions, `restoreByLabel(versionlabel='${label}')`, true).post();
+        return this.clone(Versions, `restoreByLabel(versionlabel='${label}')`, true).postCore();
     }
 }
 
@@ -511,7 +511,7 @@ export class Version extends QueryableInstance {
     * @param eTag Value used in the IF-Match header, by default "*"
     */
     public delete(eTag = "*"): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",

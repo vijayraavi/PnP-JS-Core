@@ -69,7 +69,7 @@ export class Lists extends QueryableCollection {
             "__metadata": { "type": "SP.List" },
         }, additionalSettings);
 
-        return this.post({ body: JSON.stringify(addSettings) }).then((data) => {
+        return this.postCore({ body: JSON.stringify(addSettings) }).then((data) => {
             return { data: data, list: this.getByTitle(addSettings.Title) };
         });
     }
@@ -119,7 +119,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default asset location for images or other files, which the users upload to their wiki pages.
      */
     public ensureSiteAssetsLibrary(): Promise<List> {
-        return this.clone(Lists, "ensuresiteassetslibrary", true).post().then((json) => {
+        return this.clone(Lists, "ensuresiteassetslibrary", true).postCore().then((json) => {
             return new List(extractOdataId(json));
         });
     }
@@ -128,7 +128,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default location for wiki pages.
      */
     public ensureSitePagesLibrary(): Promise<List> {
-        return this.clone(Lists, "ensuresitepageslibrary", true).post().then((json) => {
+        return this.clone(Lists, "ensuresitepageslibrary", true).postCore().then((json) => {
             return new List(extractOdataId(json));
         });
     }
@@ -265,7 +265,7 @@ export class List extends QueryableSecurable {
             "__metadata": { "type": "SP.List" },
         }, properties));
 
-        return this.post({
+        return this.postCore({
             body: postBody,
             headers: {
                 "IF-Match": eTag,
@@ -293,7 +293,7 @@ export class List extends QueryableSecurable {
      * @param eTag Value used in the IF-Match header, by default "*"
      */
     public delete(eTag = "*"): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -306,7 +306,7 @@ export class List extends QueryableSecurable {
      */
     public getChanges(query: ChangeQuery): Promise<any> {
 
-        return this.clone(List, "getchanges", true).post({
+        return this.clone(List, "getchanges", true).postCore({
             body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) }),
         });
     }
@@ -333,7 +333,7 @@ export class List extends QueryableSecurable {
     public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
         const q = this.clone(List, "getitems", true);
-        return q.expand.apply(q, expands).post({
+        return q.expand.apply(q, expands).postCore({
             body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) }),
         });
     }
@@ -343,7 +343,7 @@ export class List extends QueryableSecurable {
      */
     public getListItemChangesSinceToken(query: ChangeLogitemQuery): Promise<string> {
 
-        return this.clone(List, "getlistitemchangessincetoken", true).post({
+        return this.clone(List, "getlistitemchangessincetoken", true).postCore({
             body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) }),
         }, { parse(r) { return r.text(); } });
     }
@@ -352,7 +352,7 @@ export class List extends QueryableSecurable {
      * Moves the list to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        return this.clone(List, "recycle", true).post().then(data => {
+        return this.clone(List, "recycle", true).postCore().then(data => {
             if (data.hasOwnProperty("Recycle")) {
                 return data.Recycle;
             } else {
@@ -368,7 +368,7 @@ export class List extends QueryableSecurable {
 
         const q = this.clone(List, "renderlistdata(@viewXml)");
         q.query.add("@viewXml", `'${viewXml}'`);
-        return q.post().then(data => {
+        return q.postCore().then(data => {
             // data will be a string, so we parse it again
             data = JSON.parse(data);
             if (data.hasOwnProperty("RenderListData")) {
@@ -383,7 +383,7 @@ export class List extends QueryableSecurable {
      * Gets the field values and field schema attributes for a list item.
      */
     public renderListFormData(itemId: number, formId: string, mode: ControlMode): Promise<ListFormData> {
-        return this.clone(List, `renderlistformdata(itemid=${itemId}, formid='${formId}', mode='${mode}')`, true).post().then(data => {
+        return this.clone(List, `renderlistformdata(itemid=${itemId}, formid='${formId}', mode='${mode}')`, true).postCore().then(data => {
             // data will be a string, so we parse it again
             data = JSON.parse(data);
             if (data.hasOwnProperty("ListData")) {
@@ -398,7 +398,7 @@ export class List extends QueryableSecurable {
      * Reserves a list item ID for idempotent list item creation.
      */
     public reserveListItemId(): Promise<number> {
-        return this.clone(List, "reservelistitemid", true).post().then(data => {
+        return this.clone(List, "reservelistitemid", true).postCore().then(data => {
             if (data.hasOwnProperty("ReserveListItemId")) {
                 return data.ReserveListItemId;
             } else {

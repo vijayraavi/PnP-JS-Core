@@ -55,7 +55,7 @@ export class QueryableSecurable extends QueryableInstance {
      */
     public breakRoleInheritance(copyRoleAssignments = false, clearSubscopes = false): Promise<any> {
 
-        return this.clone(QueryableSecurable, `breakroleinheritance(copyroleassignments=${copyRoleAssignments}, clearsubscopes=${clearSubscopes})`, true).post();
+        return this.clone(QueryableSecurable, `breakroleinheritance(copyroleassignments=${copyRoleAssignments}, clearsubscopes=${clearSubscopes})`, true).postCore();
     }
 
     /**
@@ -64,7 +64,7 @@ export class QueryableSecurable extends QueryableInstance {
      */
     public resetRoleInheritance(): Promise<any> {
 
-        return this.clone(QueryableSecurable, "resetroleinheritance", true).post();
+        return this.clone(QueryableSecurable, "resetroleinheritance", true).postCore();
     }
 
     /**

@@ -305,19 +305,19 @@ export class Queryable {
         return this.toRequestContext("GET", getOptions, parser).then(context => pipe(context));
     }
 
-    protected post(postOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+    protected postCore(postOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
         return this.toRequestContext("POST", postOptions, parser).then(context => pipe(context));
     }
 
-    protected postAs<T>(postOptions: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
+    protected postAsCore<T>(postOptions: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
         return this.toRequestContext("POST", postOptions, parser).then(context => pipe(context));
     }
 
-    protected patch(patchOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+    protected patchCore(patchOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
         return this.toRequestContext("PATCH", patchOptions, parser).then(context => pipe(context));
     }
 
-    protected delete(deleteOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+    protected deleteCore(deleteOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
         return this.toRequestContext("DELETE", deleteOptions, parser).then(context => pipe(context));
     }
 

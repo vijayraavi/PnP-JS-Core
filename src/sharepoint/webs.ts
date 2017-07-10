@@ -70,7 +70,7 @@ export class Webs extends QueryableCollection {
             }, props),
         });
 
-        return this.clone(Webs, "add", true).post({ body: postBody }).then((data) => {
+        return this.clone(Webs, "add", true).postCore({ body: postBody }).then((data) => {
             return {
                 data: data,
                 web: new Web(extractOdataId(data).replace(/_api\/web\/?/i, "")),
@@ -318,7 +318,7 @@ export class Web extends QueryableShareableWeb {
             "__metadata": { "type": "SP.Web" },
         }, properties));
 
-        return this.post({
+        return this.postCore({
             body: postBody,
             headers: {
                 "X-HTTP-Method": "MERGE",
@@ -336,7 +336,7 @@ export class Web extends QueryableShareableWeb {
      *
      */
     public delete(): Promise<void> {
-        return super.delete();
+        return super.deleteCore();
     }
 
     /**
@@ -356,7 +356,7 @@ export class Web extends QueryableShareableWeb {
             shareGenerated: shareGenerated,
         });
 
-        return this.clone(Web, "applytheme", true).post({ body: postBody });
+        return this.clone(Web, "applytheme", true).postCore({ body: postBody });
     }
 
     /**
@@ -369,7 +369,7 @@ export class Web extends QueryableShareableWeb {
         const q = this.clone(Web, "applywebtemplate", true);
         q.concat(`(@t)`);
         q.query.add("@t", template);
-        return q.post();
+        return q.postCore();
     }
 
     /**
@@ -396,7 +396,7 @@ export class Web extends QueryableShareableWeb {
             logonName: loginName,
         });
 
-        return this.clone(Web, "ensureuser", true).post({ body: postBody }).then((data: any) => {
+        return this.clone(Web, "ensureuser", true).postCore({ body: postBody }).then((data: any) => {
             return {
                 data: data,
                 user: new SiteUser(extractOdataId(data)),
@@ -434,7 +434,7 @@ export class Web extends QueryableShareableWeb {
     public getChanges(query: ChangeQuery): Promise<any> {
 
         const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
-        return this.clone(Web, "getchanges", true).post({ body: postBody });
+        return this.clone(Web, "getchanges", true).postCore({ body: postBody });
     }
 
     /**

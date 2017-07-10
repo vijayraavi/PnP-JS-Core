@@ -27,7 +27,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public add(principalId: number, roleDefId: number): Promise<void> {
-        return this.clone(RoleAssignments, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).post();
+        return this.clone(RoleAssignments, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).postCore();
     }
 
     /**
@@ -38,7 +38,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public remove(principalId: number, roleDefId: number): Promise<void> {
-        return this.clone(RoleAssignments, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).post();
+        return this.clone(RoleAssignments, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).postCore();
     }
 
     /**
@@ -80,7 +80,7 @@ export class RoleAssignment extends QueryableInstance {
      *
      */
     public delete(): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "X-HTTP-Method": "DELETE",
             },
@@ -153,7 +153,7 @@ export class RoleDefinitions extends QueryableCollection {
             __metadata: { "type": "SP.RoleDefinition" },
         });
 
-        return this.post({ body: postBody }).then((data) => {
+        return this.postCore({ body: postBody }).then((data) => {
             return {
                 data: data,
                 definition: this.getById(data.Id),
@@ -184,7 +184,7 @@ export class RoleDefinition extends QueryableInstance {
             "__metadata": { "type": "SP.RoleDefinition" },
         }, properties));
 
-        return this.post({
+        return this.postCore({
             body: postBody,
             headers: {
                 "X-HTTP-Method": "MERGE",
@@ -211,7 +211,7 @@ export class RoleDefinition extends QueryableInstance {
      *
      */
     public delete(): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "X-HTTP-Method": "DELETE",
             },

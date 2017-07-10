@@ -37,7 +37,7 @@ export class ContentTypes extends QueryableCollection {
             "contentTypeId": contentTypeId,
         });
 
-        return this.clone(ContentTypes, "addAvailableContentType", true).postAs<{ id: string }>({ body: postBody }).then((data) => {
+        return this.clone(ContentTypes, "addAvailableContentType", true).postAsCore<{ id: string }>({ body: postBody }).then((data) => {
             return {
                 contentType: this.getById(data.id),
                 data: data,
@@ -70,7 +70,7 @@ export class ContentTypes extends QueryableCollection {
             "__metadata": { "type": "SP.ContentType" },
         }, additionalSettings));
 
-        return this.post({ body: postBody }).then((data) => {
+        return this.postCore({ body: postBody }).then((data) => {
             return { contentType: this.getById(data.id), data: data };
         });
     }
@@ -114,7 +114,7 @@ export class ContentType extends QueryableInstance {
      * Delete this content type
      */
     public delete(): Promise<void> {
-        return this.post({
+        return this.postCore({
             headers: {
                 "X-HTTP-Method": "DELETE",
             },
