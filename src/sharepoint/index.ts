@@ -17,6 +17,8 @@ export {
     MoveOperations,
     TemplateFileType,
     ChunkedFileUploadProgressData,
+    File,
+    Files,
 } from "./files";
 
 export {
