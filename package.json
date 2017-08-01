@@ -23,7 +23,7 @@
     "gulp-sourcemaps": "^2.6.0",
     "gulp-spsave": "^3.0.0",
     "gulp-tslint": "^8.1.1",
-    "gulp-typescript": "3.1.7",
+    "gulp-typescript": "^3.2.1",
     "gulp-util": "^3.0.8",
     "jsdoc": "^3.5.1",
     "merge2": "^1.1.0",
