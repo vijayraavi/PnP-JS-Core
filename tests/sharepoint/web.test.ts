@@ -235,12 +235,6 @@ describe("Web", () => {
             it("should apply a web template to a web");
         });
 
-        describe("doesUserHavePermissions", () => {
-            it("should check a users permissions", function () {
-                return expect(pnp.sp.web.doesUserHavePermissions({ High: "432", Low: "1011028719" })).to.eventually.be.fulfilled;
-            });
-        });
-
         describe("ensureUser", () => {
             it("should ensure that a given user exists in the web");
         });
