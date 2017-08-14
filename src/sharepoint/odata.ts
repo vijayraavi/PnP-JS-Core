@@ -34,8 +34,7 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
 
                     // patch to handle cases of 200 response with no or whitespace only bodies (#487 & #545)
                     r.text()
-                        .then(txt => txt.replace(/\s/ig, ""))
-                        .then(sanitized => sanitized.length > 0 ? JSON.parse(sanitized) : {})
+                        .then(txt => txt.replace(/\s/ig, "").length > 0 ? JSON.parse(txt) : {})
                         .then(json => resolve(this.parseODataJSON<T>(json)))
                         .catch(e => reject(e));
                 }
