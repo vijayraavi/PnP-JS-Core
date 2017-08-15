@@ -339,7 +339,7 @@ export class SearchResults {
 
         const query: SearchQuery = Util.extend(this._query, {
             RowLimit: rows,
-            StartRow: rows * (pageNumber - 1) + 1,
+            StartRow: rows * (pageNumber - 1),
         });
 
         // we have reached the end
