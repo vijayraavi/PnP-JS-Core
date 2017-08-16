@@ -25,6 +25,16 @@ export interface LibraryConfiguration {
     defaultCachingTimeoutSeconds?: number;
 
     /**
+     * If true a timeout expired items will be removed from the cache in intervals determined by cacheTimeoutInterval
+     */
+    enableCacheExpiration?: boolean;
+
+    /**
+     * Determines the interval in milliseconds at which the cache is checked to see if items have expired (min: 100)
+     */
+    cacheExpirationIntervalMilliseconds?: number;
+
+    /**
      * Defines a factory method used to create fetch clients
      */
     fetchClientFactory?: () => HttpClientImpl;
@@ -49,6 +59,8 @@ export class RuntimeConfigImpl {
     private _fetchClientFactory: () => HttpClientImpl;
     private _baseUrl: string;
     private _spfxContext: any;
+    private _enableCacheExpiration: boolean;
+    private _cacheExpirationIntervalMilliseconds: number;
 
     constructor() {
         // these are our default values for the library
@@ -59,6 +71,8 @@ export class RuntimeConfigImpl {
         this._fetchClientFactory = () => new FetchClient();
         this._baseUrl = null;
         this._spfxContext = null;
+        this._enableCacheExpiration = false;
+        this._cacheExpirationIntervalMilliseconds = 750;
     }
 
     public set(config: LibraryConfiguration): void {
@@ -89,6 +103,16 @@ export class RuntimeConfigImpl {
 
         if (config.hasOwnProperty("spfxContext")) {
             this._spfxContext = config.spfxContext;
+        }
+
+        if (config.hasOwnProperty("enableCacheExpiration")) {
+            this._enableCacheExpiration = config.enableCacheExpiration;
+        }
+
+        if (config.hasOwnProperty("cacheExpirationIntervalMilliseconds")) {
+            // we don't let the interval be less than 300 milliseconds
+            const interval = config.cacheExpirationIntervalMilliseconds < 300 ? 300 : config.cacheExpirationIntervalMilliseconds;
+            this._cacheExpirationIntervalMilliseconds = interval;
         }
     }
 
@@ -124,6 +148,14 @@ export class RuntimeConfigImpl {
         }
 
         return null;
+    }
+
+    public get enableCacheExpiration(): boolean {
+        return this._enableCacheExpiration;
+    }
+
+    public get cacheExpirationIntervalMilliseconds(): number {
+        return this._cacheExpirationIntervalMilliseconds;
     }
 }
 

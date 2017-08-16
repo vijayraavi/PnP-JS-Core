@@ -1,6 +1,7 @@
 import { Util } from "./util";
 import { Dictionary } from "../collections/collections";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
+import { Logger, LogLevel } from "./logging";
 
 /**
  * A wrapper class to provide a consistent interface to browser based storage
@@ -21,6 +22,12 @@ export class PnPClientStorageWrapper implements PnPClientStore {
     constructor(private store: Storage, public defaultTimeoutMinutes?: number) {
         this.defaultTimeoutMinutes = (defaultTimeoutMinutes === void 0) ? -1 : defaultTimeoutMinutes;
         this.enabled = this.test();
+        // if the cache timeout is enabled call the handler
+        // this will clear any expired items and set the timeout function
+        if (RuntimeConfig.enableCacheExpiration) {
+            Logger.write(`Enabling cache expiration.`, LogLevel.Info);
+            this.cacheExpirationHandler();
+        }
     }
 
     /**
@@ -44,6 +51,7 @@ export class PnPClientStorageWrapper implements PnPClientStore {
 
         if (new Date(persistable.expiration) <= new Date()) {
 
+            Logger.write(`Removing item with key '${key}' from cache due to expiration.`, LogLevel.Info);
             this.delete(key);
             return null;
 
@@ -105,6 +113,34 @@ export class PnPClientStorageWrapper implements PnPClientStore {
     }
 
     /**
+     * Deletes any expired items placed in the store by the pnp library, leaves other items untouched
+     */
+    public deleteExpired(): Promise<void> {
+
+        return new Promise<void>((resolve, reject) => {
+
+            if (!this.enabled) {
+                resolve();
+            }
+
+            try {
+
+                for (let i = 0; i < this.store.length; i++) {
+                    const key = this.store.key(i);
+                    // test the stored item to see if we stored it
+                    if (/["|']?pnp["|']? ?: ?1/i.test(this.store.getItem(key))) {
+                        // get those items as get will delete from cache if they are expired
+                        this.get(key);
+                    }
+                }
+
+                resolve();
+
+            } catch (e) { reject(e); }
+        });
+    }
+
+    /**
      * Used to determine if the wrapped storage is available currently
      */
     private test(): boolean {
@@ -132,7 +168,28 @@ export class PnPClientStorageWrapper implements PnPClientStore {
             expire = Util.dateAdd(new Date(), "second", defaultTimeout);
         }
 
-        return JSON.stringify({ expiration: expire, value: o });
+        return JSON.stringify({ pnp: 1, expiration: expire, value: o });
+    }
+
+    /**
+     * Deletes expired items added by this library in this.store and sets a timeout to call itself
+     */
+    private cacheExpirationHandler(): void {
+
+        Logger.write("Called cache expiration handler.", LogLevel.Verbose);
+        this.deleteExpired().then(_ => {
+
+            // call ourself in the future
+            setTimeout(Util.getCtxCallback(this, this.cacheExpirationHandler), RuntimeConfig.cacheExpirationIntervalMilliseconds);
+        }).catch(e => {
+
+            // we've got some error - so just stop the loop and report the error
+            Logger.log({
+                data: e,
+                level: LogLevel.Error,
+                message: "Error deleting expired cache entries, see data for details. Timeout not reset.",
+            });
+        });
     }
 }
 
@@ -176,6 +233,11 @@ export interface PnPClientStore {
      * @param expire Optional, if provided the expiration of the item, otherwise the default is used
      */
     getOrPut(key: string, getter: Function, expire?: Date): any;
+
+    /**
+     * Removes any expired items placed in the store by the pnp library, leaves other items untouched
+     */
+    deleteExpired(): Promise<void>;
 }
 
 /**
@@ -219,22 +281,33 @@ class MemoryStorage {
 export class PnPClientStorage {
 
     /**
-     * Provides access to the local storage of the browser
-     */
-    public local: PnPClientStore;
-
-    /**
-     * Provides access to the session storage of the browser
-     */
-    public session: PnPClientStore;
-
-    /**
      * Creates a new instance of the PnPClientStorage class
      *
      * @constructor
      */
-    constructor() {
-        this.local = typeof localStorage !== "undefined" ? new PnPClientStorageWrapper(localStorage) : new PnPClientStorageWrapper(new MemoryStorage());
-        this.session = typeof sessionStorage !== "undefined" ? new PnPClientStorageWrapper(sessionStorage) : new PnPClientStorageWrapper(new MemoryStorage());
+    constructor(private _local: PnPClientStore = null, private _session: PnPClientStore = null) { }
+
+    /**
+     * Provides access to the local storage of the browser
+     */
+    public get local(): PnPClientStore {
+
+        if (this._local === null) {
+            this._local = typeof localStorage !== "undefined" ? new PnPClientStorageWrapper(localStorage) : new PnPClientStorageWrapper(new MemoryStorage());
+        }
+
+        return this._local;
+    }
+
+    /**
+     * Provides access to the session storage of the browser
+     */
+    public get session(): PnPClientStore {
+
+        if (this._session === null) {
+            this._session = typeof sessionStorage !== "undefined" ? new PnPClientStorageWrapper(sessionStorage) : new PnPClientStorageWrapper(new MemoryStorage());
+        }
+
+        return this._session;
     }
 }
