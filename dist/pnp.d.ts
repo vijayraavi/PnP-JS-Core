@@ -58,141 +58,6 @@ declare module "collections/collections" {
         count(): number;
     }
 }
-declare module "utils/storage" {
-    /**
-     * A wrapper class to provide a consistent interface to browser based storage
-     *
-     */
-    export class PnPClientStorageWrapper implements PnPClientStore {
-        private store;
-        defaultTimeoutMinutes: number;
-        /**
-         * True if the wrapped storage is available; otherwise, false
-         */
-        enabled: boolean;
-        /**
-         * Creates a new instance of the PnPClientStorageWrapper class
-         *
-         * @constructor
-         */
-        constructor(store: Storage, defaultTimeoutMinutes?: number);
-        /**
-         * Get a value from storage, or null if that value does not exist
-         *
-         * @param key The key whose value we want to retrieve
-         */
-        get<T>(key: string): T;
-        /**
-         * Adds a value to the underlying storage
-         *
-         * @param key The key to use when storing the provided value
-         * @param o The value to store
-         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
-         */
-        put(key: string, o: any, expire?: Date): void;
-        /**
-         * Deletes a value from the underlying storage
-         *
-         * @param key The key of the pair we want to remove from storage
-         */
-        delete(key: string): void;
-        /**
-         * Gets an item from the underlying storage, or adds it if it does not exist using the supplied getter function
-         *
-         * @param key The key to use when storing the provided value
-         * @param getter A function which will upon execution provide the desired value
-         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
-         */
-        getOrPut<T>(key: string, getter: () => Promise<T>, expire?: Date): Promise<T>;
-        /**
-         * Used to determine if the wrapped storage is available currently
-         */
-        private test();
-        /**
-         * Creates the persistable to store
-         */
-        private createPersistable(o, expire?);
-    }
-    /**
-     * Interface which defines the operations provided by a client storage object
-     */
-    export interface PnPClientStore {
-        /**
-         * True if the wrapped storage is available; otherwise, false
-         */
-        enabled: boolean;
-        /**
-         * Get a value from storage, or null if that value does not exist
-         *
-         * @param key The key whose value we want to retrieve
-         */
-        get(key: string): any;
-        /**
-         * Adds a value to the underlying storage
-         *
-         * @param key The key to use when storing the provided value
-         * @param o The value to store
-         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
-         */
-        put(key: string, o: any, expire?: Date): void;
-        /**
-         * Deletes a value from the underlying storage
-         *
-         * @param key The key of the pair we want to remove from storage
-         */
-        delete(key: string): void;
-        /**
-         * Gets an item from the underlying storage, or adds it if it does not exist using the supplied getter function
-         *
-         * @param key The key to use when storing the provided value
-         * @param getter A function which will upon execution provide the desired value
-         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
-         */
-        getOrPut(key: string, getter: Function, expire?: Date): any;
-    }
-    /**
-     * A class that will establish wrappers for both local and session storage
-     */
-    export class PnPClientStorage {
-        /**
-         * Provides access to the local storage of the browser
-         */
-        local: PnPClientStore;
-        /**
-         * Provides access to the session storage of the browser
-         */
-        session: PnPClientStore;
-        /**
-         * Creates a new instance of the PnPClientStorage class
-         *
-         * @constructor
-         */
-        constructor();
-    }
-}
-declare module "sharepoint/caching" {
-    import { ODataParser } from "sharepoint/odata";
-    import { PnPClientStore, PnPClientStorage } from "utils/storage";
-    export interface ICachingOptions {
-        expiration?: Date;
-        storeName?: "session" | "local";
-        key: string;
-    }
-    export class CachingOptions implements ICachingOptions {
-        key: string;
-        protected static storage: PnPClientStorage;
-        expiration: Date;
-        storeName: "session" | "local";
-        constructor(key: string);
-        readonly store: PnPClientStore;
-    }
-    export class CachingParserWrapper<T> implements ODataParser<T> {
-        private _parser;
-        private _cacheOptions;
-        constructor(_parser: ODataParser<T>, _cacheOptions: CachingOptions);
-        parse(response: Response): Promise<T>;
-    }
-}
 declare module "utils/logging" {
     /**
      * A set of logging levels
@@ -322,6 +187,155 @@ declare module "utils/logging" {
          * @param entry The information to be logged
          */
         log(entry: LogEntry): void;
+    }
+}
+declare module "utils/storage" {
+    /**
+     * A wrapper class to provide a consistent interface to browser based storage
+     *
+     */
+    export class PnPClientStorageWrapper implements PnPClientStore {
+        private store;
+        defaultTimeoutMinutes: number;
+        /**
+         * True if the wrapped storage is available; otherwise, false
+         */
+        enabled: boolean;
+        /**
+         * Creates a new instance of the PnPClientStorageWrapper class
+         *
+         * @constructor
+         */
+        constructor(store: Storage, defaultTimeoutMinutes?: number);
+        /**
+         * Get a value from storage, or null if that value does not exist
+         *
+         * @param key The key whose value we want to retrieve
+         */
+        get<T>(key: string): T;
+        /**
+         * Adds a value to the underlying storage
+         *
+         * @param key The key to use when storing the provided value
+         * @param o The value to store
+         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
+         */
+        put(key: string, o: any, expire?: Date): void;
+        /**
+         * Deletes a value from the underlying storage
+         *
+         * @param key The key of the pair we want to remove from storage
+         */
+        delete(key: string): void;
+        /**
+         * Gets an item from the underlying storage, or adds it if it does not exist using the supplied getter function
+         *
+         * @param key The key to use when storing the provided value
+         * @param getter A function which will upon execution provide the desired value
+         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
+         */
+        getOrPut<T>(key: string, getter: () => Promise<T>, expire?: Date): Promise<T>;
+        /**
+         * Deletes any expired items placed in the store by the pnp library, leaves other items untouched
+         */
+        deleteExpired(): Promise<void>;
+        /**
+         * Used to determine if the wrapped storage is available currently
+         */
+        private test();
+        /**
+         * Creates the persistable to store
+         */
+        private createPersistable(o, expire?);
+        /**
+         * Deletes expired items added by this library in this.store and sets a timeout to call itself
+         */
+        private cacheExpirationHandler();
+    }
+    /**
+     * Interface which defines the operations provided by a client storage object
+     */
+    export interface PnPClientStore {
+        /**
+         * True if the wrapped storage is available; otherwise, false
+         */
+        enabled: boolean;
+        /**
+         * Get a value from storage, or null if that value does not exist
+         *
+         * @param key The key whose value we want to retrieve
+         */
+        get(key: string): any;
+        /**
+         * Adds a value to the underlying storage
+         *
+         * @param key The key to use when storing the provided value
+         * @param o The value to store
+         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
+         */
+        put(key: string, o: any, expire?: Date): void;
+        /**
+         * Deletes a value from the underlying storage
+         *
+         * @param key The key of the pair we want to remove from storage
+         */
+        delete(key: string): void;
+        /**
+         * Gets an item from the underlying storage, or adds it if it does not exist using the supplied getter function
+         *
+         * @param key The key to use when storing the provided value
+         * @param getter A function which will upon execution provide the desired value
+         * @param expire Optional, if provided the expiration of the item, otherwise the default is used
+         */
+        getOrPut(key: string, getter: Function, expire?: Date): any;
+        /**
+         * Removes any expired items placed in the store by the pnp library, leaves other items untouched
+         */
+        deleteExpired(): Promise<void>;
+    }
+    /**
+     * A class that will establish wrappers for both local and session storage
+     */
+    export class PnPClientStorage {
+        private _local;
+        private _session;
+        /**
+         * Creates a new instance of the PnPClientStorage class
+         *
+         * @constructor
+         */
+        constructor(_local?: PnPClientStore, _session?: PnPClientStore);
+        /**
+         * Provides access to the local storage of the browser
+         */
+        readonly local: PnPClientStore;
+        /**
+         * Provides access to the session storage of the browser
+         */
+        readonly session: PnPClientStore;
+    }
+}
+declare module "sharepoint/caching" {
+    import { ODataParser } from "sharepoint/odata";
+    import { PnPClientStore, PnPClientStorage } from "utils/storage";
+    export interface ICachingOptions {
+        expiration?: Date;
+        storeName?: "session" | "local";
+        key: string;
+    }
+    export class CachingOptions implements ICachingOptions {
+        key: string;
+        protected static storage: PnPClientStorage;
+        expiration: Date;
+        storeName: "session" | "local";
+        constructor(key: string);
+        readonly store: PnPClientStore;
+    }
+    export class CachingParserWrapper<T> implements ODataParser<T> {
+        private _parser;
+        private _cacheOptions;
+        constructor(_parser: ODataParser<T>, _cacheOptions: CachingOptions);
+        parse(response: Response): Promise<T>;
     }
 }
 declare module "utils/exceptions" {
@@ -800,6 +814,14 @@ declare module "configuration/pnplibconfig" {
          */
         defaultCachingTimeoutSeconds?: number;
         /**
+         * If true a timeout expired items will be removed from the cache in intervals determined by cacheTimeoutInterval
+         */
+        enableCacheExpiration?: boolean;
+        /**
+         * Determines the interval in milliseconds at which the cache is checked to see if items have expired (min: 100)
+         */
+        cacheExpirationIntervalMilliseconds?: number;
+        /**
          * Defines a factory method used to create fetch clients
          */
         fetchClientFactory?: () => HttpClientImpl;
@@ -820,6 +842,8 @@ declare module "configuration/pnplibconfig" {
         private _fetchClientFactory;
         private _baseUrl;
         private _spfxContext;
+        private _enableCacheExpiration;
+        private _cacheExpirationIntervalMilliseconds;
         constructor();
         set(config: LibraryConfiguration): void;
         readonly headers: TypedHash<string>;
@@ -828,6 +852,8 @@ declare module "configuration/pnplibconfig" {
         readonly globalCacheDisable: boolean;
         readonly fetchClientFactory: () => HttpClientImpl;
         readonly baseUrl: string;
+        readonly enableCacheExpiration: boolean;
+        readonly cacheExpirationIntervalMilliseconds: number;
     }
     export let RuntimeConfig: RuntimeConfigImpl;
     export function setRuntimeConfig(config: LibraryConfiguration): void;
@@ -5022,9 +5048,6 @@ declare module "sharepoint/features" {
         feature: Feature;
     }
 }
-declare module "utils/decorators" {
-    export function deprecated(deprecationVersion: string, message: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-}
 declare module "sharepoint/relateditems" {
     import { Queryable } from "sharepoint/queryable";
     export interface RelatedItem {
@@ -5097,7 +5120,7 @@ declare module "sharepoint/webs" {
     import { RoleDefinitions } from "sharepoint/roles";
     import { File } from "sharepoint/files";
     import { TypedHash } from "collections/collections";
-    import { BasePermissions, ChangeQuery } from "sharepoint/types";
+    import { ChangeQuery } from "sharepoint/types";
     import { List } from "sharepoint/lists";
     import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "sharepoint/siteusers";
     import { UserCustomActions } from "sharepoint/usercustomactions";
@@ -5125,9 +5148,8 @@ declare module "sharepoint/webs" {
          * @param template The new web's template internal name (default = STS)
          * @param language The locale id that specifies the new web's language (default = 1033 [English, US])
          * @param inheritPermissions When true, permissions will be inherited from the new web's parent (default = true)
-         * @param additionalSettings Will be passed as part of the web creation body
          */
-        add(title: string, url: string, description?: string, template?: string, language?: number, inheritPermissions?: boolean, additionalSettings?: TypedHash<string | number | boolean>): Promise<WebAddResult>;
+        add(title: string, url: string, description?: string, template?: string, language?: number, inheritPermissions?: boolean): Promise<WebAddResult>;
     }
     /**
      * Describes a collection of web infos
@@ -5303,12 +5325,6 @@ declare module "sharepoint/webs" {
          * @param template Name of the site definition or the name of the site template
          */
         applyWebTemplate(template: string): Promise<void>;
-        /**
-         * Returns whether the current user has the given set of permissions
-         *
-         * @param perms The high and low permission range
-         */
-        doesUserHavePermissions(perms: BasePermissions): Promise<boolean>;
         /**
          * Checks whether the specified login name belongs to a valid user in the web. If the user doesn't exist, adds the user to the web.
          *
@@ -5756,7 +5772,7 @@ declare module "sharepoint/index" {
     export * from "sharepoint/caching";
     export { AttachmentFileAddResult, AttachmentFileInfo } from "sharepoint/attachmentfiles";
     export { FieldAddResult, FieldUpdateResult } from "sharepoint/fields";
-    export { CheckinType, FileAddResult, WebPartsPersonalizationScope, MoveOperations, TemplateFileType, ChunkedFileUploadProgressData } from "sharepoint/files";
+    export { CheckinType, FileAddResult, WebPartsPersonalizationScope, MoveOperations, TemplateFileType, ChunkedFileUploadProgressData, File, Files } from "sharepoint/files";
     export { FeatureAddResult } from "sharepoint/features";
     export { FolderAddResult, Folder, Folders } from "sharepoint/folders";
     export { Item, Items, ItemAddResult, ItemUpdateResult, ItemUpdateResultData, PagedItemCollection } from "sharepoint/items";
@@ -6227,4 +6243,7 @@ declare module "types/locale" {
         Zulu = 1077,
         HIDHumanInterfaceDevice = 1279,
     }
+}
+declare module "utils/decorators" {
+    export function deprecated(deprecationVersion: string, message: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
 }
