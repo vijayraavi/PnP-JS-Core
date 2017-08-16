@@ -263,6 +263,8 @@ export class Queryable {
         batch?: ODataBatch): T {
 
         let parent = new factory(baseUrl, path);
+        parent.configure(this._options);
+
         const target = this.query.get("@target");
         if (target !== null) {
             parent.query.add("@target", target);

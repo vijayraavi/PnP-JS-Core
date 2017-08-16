@@ -9,13 +9,12 @@ import { RoleDefinitions } from "./roles";
 import { File } from "./files";
 import { TypedHash } from "../collections/collections";
 import { Util, extractWebUrl } from "../utils/util";
-import { BasePermissions, ChangeQuery } from "./types";
+import { ChangeQuery } from "./types";
 import { List } from "./lists";
 import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
 import { extractOdataId, ODataBatch } from "./odata";
 import { Features } from "./features";
-import { deprecated } from "../utils/decorators";
 import { QueryableShareableWeb } from "./queryableshareable";
 import { RelatedItemManger, RelatedItemManagerImpl } from "./relateditems";
 
@@ -43,7 +42,6 @@ export class Webs extends QueryableCollection {
      * @param template The new web's template internal name (default = STS)
      * @param language The locale id that specifies the new web's language (default = 1033 [English, US])
      * @param inheritPermissions When true, permissions will be inherited from the new web's parent (default = true)
-     * @param additionalSettings Will be passed as part of the web creation body
      */
     public add(
         title: string,
@@ -51,17 +49,16 @@ export class Webs extends QueryableCollection {
         description = "",
         template = "STS",
         language = 1033,
-        inheritPermissions = true,
-        additionalSettings: TypedHash<string | number | boolean> = {}): Promise<WebAddResult> {
+        inheritPermissions = true): Promise<WebAddResult> {
 
-        const props = Util.extend({
+        const props = {
             Description: description,
             Language: language,
             Title: title,
             Url: url,
             UseSamePermissionsAsParentSite: inheritPermissions,
             WebTemplate: template,
-        }, additionalSettings);
+        };
 
         const postBody = JSON.stringify({
             "parameters":
@@ -370,20 +367,6 @@ export class Web extends QueryableShareableWeb {
         q.concat(`(@t)`);
         q.query.add("@t", template);
         return q.postCore();
-    }
-
-    /**
-     * Returns whether the current user has the given set of permissions
-     *
-     * @param perms The high and low permission range
-     */
-    @deprecated("2.0.7", "This method will be removed in future releases. Please use the methods found in queryable securable.")
-    public doesUserHavePermissions(perms: BasePermissions): Promise<boolean> {
-
-        const q = this.clone(Web, "doesuserhavepermissions", true);
-        q.concat(`(@p)`);
-        q.query.add("@p", JSON.stringify(perms));
-        return q.get();
     }
 
     /**

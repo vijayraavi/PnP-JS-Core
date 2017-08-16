@@ -31,7 +31,12 @@ export abstract class ODataParserBase<T> implements ODataParser<T> {
                 if ((r.headers.has("Content-Length") && parseFloat(r.headers.get("Content-Length")) === 0) || r.status === 204) {
                     resolve(<T>{});
                 } else {
-                    r.json().then(json => resolve(this.parseODataJSON<T>(json))).catch(e => reject(e));
+
+                    // patch to handle cases of 200 response with no or whitespace only bodies (#487 & #545)
+                    r.text()
+                        .then(txt => txt.replace(/\s/ig, "").length > 0 ? JSON.parse(txt) : {})
+                        .then(json => resolve(this.parseODataJSON<T>(json)))
+                        .catch(e => reject(e));
                 }
             }
         });

@@ -40,6 +40,16 @@ describe("Custom options", () => {
             });
     });
 
+    it("Should set header when making a post request using getParent method", () => {
+        return pnp.sp.configure({
+            headers: headers,
+        }).web.features.getById("test").deactivate()
+            .then(() => {
+                const header = mockFetch.options.headers.get(headerName);
+                expect(header).to.equal(headerValue);
+            });
+    });
+
     it("Should set header when getting a web and applying headers for web only", () => {
         return pnp.sp.web.configure({
             headers: headers,

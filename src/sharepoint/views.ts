@@ -44,7 +44,6 @@ export class Views extends QueryableCollection {
      * @param personalView True if this is a personal view, otherwise false, default = false
      * @param additionalSettings Will be passed as part of the view creation body
      */
-    /*tslint:disable max-line-length */
     public add(title: string, personalView = false, additionalSettings: TypedHash<any> = {}): Promise<ViewAddResult> {
 
         const postBody = JSON.stringify(Util.extend({
@@ -60,7 +59,6 @@ export class Views extends QueryableCollection {
             };
         });
     }
-    /*tslint:enable */
 }
 
 
