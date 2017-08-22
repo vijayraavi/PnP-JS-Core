@@ -6,7 +6,7 @@ import { ContentType } from "./contenttypes";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
 import { ListItemFormUpdateValue } from "./types";
-import { ODataParserBase } from "./odata";
+import { ODataParserBase } from "../odata/core";
 import { AttachmentFiles } from "./attachmentfiles";
 import { List } from "./lists";
 

@@ -1,11 +1,11 @@
 import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
-import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "./odata";
+import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "../odata/parsers";
 import { Util } from "../utils/util";
 import { MaxCommentLengthException } from "../utils/exceptions";
 import { LimitedWebPartManager } from "./webparts";
 import { Item } from "./items";
 import { QueryableShareableFile } from "./queryableshareable";
-import { getEntityUrl } from "./odata";
+import { spGetEntityUrl } from "./odata";
 
 export interface ChunkedFileUploadProgressData {
     stage: "starting" | "continue" | "finishing";
@@ -328,7 +328,7 @@ export class File extends QueryableShareableFile {
         const q = this.listItemAllFields;
         return q.select.apply(q, selects).get().then((d: any) => {
 
-            return Util.extend(new Item(getEntityUrl(d)), d);
+            return Util.extend(new Item(spGetEntityUrl(d)), d);
         });
     }
 

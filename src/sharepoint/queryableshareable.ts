@@ -1,6 +1,6 @@
 import { Util } from "../utils/util";
 import { Web } from "./webs";
-import { getEntityUrl } from "./odata";
+import { spGetEntityUrl } from "./odata";
 import { Queryable, QueryableInstance } from "./queryable";
 import { QueryableSecurable } from "./queryablesecurable";
 import {
@@ -554,7 +554,7 @@ export class FileFolderShared extends QueryableInstance {
         // sharing only works on the item end point, not the file one - so we create a folder instance with the item url internally
         return this.clone(QueryableShareableFile, "listItemAllFields", false).select("odata.editlink").get().then(d => {
 
-            let shareable = new QueryableShareable(getEntityUrl(d));
+            let shareable = new QueryableShareable(spGetEntityUrl(d));
 
             // we need to handle batching
             if (this.hasBatch) {

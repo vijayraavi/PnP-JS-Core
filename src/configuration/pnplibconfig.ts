@@ -1,6 +1,7 @@
 import { TypedHash } from "../collections/collections";
 import { HttpClientImpl } from "../net/httpclient";
 import { FetchClient } from "../net/fetchclient";
+import { SPFXContext } from "../types/spfxContextInterface";
 
 export interface LibraryConfiguration {
 
@@ -58,7 +59,7 @@ export class RuntimeConfigImpl {
     private _globalCacheDisable: boolean;
     private _fetchClientFactory: () => HttpClientImpl;
     private _baseUrl: string;
-    private _spfxContext: any;
+    private _spfxContext: SPFXContext;
     private _enableCacheExpiration: boolean;
     private _cacheExpirationIntervalMilliseconds: number;
 
@@ -156,6 +157,10 @@ export class RuntimeConfigImpl {
 
     public get cacheExpirationIntervalMilliseconds(): number {
         return this._cacheExpirationIntervalMilliseconds;
+    }
+
+    public get spfxContext(): SPFXContext {
+        return this._spfxContext;
     }
 }
 

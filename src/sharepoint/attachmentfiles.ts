@@ -1,5 +1,5 @@
 import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
-import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "./odata";
+import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "../odata/parsers";
 
 export interface AttachmentFileInfo {
     name: string;

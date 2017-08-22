@@ -3,7 +3,7 @@ import { QueryableShareableFolder } from "./queryableshareable";
 import { Files } from "./files";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
-import { getEntityUrl } from "./odata";
+import { spGetEntityUrl } from "./odata";
 import { Item } from "./items";
 
 /**
@@ -165,7 +165,7 @@ export class Folder extends QueryableShareableFolder {
         const q = this.listItemAllFields;
         return q.select.apply(q, selects).get().then((d: any) => {
 
-            return Util.extend(new Item(getEntityUrl(d)), d);
+            return Util.extend(new Item(spGetEntityUrl(d)), d);
         });
     }
 }

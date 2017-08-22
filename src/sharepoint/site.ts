@@ -2,7 +2,8 @@ import { Queryable, QueryableInstance } from "./queryable";
 import { Web } from "./webs";
 import { UserCustomActions } from "./usercustomactions";
 import { ContextInfo, DocumentLibraryInformation } from "./types";
-import { ODataBatch, extractOdataId } from "./odata";
+import { extractSPOdataId } from "./odata";
+import { ODataBatch } from "./batch";
 import { Features } from "./features";
 
 /**
@@ -113,7 +114,7 @@ export class Site extends QueryableInstance {
 
             return {
                 data: d,
-                web: Web.fromUrl(extractOdataId(d)),
+                web: Web.fromUrl(extractSPOdataId(d)),
             };
         });
     }

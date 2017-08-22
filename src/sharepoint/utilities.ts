@@ -1,10 +1,10 @@
 import { Queryable } from "./queryable";
 import { Util } from "../utils/util";
 import { EmailProperties } from "./types";
-import { ODataBatch } from "./odata";
+import { ODataBatch } from "./batch";
 import { ICachingOptions } from "./caching";
 import { File } from "./files";
-import { extractOdataId } from "./odata";
+import { extractSPOdataId } from "./odata";
 import { PrincipalInfo, PrincipalType, PrincipalSource, WikiPageCreationInformation } from "./types";
 
 /**
@@ -201,7 +201,7 @@ export class UtilityMethod extends Queryable implements UtilityMethods {
         }).then(r => {
             return {
                 data: r,
-                file: new File(extractOdataId(r)),
+                file: new File(extractSPOdataId(r)),
             };
         });
     }

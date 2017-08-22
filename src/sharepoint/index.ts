@@ -56,18 +56,9 @@ export {
 } from "./lists";
 
 export {
-    extractOdataId,
-    ODataParser,
-    ODataParserBase,
-    ODataDefaultParser,
-    ODataRaw,
-    ODataValue,
-    ODataEntity,
-    ODataEntityArray,
-    TextFileParser,
-    BlobFileParser,
-    BufferFileParser,
-    JSONFileParser,
+    spExtractODataId,
+    spODataEntity,
+    spODataEntityArray,
 } from "./odata";
 
 export {

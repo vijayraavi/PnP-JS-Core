@@ -1,5 +1,6 @@
 export * from "../sharepoint/index";
-export { ConfigOptions, FetchOptions, HttpClient, HttpClientImpl } from "../net/httpclient";
+export { HttpClient, HttpClientImpl } from "../net/httpclient";
+export { ConfigOptions, FetchOptions } from "../net/utils";
 export { SPRequestExecutorClient } from "../net/sprequestexecutorclient";
 export { NodeFetchClient } from "../net/nodefetchclient";
 export { FetchClient } from "../net/fetchclient";
@@ -10,3 +11,6 @@ export { TypedHash, Dictionary } from "../collections/collections";
 export { Util } from "../utils/util";
 export * from "../utils/logging";
 export * from "../utils/exceptions";
+export * from "../odata/core";
+export * from "../odata/parsers";
+export { GraphHttpClient } from "../net/graphclient";

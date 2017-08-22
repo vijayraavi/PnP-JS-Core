@@ -1,7 +1,9 @@
 import { Util } from "../utils/util";
 import { Dictionary } from "../collections/collections";
-import { FetchOptions, ConfigOptions, mergeOptions } from "../net/httpclient";
-import { ODataParser, ODataDefaultParser, ODataBatch } from "./odata";
+import { FetchOptions, ConfigOptions, mergeOptions } from "../net/utils";
+import { ODataParser } from "../odata/core";
+import { ODataDefaultParser } from "../odata/parsers";
+import { ODataBatch } from "./batch";
 import { ICachingOptions } from "./caching";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { AlreadyInBatchException } from "../utils/exceptions";
@@ -13,7 +15,7 @@ import {
 } from "./pipeline";
 
 export interface QueryableConstructor<T> {
-    new (baseUrl: string | Queryable, path?: string): T;
+    new(baseUrl: string | Queryable, path?: string): T;
 }
 
 /**

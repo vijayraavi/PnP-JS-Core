@@ -5,7 +5,7 @@ import { Web } from "./webs";
 import { Util } from "../utils/util";
 import { Queryable, QueryableConstructor } from "./queryable";
 import { UserProfileQuery } from "./userprofiles";
-import { ODataBatch } from "./odata";
+import { ODataBatch } from "./batch";
 import { UrlException } from "../utils/exceptions";
 import { UtilityMethod, UtilityMethods } from "./utilities";
 import { ConfigOptions } from "../pnp";

@@ -1,7 +1,7 @@
 import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
 import { HashTagCollection, UserProfile } from "./types";
 import { readBlobAsArrayBuffer } from "../utils/files";
-import { ODataValue } from "./odata";
+import { ODataValue } from "../odata/parsers";
 
 export class UserProfileQuery extends QueryableInstance {
 

@@ -1,7 +1,7 @@
 import { Dictionary } from "../collections/collections";
 import { HttpClient } from "./httpclient";
 import { Util } from "../utils/util";
-import { ODataDefaultParser } from "../sharepoint/odata";
+import { ODataDefaultParser } from "../odata/parsers";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 
 export class CachedDigest {

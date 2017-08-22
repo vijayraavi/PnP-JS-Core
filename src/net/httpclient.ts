@@ -2,18 +2,7 @@ import { DigestCache } from "./digestcache";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { APIUrlException } from "../utils/exceptions";
-
-export interface ConfigOptions {
-    headers?: string[][] | { [key: string]: string };
-    mode?: "navigate" | "same-origin" | "no-cors" | "cors";
-    credentials?: "omit" | "same-origin" | "include";
-    cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
-}
-
-export interface FetchOptions extends ConfigOptions {
-    method?: string;
-    body?: any;
-}
+import { mergeHeaders, FetchOptions } from "./utils";
 
 export class HttpClient {
 
@@ -83,14 +72,14 @@ export class HttpClient {
 
             this._impl.fetch(url, options).then((response) => ctx.resolve(response)).catch((response) => {
 
-                // grab our current delay
-                const delay = ctx.delay;
-
                 // Check if request was throttled - http status code 429
-                // Check is request failed due to server unavailable - http status code 503
+                // Check if request failed due to server unavailable - http status code 503
                 if (response.status !== 429 && response.status !== 503) {
                     ctx.reject(response);
                 }
+
+                // grab our current delay
+                const delay = ctx.delay;
 
                 // Increment our counters.
                 ctx.delay *= 2;
@@ -138,22 +127,6 @@ export class HttpClient {
     public delete(url: string, options: FetchOptions = {}): Promise<Response> {
         const opts = Util.extend(options, { method: "DELETE" });
         return this.fetch(url, opts);
-    }
-}
-
-export function mergeOptions(target: ConfigOptions, source: ConfigOptions): void {
-    target.headers = target.headers || {};
-    const headers = Util.extend(target.headers, source.headers);
-    target = Util.extend(target, source);
-    target.headers = headers;
-}
-
-export function mergeHeaders(target: Headers, source: any): void {
-    if (typeof source !== "undefined" && source !== null) {
-        const temp = <any>new Request("", { headers: source });
-        temp.headers.forEach((value: string, name: string) => {
-            target.append(name, value);
-        });
     }
 }
 
