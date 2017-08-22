@@ -10,7 +10,7 @@ import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 import { ControlMode, RenderListData, ChangeQuery, CamlQuery, ChangeLogitemQuery, ListFormData } from "./types";
 import { UserCustomActions } from "./usercustomactions";
-import { extractSPOdataId } from "./odata";
+import { spExtractODataId } from "./odata";
 import { NotSupportedInBatchException } from "../utils/exceptions";
 import { Folder } from "./folders";
 
@@ -120,7 +120,7 @@ export class Lists extends QueryableCollection {
      */
     public ensureSiteAssetsLibrary(): Promise<List> {
         return this.clone(Lists, "ensuresiteassetslibrary", true).postCore().then((json) => {
-            return new List(extractSPOdataId(json));
+            return new List(spExtractODataId(json));
         });
     }
 
@@ -129,7 +129,7 @@ export class Lists extends QueryableCollection {
      */
     public ensureSitePagesLibrary(): Promise<List> {
         return this.clone(Lists, "ensuresitepageslibrary", true).postCore().then((json) => {
-            return new List(extractSPOdataId(json));
+            return new List(spExtractODataId(json));
         });
     }
 }

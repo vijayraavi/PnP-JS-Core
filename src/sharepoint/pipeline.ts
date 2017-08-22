@@ -1,6 +1,6 @@
 import { ODataParser } from "../odata/core";
 import { ODataBatch } from "./batch";
-import { ICachingOptions, CachingParserWrapper, CachingOptions } from "./caching";
+import { ICachingOptions, CachingParserWrapper, CachingOptions } from "../odata/caching";
 import { HttpClient } from "../net/httpclient";
 import { FetchOptions } from "../net/utils";
 import { Logger, LogLevel } from "../utils/logging";

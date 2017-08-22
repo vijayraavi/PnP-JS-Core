@@ -13,4 +13,5 @@ export * from "../utils/logging";
 export * from "../utils/exceptions";
 export * from "../odata/core";
 export * from "../odata/parsers";
+export * from "../odata/caching";
 export { GraphHttpClient } from "../net/graphclient";

@@ -4,7 +4,7 @@ import { FetchOptions, ConfigOptions, mergeOptions } from "../net/utils";
 import { ODataParser } from "../odata/core";
 import { ODataDefaultParser } from "../odata/parsers";
 import { ODataBatch } from "./batch";
-import { ICachingOptions } from "./caching";
+import { ICachingOptions } from "../odata/caching";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { AlreadyInBatchException } from "../utils/exceptions";
 import { Logger, LogLevel } from "../utils/logging";

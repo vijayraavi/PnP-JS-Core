@@ -13,7 +13,7 @@ import { ChangeQuery } from "./types";
 import { List } from "./lists";
 import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
-import { extractSPOdataId } from "./odata";
+import { spExtractODataId } from "./odata";
 import { ODataBatch } from "./batch";
 import { Features } from "./features";
 import { QueryableShareableWeb } from "./queryableshareable";
@@ -71,7 +71,7 @@ export class Webs extends QueryableCollection {
         return this.clone(Webs, "add", true).postCore({ body: postBody }).then((data) => {
             return {
                 data: data,
-                web: new Web(extractSPOdataId(data).replace(/_api\/web\/?/i, "")),
+                web: new Web(spExtractODataId(data).replace(/_api\/web\/?/i, "")),
             };
         });
     }
@@ -383,7 +383,7 @@ export class Web extends QueryableShareableWeb {
         return this.clone(Web, "ensureuser", true).postCore({ body: postBody }).then((data: any) => {
             return {
                 data: data,
-                user: new SiteUser(extractSPOdataId(data)),
+                user: new SiteUser(spExtractODataId(data)),
             };
         });
     }
@@ -406,7 +406,7 @@ export class Web extends QueryableShareableWeb {
      */
     public getCatalog(type: number): Promise<List> {
         return this.clone(Web, `getcatalog(${type})`, true).select("Id").get().then((data) => {
-            return new List(extractSPOdataId(data));
+            return new List(spExtractODataId(data));
         });
     }
 

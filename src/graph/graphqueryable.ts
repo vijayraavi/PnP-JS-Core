@@ -4,8 +4,9 @@ import { GraphHttpClient } from "../net/graphclient";
 import { FetchOptions } from "../net/utils";
 import { ODataParser } from "../odata/core";
 import { ODataDefaultParser } from "../odata/parsers";
-// import { RuntimeConfig } from "../configuration/pnplibconfig";
+import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { Logger, LogLevel } from "../utils/logging";
+import { ICachingOptions } from "../odata/caching";
 
 export interface GraphQueryableConstructor<T> {
     new(baseUrl: string | GraphQueryable, path?: string): T;
@@ -26,6 +27,16 @@ export class GraphQueryable {
      * Tracks the url as it is built
      */
     private _url: string;
+
+    /**
+     * Explicitly tracks if we are using caching for this request
+     */
+    private _useCaching: boolean;
+
+    /**
+     * Any options that were supplied when caching was enabled
+     */
+    private _cachingOptions: ICachingOptions;
 
     /**
      * Stores the parent url used to create this instance, for recursing back up the tree if needed
@@ -154,6 +165,19 @@ export class GraphQueryable {
      */
     protected clone<T extends GraphQueryable>(factory: GraphQueryableConstructor<T>, additionalPath?: string): T {
         return new factory(this, additionalPath);
+    }
+
+    /**
+     * Enables caching for this request
+     *
+     * @param options Defines the options used when caching this request
+     */
+    public usingCaching(options?: ICachingOptions): this {
+        if (!RuntimeConfig.globalCacheDisable) {
+            this._useCaching = true;
+            this._cachingOptions = options;
+        }
+        return this;
     }
 
     /**
