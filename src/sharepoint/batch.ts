@@ -207,11 +207,12 @@ export class ODataBatch {
             const batchOptions = {
                 "body": batchBody.join(""),
                 "headers": batchHeaders,
+                "method": "POST",
             };
 
             Logger.write(`[${this.batchId}] (${(new Date()).getTime()}) Sending batch request.`, LogLevel.Info);
 
-            return client.post(Util.combinePaths(absoluteRequestUrl, "/_api/$batch"), batchOptions)
+            return client.fetch(Util.combinePaths(absoluteRequestUrl, "/_api/$batch"), batchOptions)
                 .then(r => r.text())
                 .then(this._parseResponse)
                 .then((responses: Response[]) => {

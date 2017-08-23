@@ -1,4 +1,5 @@
 export * from "../sharepoint/index";
+export * from "../graph/index";
 export { HttpClient, HttpClientImpl } from "../net/httpclient";
 export { ConfigOptions, FetchOptions } from "../net/utils";
 export { SPRequestExecutorClient } from "../net/sprequestexecutorclient";

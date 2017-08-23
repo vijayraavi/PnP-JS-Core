@@ -34,10 +34,10 @@ export class Members extends GraphQueryableCollection {
 
 export class Member extends GraphQueryableInstance {
 
-    /**
-     * Deletes this member from the group
-     */
-    public delete(): Promise<void> {
-        return this.clone(Member, "$ref").delete();
+}
+
+export class Owners extends Members {
+    constructor(baseUrl: string | GraphQueryable, path = "owners") {
+        super(baseUrl, path);
     }
 }

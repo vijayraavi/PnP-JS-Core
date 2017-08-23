@@ -1,8 +1,9 @@
 import { GraphQueryable, GraphQueryableInstance, GraphQueryableCollection } from "./graphqueryable";
-import { Members } from "./members";
+import { Members, Owners } from "./members";
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 import { Calendar, Events } from "./calendars";
+import{  Conversations } from "./conversations";
 
 /**
  * The type of group when creating a new group
@@ -123,15 +124,22 @@ export class Group extends GraphQueryableInstance {
     /**
      * Gets the collection of owners for this group
      */
-    public get owners(): Members {
-        return new Members(this, "owners");
+    public get owners(): Owners {
+        return new Owners(this);
     }
 
     /**
-     * Gest the collection of members for this group
+     * Gets the collection of members for this group
      */
     public get members(): Members {
         return new Members(this);
+    }
+
+    /**
+     * Gets the conversations collection for this group
+     */
+    public get conversations(): Conversations {
+        return new Conversations(this);
     }
 
     /**
@@ -161,7 +169,7 @@ export class Group extends GraphQueryableInstance {
      */
     public delete(): Promise<void> {
 
-        return this.delete();
+        return super.delete();
     }
 
     /**

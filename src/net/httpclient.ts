@@ -3,8 +3,13 @@ import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { APIUrlException } from "../utils/exceptions";
 import { mergeHeaders, FetchOptions } from "./utils";
+import { RequestClient } from "../request/requestclient";
 
-export class HttpClient {
+export interface HttpClientImpl {
+    fetch(url: string, options: FetchOptions): Promise<Response>;
+}
+
+export class HttpClient implements RequestClient {
 
     private _digestCache: DigestCache;
     private _impl: HttpClientImpl;
@@ -136,8 +141,4 @@ interface RetryContext {
     reject: (reason?: any) => void;
     resolve: (value?: {} | PromiseLike<{}>) => void;
     retryCount: number;
-}
-
-export interface HttpClientImpl {
-    fetch(url: string, options: FetchOptions): Promise<Response>;
 }

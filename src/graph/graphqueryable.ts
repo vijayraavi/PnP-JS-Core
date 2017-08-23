@@ -7,6 +7,11 @@ import { ODataDefaultParser } from "../odata/parsers";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { Logger, LogLevel } from "../utils/logging";
 import { ICachingOptions } from "../odata/caching";
+import {
+    RequestContext,
+    PipelineMethods,
+    pipe,
+} from "../request/pipeline";
 
 export interface GraphQueryableConstructor<T> {
     new(baseUrl: string | GraphQueryable, path?: string): T;
@@ -186,12 +191,7 @@ export class GraphQueryable {
      * @param options The options used for this request
      */
     public get(parser: ODataParser<any> = new ODataDefaultParser(), options: FetchOptions = {}): Promise<any> {
-
-        const opts = Util.extend(options, { method: "GET" });
-        const client = new GraphHttpClient();
-        return client.fetch(this.toUrlAndQuery(), opts).then(r => parser.parse(r));
-
-        // return this.toRequestContext("GET", getOptions, parser).then(context => pipe(context));
+        return this.toRequestContext("GET", options, parser).then(context => pipe(context));
     }
 
     /**
@@ -200,12 +200,7 @@ export class GraphQueryable {
      * @param options The options used for this request
      */
     protected post(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-
-        const opts = Util.extend(options, { method: "POST" });
-        const client = new GraphHttpClient();
-        return client.fetch(this.toUrlAndQuery(), opts).then(r => parser.parse(r));
-
-        // return this.toRequestContext("POST", getOptions, parser).then(context => pipe(context));
+        return this.toRequestContext("POST", options, parser).then(context => pipe(context));
     }
 
     /**
@@ -214,12 +209,7 @@ export class GraphQueryable {
      * @param options The options used for this request
      */
     protected patch(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-
-        const opts = Util.extend(options, { method: "PATCH" });
-        const client = new GraphHttpClient();
-        return client.fetch(this.toUrlAndQuery(), opts).then(r => parser.parse(r));
-
-        // return this.toRequestContext("POST", getOptions, parser).then(context => pipe(context));
+        return this.toRequestContext("PATCH", options, parser).then(context => pipe(context));
     }
 
     /**
@@ -228,46 +218,39 @@ export class GraphQueryable {
      * @param options The options used for this request
      */
     protected delete(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-
-        const opts = Util.extend(options, { method: "DELETE" });
-        const client = new GraphHttpClient();
-        return client.fetch(this.toUrlAndQuery(), opts).then(r => parser.parse(r));
-
-        // return this.toRequestContext("POST", getOptions, parser).then(context => pipe(context));
+        return this.toRequestContext("DELETE", options, parser).then(context => pipe(context));
     }
 
+    /**
+     * Converts the current instance to a request context
+     *
+     * @param verb The request verb
+     * @param options The set of supplied request options
+     * @param parser The supplied ODataParser instance
+     * @param pipeline Optional request processing pipeline
+     */
+    private toRequestContext<T>(
+        verb: string,
+        options: FetchOptions = {},
+        parser: ODataParser<T>,
+        pipeline: Array<(c: RequestContext<T>) => Promise<RequestContext<T>>> = PipelineMethods.default): Promise<RequestContext<T>> {
 
-    // /**
-    //  * Converts the current instance to a request context
-    //  *
-    //  * @param verb The request verb
-    //  * @param options The set of supplied request options
-    //  * @param parser The supplied ODataParser instance
-    //  * @param pipeline Optional request processing pipeline
-    //  */
-    // private toRequestContext<T>(
-    //     verb: string,
-    //     options: FetchOptions = {},
-    //     parser: ODataParser<T>,
-    //     pipeline: Array<(c: RequestContext<T>) => Promise<RequestContext<T>>> = PipelineMethods.default): Promise<RequestContext<T>> {
-
-    //     const dependencyDispose = this.hasBatch ? this.addBatchDependency() : () => { return; };
-
-    //     return Util.toAbsoluteUrl(this.toUrlAndQuery()).then(url => {
-
-    //         // build our request context
-    //         const context: RequestContext<T> = {
-    //             options: options,
-    //             parser: parser,
-    //             pipeline: pipeline,
-    //             requestAbsoluteUrl: url,
-    //             requestId: Util.getGUID(),
-    //             verb: verb,
-    //         };
-
-    //         return context;
-    //     });
-    // }
+        // TODO:: add batch support
+        return Promise.resolve({
+            batch: null,
+            batchDependency: () => void (0),
+            cachingOptions: this._cachingOptions,
+            clientFactory: () => new GraphHttpClient(),
+            isBatched: false,
+            isCached: this._useCaching,
+            options: options,
+            parser: parser,
+            pipeline: pipeline,
+            requestAbsoluteUrl: this.toUrlAndQuery(),
+            requestId: Util.getGUID(),
+            verb: verb,
+        });
+    }
 }
 
 /**

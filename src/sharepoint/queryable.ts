@@ -12,7 +12,8 @@ import {
     RequestContext,
     PipelineMethods,
     pipe,
-} from "./pipeline";
+} from "../request/pipeline";
+import { HttpClient } from "../net/httpclient";
 
 export interface QueryableConstructor<T> {
     new(baseUrl: string | Queryable, path?: string): T;
@@ -301,28 +302,28 @@ export class Queryable {
      * @param parser Allows you to specify a parser to handle the result
      * @param getOptions The options used for this request
      */
-    public get(parser: ODataParser<any> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<any> {
-        return this.toRequestContext("GET", getOptions, parser).then(context => pipe(context));
+    public get(parser: ODataParser<any> = new ODataDefaultParser(), options: FetchOptions = {}): Promise<any> {
+        return this.toRequestContext("GET", options, parser).then(context => pipe(context));
     }
 
-    public getAs<T>(parser: ODataParser<T> = new ODataDefaultParser(), getOptions: FetchOptions = {}): Promise<T> {
-        return this.toRequestContext("GET", getOptions, parser).then(context => pipe(context));
+    public getAs<T>(parser: ODataParser<T> = new ODataDefaultParser(), options: FetchOptions = {}): Promise<T> {
+        return this.toRequestContext("GET", options, parser).then(context => pipe(context));
     }
 
-    protected postCore(postOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("POST", postOptions, parser).then(context => pipe(context));
+    protected postCore(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+        return this.toRequestContext("POST", options, parser).then(context => pipe(context));
     }
 
-    protected postAsCore<T>(postOptions: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
-        return this.toRequestContext("POST", postOptions, parser).then(context => pipe(context));
+    protected postAsCore<T>(options: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
+        return this.toRequestContext("POST", options, parser).then(context => pipe(context));
     }
 
-    protected patchCore(patchOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("PATCH", patchOptions, parser).then(context => pipe(context));
+    protected patchCore(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+        return this.toRequestContext("PATCH", options, parser).then(context => pipe(context));
     }
 
-    protected deleteCore(deleteOptions: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("DELETE", deleteOptions, parser).then(context => pipe(context));
+    protected deleteCore(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
+        return this.toRequestContext("DELETE", options, parser).then(context => pipe(context));
     }
 
     /**
@@ -350,6 +351,7 @@ export class Queryable {
                 batch: this._batch,
                 batchDependency: dependencyDispose,
                 cachingOptions: this._cachingOptions,
+                clientFactory: () => new HttpClient(),
                 isBatched: this.hasBatch,
                 isCached: this._useCaching,
                 options: options,

@@ -1,5 +1,6 @@
 import { GraphQueryable, GraphQueryableInstance, GraphQueryableCollection } from "./graphqueryable";
 import { TypedHash } from "../collections/collections";
+// import { Attachments } from "./attachments";
 
 export class Calendars extends GraphQueryableCollection {
 
@@ -30,7 +31,7 @@ export class Events extends GraphQueryableCollection {
      * 
      * @param properties The set of properties used to create the event
      */
-    public add(properties: TypedHash<string | number | boolean> = {}): Promise<EventAddResult> {
+    public add(properties: TypedHash<any> = {}): Promise<EventAddResult> {
 
         return this.post({
             body: JSON.stringify(properties),
@@ -50,12 +51,20 @@ export interface EventAddResult {
 
 export class Event extends GraphQueryableInstance {
 
+    // TODO::
+    // /**
+    //  * Gets the collection of attachments for this event
+    //  */
+    // public get attachments(): Attachments {
+    //     return new Attachments(this);
+    // }
+
     /**
      * Update the properties of an event object
      * 
      * @param properties Set of properties of this event to update
      */
-    public update(properties: TypedHash<string | number | boolean | string[]>): Promise<void> {
+    public update(properties: TypedHash<any>): Promise<void> {
 
         return this.patch({
             body: JSON.stringify(properties),
@@ -66,7 +75,7 @@ export class Event extends GraphQueryableInstance {
      * Deletes this event
      */
     public delete(): Promise<void> {
-        return this.delete();
+        return super.delete();
     }
 }
 

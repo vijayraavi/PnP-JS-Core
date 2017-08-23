@@ -1,5 +1,6 @@
 import { GraphQueryable } from "./graphqueryable";
 import { Groups } from "./groups";
+// import { Me } from "./me";
 
 /**
  * Root object wrapping v1 functionality for MS Graph
@@ -20,4 +21,8 @@ export class V1 extends GraphQueryable {
     public get groups(): Groups {
         return new Groups(this);
     }
+
+    // public get me(): Me {
+    //     return new Me(this);
+    // }
 }

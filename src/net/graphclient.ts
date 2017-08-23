@@ -1,9 +1,10 @@
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { mergeHeaders, FetchOptions } from "./utils";
+import { RequestClient } from "../request/requestclient";
 // import { APIUrlException } from "../utils/exceptions";
 
-export class GraphHttpClient {
+export class GraphHttpClient implements RequestClient {
 
     private _impl: GraphHttpClientImpl;
 
@@ -65,6 +66,26 @@ export class GraphHttpClient {
 
             retry.call(this, retryContext);
         });
+    }
+
+    public get(url: string, options: FetchOptions = {}): Promise<Response> {
+        const opts = Util.extend(options, { method: "GET" });
+        return this.fetch(url, opts);
+    }
+
+    public post(url: string, options: FetchOptions = {}): Promise<Response> {
+        const opts = Util.extend(options, { method: "POST" });
+        return this.fetch(url, opts);
+    }
+
+    public patch(url: string, options: FetchOptions = {}): Promise<Response> {
+        const opts = Util.extend(options, { method: "PATCH" });
+        return this.fetch(url, opts);
+    }
+
+    public delete(url: string, options: FetchOptions = {}): Promise<Response> {
+        const opts = Util.extend(options, { method: "DELETE" });
+        return this.fetch(url, opts);
     }
 }
 
