@@ -3,14 +3,10 @@ import { Dictionary } from "../collections/collections";
 import { GraphHttpClient } from "../net/graphclient";
 import { FetchOptions } from "../net/utils";
 import { ODataParser } from "../odata/core";
-import { ODataDefaultParser } from "../odata/parsers";
-import { RuntimeConfig } from "../configuration/pnplibconfig";
-import { Logger, LogLevel } from "../utils/logging";
-import { ICachingOptions } from "../odata/caching";
+import { ODataQueryable } from "../odata/queryable";
 import {
     RequestContext,
     PipelineMethods,
-    pipe,
 } from "../request/pipeline";
 
 export interface GraphQueryableConstructor<T> {
@@ -21,67 +17,7 @@ export interface GraphQueryableConstructor<T> {
  * Queryable Base Class
  *
  */
-export class GraphQueryable {
-
-    /**
-     * Tracks the query parts of the url
-     */
-    protected _query: Dictionary<string>;
-
-    /**
-     * Tracks the url as it is built
-     */
-    private _url: string;
-
-    /**
-     * Explicitly tracks if we are using caching for this request
-     */
-    private _useCaching: boolean;
-
-    /**
-     * Any options that were supplied when caching was enabled
-     */
-    private _cachingOptions: ICachingOptions;
-
-    /**
-     * Stores the parent url used to create this instance, for recursing back up the tree if needed
-     */
-    private _parentUrl: string;
-
-    /**
-     * Directly concatonates the supplied string to the current url, not normalizing "/" chars
-     *
-     * @param pathPart The string to concatonate to the url
-     */
-    public concat(pathPart: string): this {
-        this._url += pathPart;
-        return this;
-    }
-
-    /**
-     * Appends the given string and normalizes "/" chars
-     *
-     * @param pathPart The string to append
-     */
-    protected append(pathPart: string) {
-        this._url = Util.combinePaths(this._url, pathPart);
-    }
-
-    /**
-     * Gets the parent url used when creating this instance
-     *
-     */
-    protected get parentUrl(): string {
-        return this._parentUrl;
-    }
-
-    /**
-     * Provides access to the query builder for this url
-     *
-     */
-    public get query(): Dictionary<string> {
-        return this._query;
-    }
+export class GraphQueryable extends ODataQueryable {
 
     /**
      * Creates a new instance of the Queryable class
@@ -91,6 +27,7 @@ export class GraphQueryable {
      *
      */
     constructor(baseUrl: string | GraphQueryable, path?: string) {
+        super();
 
         this._query = new Dictionary<string>();
 
@@ -118,35 +55,12 @@ export class GraphQueryable {
     }
 
     /**
-     * Gets the currentl url, made absolute based on the availability of the _spPageContextInfo object
-     *
-     */
-    public toUrl(): string {
-        return this._url;
-    }
-
-    /**
      * Gets the full url with query information
      *
      */
     public toUrlAndQuery(): string {
 
-        const aliasedParams = new Dictionary<string>();
-
-        let url = this.toUrl().replace(/'!(@.*?)::(.*?)'/ig, (match, labelName, value) => {
-            Logger.write(`Rewriting aliased parameter from match ${match} to label: ${labelName} value: ${value}`, LogLevel.Verbose);
-            aliasedParams.add(labelName, `'${value}'`);
-            return labelName;
-        });
-
-        // inlude our explicitly set query string params
-        aliasedParams.merge(this._query);
-
-        if (aliasedParams.count() > 0) {
-            url += `?${aliasedParams.getKeys().map(key => `${key}=${aliasedParams.get(key)}`).join("&")}`;
-        }
-
-        return url;
+        return this.toUrl() + `?${this._query.getKeys().map(key => `${key}=${this._query.get(key)}`).join("&")}`;
     }
 
     /**
@@ -168,57 +82,14 @@ export class GraphQueryable {
      * @param additionalPath Any additional path to include in the clone
      * @param includeBatch If true this instance's batch will be added to the cloned instance
      */
-    protected clone<T extends GraphQueryable>(factory: GraphQueryableConstructor<T>, additionalPath?: string): T {
-        return new factory(this, additionalPath);
-    }
+    protected clone<T extends GraphQueryable>(factory: GraphQueryableConstructor<T>, additionalPath?: string, includeBatch = true): T {
 
-    /**
-     * Enables caching for this request
-     *
-     * @param options Defines the options used when caching this request
-     */
-    public usingCaching(options?: ICachingOptions): this {
-        if (!RuntimeConfig.globalCacheDisable) {
-            this._useCaching = true;
-            this._cachingOptions = options;
+        // TODO:: include batching info in clone
+        if (includeBatch) {
+            return new factory(this, additionalPath);
         }
-        return this;
-    }
 
-    /**
-     * Executes the currently built request
-     *
-     * @param options The options used for this request
-     */
-    public get(parser: ODataParser<any> = new ODataDefaultParser(), options: FetchOptions = {}): Promise<any> {
-        return this.toRequestContext("GET", options, parser).then(context => pipe(context));
-    }
-
-    /**
-     * Executes the currently built request
-     *
-     * @param options The options used for this request
-     */
-    protected post(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("POST", options, parser).then(context => pipe(context));
-    }
-
-    /**
-     * Executes the currently built request
-     *
-     * @param options The options used for this request
-     */
-    protected patch(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("PATCH", options, parser).then(context => pipe(context));
-    }
-
-    /**
-     * Executes the currently built request
-     *
-     * @param options The options used for this request
-     */
-    protected delete(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("DELETE", options, parser).then(context => pipe(context));
+        return new factory(this, additionalPath);
     }
 
     /**
@@ -229,7 +100,7 @@ export class GraphQueryable {
      * @param parser The supplied ODataParser instance
      * @param pipeline Optional request processing pipeline
      */
-    private toRequestContext<T>(
+    protected toRequestContext<T>(
         verb: string,
         options: FetchOptions = {},
         parser: ODataParser<T>,
@@ -260,7 +131,6 @@ export class GraphQueryable {
 export class GraphQueryableCollection extends GraphQueryable {
 
     /**
-     * Filters the returned collection (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#bk_supported)
      *
      * @param filter The string representing the filter query
      */

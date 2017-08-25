@@ -1,17 +1,17 @@
-import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableCollection, SharePointQueryableInstance } from "./sharepointqueryable";
 
 /**
  * Describes a collection of webhook subscriptions
  *
  */
-export class Subscriptions extends QueryableCollection {
+export class Subscriptions extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Subscriptions class
      *
-     * @param baseUrl - The url or Queryable which forms the parent of this webhook subscriptions collection
+     * @param baseUrl - The url or SharePointQueryable which forms the parent of this webhook subscriptions collection
      */
-    constructor(baseUrl: string | Queryable, path = "subscriptions") {
+    constructor(baseUrl: string | SharePointQueryable, path = "subscriptions") {
         super(baseUrl, path);
     }
 
@@ -53,7 +53,7 @@ export class Subscriptions extends QueryableCollection {
  * Describes a single webhook subscription instance
  *
  */
-export class Subscription extends QueryableInstance {
+export class Subscription extends SharePointQueryableInstance {
 
     /**
      * Renews this webhook subscription

@@ -13,8 +13,10 @@ let settings = require("../../settings.js");
 
 // configure your node options
 pnp.setup({
-    fetchClientFactory: () => {
-        return new NodeFetchClient(settings.testing.siteUrl, settings.testing.clientId, settings.testing.clientSecret);
+    sp: {
+        fetchClientFactory: () => {
+            return new NodeFetchClient(settings.testing.siteUrl, settings.testing.clientId, settings.testing.clientSecret);
+        },
     }
 });
 

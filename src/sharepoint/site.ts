@@ -1,4 +1,4 @@
-import { Queryable, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance } from "./sharepointqueryable";
 import { Web } from "./webs";
 import { UserCustomActions } from "./usercustomactions";
 import { ContextInfo, DocumentLibraryInformation } from "./types";
@@ -10,14 +10,14 @@ import { Features } from "./features";
  * Describes a site collection
  *
  */
-export class Site extends QueryableInstance {
+export class Site extends SharePointQueryableInstance {
 
     /**
      * Creates a new instance of the Site class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this site collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this site collection
      */
-    constructor(baseUrl: string | Queryable, path = "_api/site") {
+    constructor(baseUrl: string | SharePointQueryable, path = "_api/site") {
         super(baseUrl, path);
     }
 
@@ -67,7 +67,7 @@ export class Site extends QueryableInstance {
      * @param absoluteWebUrl The absolute url of the web whose document libraries should be returned
      */
     public getDocumentLibraries(absoluteWebUrl: string): Promise<DocumentLibraryInformation[]> {
-        const q = new Queryable("", "_api/sp.web.getdocumentlibraries(@v)");
+        const q = new SharePointQueryable("", "_api/sp.web.getdocumentlibraries(@v)");
         q.query.add("@v", "'" + absoluteWebUrl + "'");
         return q.get().then(data => {
             if (data.hasOwnProperty("GetDocumentLibraries")) {
@@ -84,7 +84,7 @@ export class Site extends QueryableInstance {
      * @param absolutePageUrl The absolute url of the page
      */
     public getWebUrlFromPageUrl(absolutePageUrl: string): Promise<string> {
-        const q = new Queryable("", "_api/sp.web.getweburlfrompageurl(@v)");
+        const q = new SharePointQueryable("", "_api/sp.web.getweburlfrompageurl(@v)");
         q.query.add("@v", "'" + absolutePageUrl + "'");
         return q.get().then(data => {
             if (data.hasOwnProperty("GetWebUrlFromPageUrl")) {
@@ -110,7 +110,7 @@ export class Site extends QueryableInstance {
      */
     public openWebById(webId: string): Promise<OpenWebByIdResult> {
 
-        return this.clone(Site, `openWebById('${webId}')`, true).postCore().then(d => {
+        return this.clone(Site, `openWebById('${webId}')`).postCore().then(d => {
 
             return {
                 data: d,

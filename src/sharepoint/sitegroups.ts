@@ -1,4 +1,4 @@
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
 import { SiteUsers } from "./siteusers";
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
@@ -39,14 +39,14 @@ export interface GroupAddResult {
  * Describes a collection of site groups
  *
  */
-export class SiteGroups extends QueryableCollection {
+export class SiteGroups extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the SiteGroups class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this group collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this group collection
      */
-    constructor(baseUrl: string | Queryable, path = "sitegroups") {
+    constructor(baseUrl: string | SharePointQueryable, path = "sitegroups") {
         super(baseUrl, path);
     }
 
@@ -93,7 +93,7 @@ export class SiteGroups extends QueryableCollection {
      * @param id The id of the group to remove
      */
     public removeById(id: number): Promise<void> {
-        return this.clone(SiteGroups, `removeById('${id}')`, true).postCore();
+        return this.clone(SiteGroups, `removeById('${id}')`).postCore();
     }
 
     /**
@@ -102,7 +102,7 @@ export class SiteGroups extends QueryableCollection {
      * @param loginName The name of the group to remove
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        return this.clone(SiteGroups, `removeByLoginName('${loginName}')`, true).postCore();
+        return this.clone(SiteGroups, `removeByLoginName('${loginName}')`).postCore();
     }
 }
 
@@ -110,7 +110,7 @@ export class SiteGroups extends QueryableCollection {
  * Describes a single group
  *
  */
-export class SiteGroup extends QueryableInstance {
+export class SiteGroup extends SharePointQueryableInstance {
 
     /**
      * Gets the users for this group

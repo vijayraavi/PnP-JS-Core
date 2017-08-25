@@ -1,4 +1,4 @@
-import { Queryable } from "./queryable";
+import { SharePointQueryable } from "./sharepointqueryable";
 import { Util } from "../utils/util";
 import { EmailProperties } from "./types";
 import { ODataBatch } from "./batch";
@@ -8,7 +8,7 @@ import { spExtractODataId } from "./odata";
 import { PrincipalInfo, PrincipalType, PrincipalSource, WikiPageCreationInformation } from "./types";
 
 /**
- * Public interface for the utility methods to limit Queryable method exposure
+ * Public interface for the utility methods to limit SharePointQueryable method exposure
  */
 export interface UtilityMethods {
     usingCaching(options?: ICachingOptions): this;
@@ -34,15 +34,15 @@ export interface UtilityMethods {
 /**
  * Allows for calling of the static SP.Utilities.Utility methods by supplying the method name
  */
-export class UtilityMethod extends Queryable implements UtilityMethods {
+export class UtilityMethod extends SharePointQueryable implements UtilityMethods {
 
-    private static getBaseUrl(candidate: string | Queryable) {
+    private static getBaseUrl(candidate: string | SharePointQueryable) {
 
         if (typeof candidate === "string") {
             return candidate;
         }
 
-        const c = candidate as Queryable;
+        const c = candidate as SharePointQueryable;
         const url = c.toUrl();
         const index = url.indexOf("_api/");
         if (index < 0) {
@@ -58,7 +58,7 @@ export class UtilityMethod extends Queryable implements UtilityMethods {
      * @param baseUrl The parent url provider
      * @param methodName The static method name to call on the utility class
      */
-    constructor(baseUrl: string | Queryable, methodName: string) {
+    constructor(baseUrl: string | SharePointQueryable, methodName: string) {
 
         super(UtilityMethod.getBaseUrl(baseUrl), `_api/SP.Utilities.Utility.${methodName}`);
     }
@@ -71,7 +71,7 @@ export class UtilityMethod extends Queryable implements UtilityMethods {
     }
 
     /**
-     * Clones this queryable into a new queryable instance of T
+     * Clones this SharePointQueryable into a new SharePointQueryable instance of T
      * @param factory Constructor used to create the new instance
      * @param additionalPath Any additional path to include in the clone
      * @param includeBatch If true this instance's batch will be added to the cloned instance

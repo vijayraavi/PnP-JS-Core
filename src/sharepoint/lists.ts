@@ -4,8 +4,8 @@ import { ContentTypes } from "./contenttypes";
 import { Fields } from "./fields";
 import { Forms } from "./forms";
 import { Subscriptions } from "./subscriptions";
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
-import { QueryableSecurable } from "./queryablesecurable";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
+import { SharePointQueryableSecurable } from "./sharepointqueryablesecurable";
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 import { ControlMode, RenderListData, ChangeQuery, CamlQuery, ChangeLogitemQuery, ListFormData } from "./types";
@@ -18,14 +18,14 @@ import { Folder } from "./folders";
  * Describes a collection of List objects
  *
  */
-export class Lists extends QueryableCollection {
+export class Lists extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Lists class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable, path = "lists") {
+    constructor(baseUrl: string | SharePointQueryable, path = "lists") {
         super(baseUrl, path);
     }
 
@@ -119,7 +119,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default asset location for images or other files, which the users upload to their wiki pages.
      */
     public ensureSiteAssetsLibrary(): Promise<List> {
-        return this.clone(Lists, "ensuresiteassetslibrary", true).postCore().then((json) => {
+        return this.clone(Lists, "ensuresiteassetslibrary").postCore().then((json) => {
             return new List(spExtractODataId(json));
         });
     }
@@ -128,7 +128,7 @@ export class Lists extends QueryableCollection {
      * Gets a list that is the default location for wiki pages.
      */
     public ensureSitePagesLibrary(): Promise<List> {
-        return this.clone(Lists, "ensuresitepageslibrary", true).postCore().then((json) => {
+        return this.clone(Lists, "ensuresitepageslibrary").postCore().then((json) => {
             return new List(spExtractODataId(json));
         });
     }
@@ -139,7 +139,7 @@ export class Lists extends QueryableCollection {
  * Describes a single List instance
  *
  */
-export class List extends QueryableSecurable {
+export class List extends SharePointQueryableSecurable {
 
     /**
      * Gets the content types in this list
@@ -185,8 +185,8 @@ export class List extends QueryableSecurable {
      * Gets the default view of this list
      *
      */
-    public get defaultView(): QueryableInstance {
-        return new QueryableInstance(this, "DefaultView");
+    public get defaultView(): SharePointQueryableInstance {
+        return new SharePointQueryableInstance(this, "DefaultView");
     }
 
     /**
@@ -201,32 +201,32 @@ export class List extends QueryableSecurable {
      * Gets the effective base permissions of this list
      *
      */
-    public get effectiveBasePermissions(): Queryable {
-        return new Queryable(this, "EffectiveBasePermissions");
+    public get effectiveBasePermissions(): SharePointQueryable {
+        return new SharePointQueryable(this, "EffectiveBasePermissions");
     }
 
     /**
      * Gets the event receivers attached to this list
      *
      */
-    public get eventReceivers(): QueryableCollection {
-        return new QueryableCollection(this, "EventReceivers");
+    public get eventReceivers(): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, "EventReceivers");
     }
 
     /**
      * Gets the related fields of this list
      *
      */
-    public get relatedFields(): Queryable {
-        return new Queryable(this, "getRelatedFields");
+    public get relatedFields(): SharePointQueryable {
+        return new SharePointQueryable(this, "getRelatedFields");
     }
 
     /**
      * Gets the IRM settings for this list
      *
      */
-    public get informationRightsManagementSettings(): Queryable {
-        return new Queryable(this, "InformationRightsManagementSettings");
+    public get informationRightsManagementSettings(): SharePointQueryable {
+        return new SharePointQueryable(this, "InformationRightsManagementSettings");
     }
 
     /**
@@ -306,7 +306,7 @@ export class List extends QueryableSecurable {
      */
     public getChanges(query: ChangeQuery): Promise<any> {
 
-        return this.clone(List, "getchanges", true).postCore({
+        return this.clone(List, "getchanges").postCore({
             body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) }),
         });
     }
@@ -332,7 +332,7 @@ export class List extends QueryableSecurable {
      */
     public getItemsByCAMLQuery(query: CamlQuery, ...expands: string[]): Promise<any> {
 
-        const q = this.clone(List, "getitems", true);
+        const q = this.clone(List, "getitems");
         return q.expand.apply(q, expands).postCore({
             body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.CamlQuery" } }, query) }),
         });
@@ -343,7 +343,7 @@ export class List extends QueryableSecurable {
      */
     public getListItemChangesSinceToken(query: ChangeLogitemQuery): Promise<string> {
 
-        return this.clone(List, "getlistitemchangessincetoken", true).postCore({
+        return this.clone(List, "getlistitemchangessincetoken").postCore({
             body: JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeLogItemQuery" } }, query) }),
         }, { parse(r) { return r.text(); } });
     }
@@ -352,7 +352,7 @@ export class List extends QueryableSecurable {
      * Moves the list to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        return this.clone(List, "recycle", true).postCore().then(data => {
+        return this.clone(List, "recycle").postCore().then(data => {
             if (data.hasOwnProperty("Recycle")) {
                 return data.Recycle;
             } else {
@@ -383,7 +383,7 @@ export class List extends QueryableSecurable {
      * Gets the field values and field schema attributes for a list item.
      */
     public renderListFormData(itemId: number, formId: string, mode: ControlMode): Promise<ListFormData> {
-        return this.clone(List, `renderlistformdata(itemid=${itemId}, formid='${formId}', mode='${mode}')`, true).postCore().then(data => {
+        return this.clone(List, `renderlistformdata(itemid=${itemId}, formid='${formId}', mode='${mode}')`).postCore().then(data => {
             // data will be a string, so we parse it again
             data = JSON.parse(data);
             if (data.hasOwnProperty("ListData")) {
@@ -398,7 +398,7 @@ export class List extends QueryableSecurable {
      * Reserves a list item ID for idempotent list item creation.
      */
     public reserveListItemId(): Promise<number> {
-        return this.clone(List, "reservelistitemid", true).postCore().then(data => {
+        return this.clone(List, "reservelistitemid").postCore().then(data => {
             if (data.hasOwnProperty("ReserveListItemId")) {
                 return data.ReserveListItemId;
             } else {
@@ -412,7 +412,7 @@ export class List extends QueryableSecurable {
      *
      */
     public getListItemEntityTypeFullName(): Promise<string> {
-        return this.clone(List, null).select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
+        return this.clone(List, null, false).select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then(o => o.ListItemEntityTypeFullName);
     }
 }
 

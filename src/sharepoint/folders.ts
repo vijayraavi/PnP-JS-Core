@@ -1,5 +1,5 @@
-import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
-import { QueryableShareableFolder } from "./queryableshareable";
+import { SharePointQueryable, SharePointQueryableCollection, SharePointQueryableInstance } from "./sharepointqueryable";
+import { SharePointQueryableShareableFolder } from "./sharepointqueryableshareable";
 import { Files } from "./files";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
@@ -10,14 +10,14 @@ import { Item } from "./items";
  * Describes a collection of Folder objects
  *
  */
-export class Folders extends QueryableCollection {
+export class Folders extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Folders class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable, path = "folders") {
+    constructor(baseUrl: string | SharePointQueryable, path = "folders") {
         super(baseUrl, path);
     }
 
@@ -39,7 +39,7 @@ export class Folders extends QueryableCollection {
      */
     public add(url: string): Promise<FolderAddResult> {
 
-        return this.clone(Folders, `add('${url}')`, true).postCore().then((response) => {
+        return this.clone(Folders, `add('${url}')`).postCore().then((response) => {
             return {
                 data: response,
                 folder: this.getByName(url),
@@ -52,14 +52,14 @@ export class Folders extends QueryableCollection {
  * Describes a single Folder instance
  *
  */
-export class Folder extends QueryableShareableFolder {
+export class Folder extends SharePointQueryableShareableFolder {
 
     /**
      * Specifies the sequence in which content types are displayed.
      *
      */
-    public get contentTypeOrder(): QueryableCollection {
-        return new QueryableCollection(this, "contentTypeOrder");
+    public get contentTypeOrder(): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, "contentTypeOrder");
     }
 
     /**
@@ -82,8 +82,8 @@ export class Folder extends QueryableShareableFolder {
      * Gets this folder's list item field values
      *
      */
-    public get listItemAllFields(): QueryableCollection {
-        return new QueryableCollection(this, "listItemAllFields");
+    public get listItemAllFields(): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, "listItemAllFields");
     }
 
     /**
@@ -98,24 +98,24 @@ export class Folder extends QueryableShareableFolder {
      * Gets this folder's properties
      *
      */
-    public get properties(): QueryableInstance {
-        return new QueryableInstance(this, "properties");
+    public get properties(): SharePointQueryableInstance {
+        return new SharePointQueryableInstance(this, "properties");
     }
 
     /**
      * Gets this folder's server relative url
      *
      */
-    public get serverRelativeUrl(): Queryable {
-        return new Queryable(this, "serverRelativeUrl");
+    public get serverRelativeUrl(): SharePointQueryable {
+        return new SharePointQueryable(this, "serverRelativeUrl");
     }
 
     /**
      * Gets a value that specifies the content type order.
      *
      */
-    public get uniqueContentTypeOrder(): QueryableCollection {
-        return new QueryableCollection(this, "uniqueContentTypeOrder");
+    public get uniqueContentTypeOrder(): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, "uniqueContentTypeOrder");
     }
 
     public update(properties: TypedHash<string | number | boolean>): Promise<FolderUpdateResult> {
@@ -142,7 +142,7 @@ export class Folder extends QueryableShareableFolder {
     * @param eTag Value used in the IF-Match header, by default "*"
     */
     public delete(eTag = "*"): Promise<void> {
-        return this.clone(Folder, null, true).postCore({
+        return this.clone(Folder, null).postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
@@ -154,7 +154,7 @@ export class Folder extends QueryableShareableFolder {
      * Moves the folder to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        return this.clone(Folder, "recycle", true).postCore();
+        return this.clone(Folder, "recycle").postCore();
     }
 
     /**

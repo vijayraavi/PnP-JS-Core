@@ -1,16 +1,5 @@
 import { GraphQueryable, GraphQueryableInstance, GraphQueryableCollection } from "./graphqueryable";
-
-export interface AttachmentData {
-    contentBytes?: Blob;
-    contentId?: string;
-    contentLocation?: string;
-    contentType?: string;
-    id?: string;
-    isInline?: boolean;
-    lastModifiedDateTime?: string;
-    name?: string;
-    size?: number;
-}
+import { Attachment as IAttachment } from "@microsoft/microsoft-graph-types";
 
 export class Attachments extends GraphQueryableCollection {
 
@@ -33,9 +22,9 @@ export class Attachments extends GraphQueryableCollection {
      * @param name Name given to the attachment file
      * @param bytes File content
      */
-    public addFile(name: string, bytes: string | Blob): Promise<AttachmentData> {
+    public addFile(name: string, bytes: string | Blob): Promise<IAttachment> {
 
-        return this.post({
+        return this.postCore({
             body: JSON.stringify({
                 "@odata.type": "#microsoft.graph.fileAttachment",
                 contentBytes: bytes,

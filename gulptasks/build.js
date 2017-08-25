@@ -27,6 +27,20 @@ gulp.task("build:lib", () => {
     ]);
 });
 
+gulp.task("build:exports", () => {
+
+    var project = tsc.createProject("tsconfig.json", { declaration: true });
+
+    var built = gulp.src(config.paths.exportsGlob)
+        .pipe(replace("$$Version$$", pkg.version))
+        .pipe(project());
+
+    return merge([
+        built.dts.pipe(replace("../", "../lib/")).pipe(gulp.dest(config.paths.exports)),
+        built.js.pipe(replace("../", "../lib/")).pipe(gulp.dest(config.paths.exports))
+    ]);
+});
+
 gulp.task("build:testing", () => {
 
     var projectSrc = tsc.createProject("tsconfig.json");
@@ -80,4 +94,4 @@ gulp.task("build:debug", ["clean"], () => {
 });
 
 // run the build chain for lib
-gulp.task("build", ["clean", "lint", "build:lib"]);
+gulp.task("build", ["clean", "lint", "build:lib", "build:exports"]);

@@ -8,6 +8,7 @@
     "@types/sharepoint": "^2013.1.9"
   },
   "devDependencies": {
+    "@microsoft/microsoft-graph-types": "^1.0.1",
     "@types/chai": "^4.0.3",
     "@types/chai-as-promised": "^0.0.31",
     "@types/core-js": "^0.9.42",

@@ -1,5 +1,6 @@
 import { GraphQueryable, GraphQueryableInstance, GraphQueryableCollection } from "./graphqueryable";
 import { TypedHash } from "../collections/collections";
+import { Event as IEvent } from "@microsoft/microsoft-graph-types";
 // import { Attachments } from "./attachments";
 
 export class Calendars extends GraphQueryableCollection {
@@ -31,9 +32,9 @@ export class Events extends GraphQueryableCollection {
      * 
      * @param properties The set of properties used to create the event
      */
-    public add(properties: TypedHash<any> = {}): Promise<EventAddResult> {
+    public add(properties: Event): Promise<EventAddResult> {
 
-        return this.post({
+        return this.postCore({
             body: JSON.stringify(properties),
         }).then(r => {
             return {
@@ -45,13 +46,13 @@ export class Events extends GraphQueryableCollection {
 }
 
 export interface EventAddResult {
-    data: any;
+    data: IEvent;
     event: Event;
 }
 
 export class Event extends GraphQueryableInstance {
 
-    // TODO::
+    // TODO:: when supported
     // /**
     //  * Gets the collection of attachments for this event
     //  */
@@ -66,7 +67,7 @@ export class Event extends GraphQueryableInstance {
      */
     public update(properties: TypedHash<any>): Promise<void> {
 
-        return this.patch({
+        return this.patchCore({
             body: JSON.stringify(properties),
         });
     }
@@ -75,7 +76,7 @@ export class Event extends GraphQueryableInstance {
      * Deletes this event
      */
     public delete(): Promise<void> {
-        return super.delete();
+        return this.deleteCore();
     }
 }
 

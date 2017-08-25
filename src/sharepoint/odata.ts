@@ -1,4 +1,4 @@
-import { QueryableConstructor } from "./queryable";
+import { SharePointQueryableConstructor } from "./sharepointqueryable";
 import { Util, extractWebUrl } from "../utils/util";
 import { Logger, LogLevel } from "../utils/logging";
 import { ODataIdException } from "../utils/exceptions";
@@ -17,7 +17,7 @@ export function spExtractODataId(candidate: any): string {
 
 class SPODataEntityParserImpl<T> extends ODataParserBase<T> {
 
-    constructor(protected factory: QueryableConstructor<T>) {
+    constructor(protected factory: SharePointQueryableConstructor<T>) {
         super();
     }
 
@@ -31,7 +31,7 @@ class SPODataEntityParserImpl<T> extends ODataParserBase<T> {
 
 class SPODataEntityArrayParserImpl<T> extends ODataParserBase<T[]> {
 
-    constructor(protected factory: QueryableConstructor<T>) {
+    constructor(protected factory: SharePointQueryableConstructor<T>) {
         super();
     }
 
@@ -61,10 +61,10 @@ export function spGetEntityUrl(entity: any): string {
     }
 }
 
-export function spODataEntity<T>(factory: QueryableConstructor<T>): ODataParser<T> {
+export function spODataEntity<T>(factory: SharePointQueryableConstructor<T>): ODataParser<T> {
     return new SPODataEntityParserImpl(factory);
 }
 
-export function spODataEntityArray<T>(factory: QueryableConstructor<T>): ODataParser<T[]> {
+export function spODataEntityArray<T>(factory: SharePointQueryableConstructor<T>): ODataParser<T[]> {
     return new SPODataEntityArrayParserImpl(factory);
 }

@@ -60,11 +60,11 @@ export {
 } from "./odata";
 
 export {
-    Queryable,
-    QueryableInstance,
-    QueryableCollection,
-    QueryableConstructor,
-} from "./queryable";
+    SharePointQueryable,
+    SharePointQueryableInstance,
+    SharePointQueryableCollection,
+    SharePointQueryableConstructor,
+} from "./sharepointqueryable";
 
 export {
     RelatedItem,

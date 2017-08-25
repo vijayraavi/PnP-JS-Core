@@ -252,9 +252,9 @@ export class Util {
                 return resolve(candidateUrl);
             }
 
-            if (RuntimeConfig.baseUrl !== null) {
+            if (RuntimeConfig.spBaseUrl !== null) {
                 // base url specified either with baseUrl of spfxContext config property
-                return resolve(Util.combinePaths(RuntimeConfig.baseUrl, candidateUrl));
+                return resolve(Util.combinePaths(RuntimeConfig.spBaseUrl, candidateUrl));
             }
 
             if (typeof global._spPageContextInfo !== "undefined") {

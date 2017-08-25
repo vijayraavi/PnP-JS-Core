@@ -1,6 +1,6 @@
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
 
-export class LimitedWebPartManager extends Queryable {
+export class LimitedWebPartManager extends SharePointQueryable {
 
     /**
      * Gets the set of web part definitions contained by this web part manager
@@ -18,7 +18,7 @@ export class LimitedWebPartManager extends Queryable {
      */
     public export(id: string): Promise<string> {
 
-        return this.clone(LimitedWebPartManager, "ExportWebPart", true).postCore({
+        return this.clone(LimitedWebPartManager, "ExportWebPart").postCore({
             body: JSON.stringify({ webPartId: id }),
         });
     }
@@ -30,13 +30,13 @@ export class LimitedWebPartManager extends Queryable {
      */
     public import(xml: string): Promise<any> {
 
-        return this.clone(LimitedWebPartManager, "ImportWebPart", true).postCore({
+        return this.clone(LimitedWebPartManager, "ImportWebPart").postCore({
             body: JSON.stringify({ webPartXml: xml }),
         });
     }
 }
 
-export class WebPartDefinitions extends QueryableCollection {
+export class WebPartDefinitions extends SharePointQueryableCollection {
 
     /**
      * Gets a web part definition from the collection by id
@@ -59,7 +59,7 @@ export class WebPartDefinitions extends QueryableCollection {
     }
 }
 
-export class WebPartDefinition extends QueryableInstance {
+export class WebPartDefinition extends SharePointQueryableInstance {
 
     /**
      * Gets the webpart information associated with this definition
@@ -74,7 +74,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public saveChanges(): Promise<any> {
 
-        return this.clone(WebPartDefinition, "SaveWebPartChanges", true).postCore();
+        return this.clone(WebPartDefinition, "SaveWebPartChanges").postCore();
     }
 
     /**
@@ -85,7 +85,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public moveTo(zoneId: string, zoneIndex: number): Promise<void> {
 
-        return this.clone(WebPartDefinition, `MoveWebPartTo(zoneID='${zoneId}', zoneIndex=${zoneIndex})`, true).postCore();
+        return this.clone(WebPartDefinition, `MoveWebPartTo(zoneID='${zoneId}', zoneIndex=${zoneIndex})`).postCore();
     }
 
     /**
@@ -93,7 +93,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public close(): Promise<void> {
 
-        return this.clone(WebPartDefinition, "CloseWebPart", true).postCore();
+        return this.clone(WebPartDefinition, "CloseWebPart").postCore();
     }
 
     /**
@@ -101,7 +101,7 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public open(): Promise<void> {
 
-        return this.clone(WebPartDefinition, "OpenWebPart", true).postCore();
+        return this.clone(WebPartDefinition, "OpenWebPart").postCore();
 
     }
 
@@ -110,19 +110,19 @@ export class WebPartDefinition extends QueryableInstance {
      */
     public delete(): Promise<void> {
 
-        return this.clone(WebPartDefinition, "DeleteWebPart", true).postCore();
+        return this.clone(WebPartDefinition, "DeleteWebPart").postCore();
     }
 }
 
-export class WebPart extends QueryableInstance {
+export class WebPart extends SharePointQueryableInstance {
 
     /**
      * Creates a new instance of the WebPart class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this fields collection
      * @param path Optional, if supplied will be appended to the supplied baseUrl
      */
-    constructor(baseUrl: string | Queryable, path = "webpart") {
+    constructor(baseUrl: string | SharePointQueryable, path = "webpart") {
         super(baseUrl, path);
     }
 }

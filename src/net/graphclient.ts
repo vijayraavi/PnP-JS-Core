@@ -10,12 +10,12 @@ export class GraphHttpClient implements RequestClient {
 
     constructor() {
 
-        // TODO:: this is weak and needs updated
-        this._impl = RuntimeConfig.spfxContext.graphHttpClient;
+        this._impl = RuntimeConfig.graphFetchClientFactory();
     }
 
     public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 
+        // TODO: we could process auth here
         // until we are doing things like establishing the auth just pass this to the SPFx client to do the heavy lifting
         return this.fetchRaw(url, options);
     }

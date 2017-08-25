@@ -1,7 +1,8 @@
 import { expect } from "chai";
 
 import { testSettings } from "../test-config.test";
-import { default as pnp, NodeFetchClient } from "../../src/pnp";
+import pnp from "../../src/pnp";
+import { NodeFetchClient } from "../../src/net/nodefetchclient";
 import { MockFetchClient } from "../mocks/mockfetchclient";
 
 describe("Custom options", () => {
@@ -14,18 +15,22 @@ describe("Custom options", () => {
 
     before(() => {
         pnp.setup({
-            fetchClientFactory: () => {
-                return mockFetch;
-            },
+            sp: {
+                fetchClientFactory: () => {
+                    return mockFetch;
+                },
+            }
         });
     });
 
     after(() => {
         if (testSettings.enableWebTests) {
             pnp.setup({
-                fetchClientFactory: () => {
-                    return new NodeFetchClient(testSettings.webUrl, testSettings.clientId, testSettings.clientSecret);
-                },
+                sp: {
+                    fetchClientFactory: () => {
+                        return new NodeFetchClient(testSettings.webUrl, testSettings.clientId, testSettings.clientSecret);
+                    },
+                }
             });
         }
     });

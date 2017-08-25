@@ -45,10 +45,10 @@ export const log = Logger;
  */
 export const setup: (config: LibraryConfiguration) => void = setRuntimeConfig;
 
-/**
- * Expose a subset of classes from the library for public consumption
- */
-export * from "./types/index";
+// /**
+//  * Expose a subset of classes from the library for public consumption
+//  */
+// export * from "./types/index";
 
 // creating this class instead of directly assigning to default fixes issue #116
 const Def = {

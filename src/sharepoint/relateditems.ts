@@ -1,4 +1,4 @@
-import { Queryable } from "./queryable";
+import { SharePointQueryable } from "./sharepointqueryable";
 
 export interface RelatedItem {
     ListId: string;
@@ -52,7 +52,7 @@ export interface RelatedItemManger {
         tryDeleteReverseLink?: boolean): Promise<void>;
 }
 
-export class RelatedItemManagerImpl extends Queryable implements RelatedItemManger {
+export class RelatedItemManagerImpl extends SharePointQueryable implements RelatedItemManger {
 
     public static FromUrl(url: string): RelatedItemManagerImpl {
 
@@ -69,13 +69,13 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         return new RelatedItemManagerImpl(url);
     }
 
-    constructor(baseUrl: string | Queryable, path = "_api/SP.RelatedItemManager") {
+    constructor(baseUrl: string | SharePointQueryable, path = "_api/SP.RelatedItemManager") {
         super(baseUrl, path);
     }
 
     public getRelatedItems(sourceListName: string, sourceItemId: number): Promise<RelatedItem[]> {
 
-        const query = this.clone(RelatedItemManagerImpl, null, true);
+        const query = this.clone(RelatedItemManagerImpl, null);
         query.concat(".GetRelatedItems");
 
         return query.postCore({
@@ -88,7 +88,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
 
     public getPageOneRelatedItems(sourceListName: string, sourceItemId: number): Promise<RelatedItem[]> {
 
-        const query = this.clone(RelatedItemManagerImpl, null, true);
+        const query = this.clone(RelatedItemManagerImpl, null);
         query.concat(".GetPageOneRelatedItems");
 
         return query.postCore({
@@ -107,7 +107,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         targetWebUrl: string,
         tryAddReverseLink = false): Promise<void> {
 
-        const query = this.clone(RelatedItemManagerImpl, null, true);
+        const query = this.clone(RelatedItemManagerImpl, null);
         query.concat(".AddSingleLink");
 
         return query.postCore({
@@ -133,7 +133,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
      */
     public addSingleLinkToUrl(sourceListName: string, sourceItemId: number, targetItemUrl: string, tryAddReverseLink = false): Promise<void> {
 
-        const query = this.clone(RelatedItemManagerImpl, null, true);
+        const query = this.clone(RelatedItemManagerImpl, null);
         query.concat(".AddSingleLinkToUrl");
 
         return query.postCore({
@@ -156,7 +156,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
      */
     public addSingleLinkFromUrl(sourceItemUrl: string, targetListName: string, targetItemId: number, tryAddReverseLink = false): Promise<void> {
 
-        const query = this.clone(RelatedItemManagerImpl, null, true);
+        const query = this.clone(RelatedItemManagerImpl, null);
         query.concat(".AddSingleLinkFromUrl");
 
         return query.postCore({
@@ -177,7 +177,7 @@ export class RelatedItemManagerImpl extends Queryable implements RelatedItemMang
         targetWebUrl: string,
         tryDeleteReverseLink = false): Promise<void> {
 
-        const query = this.clone(RelatedItemManagerImpl, null, true);
+        const query = this.clone(RelatedItemManagerImpl, null);
         query.concat(".DeleteSingleLink");
 
         return query.postCore({

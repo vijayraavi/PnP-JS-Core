@@ -1,8 +1,8 @@
 import { Util } from "../utils/util";
 import { Web } from "./webs";
 import { spGetEntityUrl } from "./odata";
-import { Queryable, QueryableInstance } from "./queryable";
-import { QueryableSecurable } from "./queryablesecurable";
+import { SharePointQueryable, SharePointQueryableInstance } from "./sharepointqueryable";
+import { SharePointQueryableSecurable } from "./sharepointqueryablesecurable";
 import {
     RoleType,
     SharingLinkKind,
@@ -21,7 +21,7 @@ import {
 /**
  * Internal helper class used to augment classes to include sharing functionality
  */
-export class QueryableShareable extends Queryable {
+export class SharePointQueryableShareable extends SharePointQueryable {
 
     /**
      * Gets a sharing link for the supplied
@@ -35,7 +35,7 @@ export class QueryableShareable extends Queryable {
         const expString = expiration !== null ? expiration.toISOString() : null;
 
         // clone using the factory and send the request
-        return this.clone(QueryableShareable, "shareLink", true).postAsCore<ShareLinkResponse>({
+        return this.clone(SharePointQueryableShareable, "shareLink").postAsCore<ShareLinkResponse>({
             body: JSON.stringify({
                 request: {
                     createLink: true,
@@ -92,7 +92,7 @@ export class QueryableShareable extends Queryable {
                 });
             }
 
-            return this.clone(QueryableShareable, "shareObject", true).postAsCore<SharingResult>({
+            return this.clone(SharePointQueryableShareable, "shareObject").postAsCore<SharingResult>({
                 body: JSON.stringify(postBody),
             });
         });
@@ -155,7 +155,7 @@ export class QueryableShareable extends Queryable {
      */
     public unshareObjectWeb(url: string): Promise<SharingResult> {
 
-        return this.clone(QueryableShareable, "unshareObject", true).postAsCore<SharingResult>({
+        return this.clone(SharePointQueryableShareable, "unshareObject").postAsCore<SharingResult>({
             body: JSON.stringify({
                 url: url,
             }),
@@ -169,7 +169,7 @@ export class QueryableShareable extends Queryable {
      */
     public checkPermissions(recipients: SharingRecipient[]): Promise<SharingEntityPermission[]> {
 
-        return this.clone(QueryableShareable, "checkPermissions", true).postAsCore<SharingEntityPermission[]>({
+        return this.clone(SharePointQueryableShareable, "checkPermissions").postAsCore<SharingEntityPermission[]>({
             body: JSON.stringify({
                 recipients: recipients,
             }),
@@ -183,7 +183,7 @@ export class QueryableShareable extends Queryable {
      */
     public getSharingInformation(request: SharingInformationRequest = null): Promise<SharingInformation> {
 
-        return this.clone(QueryableShareable, "getSharingInformation", true).postAsCore<SharingInformation>({
+        return this.clone(SharePointQueryableShareable, "getSharingInformation").postAsCore<SharingInformation>({
             body: JSON.stringify({
                 request: request,
             }),
@@ -197,7 +197,7 @@ export class QueryableShareable extends Queryable {
      */
     public getObjectSharingSettings(useSimplifiedRoles = true): Promise<ObjectSharingSettings> {
 
-        return this.clone(QueryableShareable, "getObjectSharingSettings", true).postAsCore<ObjectSharingSettings>({
+        return this.clone(SharePointQueryableShareable, "getObjectSharingSettings").postAsCore<ObjectSharingSettings>({
             body: JSON.stringify({
                 useSimplifiedRoles: useSimplifiedRoles,
             }),
@@ -209,7 +209,7 @@ export class QueryableShareable extends Queryable {
      */
     public unshareObject(): Promise<SharingResult> {
 
-        return this.clone(QueryableShareable, "unshareObject", true).postAsCore<SharingResult>();
+        return this.clone(SharePointQueryableShareable, "unshareObject").postAsCore<SharingResult>();
     }
 
     /**
@@ -219,7 +219,7 @@ export class QueryableShareable extends Queryable {
      */
     public deleteLinkByKind(kind: SharingLinkKind): Promise<void> {
 
-        return this.clone(QueryableShareable, "deleteLinkByKind", true).postCore({
+        return this.clone(SharePointQueryableShareable, "deleteLinkByKind").postCore({
             body: JSON.stringify({ linkKind: kind }),
         });
     }
@@ -232,7 +232,7 @@ export class QueryableShareable extends Queryable {
      */
     public unshareLink(kind: SharingLinkKind, shareId = "00000000-0000-0000-0000-000000000000"): Promise<void> {
 
-        return this.clone(QueryableShareable, "unshareLink", true).postCore({
+        return this.clone(SharePointQueryableShareable, "unshareLink").postCore({
             body: JSON.stringify({ linkKind: kind, shareId: shareId }),
         });
     }
@@ -277,14 +277,14 @@ export class QueryableShareable extends Queryable {
 
         return this.getShareObjectWeb(this.toUrl()).then(web => {
 
-            return web.expand("UsersWithAccessRequests", "GroupsSharedWith").as(QueryableShareable).postCore({
+            return web.expand("UsersWithAccessRequests", "GroupsSharedWith").as(SharePointQueryableShareable).postCore({
                 body: JSON.stringify(options),
             });
         });
     }
 }
 
-export class QueryableShareableWeb extends QueryableSecurable {
+export class SharePointQueryableShareableWeb extends SharePointQueryableSecurable {
 
     /**
      * Shares this web with the supplied users
@@ -325,7 +325,7 @@ export class QueryableShareableWeb extends QueryableSecurable {
         includeAnonymousLinkInEmail = false,
         useSimplifiedRoles = true): Promise<SharingResult> {
 
-        return this.clone(QueryableShareable, null, true).shareObject({
+        return this.clone(SharePointQueryableShareable, null).shareObject({
             emailData: emailData,
             group: group,
             includeAnonymousLinkInEmail: includeAnonymousLinkInEmail,
@@ -343,7 +343,7 @@ export class QueryableShareableWeb extends QueryableSecurable {
      * @param options The set of options to send to ShareObject
      */
     public shareObjectRaw(options: any): Promise<SharingResult> {
-        return this.clone(QueryableShareable, null, true).shareObject(options, true);
+        return this.clone(SharePointQueryableShareable, null).shareObject(options, true);
     }
 
     /**
@@ -353,11 +353,11 @@ export class QueryableShareableWeb extends QueryableSecurable {
      */
     public unshareObject(url: string): Promise<SharingResult> {
 
-        return this.clone(QueryableShareable, null, true).unshareObjectWeb(url);
+        return this.clone(SharePointQueryableShareable, null).unshareObjectWeb(url);
     }
 }
 
-export class QueryableShareableItem extends QueryableSecurable {
+export class SharePointQueryableShareableItem extends SharePointQueryableSecurable {
 
     /**
      * Gets a link suitable for sharing for this item
@@ -366,7 +366,7 @@ export class QueryableShareableItem extends QueryableSecurable {
      * @param expiration The optional expiration date
      */
     public getShareLink(kind: SharingLinkKind = SharingLinkKind.OrganizationView, expiration: Date = null): Promise<ShareLinkResponse> {
-        return this.clone(QueryableShareable, null, true).getShareLink(kind, expiration);
+        return this.clone(SharePointQueryableShareable, null).getShareLink(kind, expiration);
     }
 
     /**
@@ -378,7 +378,7 @@ export class QueryableShareableItem extends QueryableSecurable {
      */
     public shareWith(loginNames: string | string[], role: SharingRole = SharingRole.View, requireSignin = false, emailData?: SharingEmailData): Promise<SharingResult> {
 
-        return this.clone(QueryableShareable, null, true).shareWith(loginNames, role, requireSignin, false, emailData);
+        return this.clone(SharePointQueryableShareable, null).shareWith(loginNames, role, requireSignin, false, emailData);
     }
 
     /**
@@ -388,7 +388,7 @@ export class QueryableShareableItem extends QueryableSecurable {
      */
     public checkSharingPermissions(recipients: SharingRecipient[]): Promise<SharingEntityPermission[]> {
 
-        return this.clone(QueryableShareable, null, true).checkPermissions(recipients);
+        return this.clone(SharePointQueryableShareable, null).checkPermissions(recipients);
     }
 
     /**
@@ -398,7 +398,7 @@ export class QueryableShareableItem extends QueryableSecurable {
      */
     public getSharingInformation(request: SharingInformationRequest = null): Promise<SharingInformation> {
 
-        return this.clone(QueryableShareable, null, true).getSharingInformation(request);
+        return this.clone(SharePointQueryableShareable, null).getSharingInformation(request);
     }
 
     /**
@@ -408,14 +408,14 @@ export class QueryableShareableItem extends QueryableSecurable {
      */
     public getObjectSharingSettings(useSimplifiedRoles = true): Promise<ObjectSharingSettings> {
 
-        return this.clone(QueryableShareable, null, true).getObjectSharingSettings(useSimplifiedRoles);
+        return this.clone(SharePointQueryableShareable, null).getObjectSharingSettings(useSimplifiedRoles);
     }
 
     /**
      * Unshare this item
      */
     public unshare(): Promise<SharingResult> {
-        return this.clone(QueryableShareable, null, true).unshareObject();
+        return this.clone(SharePointQueryableShareable, null).unshareObject();
     }
 
     /**
@@ -425,7 +425,7 @@ export class QueryableShareableItem extends QueryableSecurable {
      */
     public deleteSharingLinkByKind(kind: SharingLinkKind): Promise<void> {
 
-        return this.clone(QueryableShareable, null, true).deleteLinkByKind(kind);
+        return this.clone(SharePointQueryableShareable, null).deleteLinkByKind(kind);
     }
 
     /**
@@ -436,11 +436,11 @@ export class QueryableShareableItem extends QueryableSecurable {
      */
     public unshareLink(kind: SharingLinkKind, shareId?: string): Promise<void> {
 
-        return this.clone(QueryableShareable, null, true).unshareLink(kind, shareId);
+        return this.clone(SharePointQueryableShareable, null).unshareLink(kind, shareId);
     }
 }
 
-export class FileFolderShared extends QueryableInstance {
+export class FileFolderShared extends SharePointQueryableInstance {
     /**
      * Gets a link suitable for sharing
      *
@@ -549,12 +549,12 @@ export class FileFolderShared extends QueryableInstance {
     /**
      * For files and folders we need to use the associated item end point
      */
-    protected getShareable(): Promise<QueryableShareable> {
+    protected getShareable(): Promise<SharePointQueryableShareable> {
 
         // sharing only works on the item end point, not the file one - so we create a folder instance with the item url internally
-        return this.clone(QueryableShareableFile, "listItemAllFields", false).select("odata.editlink").get().then(d => {
+        return this.clone(SharePointQueryableShareableFile, "listItemAllFields", false).select("odata.editlink").get().then(d => {
 
-            let shareable = new QueryableShareable(spGetEntityUrl(d));
+            let shareable = new SharePointQueryableShareable(spGetEntityUrl(d));
 
             // we need to handle batching
             if (this.hasBatch) {
@@ -566,7 +566,7 @@ export class FileFolderShared extends QueryableInstance {
     }
 }
 
-export class QueryableShareableFile extends FileFolderShared {
+export class SharePointQueryableShareableFile extends FileFolderShared {
 
     /**
      * Shares this item with one or more users
@@ -591,7 +591,7 @@ export class QueryableShareableFile extends FileFolderShared {
     }
 }
 
-export class QueryableShareableFolder extends FileFolderShared {
+export class SharePointQueryableShareableFolder extends FileFolderShared {
 
     /**
      * Shares this item with one or more users

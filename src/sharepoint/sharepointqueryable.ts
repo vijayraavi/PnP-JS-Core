@@ -1,83 +1,32 @@
 import { Util } from "../utils/util";
 import { Dictionary } from "../collections/collections";
-import { FetchOptions, ConfigOptions, mergeOptions } from "../net/utils";
+import { FetchOptions, mergeOptions } from "../net/utils";
 import { ODataParser } from "../odata/core";
-import { ODataDefaultParser } from "../odata/parsers";
 import { ODataBatch } from "./batch";
-import { ICachingOptions } from "../odata/caching";
-import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { AlreadyInBatchException } from "../utils/exceptions";
 import { Logger, LogLevel } from "../utils/logging";
+import { ODataQueryable } from "../odata/queryable";
 import {
     RequestContext,
     PipelineMethods,
-    pipe,
 } from "../request/pipeline";
 import { HttpClient } from "../net/httpclient";
 
-export interface QueryableConstructor<T> {
-    new(baseUrl: string | Queryable, path?: string): T;
+export interface SharePointQueryableConstructor<T> {
+    new(baseUrl: string | SharePointQueryable, path?: string): T;
 }
 
 /**
- * Queryable Base Class
+ * SharePointQueryable Base Class
  *
  */
-export class Queryable {
+export class SharePointQueryable extends ODataQueryable {
 
-    /**
-     * Additional options to be set before sending actual http request
-     */
-    protected _options: ConfigOptions;
-
-    /**
-     * Tracks the query parts of the url
-     */
-    protected _query: Dictionary<string>;
 
     /**
      * Tracks the batch of which this query may be part
      */
     private _batch: ODataBatch;
-
-    /**
-     * Tracks the url as it is built
-     */
-    private _url: string;
-
-    /**
-     * Stores the parent url used to create this instance, for recursing back up the tree if needed
-     */
-    private _parentUrl: string;
-
-    /**
-     * Explicitly tracks if we are using caching for this request
-     */
-    private _useCaching: boolean;
-
-    /**
-     * Any options that were supplied when caching was enabled
-     */
-    private _cachingOptions: ICachingOptions;
-
-    /**
-     * Directly concatonates the supplied string to the current url, not normalizing "/" chars
-     *
-     * @param pathPart The string to concatonate to the url
-     */
-    public concat(pathPart: string): this {
-        this._url += pathPart;
-        return this;
-    }
-
-    /**
-     * Appends the given string and normalizes "/" chars
-     *
-     * @param pathPart The string to append
-     */
-    protected append(pathPart: string) {
-        this._url = Util.combinePaths(this._url, pathPart);
-    }
 
     /**
      * Blocks a batch call from occuring, MUST be cleared by calling the returned function
@@ -107,29 +56,14 @@ export class Queryable {
     }
 
     /**
-     * Gets the parent url used when creating this instance
-     *
-     */
-    protected get parentUrl(): string {
-        return this._parentUrl;
-    }
-
-    /**
-     * Provides access to the query builder for this url
-     *
-     */
-    public get query(): Dictionary<string> {
-        return this._query;
-    }
-
-    /**
-     * Creates a new instance of the Queryable class
+     * Creates a new instance of the SharePointQueryable class
      *
      * @constructor
-     * @param baseUrl A string or Queryable that should form the base part of the url
+     * @param baseUrl A string or SharePointQueryable that should form the base part of the url
      *
      */
-    constructor(baseUrl: string | Queryable, path?: string) {
+    constructor(baseUrl: string | SharePointQueryable, path?: string) {
+        super();
 
         this._options = {};
         this._query = new Dictionary<string>();
@@ -156,7 +90,7 @@ export class Queryable {
                 this._url = Util.combinePaths(urlStr, path);
             }
         } else {
-            const q = baseUrl as Queryable;
+            const q = baseUrl as SharePointQueryable;
             this._parentUrl = q._url;
             this._options = q._options;
             const target = q._query.get("@target");
@@ -168,21 +102,11 @@ export class Queryable {
     }
 
     /**
-     * Sets custom options for current object and all derived objects accessible via chaining
-     * 
-     * @param options custom options
-     */
-    public configure(options: ConfigOptions): this {
-        mergeOptions(this._options, options);
-        return this;
-    }
-
-    /**
      * Creates a new instance of the supplied factory and extends this into that new instance
      *
-     * @param factory constructor for the new queryable
+     * @param factory constructor for the new SharePointQueryable
      */
-    public as<T>(factory: QueryableConstructor<T>): T {
+    public as<T>(factory: SharePointQueryableConstructor<T>): T {
         const o = <T>new factory(this._url, null);
         return Util.extend(o, this, true);
     }
@@ -207,27 +131,6 @@ export class Queryable {
         this._batch = batch;
 
         return this;
-    }
-
-    /**
-     * Enables caching for this request
-     *
-     * @param options Defines the options used when caching this request
-     */
-    public usingCaching(options?: ICachingOptions): this {
-        if (!RuntimeConfig.globalCacheDisable) {
-            this._useCaching = true;
-            this._cachingOptions = options;
-        }
-        return this;
-    }
-
-    /**
-     * Gets the currentl url, made absolute based on the availability of the _spPageContextInfo object
-     *
-     */
-    public toUrl(): string {
-        return this._url;
     }
 
     /**
@@ -259,9 +162,9 @@ export class Queryable {
      *
      * @param factory The contructor for the class to create
      */
-    protected getParent<T extends Queryable>(
-        factory: QueryableConstructor<T>,
-        baseUrl: string | Queryable = this.parentUrl,
+    protected getParent<T extends SharePointQueryable>(
+        factory: SharePointQueryableConstructor<T>,
+        baseUrl: string | SharePointQueryable = this.parentUrl,
         path?: string,
         batch?: ODataBatch): T {
 
@@ -279,12 +182,12 @@ export class Queryable {
     }
 
     /**
-     * Clones this queryable into a new queryable instance of T
+     * Clones this SharePointQueryable into a new SharePointQueryable instance of T
      * @param factory Constructor used to create the new instance
      * @param additionalPath Any additional path to include in the clone
      * @param includeBatch If true this instance's batch will be added to the cloned instance
      */
-    protected clone<T extends Queryable>(factory: QueryableConstructor<T>, additionalPath?: string, includeBatch = false): T {
+    protected clone<T extends SharePointQueryable>(factory: SharePointQueryableConstructor<T>, additionalPath?: string, includeBatch = true): T {
         let clone = new factory(this, additionalPath);
         const target = this.query.get("@target");
         if (target !== null) {
@@ -297,36 +200,6 @@ export class Queryable {
     }
 
     /**
-     * Executes the currently built request
-     *
-     * @param parser Allows you to specify a parser to handle the result
-     * @param getOptions The options used for this request
-     */
-    public get(parser: ODataParser<any> = new ODataDefaultParser(), options: FetchOptions = {}): Promise<any> {
-        return this.toRequestContext("GET", options, parser).then(context => pipe(context));
-    }
-
-    public getAs<T>(parser: ODataParser<T> = new ODataDefaultParser(), options: FetchOptions = {}): Promise<T> {
-        return this.toRequestContext("GET", options, parser).then(context => pipe(context));
-    }
-
-    protected postCore(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("POST", options, parser).then(context => pipe(context));
-    }
-
-    protected postAsCore<T>(options: FetchOptions = {}, parser: ODataParser<T> = new ODataDefaultParser()): Promise<T> {
-        return this.toRequestContext("POST", options, parser).then(context => pipe(context));
-    }
-
-    protected patchCore(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("PATCH", options, parser).then(context => pipe(context));
-    }
-
-    protected deleteCore(options: FetchOptions = {}, parser: ODataParser<any> = new ODataDefaultParser()): Promise<any> {
-        return this.toRequestContext("DELETE", options, parser).then(context => pipe(context));
-    }
-
-    /**
      * Converts the current instance to a request context
      *
      * @param verb The request verb
@@ -334,7 +207,7 @@ export class Queryable {
      * @param parser The supplied ODataParser instance
      * @param pipeline Optional request processing pipeline
      */
-    private toRequestContext<T>(
+    protected toRequestContext<T>(
         verb: string,
         options: FetchOptions = {},
         parser: ODataParser<T>,
@@ -371,7 +244,7 @@ export class Queryable {
  * Represents a REST collection which can be filtered, paged, and selected
  *
  */
-export class QueryableCollection extends Queryable {
+export class SharePointQueryableCollection extends SharePointQueryable {
 
     /**
      * Filters the returned collection (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#bk_supported)
@@ -456,7 +329,7 @@ export class QueryableCollection extends Queryable {
  * Represents an instance that can be selected
  *
  */
-export class QueryableInstance extends Queryable {
+export class SharePointQueryableInstance extends SharePointQueryable {
 
     /**
      * Choose which fields to return

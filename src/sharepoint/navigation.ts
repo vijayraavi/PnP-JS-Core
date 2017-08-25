@@ -1,6 +1,6 @@
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
 
 /**
  * Result from adding a navigation node
@@ -24,7 +24,7 @@ export interface NavigationNodeUpdateResult {
  * Represents a collection of navigation nodes
  *
  */
-export class NavigationNodes extends QueryableCollection {
+export class NavigationNodes extends SharePointQueryableCollection {
 
     /**
      * Gets a navigation node by id
@@ -53,7 +53,7 @@ export class NavigationNodes extends QueryableCollection {
             "__metadata": { "type": "SP.NavigationNode" },
         });
 
-        return this.clone(NavigationNodes, null, true).postCore({ body: postBody }).then((data) => {
+        return this.clone(NavigationNodes, null).postCore({ body: postBody }).then((data) => {
             return {
                 data: data,
                 node: this.getById(data.Id),
@@ -74,7 +74,7 @@ export class NavigationNodes extends QueryableCollection {
             previousNodeId: previousNodeId,
         });
 
-        return this.clone(NavigationNodes, "MoveAfter", true).postCore({ body: postBody });
+        return this.clone(NavigationNodes, "MoveAfter").postCore({ body: postBody });
     }
 }
 
@@ -82,7 +82,7 @@ export class NavigationNodes extends QueryableCollection {
  * Represents an instance of a navigation node
  *
  */
-export class NavigationNode extends QueryableInstance {
+export class NavigationNode extends SharePointQueryableInstance {
 
     /**
      * Represents the child nodes of this node
@@ -128,14 +128,14 @@ export class NavigationNode extends QueryableInstance {
  * Exposes the navigation components
  *
  */
-export class Navigation extends Queryable {
+export class Navigation extends SharePointQueryable {
 
     /**
      * Creates a new instance of the Navigation class
      *
-     * @param baseUrl The url or Queryable which forms the parent of these navigation components
+     * @param baseUrl The url or SharePointQueryable which forms the parent of these navigation components
      */
-    constructor(baseUrl: string | Queryable, path = "navigation") {
+    constructor(baseUrl: string | SharePointQueryable, path = "navigation") {
         super(baseUrl, path);
     }
 

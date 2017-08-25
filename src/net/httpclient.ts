@@ -15,7 +15,7 @@ export class HttpClient implements RequestClient {
     private _impl: HttpClientImpl;
 
     constructor() {
-        this._impl = RuntimeConfig.fetchClientFactory();
+        this._impl = RuntimeConfig.spFetchClientFactory();
         this._digestCache = new DigestCache(this);
     }
 

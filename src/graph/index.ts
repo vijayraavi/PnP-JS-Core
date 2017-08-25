@@ -1,5 +1,4 @@
 export {
-    GroupType,
     GroupAddResult,
 } from "./groups";
 

@@ -3,11 +3,11 @@ import { Members, Owners } from "./members";
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 import { Calendar, Events } from "./calendars";
-import{  Conversations } from "./conversations";
+import { Conversations, Senders } from "./conversations";
+import { Event as IEvent } from "@microsoft/microsoft-graph-types";
+import { Plans } from "./plans";
+import { Photo } from "./photos";
 
-/**
- * The type of group when creating a new group
- */
 export enum GroupType {
     /**
      * Office 365 (aka unified group)
@@ -21,30 +21,6 @@ export enum GroupType {
      * Security
      */
     Security,
-}
-
-export namespace GroupType {
-
-    /**
-     * 
-     * @param value The string value to parse
-     */
-    export function parse(value: string): GroupType {
-
-        if (Util.stringIsNullOrEmpty(value)) {
-            return GroupType.Security;
-        }
-
-        if (/^unified$/i.test(value)) {
-            return GroupType.Office365;
-        }
-
-        if (/^DynamicMembership/i.test(value)) {
-            return GroupType.Dynamic;
-        }
-
-        throw new Error(`Could not parse '${value}' to a GroupType. Expected 'Unified', 'DynamicMembership', or null/empty string.`);
-    }
 }
 
 /**
@@ -91,7 +67,7 @@ export class Groups extends GraphQueryableCollection {
             });
         }
 
-        return this.post({
+        return this.postCore({
             body: JSON.stringify(postBody),
         }).then(r => {
             return {
@@ -129,6 +105,13 @@ export class Group extends GraphQueryableInstance {
     }
 
     /**
+     * The collection of plans for this group
+     */
+    public get plans(): Plans {
+        return new Plans(this);
+    }
+
+    /**
      * Gets the collection of members for this group
      */
     public get members(): Members {
@@ -143,11 +126,32 @@ export class Group extends GraphQueryableInstance {
     }
 
     /**
+     * Gets the collection of accepted senders for this group
+     */
+    public get acceptedSenders(): Senders {
+        return new Senders(this, "acceptedsenders");
+    }
+
+    /**
+     * Gets the collection of rejected senders for this group
+     */
+    public get rejectedSenders(): Senders {
+        return new Senders(this, "rejectedsenders");
+    }
+
+    /**
+     * The photo associated with the group
+     */
+    public get photo(): Photo {
+        return new Photo(this);
+    }
+
+    /**
      * Add the group to the list of the current user's favorite groups. Supported for only Office 365 groups
      */
     public addFavorite(): Promise<void> {
 
-        return this.clone(Group, "addFavorite").post();
+        return this.clone(Group, "addFavorite").postCore();
     }
 
     /**
@@ -157,7 +161,7 @@ export class Group extends GraphQueryableInstance {
      */
     public getMemberGroups(securityEnabledOnly = false): Promise<{ value: string[] }> {
 
-        return this.clone(Group, "getMemberGroups").post({
+        return this.clone(Group, "getMemberGroups").postCore({
             body: JSON.stringify({
                 securityEnabledOnly: securityEnabledOnly,
             }),
@@ -168,8 +172,7 @@ export class Group extends GraphQueryableInstance {
      * Deletes this group
      */
     public delete(): Promise<void> {
-
-        return super.delete();
+        return this.deleteCore();
     }
 
     /**
@@ -179,7 +182,7 @@ export class Group extends GraphQueryableInstance {
      */
     public update(properties: TypedHash<string | number | boolean | string[]>): Promise<void> {
 
-        return this.patch({
+        return this.patchCore({
             body: JSON.stringify(properties),
         });
     }
@@ -189,14 +192,14 @@ export class Group extends GraphQueryableInstance {
      */
     public removeFavorite(): Promise<void> {
 
-        return this.clone(Group, "removeFavorite").post();
+        return this.clone(Group, "removeFavorite").postCore();
     }
 
     /**
      * Reset the unseenCount of all the posts that the current user has not seen since their last visit
      */
     public resetUnseenCount(): Promise<void> {
-        return this.clone(Group, "resetUnseenCount").post();
+        return this.clone(Group, "resetUnseenCount").postCore();
     }
 
     /**
@@ -204,7 +207,7 @@ export class Group extends GraphQueryableInstance {
      * about new posts, events, and files in that group. Supported for only Office 365 groups
      */
     public subscribeByMail(): Promise<void> {
-        return this.clone(Group, "subscribeByMail").post();
+        return this.clone(Group, "subscribeByMail").postCore();
     }
 
     /**
@@ -212,7 +215,21 @@ export class Group extends GraphQueryableInstance {
      * about new posts, events, and files in that group. Supported for only Office 365 groups
      */
     public unsubscribeByMail(): Promise<void> {
-        return this.clone(Group, "unsubscribeByMail").post();
+        return this.clone(Group, "unsubscribeByMail").postCore();
+    }
+
+    /**
+     * Get the occurrences, exceptions, and single instances of events in a calendar view defined by a time range, from the default calendar of a group
+     * 
+     * @param start Start date and time of the time range
+     * @param end End date and time of the time range
+     */
+    public getCalendarView(start: Date, end: Date): Promise<IEvent[]> {
+
+        const view = this.clone(Group, "calendarView");
+        view.query.add("startDateTime", start.toISOString());
+        view.query.add("endDateTime", end.toISOString());
+        return view.get();
     }
 }
 

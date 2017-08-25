@@ -1,4 +1,4 @@
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
 
@@ -6,14 +6,14 @@ import { TypedHash } from "../collections/collections";
  * Describes a collection of user custom actions
  *
  */
-export class UserCustomActions extends QueryableCollection {
+export class UserCustomActions extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the UserCustomActions class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this user custom actions collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this user custom actions collection
      */
-    constructor(baseUrl: string | Queryable, path = "usercustomactions") {
+    constructor(baseUrl: string | SharePointQueryable, path = "usercustomactions") {
         super(baseUrl, path);
     }
 
@@ -51,7 +51,7 @@ export class UserCustomActions extends QueryableCollection {
      *
      */
     public clear(): Promise<void> {
-        return this.clone(UserCustomActions, "clear", true).postCore();
+        return this.clone(UserCustomActions, "clear").postCore();
     }
 }
 
@@ -59,7 +59,7 @@ export class UserCustomActions extends QueryableCollection {
  * Describes a single user custom action
  *
  */
-export class UserCustomAction extends QueryableInstance {
+export class UserCustomAction extends SharePointQueryableInstance {
 
     /**
     * Updates this user custom action with the supplied properties

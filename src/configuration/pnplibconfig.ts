@@ -1,7 +1,8 @@
 import { TypedHash } from "../collections/collections";
 import { HttpClientImpl } from "../net/httpclient";
 import { FetchClient } from "../net/fetchclient";
-import { SPFXContext } from "../types/spfxContextInterface";
+import { SPFXContext } from "./spfxContextInterface";
+import { GraphHttpClientImpl } from "../net/graphclient";
 
 export interface LibraryConfiguration {
 
@@ -36,14 +37,30 @@ export interface LibraryConfiguration {
     cacheExpirationIntervalMilliseconds?: number;
 
     /**
-     * Defines a factory method used to create fetch clients
+     * SharePoint specific library settings
      */
-    fetchClientFactory?: () => HttpClientImpl;
+    sp?: {
+
+        /**
+         * Defines a factory method used to create fetch clients
+         */
+        fetchClientFactory?: () => HttpClientImpl;
+
+        /**
+         * The base url used for all requests
+         */
+        baseUrl?: string;
+    };
 
     /**
-     * The base url used for all requests
+     * MS Graph specific library settings
      */
-    baseUrl?: string;
+    graph?: {
+        /**
+         * Defines a factory method used to create fetch clients
+         */
+        fetchClientFactory?: () => GraphHttpClientImpl;
+    };
 
     /**
      * Used to supply the current context from an SPFx webpart to the library
@@ -57,11 +74,17 @@ export class RuntimeConfigImpl {
     private _defaultCachingStore: "session" | "local";
     private _defaultCachingTimeoutSeconds: number;
     private _globalCacheDisable: boolean;
-    private _fetchClientFactory: () => HttpClientImpl;
-    private _baseUrl: string;
-    private _spfxContext: SPFXContext;
     private _enableCacheExpiration: boolean;
     private _cacheExpirationIntervalMilliseconds: number;
+    private _spfxContext: SPFXContext;
+
+    // sharepoint settings
+    private _spFetchClientFactory: () => HttpClientImpl;
+    private _spBaseUrl: string;
+
+    // graph settings
+    private _graphFetchClientFactory: () => GraphHttpClientImpl;
+
 
     constructor() {
         // these are our default values for the library
@@ -69,11 +92,16 @@ export class RuntimeConfigImpl {
         this._defaultCachingStore = "session";
         this._defaultCachingTimeoutSeconds = 60;
         this._globalCacheDisable = false;
-        this._fetchClientFactory = () => new FetchClient();
-        this._baseUrl = null;
-        this._spfxContext = null;
         this._enableCacheExpiration = false;
         this._cacheExpirationIntervalMilliseconds = 750;
+        this._spfxContext = null;
+
+        // sharepoint settings
+        this._spFetchClientFactory = () => new FetchClient();
+        this._spBaseUrl = null;
+
+        // ms graph settings
+        this._graphFetchClientFactory = () => null;
     }
 
     public set(config: LibraryConfiguration): void {
@@ -94,16 +122,21 @@ export class RuntimeConfigImpl {
             this._defaultCachingTimeoutSeconds = config.defaultCachingTimeoutSeconds;
         }
 
-        if (config.hasOwnProperty("fetchClientFactory")) {
-            this._fetchClientFactory = config.fetchClientFactory;
+        if (config.hasOwnProperty("sp") && config.sp.hasOwnProperty("fetchClientFactory")) {
+            this._spFetchClientFactory = config.sp.fetchClientFactory;
         }
 
-        if (config.hasOwnProperty("baseUrl")) {
-            this._baseUrl = config.baseUrl;
+        if (config.hasOwnProperty("sp") && config.sp.hasOwnProperty("baseUrl")) {
+            this._spBaseUrl = config.sp.baseUrl;
         }
 
         if (config.hasOwnProperty("spfxContext")) {
+
             this._spfxContext = config.spfxContext;
+
+            if (typeof this._spfxContext.graphHttpClient  !== "undefined") {
+                this._graphFetchClientFactory = () => this._spfxContext.graphHttpClient;
+            }
         }
 
         if (config.hasOwnProperty("enableCacheExpiration")) {
@@ -133,15 +166,15 @@ export class RuntimeConfigImpl {
         return this._globalCacheDisable;
     }
 
-    public get fetchClientFactory(): () => HttpClientImpl {
-        return this._fetchClientFactory;
+    public get spFetchClientFactory(): () => HttpClientImpl {
+        return this._spFetchClientFactory;
     }
 
-    public get baseUrl(): string {
+    public get spBaseUrl(): string {
 
-        if (this._baseUrl !== null) {
+        if (this._spBaseUrl !== null) {
 
-            return this._baseUrl;
+            return this._spBaseUrl;
 
         } else if (this._spfxContext !== null) {
 
@@ -161,6 +194,10 @@ export class RuntimeConfigImpl {
 
     public get spfxContext(): SPFXContext {
         return this._spfxContext;
+    }
+
+    public get graphFetchClientFactory(): () => GraphHttpClientImpl {
+        return this._graphFetchClientFactory;
     }
 }
 
