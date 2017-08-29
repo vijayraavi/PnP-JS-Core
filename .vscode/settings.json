@@ -8,7 +8,16 @@
         "coverage": true,
         "testing": true,
         "debugging": true,
-        "exports": true
+        "core.d.ts": true,
+        "core.js": true,
+        "graph.d.ts": true,
+        "graph.js": true,
+        "net.d.ts": true,
+        "net.js": true,
+        "odata.d.ts": true,
+        "odata.js": true,
+        "sp.d.ts": true,
+        "sp.js": true
     },
     "typescript.tsdk": "node_modules/typescript/lib"
 }

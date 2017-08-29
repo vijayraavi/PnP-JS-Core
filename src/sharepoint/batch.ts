@@ -160,7 +160,7 @@ export class ODataBatch {
                 }
 
                 // merge global config headers
-                mergeHeaders(headers, RuntimeConfig.headers);
+                mergeHeaders(headers, RuntimeConfig.spHeaders);
 
                 // merge per-request headers
                 if (reqInfo.options) {

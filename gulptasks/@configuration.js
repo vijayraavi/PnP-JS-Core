@@ -30,7 +30,7 @@ module.exports = {
     paths: {
         dist: "./dist",
         lib: "./lib",
-        exports: "./exports",
+        exports: "./",
         source: "./src",
         sourceGlob: ["./src/**/*.ts", "!./src/exports/**/*.ts"],
         assetsGlob: "./assets/**/*.*",

@@ -15,9 +15,18 @@ export class GraphHttpClient implements RequestClient {
 
     public fetch(url: string, options: FetchOptions = {}): Promise<Response> {
 
+        const headers = new Headers();
+
+        // first we add the global headers so they can be overwritten by any passed in locally to this call
+        mergeHeaders(headers, RuntimeConfig.graphHeaders);
+
+        // second we add the local options so we can overwrite the globals
+        mergeHeaders(headers, options.headers);
+
+        const opts = Util.extend(options, { headers: headers });
+
         // TODO: we could process auth here
-        // until we are doing things like establishing the auth just pass this to the SPFx client to do the heavy lifting
-        return this.fetchRaw(url, options);
+        return this.fetchRaw(url, opts);
     }
 
     public fetchRaw(url: string, options: FetchOptions = {}): Promise<Response> {

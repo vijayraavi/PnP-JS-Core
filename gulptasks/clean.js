@@ -14,7 +14,6 @@ gulp.task('clean', (done) => {
     var directories = [
         config.paths.dist,
         config.paths.lib,
-        config.paths.exports,
         config.testing.testingRoot,
         config.debug.outputRoot,
         config.docs.output

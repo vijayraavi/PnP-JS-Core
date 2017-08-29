@@ -36,8 +36,8 @@ gulp.task("build:exports", () => {
         .pipe(project());
 
     return merge([
-        built.dts.pipe(replace("../", "../lib/")).pipe(gulp.dest(config.paths.exports)),
-        built.js.pipe(replace("../", "../lib/")).pipe(gulp.dest(config.paths.exports))
+        built.dts.pipe(replace("../", "./lib/")).pipe(gulp.dest(config.paths.exports)),
+        built.js.pipe(replace("../", "./lib/")).pipe(gulp.dest(config.paths.exports))
     ]);
 });
 

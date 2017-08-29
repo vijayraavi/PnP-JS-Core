@@ -18,11 +18,21 @@ coverage
 # Dependency directory
 node_modules
 
-# generated folders
+# generated folders/files
 lib
 testing
 docs
 debugging
+core.d.ts
+core.js
+graph.d.ts
+graph.js
+net.d.ts
+net.js
+odata.d.ts
+odata.js
+sp.d.ts
+sp.js
 
 # Optional npm cache directory
 .npm

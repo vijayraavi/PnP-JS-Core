@@ -36,7 +36,7 @@ export class DigestCache {
         return this._httpClient.fetchRaw(url, {
             cache: "no-cache",
             credentials: "same-origin",
-            headers: Util.extend(headers, RuntimeConfig.headers, true),
+            headers: Util.extend(headers, RuntimeConfig.spHeaders, true),
             method: "POST",
         }).then((response) => {
             const parser = new ODataDefaultParser();

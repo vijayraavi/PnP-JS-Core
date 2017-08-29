@@ -7,11 +7,6 @@ import { GraphHttpClientImpl } from "../net/graphclient";
 export interface LibraryConfiguration {
 
     /**
-     * Any headers to apply to all requests
-     */
-    headers?: TypedHash<string>;
-
-    /**
      * Allows caching to be global disabled, default: false
      */
     globalCacheDisable?: boolean;
@@ -42,6 +37,11 @@ export interface LibraryConfiguration {
     sp?: {
 
         /**
+         * Any headers to apply to all requests
+         */
+        headers?: TypedHash<string>;
+
+        /**
          * Defines a factory method used to create fetch clients
          */
         fetchClientFactory?: () => HttpClientImpl;
@@ -56,6 +56,12 @@ export interface LibraryConfiguration {
      * MS Graph specific library settings
      */
     graph?: {
+
+        /**
+         * Any headers to apply to all requests
+         */
+        headers?: TypedHash<string>;
+
         /**
          * Defines a factory method used to create fetch clients
          */
@@ -70,7 +76,6 @@ export interface LibraryConfiguration {
 
 export class RuntimeConfigImpl {
 
-    private _headers: TypedHash<string>;
     private _defaultCachingStore: "session" | "local";
     private _defaultCachingTimeoutSeconds: number;
     private _globalCacheDisable: boolean;
@@ -81,14 +86,15 @@ export class RuntimeConfigImpl {
     // sharepoint settings
     private _spFetchClientFactory: () => HttpClientImpl;
     private _spBaseUrl: string;
+    private _spHeaders: TypedHash<string>;
 
     // graph settings
+    private _graphHeaders: TypedHash<string>;
     private _graphFetchClientFactory: () => GraphHttpClientImpl;
 
 
     constructor() {
         // these are our default values for the library
-        this._headers = null;
         this._defaultCachingStore = "session";
         this._defaultCachingTimeoutSeconds = 60;
         this._globalCacheDisable = false;
@@ -99,16 +105,14 @@ export class RuntimeConfigImpl {
         // sharepoint settings
         this._spFetchClientFactory = () => new FetchClient();
         this._spBaseUrl = null;
+        this._spHeaders = null;
 
         // ms graph settings
+        this._graphHeaders = null;
         this._graphFetchClientFactory = () => null;
     }
 
     public set(config: LibraryConfiguration): void {
-
-        if (config.hasOwnProperty("headers")) {
-            this._headers = config.headers;
-        }
 
         if (config.hasOwnProperty("globalCacheDisable")) {
             this._globalCacheDisable = config.globalCacheDisable;
@@ -122,20 +126,39 @@ export class RuntimeConfigImpl {
             this._defaultCachingTimeoutSeconds = config.defaultCachingTimeoutSeconds;
         }
 
-        if (config.hasOwnProperty("sp") && config.sp.hasOwnProperty("fetchClientFactory")) {
-            this._spFetchClientFactory = config.sp.fetchClientFactory;
-        }
+        if (config.hasOwnProperty("sp")) {
 
-        if (config.hasOwnProperty("sp") && config.sp.hasOwnProperty("baseUrl")) {
-            this._spBaseUrl = config.sp.baseUrl;
+            if (config.sp.hasOwnProperty("fetchClientFactory")) {
+                this._spFetchClientFactory = config.sp.fetchClientFactory;
+            }
+
+            if (config.sp.hasOwnProperty("baseUrl")) {
+                this._spBaseUrl = config.sp.baseUrl;
+            }
+
+            if (config.sp.hasOwnProperty("headers")) {
+                this._spHeaders = config.sp.headers;
+            }
         }
 
         if (config.hasOwnProperty("spfxContext")) {
 
             this._spfxContext = config.spfxContext;
 
-            if (typeof this._spfxContext.graphHttpClient  !== "undefined") {
+            if (typeof this._spfxContext.graphHttpClient !== "undefined") {
                 this._graphFetchClientFactory = () => this._spfxContext.graphHttpClient;
+            }
+        }
+
+        if (config.hasOwnProperty("graph")) {
+
+            if (config.graph.hasOwnProperty("headers")) {
+                this._graphHeaders = config.graph.headers;
+            }
+
+            // this comes after the default setting of the _graphFetchClientFactory client so it can be overwritten
+            if (config.graph.hasOwnProperty("fetchClientFactory")) {
+                this._graphFetchClientFactory = config.graph.fetchClientFactory;
             }
         }
 
@@ -148,10 +171,6 @@ export class RuntimeConfigImpl {
             const interval = config.cacheExpirationIntervalMilliseconds < 300 ? 300 : config.cacheExpirationIntervalMilliseconds;
             this._cacheExpirationIntervalMilliseconds = interval;
         }
-    }
-
-    public get headers(): TypedHash<string> {
-        return this._headers;
     }
 
     public get defaultCachingStore(): "session" | "local" {
@@ -184,6 +203,10 @@ export class RuntimeConfigImpl {
         return null;
     }
 
+    public get spHeaders(): TypedHash<string> {
+        return this._spHeaders;
+    }
+
     public get enableCacheExpiration(): boolean {
         return this._enableCacheExpiration;
     }
@@ -198,6 +221,10 @@ export class RuntimeConfigImpl {
 
     public get graphFetchClientFactory(): () => GraphHttpClientImpl {
         return this._graphFetchClientFactory;
+    }
+
+    public get graphHeaders(): TypedHash<string> {
+        return this._graphHeaders;
     }
 }
 

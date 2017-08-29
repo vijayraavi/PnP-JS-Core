@@ -26,7 +26,7 @@ export class HttpClient implements RequestClient {
         const headers = new Headers();
 
         // first we add the global headers so they can be overwritten by any passed in locally to this call
-        mergeHeaders(headers, RuntimeConfig.headers);
+        mergeHeaders(headers, RuntimeConfig.spHeaders);
 
         // second we add the local options so we can overwrite the globals
         mergeHeaders(headers, options.headers);
