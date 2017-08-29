@@ -1,4 +1,4 @@
-import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableCollection, SharePointQueryableInstance } from "./sharepointqueryable";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
 import {
@@ -13,14 +13,14 @@ import {
  * Describes a collection of Field objects
  *
  */
-export class Fields extends QueryableCollection {
+export class Fields extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Fields class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable, path = "fields") {
+    constructor(baseUrl: string | SharePointQueryable, path = "fields") {
         super(baseUrl, path);
     }
 
@@ -75,7 +75,7 @@ export class Fields extends QueryableCollection {
             }, info),
         });
 
-        return this.clone(Fields, "createfieldasxml", true).postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Fields, "createfieldasxml").postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),
@@ -97,7 +97,7 @@ export class Fields extends QueryableCollection {
             "__metadata": { "type": fieldType },
         }, properties));
 
-        return this.clone(Fields, null, true).postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Fields, null).postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 field: this.getById(data.Id),
@@ -306,7 +306,7 @@ export class Fields extends QueryableCollection {
  * Describes a single of Field instance
  *
  */
-export class Field extends QueryableInstance {
+export class Field extends SharePointQueryableInstance {
 
     /**
      * Updates this field intance with the supplied properties
@@ -349,21 +349,21 @@ export class Field extends QueryableInstance {
      * Sets the value of the ShowInDisplayForm property for this field.
      */
     public setShowInDisplayForm(show: boolean): Promise<void> {
-        return this.clone(Field, `setshowindisplayform(${show})`, true).postCore();
+        return this.clone(Field, `setshowindisplayform(${show})`).postCore();
     }
 
     /**
      * Sets the value of the ShowInEditForm property for this field.
      */
     public setShowInEditForm(show: boolean): Promise<void> {
-        return this.clone(Field, `setshowineditform(${show})`, true).postCore();
+        return this.clone(Field, `setshowineditform(${show})`).postCore();
     }
 
     /**
      * Sets the value of the ShowInNewForm property for this field.
      */
     public setShowInNewForm(show: boolean): Promise<void> {
-        return this.clone(Field, `setshowinnewform(${show})`, true).postCore();
+        return this.clone(Field, `setshowinnewform(${show})`).postCore();
     }
 }
 

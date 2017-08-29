@@ -1,4 +1,4 @@
-import { Queryable, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance } from "./sharepointqueryable";
 
 /**
  * Defines a query execute against the search/suggest endpoint (see https://msdn.microsoft.com/en-us/library/office/dn194079.aspx)
@@ -66,9 +66,9 @@ export interface SearchSuggestQuery {
     prefixMatch?: boolean;
 }
 
-export class SearchSuggest extends QueryableInstance {
+export class SearchSuggest extends SharePointQueryableInstance {
 
-    constructor(baseUrl: string | Queryable, path = "_api/search/suggest") {
+    constructor(baseUrl: string | SharePointQueryable, path = "_api/search/suggest") {
         super(baseUrl, path);
     }
 

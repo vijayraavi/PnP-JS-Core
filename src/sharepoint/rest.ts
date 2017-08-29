@@ -3,12 +3,12 @@ import { SearchSuggest, SearchSuggestQuery, SearchSuggestResult } from "./search
 import { Site } from "./site";
 import { Web } from "./webs";
 import { Util } from "../utils/util";
-import { Queryable, QueryableConstructor } from "./queryable";
+import { SharePointQueryable, SharePointQueryableConstructor } from "./sharepointqueryable";
 import { UserProfileQuery } from "./userprofiles";
-import { ODataBatch } from "./odata";
+import { ODataBatch } from "./batch";
 import { UrlException } from "../utils/exceptions";
 import { UtilityMethod, UtilityMethods } from "./utilities";
-import { ConfigOptions } from "../pnp";
+import { ConfigOptions } from "../net/utils";
 
 /**
  * Root of the SharePoint REST module
@@ -110,7 +110,7 @@ export class SPRest {
     }
 
     /**
-     * Creates a new batch object for use with the Queryable.addToBatch method
+     * Creates a new batch object for use with the SharePointQueryable.addToBatch method
      *
      */
     public createBatch(): ODataBatch {
@@ -152,8 +152,8 @@ export class SPRest {
      * @param hostWebUrl The absolute url of the host web
      * @param urlPart String part to append to the url "site" | "web"
      */
-    private _cdImpl<T extends Queryable>(
-        factory: QueryableConstructor<T>,
+    private _cdImpl<T extends SharePointQueryable>(
+        factory: SharePointQueryableConstructor<T>,
         addInWebUrl: string,
         hostWebUrl: string,
         urlPart: string): T {

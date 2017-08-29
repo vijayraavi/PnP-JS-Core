@@ -1,19 +1,19 @@
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
-import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableCollection, SharePointQueryableInstance } from "./sharepointqueryable";
 
 /**
  * Describes a collection of content types
  *
  */
-export class ContentTypes extends QueryableCollection {
+export class ContentTypes extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the ContentTypes class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this content types collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this content types collection
      */
-    constructor(baseUrl: string | Queryable, path = "contenttypes") {
+    constructor(baseUrl: string | SharePointQueryable, path = "contenttypes") {
         super(baseUrl, path);
     }
 
@@ -37,7 +37,7 @@ export class ContentTypes extends QueryableCollection {
             "contentTypeId": contentTypeId,
         });
 
-        return this.clone(ContentTypes, "addAvailableContentType", true).postAsCore<{ id: string }>({ body: postBody }).then((data) => {
+        return this.clone(ContentTypes, "addAvailableContentType").postAsCore<{ id: string }>({ body: postBody }).then((data) => {
             return {
                 contentType: this.getById(data.id),
                 data: data,
@@ -80,7 +80,7 @@ export class ContentTypes extends QueryableCollection {
  * Describes a single ContentType instance
  *
  */
-export class ContentType extends QueryableInstance {
+export class ContentType extends SharePointQueryableInstance {
 
     /**
      * Gets the column (also known as field) references in the content type.
@@ -92,8 +92,8 @@ export class ContentType extends QueryableInstance {
     /**
      * Gets a value that specifies the collection of fields for the content type.
      */
-    public get fields(): QueryableCollection {
-        return new QueryableCollection(this, "fields");
+    public get fields(): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, "fields");
     }
 
     /**
@@ -106,8 +106,8 @@ export class ContentType extends QueryableInstance {
     /**
      * Gets a value that specifies the collection of workflow associations for the content type.
      */
-    public get workflowAssociations(): QueryableCollection {
-        return new QueryableCollection(this, "workflowAssociations");
+    public get workflowAssociations(): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, "workflowAssociations");
     }
 
     /**
@@ -130,14 +130,14 @@ export interface ContentTypeAddResult {
 /**
  * Represents a collection of field link instances
  */
-export class FieldLinks extends QueryableCollection {
+export class FieldLinks extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the ContentType class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this content type instance
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this content type instance
      */
-    constructor(baseUrl: string | Queryable, path = "fieldlinks") {
+    constructor(baseUrl: string | SharePointQueryable, path = "fieldlinks") {
         super(baseUrl, path);
     }
 
@@ -156,4 +156,4 @@ export class FieldLinks extends QueryableCollection {
 /**
  * Represents a field link instance
  */
-export class FieldLink extends QueryableInstance { }
+export class FieldLink extends SharePointQueryableInstance { }

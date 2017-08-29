@@ -1,4 +1,4 @@
-import { Queryable, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance } from "./sharepointqueryable";
 import { Util } from "../utils/util";
 import { Dictionary } from "../collections/collections";
 
@@ -206,7 +206,7 @@ export class SearchQueryBuilder {
  * Describes the search API
  *
  */
-export class Search extends QueryableInstance {
+export class Search extends SharePointQueryableInstance {
 
     /**
      * Creates a new instance of the Search class
@@ -214,7 +214,7 @@ export class Search extends QueryableInstance {
      * @param baseUrl The url for the search context
      * @param query The SearchQuery object to execute
      */
-    constructor(baseUrl: string | Queryable, path = "_api/search/postquery") {
+    constructor(baseUrl: string | SharePointQueryable, path = "_api/search/postquery") {
         super(baseUrl, path);
     }
 

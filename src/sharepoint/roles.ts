@@ -1,4 +1,4 @@
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
 import { SiteGroups } from "./sitegroups";
 import { BasePermissions } from "./types";
 import { Util } from "../utils/util";
@@ -8,14 +8,14 @@ import { TypedHash } from "../collections/collections";
  * Describes a set of role assignments for the current scope
  *
  */
-export class RoleAssignments extends QueryableCollection {
+export class RoleAssignments extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the RoleAssignments class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this role assignments collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this role assignments collection
      */
-    constructor(baseUrl: string | Queryable, path = "roleassignments") {
+    constructor(baseUrl: string | SharePointQueryable, path = "roleassignments") {
         super(baseUrl, path);
     }
 
@@ -27,7 +27,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public add(principalId: number, roleDefId: number): Promise<void> {
-        return this.clone(RoleAssignments, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).postCore();
+        return this.clone(RoleAssignments, `addroleassignment(principalid=${principalId}, roledefid=${roleDefId})`).postCore();
     }
 
     /**
@@ -38,7 +38,7 @@ export class RoleAssignments extends QueryableCollection {
      *
      */
     public remove(principalId: number, roleDefId: number): Promise<void> {
-        return this.clone(RoleAssignments, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`, true).postCore();
+        return this.clone(RoleAssignments, `removeroleassignment(principalid=${principalId}, roledefid=${roleDefId})`).postCore();
     }
 
     /**
@@ -57,7 +57,7 @@ export class RoleAssignments extends QueryableCollection {
  * Describes a role assignment
  *
  */
-export class RoleAssignment extends QueryableInstance {
+export class RoleAssignment extends SharePointQueryableInstance {
 
     /**
      * Gets the groups that directly belong to the access control list (ACL) for this securable object
@@ -92,15 +92,15 @@ export class RoleAssignment extends QueryableInstance {
  * Describes a collection of role definitions
  *
  */
-export class RoleDefinitions extends QueryableCollection {
+export class RoleDefinitions extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the RoleDefinitions class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this role definitions collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this role definitions collection
      *
      */
-    constructor(baseUrl: string | Queryable, path = "roledefinitions") {
+    constructor(baseUrl: string | SharePointQueryable, path = "roledefinitions") {
         super(baseUrl, path);
     }
 
@@ -166,7 +166,7 @@ export class RoleDefinitions extends QueryableCollection {
  * Describes a role definition
  *
  */
-export class RoleDefinition extends QueryableInstance {
+export class RoleDefinition extends SharePointQueryableInstance {
 
     /**
      * Updates this role definition with the supplied properties
@@ -241,14 +241,14 @@ export interface RoleDefinitionAddResult {
  * Describes the role definitons bound to a role assignment object
  *
  */
-export class RoleDefinitionBindings extends QueryableCollection {
+export class RoleDefinitionBindings extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the RoleDefinitionBindings class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this role definition bindings collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this role definition bindings collection
      */
-    constructor(baseUrl: string | Queryable, path = "roledefinitionbindings") {
+    constructor(baseUrl: string | SharePointQueryable, path = "roledefinitionbindings") {
         super(baseUrl, path);
     }
 }

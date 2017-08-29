@@ -60,9 +60,11 @@ before(function (done: MochaDone) {
     if (testSettings.enableWebTests) {
 
         pnp.setup({
-            fetchClientFactory: () => {
-                return new NodeFetchClient(testSettings.siteUrl, testSettings.clientId, testSettings.clientSecret);
-            }
+            sp: {
+                fetchClientFactory: () => {
+                    return new NodeFetchClient(testSettings.siteUrl, testSettings.clientId, testSettings.clientSecret);
+                }
+            },
         });
 
         // comment this out to keep older subsites
@@ -84,9 +86,11 @@ before(function (done: MochaDone) {
                 // headers: {
                 //     "Accept": "application/json;odata=verbose",
                 // },
-                fetchClientFactory: () => {
-                    return new NodeFetchClient(url, testSettings.clientId, testSettings.clientSecret);
-                }
+                sp: {
+                    fetchClientFactory: () => {
+                        return new NodeFetchClient(url, testSettings.clientId, testSettings.clientSecret);
+                    }
+                },
             });
 
             done();

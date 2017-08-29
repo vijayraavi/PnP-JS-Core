@@ -1,6 +1,8 @@
-import { ODataParser, ODataBatch } from "./odata";
-import { ICachingOptions, CachingParserWrapper, CachingOptions } from "./caching";
-import { FetchOptions, HttpClient } from "../net/httpclient";
+import { ODataParser } from "../odata/core";
+import { ODataBatch } from "../sharepoint/batch";
+import { ICachingOptions, CachingParserWrapper, CachingOptions } from "../odata/caching";
+import { FetchOptions } from "../net/utils";
+import { RequestClient } from "./requestclient";
 import { Logger, LogLevel } from "../utils/logging";
 import { Util } from "../utils/util";
 
@@ -21,8 +23,8 @@ export interface RequestContext<T> {
     requestId: string;
     result?: T;
     verb: string;
+    clientFactory: () => RequestClient;
 }
-
 
 /**
  * Resolves the context's result value
@@ -207,7 +209,7 @@ export class PipelineMethods {
                 Logger.write(`[${context.requestId}] (${(new Date()).getTime()}) Sending request.`, LogLevel.Info);
 
                 // we are not part of a batch, so proceed as normal
-                const client = new HttpClient();
+                const client = context.clientFactory();
                 const opts = Util.extend(context.options || {}, { method: context.verb });
                 client.fetch(context.requestAbsoluteUrl, opts)
                     .then(response => context.parser.parse(response))

@@ -1,4 +1,4 @@
-import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableCollection, SharePointQueryableInstance } from "./sharepointqueryable";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
 
@@ -6,14 +6,14 @@ import { Util } from "../utils/util";
  * Describes the views available in the current context
  *
  */
-export class Views extends QueryableCollection {
+export class Views extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Views class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable, path = "views") {
+    constructor(baseUrl: string | SharePointQueryable, path = "views") {
         super(baseUrl, path);
     }
 
@@ -52,7 +52,7 @@ export class Views extends QueryableCollection {
             "__metadata": { "type": "SP.View" },
         }, additionalSettings));
 
-        return this.clone(Views, null, true).postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
+        return this.clone(Views, null).postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
             return {
                 data: data,
                 view: this.getById(data.Id),
@@ -66,7 +66,7 @@ export class Views extends QueryableCollection {
  * Describes a single View instance
  *
  */
-export class View extends QueryableInstance {
+export class View extends SharePointQueryableInstance {
 
     public get fields(): ViewFields {
         return new ViewFields(this);
@@ -113,12 +113,12 @@ export class View extends QueryableInstance {
      *
      */
     public renderAsHtml(): Promise<string> {
-        return this.clone(Queryable, "renderashtml", true).get();
+        return this.clone(SharePointQueryable, "renderashtml").get();
     }
 }
 
-export class ViewFields extends QueryableCollection {
-    constructor(baseUrl: string | Queryable, path = "viewfields") {
+export class ViewFields extends SharePointQueryableCollection {
+    constructor(baseUrl: string | SharePointQueryable, path = "viewfields") {
         super(baseUrl, path);
     }
 
@@ -126,7 +126,7 @@ export class ViewFields extends QueryableCollection {
      * Gets a value that specifies the XML schema that represents the collection.
      */
     public getSchemaXml(): Promise<string> {
-        return this.clone(Queryable, "schemaxml", true).get();
+        return this.clone(SharePointQueryable, "schemaxml").get();
     }
 
     /**
@@ -135,7 +135,7 @@ export class ViewFields extends QueryableCollection {
      * @param fieldTitleOrInternalName The case-sensitive internal name or display name of the field to add.
      */
     public add(fieldTitleOrInternalName: string): Promise<void> {
-        return this.clone(ViewFields, `addviewfield('${fieldTitleOrInternalName}')`, true).postCore();
+        return this.clone(ViewFields, `addviewfield('${fieldTitleOrInternalName}')`).postCore();
     }
 
     /**
@@ -145,7 +145,7 @@ export class ViewFields extends QueryableCollection {
      * @param index The zero-based index of the new position for the field.
      */
     public move(fieldInternalName: string, index: number): Promise<void> {
-        return this.clone(ViewFields, "moveviewfieldto", true).postCore({
+        return this.clone(ViewFields, "moveviewfieldto").postCore({
             body: JSON.stringify({ "field": fieldInternalName, "index": index }),
         });
     }
@@ -154,7 +154,7 @@ export class ViewFields extends QueryableCollection {
      * Removes all the fields from the collection.
      */
     public removeAll(): Promise<void> {
-        return this.clone(ViewFields, "removeallviewfields", true).postCore();
+        return this.clone(ViewFields, "removeallviewfields").postCore();
     }
 
     /**
@@ -163,7 +163,7 @@ export class ViewFields extends QueryableCollection {
      * @param fieldInternalName The case-sensitive internal name of the field to remove from the view.
      */
     public remove(fieldInternalName: string): Promise<void> {
-        return this.clone(ViewFields, `removeviewfield('${fieldInternalName}')`, true).postCore();
+        return this.clone(ViewFields, `removeviewfield('${fieldInternalName}')`).postCore();
     }
 }
 

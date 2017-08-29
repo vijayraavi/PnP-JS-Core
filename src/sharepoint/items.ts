@@ -1,12 +1,12 @@
-import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
-import { QueryableShareableItem } from "./queryableshareable";
+import { SharePointQueryable, SharePointQueryableCollection, SharePointQueryableInstance } from "./sharepointqueryable";
+import { SharePointQueryableShareableItem } from "./sharepointqueryableshareable";
 import { Folder } from "./folders";
 import { File } from "./files";
 import { ContentType } from "./contenttypes";
 import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
 import { ListItemFormUpdateValue } from "./types";
-import { ODataParserBase } from "./odata";
+import { ODataParserBase } from "../odata/core";
 import { AttachmentFiles } from "./attachmentfiles";
 import { List } from "./lists";
 
@@ -14,14 +14,14 @@ import { List } from "./lists";
  * Describes a collection of Item objects
  *
  */
-export class Items extends QueryableCollection {
+export class Items extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Items class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable, path = "items") {
+    constructor(baseUrl: string | SharePointQueryable, path = "items") {
         super(baseUrl, path);
     }
 
@@ -71,7 +71,7 @@ export class Items extends QueryableCollection {
                 "__metadata": { "type": listItemEntityType },
             }, properties));
 
-            const promise = this.clone(Items, null, true).postAsCore<{ Id: number }>({ body: postBody }).then((data) => {
+            const promise = this.clone(Items, null).postAsCore<{ Id: number }>({ body: postBody }).then((data) => {
                 return {
                     data: data,
                     item: this.getById(data.Id),
@@ -101,7 +101,7 @@ export class Items extends QueryableCollection {
  * Descrines a single Item instance
  *
  */
-export class Item extends QueryableShareableItem {
+export class Item extends SharePointQueryableShareableItem {
 
     /**
      * Gets the set of attachments for this item
@@ -123,40 +123,40 @@ export class Item extends QueryableShareableItem {
      * Gets the effective base permissions for the item
      *
      */
-    public get effectiveBasePermissions(): Queryable {
-        return new Queryable(this, "EffectiveBasePermissions");
+    public get effectiveBasePermissions(): SharePointQueryable {
+        return new SharePointQueryable(this, "EffectiveBasePermissions");
     }
 
     /**
      * Gets the effective base permissions for the item in a UI context
      *
      */
-    public get effectiveBasePermissionsForUI(): Queryable {
-        return new Queryable(this, "EffectiveBasePermissionsForUI");
+    public get effectiveBasePermissionsForUI(): SharePointQueryable {
+        return new SharePointQueryable(this, "EffectiveBasePermissionsForUI");
     }
 
     /**
      * Gets the field values for this list item in their HTML representation
      *
      */
-    public get fieldValuesAsHTML(): QueryableInstance {
-        return new QueryableInstance(this, "FieldValuesAsHTML");
+    public get fieldValuesAsHTML(): SharePointQueryableInstance {
+        return new SharePointQueryableInstance(this, "FieldValuesAsHTML");
     }
 
     /**
      * Gets the field values for this list item in their text representation
      *
      */
-    public get fieldValuesAsText(): QueryableInstance {
-        return new QueryableInstance(this, "FieldValuesAsText");
+    public get fieldValuesAsText(): SharePointQueryableInstance {
+        return new SharePointQueryableInstance(this, "FieldValuesAsText");
     }
 
     /**
      * Gets the field values for this list item for use in editing controls
      *
      */
-    public get fieldValuesForEdit(): QueryableInstance {
-        return new QueryableInstance(this, "FieldValuesForEdit");
+    public get fieldValuesForEdit(): SharePointQueryableInstance {
+        return new SharePointQueryableInstance(this, "FieldValuesForEdit");
     }
 
     /**
@@ -187,7 +187,7 @@ export class Item extends QueryableShareableItem {
 
             const removeDependency = this.addBatchDependency();
 
-            const parentList = this.getParent(QueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
+            const parentList = this.getParent(SharePointQueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
 
             parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
 
@@ -231,7 +231,7 @@ export class Item extends QueryableShareableItem {
      * Moves the list item to the Recycle Bin and returns the identifier of the new Recycle Bin item.
      */
     public recycle(): Promise<string> {
-        return this.clone(Item, "recycle", true).postCore();
+        return this.clone(Item, "recycle").postCore();
     }
 
     /**
@@ -241,7 +241,7 @@ export class Item extends QueryableShareableItem {
      * @param action Display mode: 0: view, 1: edit, 2: mobileView, 3: interactivePreview
      */
     public getWopiFrameUrl(action = 0): Promise<string> {
-        const i = this.clone(Item, "getWOPIFrameUrl(@action)", true);
+        const i = this.clone(Item, "getWOPIFrameUrl(@action)");
         i._query.add("@action", <any>action);
         return i.postCore().then((data: any) => {
 
@@ -261,7 +261,7 @@ export class Item extends QueryableShareableItem {
      * @param newDocumentUpdate true if the list item is a document being updated after upload; otherwise false.
      */
     public validateUpdateListItem(formValues: ListItemFormUpdateValue[], newDocumentUpdate = false): Promise<ListItemFormUpdateValue[]> {
-        return this.clone(Item, "validateupdatelistitem", true).postCore({
+        return this.clone(Item, "validateupdatelistitem").postCore({
             body: JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate }),
         });
     }

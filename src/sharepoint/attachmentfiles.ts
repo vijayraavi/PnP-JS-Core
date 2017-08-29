@@ -1,5 +1,5 @@
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
-import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "./odata";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
+import { TextFileParser, BlobFileParser, JSONFileParser, BufferFileParser } from "../odata/parsers";
 
 export interface AttachmentFileInfo {
     name: string;
@@ -10,14 +10,14 @@ export interface AttachmentFileInfo {
  * Describes a collection of Item objects
  *
  */
-export class AttachmentFiles extends QueryableCollection {
+export class AttachmentFiles extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the AttachmentFiles class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this attachments collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this attachments collection
      */
-    constructor(baseUrl: string | Queryable, path = "AttachmentFiles") {
+    constructor(baseUrl: string | SharePointQueryable, path = "AttachmentFiles") {
         super(baseUrl, path);
     }
 
@@ -39,7 +39,7 @@ export class AttachmentFiles extends QueryableCollection {
      * @param content The Base64 file content.
      */
     public add(name: string, content: string | Blob | ArrayBuffer): Promise<AttachmentFileAddResult> {
-        return this.clone(AttachmentFiles, `add(FileName='${name}')`).postCore({
+        return this.clone(AttachmentFiles, `add(FileName='${name}')`, false).postCore({
             body: content,
         }).then((response) => {
             return {
@@ -57,7 +57,7 @@ export class AttachmentFiles extends QueryableCollection {
     public addMultiple(files: AttachmentFileInfo[]): Promise<void> {
 
         // add the files in series so we don't get update conflicts
-        return files.reduce((chain, file) => chain.then(() => this.clone(AttachmentFiles, `add(FileName='${file.name}')`).postCore({
+        return files.reduce((chain, file) => chain.then(() => this.clone(AttachmentFiles, `add(FileName='${file.name}')`, false).postCore({
             body: file.content,
         })), Promise.resolve());
     }
@@ -67,7 +67,7 @@ export class AttachmentFiles extends QueryableCollection {
  * Describes a single attachment file instance
  *
  */
-export class AttachmentFile extends QueryableInstance {
+export class AttachmentFile extends SharePointQueryableInstance {
 
     /**
      * Gets the contents of the file as text
@@ -75,7 +75,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public getText(): Promise<string> {
 
-        return this.clone(AttachmentFile, "$value").get(new TextFileParser());
+        return this.clone(AttachmentFile, "$value", false).get(new TextFileParser());
     }
 
     /**
@@ -84,7 +84,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public getBlob(): Promise<Blob> {
 
-        return this.clone(AttachmentFile, "$value").get(new BlobFileParser());
+        return this.clone(AttachmentFile, "$value", false).get(new BlobFileParser());
     }
 
     /**
@@ -92,7 +92,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public getBuffer(): Promise<ArrayBuffer> {
 
-        return this.clone(AttachmentFile, "$value").get(new BufferFileParser());
+        return this.clone(AttachmentFile, "$value", false).get(new BufferFileParser());
     }
 
     /**
@@ -100,7 +100,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public getJSON(): Promise<any> {
 
-        return this.clone(AttachmentFile, "$value").get(new JSONFileParser());
+        return this.clone(AttachmentFile, "$value", false).get(new JSONFileParser());
     }
 
     /**
@@ -110,7 +110,7 @@ export class AttachmentFile extends QueryableInstance {
      */
     public setContent(content: string | ArrayBuffer | Blob): Promise<AttachmentFile> {
 
-        return this.clone(AttachmentFile, "$value").postCore({
+        return this.clone(AttachmentFile, "$value", false).postCore({
             body: content,
             headers: {
                 "X-HTTP-Method": "PUT",

@@ -1,8 +1,3 @@
-export * from "../sharepoint/index";
-export { ConfigOptions, FetchOptions, HttpClient, HttpClientImpl } from "../net/httpclient";
-export { SPRequestExecutorClient } from "../net/sprequestexecutorclient";
-export { NodeFetchClient } from "../net/nodefetchclient";
-export { FetchClient } from "../net/fetchclient";
 export { IConfigurationProvider } from "../configuration/configuration";
 export * from "../configuration/providers/index";
 export { LibraryConfiguration } from "../configuration/pnplibconfig";

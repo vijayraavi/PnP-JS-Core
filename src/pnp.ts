@@ -4,6 +4,7 @@ import { Settings } from "./configuration/configuration";
 import { Logger } from "./utils/logging";
 import { SPRest } from "./sharepoint/rest";
 import { setRuntimeConfig, LibraryConfiguration } from "./configuration/pnplibconfig";
+import { GraphRest } from "./graph/rest";
 
 /**
  * Root class of the Patterns and Practices namespace, provides an entry point to the library
@@ -18,6 +19,11 @@ export const util = Util;
  * Provides access to the SharePoint REST interface
  */
 export const sp = new SPRest();
+
+/**
+ * Provides access to the Microsoft Graph REST interface
+ */
+export const graph = new GraphRest();
 
 /**
  * Provides access to local and session storage
@@ -39,10 +45,9 @@ export const log = Logger;
  */
 export const setup: (config: LibraryConfiguration) => void = setRuntimeConfig;
 
-/**
- * Expose a subset of classes from the library for public consumption
- */
-export * from "./types/index";
+// /**
+//  * Expose a subset of classes from the library for public consumption
+//  */
 
 // creating this class instead of directly assigning to default fixes issue #116
 const Def = {
@@ -50,6 +55,10 @@ const Def = {
      * Global configuration instance to which providers can be added
      */
     config: config,
+    /**
+     * Provides access to the Microsoft Graph REST interface
+     */
+    graph: graph,
     /**
      * Global logging instance to which subscribers can be registered and messages written
      */

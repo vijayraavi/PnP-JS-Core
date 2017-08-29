@@ -1,4 +1,4 @@
-import { ODataParser } from "./odata";
+import { ODataParser } from "../odata/core";
 import { PnPClientStore, PnPClientStorage } from "../utils/storage";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";

@@ -1,4 +1,4 @@
-import { Queryable, QueryableInstance, QueryableCollection } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
 import { SiteGroups } from "./sitegroups";
 import { Util } from "../utils/util";
 import { TypedHash } from "../collections/collections";
@@ -16,14 +16,14 @@ export interface UserUpdateResult {
  * Describes a collection of all site collection users
  *
  */
-export class SiteUsers extends QueryableCollection {
+export class SiteUsers extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the SiteUsers class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this user collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this user collection
      */
-    constructor(baseUrl: string | Queryable, path = "siteusers") {
+    constructor(baseUrl: string | SharePointQueryable, path = "siteusers") {
         super(baseUrl, path);
     }
 
@@ -62,8 +62,8 @@ export class SiteUsers extends QueryableCollection {
      *
      * @param id The id of the user to remove
      */
-    public removeById(id: number | Queryable): Promise<any> {
-        return this.clone(SiteUsers, `removeById(${id})`, true).postCore();
+    public removeById(id: number | SharePointQueryable): Promise<any> {
+        return this.clone(SiteUsers, `removeById(${id})`).postCore();
     }
 
     /**
@@ -72,7 +72,7 @@ export class SiteUsers extends QueryableCollection {
      * @param loginName The login name of the user to remove
      */
     public removeByLoginName(loginName: string): Promise<any> {
-        const o = this.clone(SiteUsers, `removeByLoginName(@v)`, true);
+        const o = this.clone(SiteUsers, `removeByLoginName(@v)`);
         o.query.add("@v", `'${encodeURIComponent(loginName)}'`);
         return o.postCore();
     }
@@ -84,7 +84,7 @@ export class SiteUsers extends QueryableCollection {
      *
      */
     public add(loginName: string): Promise<SiteUser> {
-        return this.clone(SiteUsers, null, true).postCore({
+        return this.clone(SiteUsers, null).postCore({
             body: JSON.stringify({ "__metadata": { "type": "SP.User" }, LoginName: loginName }),
         }).then(() => this.getByLoginName(loginName));
     }
@@ -95,7 +95,7 @@ export class SiteUsers extends QueryableCollection {
  * Describes a single user
  *
  */
-export class SiteUser extends QueryableInstance {
+export class SiteUser extends SharePointQueryableInstance {
 
     /**
      * Gets the groups for this user
@@ -143,9 +143,9 @@ export class SiteUser extends QueryableInstance {
 /**
  * Represents the current user
  */
-export class CurrentUser extends QueryableInstance {
+export class CurrentUser extends SharePointQueryableInstance {
 
-    constructor(baseUrl: string | Queryable, path = "currentuser") {
+    constructor(baseUrl: string | SharePointQueryable, path = "currentuser") {
         super(baseUrl, path);
     }
 }

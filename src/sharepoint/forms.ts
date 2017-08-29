@@ -1,17 +1,17 @@
-import { Queryable, QueryableCollection, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableCollection, SharePointQueryableInstance } from "./sharepointqueryable";
 
 /**
  * Describes a collection of Field objects
  *
  */
-export class Forms extends QueryableCollection {
+export class Forms extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Fields class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this fields collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this fields collection
      */
-    constructor(baseUrl: string | Queryable, path = "forms") {
+    constructor(baseUrl: string | SharePointQueryable, path = "forms") {
         super(baseUrl, path);
     }
 
@@ -31,4 +31,4 @@ export class Forms extends QueryableCollection {
  * Describes a single of Form instance
  *
  */
-export class Form extends QueryableInstance { }
+export class Form extends SharePointQueryableInstance { }

@@ -1,4 +1,4 @@
-import { Queryable, QueryableCollection } from "./queryable";
+import { SharePointQueryable, SharePointQueryableCollection } from "./sharepointqueryable";
 import { Lists } from "./lists";
 import { Fields } from "./fields";
 import { Navigation } from "./navigation";
@@ -13,23 +13,24 @@ import { ChangeQuery } from "./types";
 import { List } from "./lists";
 import { SiteUsers, SiteUser, CurrentUser, SiteUserProps } from "./siteusers";
 import { UserCustomActions } from "./usercustomactions";
-import { extractOdataId, ODataBatch } from "./odata";
+import { spExtractODataId } from "./odata";
+import { ODataBatch } from "./batch";
 import { Features } from "./features";
-import { QueryableShareableWeb } from "./queryableshareable";
+import { SharePointQueryableShareableWeb } from "./sharepointqueryableshareable";
 import { RelatedItemManger, RelatedItemManagerImpl } from "./relateditems";
 
 /**
  * Describes a collection of webs
  *
  */
-export class Webs extends QueryableCollection {
+export class Webs extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the Webs class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this web collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this web collection
      */
-    constructor(baseUrl: string | Queryable, webPath = "webs") {
+    constructor(baseUrl: string | SharePointQueryable, webPath = "webs") {
         super(baseUrl, webPath);
     }
 
@@ -67,10 +68,10 @@ export class Webs extends QueryableCollection {
             }, props),
         });
 
-        return this.clone(Webs, "add", true).postCore({ body: postBody }).then((data) => {
+        return this.clone(Webs, "add").postCore({ body: postBody }).then((data) => {
             return {
                 data: data,
-                web: new Web(extractOdataId(data).replace(/_api\/web\/?/i, "")),
+                web: new Web(spExtractODataId(data).replace(/_api\/web\/?/i, "")),
             };
         });
     }
@@ -80,14 +81,14 @@ export class Webs extends QueryableCollection {
  * Describes a collection of web infos
  *
  */
-export class WebInfos extends QueryableCollection {
+export class WebInfos extends SharePointQueryableCollection {
 
     /**
      * Creates a new instance of the WebInfos class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this web infos collection
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this web infos collection
      */
-    constructor(baseUrl: string | Queryable, webPath = "webinfos") {
+    constructor(baseUrl: string | SharePointQueryable, webPath = "webinfos") {
         super(baseUrl, webPath);
     }
 }
@@ -96,7 +97,7 @@ export class WebInfos extends QueryableCollection {
  * Describes a web
  *
  */
-export class Web extends QueryableShareableWeb {
+export class Web extends SharePointQueryableShareableWeb {
 
     /**
      * Creates a new web instance from the given url by indexing the location of the /_api/
@@ -112,9 +113,9 @@ export class Web extends QueryableShareableWeb {
     /**
      * Creates a new instance of the Web class
      *
-     * @param baseUrl The url or Queryable which forms the parent of this web
+     * @param baseUrl The url or SharePointQueryable which forms the parent of this web
      */
-    constructor(baseUrl: string | Queryable, path = "_api/web") {
+    constructor(baseUrl: string | SharePointQueryable, path = "_api/web") {
         super(baseUrl, path);
     }
 
@@ -353,7 +354,7 @@ export class Web extends QueryableShareableWeb {
             shareGenerated: shareGenerated,
         });
 
-        return this.clone(Web, "applytheme", true).postCore({ body: postBody });
+        return this.clone(Web, "applytheme").postCore({ body: postBody });
     }
 
     /**
@@ -363,7 +364,7 @@ export class Web extends QueryableShareableWeb {
      */
     public applyWebTemplate(template: string): Promise<void> {
 
-        const q = this.clone(Web, "applywebtemplate", true);
+        const q = this.clone(Web, "applywebtemplate");
         q.concat(`(@t)`);
         q.query.add("@t", template);
         return q.postCore();
@@ -379,10 +380,10 @@ export class Web extends QueryableShareableWeb {
             logonName: loginName,
         });
 
-        return this.clone(Web, "ensureuser", true).postCore({ body: postBody }).then((data: any) => {
+        return this.clone(Web, "ensureuser").postCore({ body: postBody }).then((data: any) => {
             return {
                 data: data,
-                user: new SiteUser(extractOdataId(data)),
+                user: new SiteUser(spExtractODataId(data)),
             };
         });
     }
@@ -393,8 +394,8 @@ export class Web extends QueryableShareableWeb {
      * @param language The locale id of the site templates to retrieve (default = 1033 [English, US])
      * @param includeCrossLanguage When true, includes language-neutral site templates; otherwise false (default = true)
      */
-    public availableWebTemplates(language = 1033, includeCrossLanugage = true): QueryableCollection {
-        return new QueryableCollection(this, `getavailablewebtemplates(lcid=${language}, doincludecrosslanguage=${includeCrossLanugage})`);
+    public availableWebTemplates(language = 1033, includeCrossLanugage = true): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, `getavailablewebtemplates(lcid=${language}, doincludecrosslanguage=${includeCrossLanugage})`);
     }
 
     /**
@@ -404,8 +405,8 @@ export class Web extends QueryableShareableWeb {
      * MasterPageCatalog = 116, SolutionCatalog = 121, ThemeCatalog = 123, DesignCatalog = 124, AppDataCatalog = 125
      */
     public getCatalog(type: number): Promise<List> {
-        return this.clone(Web, `getcatalog(${type})`, true).select("Id").get().then((data) => {
-            return new List(extractOdataId(data));
+        return this.clone(Web, `getcatalog(${type})`).select("Id").get().then((data) => {
+            return new List(spExtractODataId(data));
         });
     }
 
@@ -417,15 +418,15 @@ export class Web extends QueryableShareableWeb {
     public getChanges(query: ChangeQuery): Promise<any> {
 
         const postBody = JSON.stringify({ "query": Util.extend({ "__metadata": { "type": "SP.ChangeQuery" } }, query) });
-        return this.clone(Web, "getchanges", true).postCore({ body: postBody });
+        return this.clone(Web, "getchanges").postCore({ body: postBody });
     }
 
     /**
      * Gets the custom list templates for the site
      *
      */
-    public get customListTemplate(): QueryableCollection {
-        return new QueryableCollection(this, "getcustomlisttemplates");
+    public get customListTemplate(): SharePointQueryableCollection {
+        return new SharePointQueryableCollection(this, "getcustomlisttemplates");
     }
 
     /**
@@ -445,7 +446,7 @@ export class Web extends QueryableShareableWeb {
      * @param progId The ProgID of the application that was used to create the file, in the form OLEServerName.ObjectName
      */
     public mapToIcon(filename: string, size = 0, progId = ""): Promise<string> {
-        return this.clone(Web, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`, true).get();
+        return this.clone(Web, `maptoicon(filename='${filename}', progid='${progId}', size=${size})`).get();
     }
 }
 

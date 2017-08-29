@@ -1,9 +1,9 @@
 import { Web } from "./webs";
 import { RoleAssignments } from "./roles";
 import { BasePermissions, PermissionKind } from "./types";
-import { Queryable, QueryableInstance } from "./queryable";
+import { SharePointQueryable, SharePointQueryableInstance } from "./sharepointqueryable";
 
-export class QueryableSecurable extends QueryableInstance {
+export class SharePointQueryableSecurable extends SharePointQueryableInstance {
 
     /**
      * Gets the set of role assignments for this item
@@ -17,8 +17,8 @@ export class QueryableSecurable extends QueryableInstance {
      * Gets the closest securable up the security hierarchy whose permissions are applied to this list item
      *
      */
-    public get firstUniqueAncestorSecurableObject(): QueryableInstance {
-        return new QueryableInstance(this, "FirstUniqueAncestorSecurableObject");
+    public get firstUniqueAncestorSecurableObject(): SharePointQueryableInstance {
+        return new SharePointQueryableInstance(this, "FirstUniqueAncestorSecurableObject");
     }
 
     /**
@@ -27,7 +27,7 @@ export class QueryableSecurable extends QueryableInstance {
      * @param loginName The claims username for the user (ex: i:0#.f|membership|user@domain.com)
      */
     public getUserEffectivePermissions(loginName: string): Promise<BasePermissions> {
-        const q = this.clone(Queryable, "getUserEffectivePermissions(@user)", true);
+        const q = this.clone(SharePointQueryable, "getUserEffectivePermissions(@user)");
         q.query.add("@user", `'${encodeURIComponent(loginName)}'`);
         return q.get().then(r => {
             // handle verbose mode
@@ -55,7 +55,7 @@ export class QueryableSecurable extends QueryableInstance {
      */
     public breakRoleInheritance(copyRoleAssignments = false, clearSubscopes = false): Promise<any> {
 
-        return this.clone(QueryableSecurable, `breakroleinheritance(copyroleassignments=${copyRoleAssignments}, clearsubscopes=${clearSubscopes})`, true).postCore();
+        return this.clone(SharePointQueryableSecurable, `breakroleinheritance(copyroleassignments=${copyRoleAssignments}, clearsubscopes=${clearSubscopes})`).postCore();
     }
 
     /**
@@ -64,7 +64,7 @@ export class QueryableSecurable extends QueryableInstance {
      */
     public resetRoleInheritance(): Promise<any> {
 
-        return this.clone(QueryableSecurable, "resetroleinheritance", true).postCore();
+        return this.clone(SharePointQueryableSecurable, "resetroleinheritance").postCore();
     }
 
     /**

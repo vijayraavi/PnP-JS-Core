@@ -3,11 +3,21 @@
     "files.exclude": {
         "**/.git": true,
         "**/.DS_Store": true,
-        "lib/": true,
-        "node_modules/": true,
+        "lib": true,
+        "node_modules": true,
         "coverage": true,
         "testing": true,
-        "debugging": true
+        "debugging": true,
+        "core.d.ts": true,
+        "core.js": true,
+        "graph.d.ts": true,
+        "graph.js": true,
+        "net.d.ts": true,
+        "net.js": true,
+        "odata.d.ts": true,
+        "odata.js": true,
+        "sp.d.ts": true,
+        "sp.js": true
     },
     "typescript.tsdk": "node_modules/typescript/lib"
 }

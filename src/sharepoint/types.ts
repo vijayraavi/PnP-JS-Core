@@ -1,5 +1,4 @@
 // reference: https://msdn.microsoft.com/en-us/library/office/dn600183.aspx
-
 import { TypedHash } from "../collections/collections";
 
 /**

@@ -2,26 +2,20 @@ import { DigestCache } from "./digestcache";
 import { Util } from "../utils/util";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { APIUrlException } from "../utils/exceptions";
+import { mergeHeaders, FetchOptions } from "./utils";
+import { RequestClient } from "../request/requestclient";
 
-export interface ConfigOptions {
-    headers?: string[][] | { [key: string]: string };
-    mode?: "navigate" | "same-origin" | "no-cors" | "cors";
-    credentials?: "omit" | "same-origin" | "include";
-    cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
+export interface HttpClientImpl {
+    fetch(url: string, options: FetchOptions): Promise<Response>;
 }
 
-export interface FetchOptions extends ConfigOptions {
-    method?: string;
-    body?: any;
-}
-
-export class HttpClient {
+export class HttpClient implements RequestClient {
 
     private _digestCache: DigestCache;
     private _impl: HttpClientImpl;
 
     constructor() {
-        this._impl = RuntimeConfig.fetchClientFactory();
+        this._impl = RuntimeConfig.spFetchClientFactory();
         this._digestCache = new DigestCache(this);
     }
 
@@ -32,7 +26,7 @@ export class HttpClient {
         const headers = new Headers();
 
         // first we add the global headers so they can be overwritten by any passed in locally to this call
-        mergeHeaders(headers, RuntimeConfig.headers);
+        mergeHeaders(headers, RuntimeConfig.spHeaders);
 
         // second we add the local options so we can overwrite the globals
         mergeHeaders(headers, options.headers);
@@ -83,14 +77,14 @@ export class HttpClient {
 
             this._impl.fetch(url, options).then((response) => ctx.resolve(response)).catch((response) => {
 
-                // grab our current delay
-                const delay = ctx.delay;
-
                 // Check if request was throttled - http status code 429
-                // Check is request failed due to server unavailable - http status code 503
+                // Check if request failed due to server unavailable - http status code 503
                 if (response.status !== 429 && response.status !== 503) {
                     ctx.reject(response);
                 }
+
+                // grab our current delay
+                const delay = ctx.delay;
 
                 // Increment our counters.
                 ctx.delay *= 2;
@@ -141,30 +135,10 @@ export class HttpClient {
     }
 }
 
-export function mergeOptions(target: ConfigOptions, source: ConfigOptions): void {
-    target.headers = target.headers || {};
-    const headers = Util.extend(target.headers, source.headers);
-    target = Util.extend(target, source);
-    target.headers = headers;
-}
-
-export function mergeHeaders(target: Headers, source: any): void {
-    if (typeof source !== "undefined" && source !== null) {
-        const temp = <any>new Request("", { headers: source });
-        temp.headers.forEach((value: string, name: string) => {
-            target.append(name, value);
-        });
-    }
-}
-
 interface RetryContext {
     attempts: number;
     delay: number;
     reject: (reason?: any) => void;
     resolve: (value?: {} | PromiseLike<{}>) => void;
     retryCount: number;
-}
-
-export interface HttpClientImpl {
-    fetch(url: string, options: FetchOptions): Promise<Response>;
 }
