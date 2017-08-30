@@ -40,7 +40,7 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             "file\/startUpload",
             "file\/continueUpload",
             "file\/finishUpload",
-            "attachmentfiles\/add"
+            "attachmentfiles\/add",
         ];
 
         const isBinaryRequest = (new RegExp(paths.join("|"), "i")).test(url);
