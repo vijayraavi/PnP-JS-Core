@@ -32,6 +32,19 @@ export class SPRequestExecutorClient implements HttpClientImpl {
             headers = <any>options.headers;
         }
 
+        // this is a way to determine if we need to set the binaryStringRequestBody by testing what method we are calling
+        // and if they would normally have a binary body. This addresses issue #565.
+        const paths = [
+            "files\/add",
+            "files\/addTemplateFile",
+            "file\/startUpload",
+            "file\/continueUpload",
+            "file\/finishUpload",
+            "attachmentfiles\/add",
+        ];
+
+        const isBinaryRequest = (new RegExp(paths.join("|"), "i")).test(url);
+
         return new Promise((resolve, reject) => {
 
             let requestOptions = {
@@ -48,9 +61,12 @@ export class SPRequestExecutorClient implements HttpClientImpl {
 
             if (options.body) {
                 requestOptions = Util.extend(requestOptions, { body: options.body });
-            } else {
-                requestOptions = Util.extend(requestOptions, { binaryStringRequestBody: true });
+
+                if (isBinaryRequest) {
+                    requestOptions = Util.extend(requestOptions, { binaryStringRequestBody: true });
+                }
             }
+
             executor.executeAsync(requestOptions);
         });
     }
