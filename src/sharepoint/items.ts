@@ -181,18 +181,16 @@ export class Item extends SharePointQueryableShareableItem {
      * @param properties A plain object hash of values to update for the list
      * @param eTag Value used in the IF-Match header, by default "*"
      */
-    public update(properties: TypedHash<any>, eTag = "*"): Promise<ItemUpdateResult> {
+    public update(properties: TypedHash<any>, eTag = "*", listItemEntityTypeFullName: string = null): Promise<ItemUpdateResult> {
 
         return new Promise<ItemUpdateResult>((resolve, reject) => {
 
             const removeDependency = this.addBatchDependency();
 
-            const parentList = this.getParent(SharePointQueryableInstance, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/")));
-
-            parentList.select("ListItemEntityTypeFullName").getAs<{ ListItemEntityTypeFullName: string }>().then((d) => {
+            return this.ensureListItemEntityTypeName(listItemEntityTypeFullName).then(listItemEntityType => {
 
                 const postBody = JSON.stringify(Util.extend({
-                    "__metadata": { "type": d.ListItemEntityTypeFullName },
+                    "__metadata": { "type": listItemEntityType },
                 }, properties));
 
                 removeDependency();
@@ -264,6 +262,18 @@ export class Item extends SharePointQueryableShareableItem {
         return this.clone(Item, "validateupdatelistitem").postCore({
             body: JSON.stringify({ "formValues": formValues, bNewDocumentUpdate: newDocumentUpdate }),
         });
+    }
+
+    /**
+     * Ensures we have the proper list item entity type name, either from the value provided or from the list
+     *
+     * @param candidatelistItemEntityTypeFullName The potential type name
+     */
+    private ensureListItemEntityTypeName(candidatelistItemEntityTypeFullName: string): Promise<string> {
+
+        return candidatelistItemEntityTypeFullName ?
+            Promise.resolve(candidatelistItemEntityTypeFullName) :
+            this.getParent(List, this.parentUrl.substr(0, this.parentUrl.lastIndexOf("/"))).getListItemEntityTypeFullName();
     }
 }
 
