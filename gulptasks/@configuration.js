@@ -32,9 +32,8 @@ module.exports = {
         lib: "./lib",
         exports: "./",
         source: "./src",
-        sourceGlob: ["./src/**/*.ts", "!./src/exports/**/*.ts"],
-        assetsGlob: "./assets/**/*.*",
-        exportsGlob: "./src/exports/**/*.ts"
+        sourceGlob: ["./src/**/*.ts"],
+        assetsGlob: "./assets/**/*.*"
     },
     testing: {
         testsSource: "./tests",

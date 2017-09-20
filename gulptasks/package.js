@@ -20,7 +20,7 @@ gulp.task("package:defs", () => {
 });
 
 // package the code files using webpack
-gulp.task("package:code", ["build:lib", "build:exports"], (done) => {
+gulp.task("package:code", ["build:lib"], (done) => {
 
     webpack(webpackConfig, (err, stats) => {
 
