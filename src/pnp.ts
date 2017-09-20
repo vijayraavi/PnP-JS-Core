@@ -45,6 +45,15 @@ export const log = Logger;
  */
 export const setup: (config: LibraryConfiguration) => void = setRuntimeConfig;
 
+/**
+ * Export everything back to the top level so it can be properly bundled
+ */
+export * from "./exports/core";
+export * from "./exports/graph";
+export * from "./exports/net";
+export * from "./exports/odata";
+export * from "./exports/sp";
+
 // /**
 //  * Expose a subset of classes from the library for public consumption
 //  */
