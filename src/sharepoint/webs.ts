@@ -134,7 +134,7 @@ export class Web extends SharePointQueryableShareableWeb {
     * @param nConfigurationFilter A 16-bit integer that specifies the identifier of a configuration (default = -1)
     */
      public getSubwebsFilteredForCurrentUser(nWebTemplateFilter = -1, nConfigurationFilter = -1): Webs {
-         return new Webs(this, `getSubwebsFilteredForCurrentUser(nWebTemplateFilter=${nWebTemplateFilter},nConfigurationFilter=${nConfigurationFilter})`);
+         return this.clone(Webs, `getSubwebsFilteredForCurrentUser(nWebTemplateFilter=${nWebTemplateFilter},nConfigurationFilter=${nConfigurationFilter})`);
      }
 
     /**
