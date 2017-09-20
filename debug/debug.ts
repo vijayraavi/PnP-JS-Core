@@ -9,7 +9,7 @@ import { NodeFetchClient } from "../src/net/nodefetchclient";
 // if you don't have a settings file defined this will error
 // you can comment it out and put the values here directly, or better yet
 // create a settings file using settings.example.js as a template
-let settings = require("../../settings.js");
+const settings = require("../../settings.js");
 
 // configure your node options
 pnp.setup({
@@ -17,7 +17,7 @@ pnp.setup({
         fetchClientFactory: () => {
             return new NodeFetchClient(settings.testing.siteUrl, settings.testing.clientId, settings.testing.clientSecret);
         },
-    }
+    },
 });
 
 // setup console logger

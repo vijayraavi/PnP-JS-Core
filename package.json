@@ -5,6 +5,7 @@
   "main": "./lib/pnp.js",
   "typings": "./lib/pnp",
   "dependencies": {
+    "@microsoft/microsoft-graph-types": "^1.0.1",
     "@types/sharepoint": "2013.1.9"
   },
   "devDependencies": {
