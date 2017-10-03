@@ -80,4 +80,4 @@ gulp.task("build:debug", ["clean"], () => {
 });
 
 // run the build chain for lib
-gulp.task("build", ["clean", "lint", "build:lib", "build:exports"]);
+gulp.task("build", ["clean", "lint", "build:lib"]);
