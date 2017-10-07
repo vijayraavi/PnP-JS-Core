@@ -2,6 +2,7 @@ import { ProcessHttpClientResponseException } from "../utils/exceptions";
 import { Logger, LogLevel } from "../utils/logging";
 
 export interface ODataParser<T> {
+    hydrate?: (d: any) => T;
     parse(r: Response): Promise<T>;
 }
 
