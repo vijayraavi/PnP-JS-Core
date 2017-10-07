@@ -10,8 +10,8 @@ export function Example() {
         // logging results to the Logger
         Logger.log({
             data: w,
+            level: LogLevel.Info,
             message: "Web's Title",
-            level: LogLevel.Verbose
         });
     });
 }
